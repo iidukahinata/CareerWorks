@@ -11,7 +11,9 @@
 #include "SubSystem/Scene/World.h"
 #include "SubSystem/Resource/ResourceManager.h"
 
-DetailsWidget* DetailsWidget::m_detailsWidget = nullptr;
+GameObject*						 DetailsWidget::m_selectGameObject	 = nullptr;
+ResourceData*					 DetailsWidget::m_selectResourceData = nullptr;
+DetailsWidget*					 DetailsWidget::m_detailsWidget		 = nullptr;
 Vector<UniquePtr<DetailsObject>> DetailsWidget::m_detailsObjects;
 
 void DetailsWidget::PostInitialize()
@@ -30,7 +32,7 @@ void DetailsWidget::Draw()
 	ImGui::SetNextWindowPos(ImVec2(1100, 0), ImGuiCond_Once);
 	ImGui::SetNextWindowSize(ImVec2(435, 630), ImGuiCond_Once);
 
-	ImGui::Begin("Details");
+	ImGui::Begin("Details", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove);
 
 	for (auto& detailsObject : m_detailsObjects)
 	{
@@ -57,7 +59,17 @@ void DetailsWidget::SelectGameObject(GameObject* gameObject) noexcept
 		return;
 	}
 
-	m_detailsObjects = DetailsObjectFactory::Create(m_detailsWidget, gameObject);
+	// å≥Ç…ñﬂÇ∑èàóùéûÇ… DetailsObjects Ç™ê∂ê¨èoóàÇ»Ç¢ÇΩÇﬂ
+	if (m_selectGameObject)
+	{
+		RegisterEditorCommand([](auto data) { SelectGameObjectInternal(data); }, gameObject, m_selectGameObject);
+	}
+	else
+	{
+		SelectGameObjectInternal(gameObject);
+	}
+
+	m_selectGameObject = gameObject;
 }
 
 void DetailsWidget::SelectResource(ResourceData* resourceData) noexcept
@@ -67,5 +79,34 @@ void DetailsWidget::SelectResource(ResourceData* resourceData) noexcept
 		return;
 	}
 
+	// å≥Ç…ñﬂÇ∑èàóùéûÇ… DetailsObjects Ç™ê∂ê¨èoóàÇ»Ç¢ÇΩÇﬂ
+	if (m_selectResourceData)
+	{
+		RegisterEditorCommand([](auto data) { SelectResourceInternal(data); }, resourceData, m_selectResourceData);
+	}
+	else
+	{
+		SelectResourceInternal(resourceData);
+	}
+
+	m_selectResourceData = resourceData;
+}
+
+void DetailsWidget::ClearSelectObject() noexcept
+{
+	m_selectGameObject = nullptr;
+	m_selectResourceData = nullptr;
+
+	m_detailsObjects.clear();
+	m_detailsObjects.shrink_to_fit();
+}
+
+void DetailsWidget::SelectGameObjectInternal(GameObject* gameObject) noexcept
+{
+	m_detailsObjects = DetailsObjectFactory::Create(m_detailsWidget, gameObject);
+}
+
+void DetailsWidget::SelectResourceInternal(ResourceData* resourceData) noexcept
+{
 	m_detailsObjects = DetailsObjectFactory::Create(m_detailsWidget, resourceData);
 }

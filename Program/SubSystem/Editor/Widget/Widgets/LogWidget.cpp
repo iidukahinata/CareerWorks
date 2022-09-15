@@ -58,7 +58,7 @@ void LogWidget::Draw()
 
 		ImGui::PushStyleColor(ImGuiCol_Text, m_logColor[log.errorLevel]);
 
-		auto&& logText = ConvertToJapanese(log.str);
+		auto logText = ConvertToJapanese(log.str);
 		ImGui::Text(logText.c_str());
 
 		ImGui::PopStyleColor();

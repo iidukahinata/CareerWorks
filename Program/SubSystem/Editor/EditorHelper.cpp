@@ -2,7 +2,7 @@
 * @file	   EditerHelper.cpp
 * @brief
 *
-* @date	   2022/09/12 2022年度初版
+* @date	   2022/09/15 2022年度初版
 */
 
 
@@ -33,8 +33,22 @@ void EditorHelper::AddTexture(D3D12DescriptorHeap* descriptorHeap) noexcept
 	m_descriptorHeaps.emplace_back(descriptorHeap);
 }
 
-String ConvertToJapanese(StringView str) noexcept
+void EditorHelper::UndoCommand() noexcept
 {
-	auto&& u8str = ToU8String(str);
-	return String(reinterpret_cast<const char*>(u8str.c_str()));
+	m_commandList.Undo();
+}
+
+void EditorHelper::RedoCommand() noexcept
+{
+	m_commandList.Redo();
+}
+
+void EditorHelper::FlushCommandList() noexcept
+{
+	m_commandList.FlushCommand();
+}
+
+void EditorHelper::AddEditorCommand(UniquePtr<ICommand> command) noexcept
+{
+	m_commandList.AddCommand(std::move(command));
 }

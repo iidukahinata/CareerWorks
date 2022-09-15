@@ -29,13 +29,28 @@ public:
 
 public:
 
+	/** コマンド発行を内部で行っているため呼び出し側での処理は不要 */
 	static void SelectGameObject(GameObject* gameObject) noexcept;
 	static void SelectResource(ResourceData* resourceData) noexcept;
+
+	/** 空選択やシーン切り替え時に使用するため。*/
+	static void ClearSelectObject() noexcept;
+
+private:
+
+	/** Select 関数の呼び出し側でコマンド設定する手間をなくすため */
+	static void SelectGameObjectInternal(GameObject* gameObject) noexcept;
+	static void SelectResourceInternal(ResourceData* resourceData) noexcept;
 
 private:
 
 	World* m_world;
+
 	ResourceManager* m_resourceManager;
+
+	static GameObject* m_selectGameObject;
+
+	static ResourceData* m_selectResourceData;
 
 	// * this object pointor
 	static DetailsWidget* m_detailsWidget;

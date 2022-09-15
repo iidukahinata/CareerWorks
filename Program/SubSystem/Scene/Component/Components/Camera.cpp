@@ -134,7 +134,7 @@ float Camera::GetNear() const
 
 void Camera::SetNear(float nearClip)
 {
-	m_near = nearClip;
+	m_near = max(0.01f, nearClip);
 	CreateProjectionMatrix();
 	CreateOrthographicMatrix();
 }

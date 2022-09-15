@@ -24,6 +24,7 @@ void LightDetails::Draw()
 	const auto& name = m_light->TypeData.Name;
 	if (ImGui::CollapsingHeader(name.data(), ImGuiTreeNodeFlags_DefaultOpen))
 	{
+		auto light			= m_light;
 		auto lightType		= m_light->GetLightType();
 		auto color			= m_light->GetColor();
 		auto intensity		= m_light->GetIntensity();
@@ -53,10 +54,10 @@ void LightDetails::Draw()
 			inputAngle = ImGui::DragFloat("##Angle", &angle);
 		}
 
-		if (inputLightType)		 m_light->SetLightType(lightType);
-		if (inputColor)			 m_light->SetColor(color);
-		if (inputIntensity)		 m_light->SetIntensity(intensity);
-		if (inputIntensityRange) m_light->SetInfluenceRange(influenceRange);
-		if (inputAngle)			 m_light->SetAngle(angle);
+		if (inputLightType)		 RegisterEditorCommand([light](auto data) { light->SetLightType(data);		}, lightType	  , light->GetLightType());
+		if (inputColor)			 RegisterEditorCommand([light](auto data) { light->SetColor(data);			}, color		  , light->GetColor());
+		if (inputIntensity)		 RegisterEditorCommand([light](auto data) { light->SetIntensity(data);		}, intensity	  , light->GetIntensity());
+		if (inputIntensityRange) RegisterEditorCommand([light](auto data) { light->SetInfluenceRange(data); }, influenceRange , light->GetInfluenceRange());
+		if (inputAngle)			 RegisterEditorCommand([light](auto data) { light->SetAngle(data);			}, angle		  , light->GetAngle());
 	}
 }

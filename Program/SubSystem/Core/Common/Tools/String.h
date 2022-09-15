@@ -35,6 +35,8 @@ String ToString(WstringView str, uint32_t cp = CP_OEMCP) noexcept;
 #ifdef __cpp_lib_char8_t
 String ToString(u8StringView str) noexcept;
 u8String ToU8String(StringView str) noexcept;
+
+String ConvertToJapanese(StringView str) noexcept;
 #endif // __cpp_lib_char8_t
 
 /**

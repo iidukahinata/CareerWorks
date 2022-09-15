@@ -2,7 +2,7 @@
 * @file    MyGui.cpp
 * @brief   gui管理クラス
 *
-* @date	   2022/09/09 2022年度初版
+* @date	   2022/09/15 2022年度初版
 */
 
 
@@ -18,15 +18,15 @@
 
 bool EditorSystem::Initialize() noexcept
 {
+	m_job.SetFunction([this](double) { Render(); }, FunctionType::Render);
+	m_job.RegisterToJobSystem();
+
 	RegisterWidgetsToContainer();
 
 	for (const auto& widget : m_widgets)
 	{
 		widget->Initialize();
 	}
-
-	m_job.SetFunction([this](double) { Render(); }, FunctionType::Render);
-	m_job.RegisterToJobSystem();
 
 	return true;
 }
@@ -71,11 +71,7 @@ void EditorSystem::Render() noexcept
 		widget->Draw();
 	}
 
-	// Draw 中で使用される可能性があるため
-	if (ImGui::IsMouseReleased(0))
-	{
-		DragDrop::Get().EndDrag();
-	}
+	ChackClickedCommand();
 
 	// rendering
 	EditorHelper::Get().BegineRenderer();
@@ -132,4 +128,24 @@ void EditorSystem::RegisterWidgetsToContainer() noexcept
 	m_widgets.emplace_back(std::make_unique<DetailsWidget>());
 	m_widgets.emplace_back(std::make_unique<ProfilerWidget>());
 	m_widgets.emplace_back(std::make_unique<ResourceWidget>());
+}
+
+void EditorSystem::ChackClickedCommand() noexcept
+{
+	// Draw 中で使用される可能性があるため
+	if (ImGui::IsMouseReleased(0))
+	{
+		DragDrop::Get().EndDrag();
+	}
+
+	// Undo
+	if (ImGui::IsKeyDown(VK_CONTROL) && ImGui::IsKeyReleased(0x5A /* = Z */))
+	{
+		EditorHelper::Get().UndoCommand();
+	}
+	// Redo
+	if (ImGui::IsKeyDown(VK_CONTROL) && ImGui::IsKeyReleased(0x59 /* = Y */))
+	{
+		EditorHelper::Get().RedoCommand();
+	}
 }

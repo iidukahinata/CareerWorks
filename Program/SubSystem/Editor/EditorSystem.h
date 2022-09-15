@@ -27,12 +27,16 @@ public:
 		return instance;
 	}
 
+	/** Window 生成時の初期化のみ行う。*/
 	bool Initialize() noexcept;
 
+	/** API クラスセットアップ完了後に各 Widget セットアップを行う。*/
 	bool PostInitialize() noexcept;
 
+	/** API、JobSystem クラスより先に消去する必要があるため */
 	void Shutdown() noexcept;
 
+	/** Renderer 側で RendererTarget がセットされている必要があります。*/
 	void Render() noexcept;
 
 private:
@@ -42,6 +46,9 @@ private:
 
 	/** 使用 Widget の登録を行う。*/
 	void RegisterWidgetsToContainer() noexcept;
+
+	/** Undo Redo ドラッグアンドドロップなどに使用 */
+	void ChackClickedCommand() noexcept;
 
 private:
 

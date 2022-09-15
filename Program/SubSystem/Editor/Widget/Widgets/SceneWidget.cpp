@@ -23,7 +23,7 @@ void SceneWidget::Draw()
 	ImGui::SetNextWindowPos(ImVec2( 0, 80), ImGuiCond_Once);
 	ImGui::SetNextWindowSize(ImVec2(220, 450), ImGuiCond_Once);
 
-	ImGui::Begin("Scene", nullptr, ImGuiWindowFlags_NoCollapse);
+	ImGui::Begin("Scene", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove);
 
 	if (auto currentScene = m_world->GetCurrentScene())
 	{

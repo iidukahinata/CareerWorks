@@ -10,6 +10,7 @@
 #include <set>
 #include <map>
 #include <list>
+#include <deque>
 #include <stack>
 #include <queue>
 #include <string>
@@ -28,6 +29,9 @@ using u8String = std::basic_string<char8_t, std::char_traits<char8_t>, std::allo
 
 template<class T>
 using List = std::list<T, std::allocator<T>>;
+
+template<class T>
+using Deque = std::deque<T, std::allocator<T>>;
 
 template<class T>
 using Stack = std::stack<T, std::deque<T, std::allocator<T>>>;

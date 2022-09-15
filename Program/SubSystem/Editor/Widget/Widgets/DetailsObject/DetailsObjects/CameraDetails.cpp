@@ -22,12 +22,13 @@ void CameraDetails::Draw()
 
 	if (ImGui::CollapsingHeader(name.data(), ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		auto widht	= m_camera->GetWidth();
-		auto height = m_camera->GetHeight();
-		auto aspect = m_camera->GetAspect();
-		auto fov	= m_camera->GetFov();
-		auto nearZ	= m_camera->GetNear();
-		auto farZ	= m_camera->GetFar();
+		auto camera = m_camera;
+		auto widht	= camera->GetWidth();
+		auto height = camera->GetHeight();
+		auto aspect = camera->GetAspect();
+		auto fov	= camera->GetFov();
+		auto nearZ	= camera->GetNear();
+		auto farZ	= camera->GetFar();
 
 		ImGui::Text("Widht"); ImGui::SameLine(offsetPos);
 		auto inputWidht = ImGui::DragFloat("##Widht", &widht);
@@ -42,16 +43,16 @@ void CameraDetails::Draw()
 		auto inputFov = ImGui::DragFloat("##Fov", &fov);
 
 		ImGui::Text("Near"); ImGui::SameLine(offsetPos);
-		auto inputNear = ImGui::DragFloat("##Near", &nearZ);
+		auto inputNear = ImGui::DragFloat("##Near", &nearZ, 0.1f);
 
 		ImGui::Text("Far"); ImGui::SameLine(offsetPos);
-		auto inputFar = ImGui::DragFloat("##Far", &farZ);
+		auto inputFar = ImGui::DragFloat("##Far", &farZ, 0.1f);
 
-		if (inputWidht)	 m_camera->SetWidth(widht);
-		if (inputHeight) m_camera->SetHeight(height);
-		if (inputAspect) m_camera->SetAspect(aspect);
-		if (inputFov)	 m_camera->SetFov(fov);
-		if (inputNear)	 m_camera->SetNear(nearZ);
-		if (inputFar)	 m_camera->SetFar(farZ);
+		if (inputWidht)	 RegisterEditorCommand([camera](auto data) { camera->SetWidth(data);  }, widht , camera->GetWidth());
+		if (inputHeight) RegisterEditorCommand([camera](auto data) { camera->SetHeight(data); }, height, camera->GetHeight());
+		if (inputAspect) RegisterEditorCommand([camera](auto data) { camera->SetAspect(data); }, aspect, camera->GetAspect());
+		if (inputFov)	 RegisterEditorCommand([camera](auto data) { camera->SetFov(data);	  }, fov   , camera->GetFov());
+		if (inputNear)	 RegisterEditorCommand([camera](auto data) { camera->SetNear(data);   }, nearZ , camera->GetNear());
+		if (inputFar)	 RegisterEditorCommand([camera](auto data) { camera->SetFar(data);	  }, farZ  , camera->GetFar());
 	}
 }

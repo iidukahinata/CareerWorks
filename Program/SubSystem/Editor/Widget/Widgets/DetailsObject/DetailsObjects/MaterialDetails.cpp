@@ -42,15 +42,16 @@ void MaterialDetails::ShowMaterialInterface() noexcept
 
 	if (ImGui::CollapsingHeader("Material Interface", ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		auto path			= ConvertToJapanese(m_material->GetFilePath());
-		auto textures		= m_material->GetTextures();
-		auto blendMode		= m_material->GetBlendMode();
-		auto rasterizer		= m_material->GetRasterizerState();
-		auto ambient		= m_material->GetAmbient();
-		auto diffuse		= m_material->GetDiffuse();
-		auto emissive		= m_material->GetEmissive();
-		auto specular		= m_material->GetSpecular();
-		auto specularPower	= m_material->GetSpecularPower();
+		auto material		= m_material;
+		auto path			= ConvertToJapanese(material->GetFilePath());
+		auto textures		= material->GetTextures();
+		auto blendMode		= material->GetBlendMode();
+		auto rasterizer		= material->GetRasterizerState();
+		auto ambient		= material->GetAmbient();
+		auto diffuse		= material->GetDiffuse();
+		auto emissive		= material->GetEmissive();
+		auto specular		= material->GetSpecular();
+		auto specularPower	= material->GetSpecularPower();
 
 		ImGui::Text("Name"); ImGui::SameLine(offsetPos);
 		ImGui::Text(path.c_str()); ImGui::Text("");
@@ -78,7 +79,6 @@ void MaterialDetails::ShowMaterialInterface() noexcept
 
 		if (ImGui::TreeNodeEx("Texture Prametor", ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			int index = 0;
 			for (const auto& textureInfo : textures)
 			{
 				const auto& pramName = textureInfo.first;
@@ -100,7 +100,7 @@ void MaterialDetails::ShowMaterialInterface() noexcept
 				{
 					if (auto catchTexture = CatchDragObject<Texture>())
 					{
-						m_material->SetTexture(pramName, catchTexture);
+						RegisterEditorCommand([material, pramName](auto data) { material->SetTexture(pramName, data); }, catchTexture, texture);
 					}
 				}
 
@@ -110,12 +110,12 @@ void MaterialDetails::ShowMaterialInterface() noexcept
 			ImGui::TreePop();
 		}
 
-		if (inputBlendMode)  m_material->SetBlendMode(blendMode);
-		if (inputRasterizer) m_material->SetRasterizerState(rasterizer);
-		if (inputAmbient)    m_material->SetAmbient(ambient);
-		if (inputDiffuse)    m_material->SetDiffuse(diffuse);
-		if (inputEmissive)   m_material->SetEmissive(emissive);
-		if (inputSpecular)   m_material->SetSpecular(specular);
-		if (inputSprPower)   m_material->SetSpecularPower(specularPower);
+		if (inputBlendMode)  RegisterEditorCommand([material](auto data) { material->SetBlendMode(data);	   }, blendMode	   , material->GetBlendMode());
+		if (inputRasterizer) RegisterEditorCommand([material](auto data) { material->SetRasterizerState(data); }, rasterizer   , material->GetRasterizerState());
+		if (inputAmbient)    RegisterEditorCommand([material](auto data) { material->SetAmbient(data);		   }, ambient	   , material->GetAmbient());
+		if (inputDiffuse)    RegisterEditorCommand([material](auto data) { material->SetDiffuse(data);		   }, diffuse	   , material->GetDiffuse());
+		if (inputEmissive)   RegisterEditorCommand([material](auto data) { material->SetEmissive(data);		   }, emissive	   , material->GetEmissive());
+		if (inputSpecular)   RegisterEditorCommand([material](auto data) { material->SetSpecular(data);		   }, specular	   , material->GetSpecular());
+		if (inputSprPower)   RegisterEditorCommand([material](auto data) { material->SetSpecularPower(data);   }, specularPower, material->GetSpecularPower());
 	}
 }

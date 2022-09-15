@@ -151,6 +151,9 @@
     <Filter Include="Subsytem\Editor\Widget\Widgets\Factory">
       <UniqueIdentifier>{6a67efb3-ff93-479f-b12a-247f2f6bdfc6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Subsytem\Core\Command">
+      <UniqueIdentifier>{d8316564-a4e5-409f-b97b-7c341b406616}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Program\WinMain.cpp" />
@@ -513,6 +516,9 @@
     </ClCompile>
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\LightDetails.cpp">
       <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Core\Command\CommandList.cpp">
+      <Filter>Subsytem\Core\Command</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -959,6 +965,12 @@
     </ClInclude>
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\LightDetails.h">
       <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Core\Command\Command.h">
+      <Filter>Subsytem\Core\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Core\Command\CommandList.h">
+      <Filter>Subsytem\Core\Command</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

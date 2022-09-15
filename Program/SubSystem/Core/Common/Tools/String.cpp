@@ -37,6 +37,7 @@ String ToString(WstringView str, uint32_t cp /* = CP_OEMCP */) noexcept
 	return ret;
 }
 
+#ifdef __cpp_lib_char8_t
 String ToString(u8StringView str) noexcept
 {
 	auto wStr = ToWstring(String(str.begin(), str.end()), CP_UTF8);
@@ -51,6 +52,13 @@ u8String ToU8String(StringView str) noexcept
 
 	return u8String(temp.begin(), temp.end());
 }
+
+String ConvertToJapanese(StringView str) noexcept
+{
+	auto&& u8str = ToU8String(str);
+	return String(reinterpret_cast<const char*>(u8str.c_str()));
+}
+#endif // __cpp_lib_char8_t
 
 String GetExt(StringView filePath) noexcept
 {

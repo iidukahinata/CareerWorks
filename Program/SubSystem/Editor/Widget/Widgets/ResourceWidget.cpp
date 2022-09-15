@@ -38,7 +38,7 @@ void ResourceWidget::Draw()
 	ImGui::SetNextWindowPos(ImVec2( 0, 530), ImGuiCond_Once);
 	ImGui::SetNextWindowSize(ImVec2(740, 333), ImGuiCond_Once);
 
-	ImGui::Begin("Resource List", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse);
+	ImGui::Begin("Resource List", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove);
 
 	ShowResourceMenu();
 	ShowResourceList();
@@ -262,6 +262,10 @@ void ResourceWidget::DoubleClickResource(uint32_t type, StringView name) noexcep
 {
 	if (type == Scene::TypeData.Hash)
 	{
+		// シーン切り替えでリソースが消去されるため
+		DetailsWidget::ClearSelectObject();
+		EditorHelper::Get().FlushCommandList();
+
 		m_world->ChangeScene(name);
 	}
 }

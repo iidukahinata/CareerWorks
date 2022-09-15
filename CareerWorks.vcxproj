@@ -150,6 +150,7 @@
   <ItemGroup>
     <ClCompile Include="Program\SubSystem\Audio\Audio.cpp" />
     <ClCompile Include="Program\SubSystem\Audio\FMOD\FMODAudio.cpp" />
+    <ClCompile Include="Program\SubSystem\Core\Command\CommandList.cpp" />
     <ClCompile Include="Program\SubSystem\Core\Common\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Program/Subsystem/Core/Common/pch.h</PrecompiledHeaderFile>
@@ -278,6 +279,8 @@
     <ClInclude Include="Program\SubSystem\Audio\Audio.h" />
     <ClInclude Include="Program\SubSystem\Audio\AudioHelper.h" />
     <ClInclude Include="Program\SubSystem\Audio\FMOD\FMODAudio.h" />
+    <ClInclude Include="Program\SubSystem\Core\Command\Command.h" />
+    <ClInclude Include="Program\SubSystem\Core\Command\CommandList.h" />
     <ClInclude Include="Program\SubSystem\Core\Common\Common.h" />
     <ClInclude Include="Program\SubSystem\Core\Common\Macro.h" />
     <ClInclude Include="Program\SubSystem\Core\Common\pch.h" />

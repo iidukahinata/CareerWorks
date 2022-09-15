@@ -19,5 +19,12 @@ GameObjectDetails::GameObjectDetails(DetailsWidget* detailsWidget, GameObject* g
 
 void GameObjectDetails::Draw()
 {
+	constexpr int offsetPos = 130;
 
+	ImGui::SameLine(70);
+	ImGui::Button("Add Component", ImVec2(300, 50));
+
+	ImGui::Separator();
+	ImGui::Text("Name"); ImGui::SameLine(offsetPos);
+	ImGui::Text(m_gameObject->GetName().c_str());
 }

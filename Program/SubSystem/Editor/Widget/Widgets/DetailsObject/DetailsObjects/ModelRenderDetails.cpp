@@ -89,7 +89,7 @@ void ModelRenderDetails::ShowUseMaterial(Model* model) noexcept
 			{
 				if (auto catchMaterial = CatchDragObject<Material>())
 				{
-					mesh->SetMaterial(catchMaterial);
+					RegisterEditorCommand([mesh](auto data) { mesh->SetMaterial(data); }, catchMaterial, material);
 				}
 			}
 

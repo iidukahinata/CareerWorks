@@ -26,7 +26,9 @@ Vector<UniquePtr<DetailsObject>> DetailsObjectFactory::Create(DetailsWidget* det
 	Vector<UniquePtr<DetailsObject>> detailsObjects;
 
 	CREATE_DETAILS_OBJECT(GameObjectDetails, gameObject);
+	CREATE_DETAILS_OBJECT(TransformDetails , &gameObject->GetTransform());
 
+	// 所持コンポーネント表示用ループ
 	for (const auto& component : gameObject->GetAllComponent())
 	{
 		switch (component.first)
