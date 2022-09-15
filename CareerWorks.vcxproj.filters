@@ -1,0 +1,975 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ThirdParty">
+      <UniqueIdentifier>{bfd36d69-2933-44d9-b76a-7aeec2668f5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem">
+      <UniqueIdentifier>{233e8703-b9e5-4839-8990-c2d0756cee91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\directTex">
+      <UniqueIdentifier>{1e906e5b-96b3-4754-aac5-5f8169ba7e66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\FMOD">
+      <UniqueIdentifier>{1391c0b2-51f5-4f9d-83ca-e19e03deabd5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\imgui">
+      <UniqueIdentifier>{77021a01-5412-48d6-88c6-c233088a596c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Audio">
+      <UniqueIdentifier>{3deadd0c-1f79-4645-abcd-852db29a057c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Core">
+      <UniqueIdentifier>{af20ac20-8185-47c2-a19e-0ba308058607}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Input">
+      <UniqueIdentifier>{e463b24e-33e9-4a04-be62-fbf8972d1c51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\JobSystem">
+      <UniqueIdentifier>{f70c4dae-5978-4165-ac2e-b98563ce160e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Log">
+      <UniqueIdentifier>{c5cdba5c-865e-4e36-aa09-1c024d55955d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Renderer">
+      <UniqueIdentifier>{a1178a32-62f2-4837-8480-f22da331b9c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Resource">
+      <UniqueIdentifier>{a98c72a5-6080-4e36-b608-afd0bb3e6243}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Scene">
+      <UniqueIdentifier>{cd763dba-56e5-40a2-9eeb-719d741ebf02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Timer">
+      <UniqueIdentifier>{c5bf0200-9779-4ff4-99f4-08d5457968ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Window">
+      <UniqueIdentifier>{b7dc571a-445f-45b6-8d80-72a970ae03ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Scene\Component">
+      <UniqueIdentifier>{d7ec00db-aa8c-49cd-9bfc-43b066ab4fd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Scene\Factory">
+      <UniqueIdentifier>{94d5ef66-dc7e-4e12-9e0a-9ca4e60ade4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Scene\Component\Components">
+      <UniqueIdentifier>{c8b0cee8-b7ce-48c6-ae02-f6688fc1d1b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Renderer\GraphicsAPI">
+      <UniqueIdentifier>{f95040af-d078-48cc-b4c3-a5e09826f29c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Renderer\Deferred">
+      <UniqueIdentifier>{4575594b-593a-4a89-aebb-c6c8e8c39555}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Renderer\Forward">
+      <UniqueIdentifier>{f009c3bd-090d-472f-96e0-4c1794bdb774}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Renderer\Geometry">
+      <UniqueIdentifier>{a4eca1d1-002a-4934-957c-02dc321d2e8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Resource\Resources">
+      <UniqueIdentifier>{c0b94dd1-7d2e-471e-94cd-eda08c8e6c70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Renderer\GraphicsAPI\D3D12">
+      <UniqueIdentifier>{873f6baf-de66-4b8c-b0af-06d16bad0a85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Resource\Resources\Audio">
+      <UniqueIdentifier>{15d99010-e327-48e8-92ab-69f95ded7d56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\JobSystem\Async">
+      <UniqueIdentifier>{d5e1bccc-efb1-4b76-a64f-f87416041b7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\JobSystem\Sync">
+      <UniqueIdentifier>{fb88558b-7aa5-424b-bc5c-ec9b63380852}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Input\Direct">
+      <UniqueIdentifier>{c34e04f7-b7b9-4c08-bb9d-5fef12b1f8b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Audio\FMOD">
+      <UniqueIdentifier>{fb6e6725-2040-47f9-8a87-b3978a616f8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Core\Common">
+      <UniqueIdentifier>{0faebd95-b1fd-4b9f-9dbf-bbd912b50c43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Core\Event">
+      <UniqueIdentifier>{925eabc1-c93c-4360-83d9-96b7ba81a601}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Core\Math">
+      <UniqueIdentifier>{c5be4076-28ff-4085-b398-cbac591a1290}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Core\I/O">
+      <UniqueIdentifier>{08f47646-3852-43ac-81c1-056bc5512d76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Core\Common\Tools">
+      <UniqueIdentifier>{38ae61a6-b64d-4c76-97f5-6c40faf6fd47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Core\Common\Tools\Memory">
+      <UniqueIdentifier>{873b16d6-e4a3-415a-b172-84db05e51caa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Resource\Factory">
+      <UniqueIdentifier>{bff9526e-ade1-4673-a101-6a896d9ca271}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Resource\Resources\3DModel">
+      <UniqueIdentifier>{9e0e86c6-4835-4fdf-850d-c5e5dfc0ef17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Resource\Resources\Scene">
+      <UniqueIdentifier>{ce24987d-decb-4235-acc5-de110c88d2cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Resource\ResourceData">
+      <UniqueIdentifier>{107c7525-f562-4a47-beb7-6100097cddbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Resource\ResourceImporter">
+      <UniqueIdentifier>{69456fa2-b17a-40ee-a14d-c6abc1cbc676}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Resource\ResourceImporter\ModelImporter">
+      <UniqueIdentifier>{d6cd3bbc-0340-4cd2-a5c1-6858789a0c6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Resource\ResourceImporter\TextureImporter">
+      <UniqueIdentifier>{efabb8c6-317a-45e7-9cef-5863b354444e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Resource\ResourceImporter\AudioImporter">
+      <UniqueIdentifier>{0320d591-8c46-4f99-98b4-a60105280dc0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Resource\ResourceImporter\ShaderImporter">
+      <UniqueIdentifier>{f9fa1e35-50c6-44d4-9044-879b8fb32a37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Editor">
+      <UniqueIdentifier>{a9045f4e-5ab9-4cdb-b9c5-ef8bf337c993}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Editor\Widget">
+      <UniqueIdentifier>{be94638c-f438-496f-a7da-cccb271a6992}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Editor\Widget\Widgets">
+      <UniqueIdentifier>{82d6142c-dafd-4f8c-92e0-15b10fdb6299}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Editor\Widget\Widgets\DetailsObject">
+      <UniqueIdentifier>{708ef57f-e33e-4928-8ac7-67797d7784fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects">
+      <UniqueIdentifier>{35115497-31d7-47ee-9284-fe8c8b3a0272}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Editor\Widget\Widgets\Factory">
+      <UniqueIdentifier>{6a67efb3-ff93-479f-b12a-247f2f6bdfc6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Program\WinMain.cpp" />
+    <ClCompile Include="Program\ThirdParty\directxtex\include\DDSTextureLoader.cpp">
+      <Filter>ThirdParty\directTex</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\ThirdParty\directxtex\include\WICTextureLoader.cpp">
+      <Filter>ThirdParty\directTex</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\ThirdParty\imgui\imgui_tables.cpp">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\ThirdParty\imgui\imgui_widgets.cpp">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\ThirdParty\imgui\imgui.cpp">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\ThirdParty\imgui\imgui_demo.cpp">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\ThirdParty\imgui\imgui_draw.cpp">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\ThirdParty\imgui\imgui_impl_dx11.cpp">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\ThirdParty\imgui\imgui_impl_dx12.cpp">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\ThirdParty\imgui\imgui_impl_win32.cpp">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Window\Window.cpp">
+      <Filter>Subsytem\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Timer\Timer.cpp">
+      <Filter>Subsytem\Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Core\Engine.cpp">
+      <Filter>Subsytem\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\Renderer.cpp">
+      <Filter>Subsytem\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12Buffer.cpp">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12CommandContext.cpp">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12ConstantBuffer.cpp">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12DescriptorAllocator.cpp">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12DescriptorCache.cpp">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12DescriptorHeap.cpp">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12DeviceChild.cpp">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12Fence.cpp">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12GrahicsDevice.cpp">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12IndexBuffer.cpp">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12PipelineState.cpp">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12RenderTexture.cpp">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12RootSignature.cpp">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12Sampler.cpp">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12Shader.cpp">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12StateCache.cpp">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12Texture.cpp">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12VertexBuffer.cpp">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12View.cpp">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Core\Common\Tools\String.cpp">
+      <Filter>Subsytem\Core\Common\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Core\Context.cpp">
+      <Filter>Subsytem\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Core\ISubsystem.cpp">
+      <Filter>Subsytem\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Core\IO\FileSystem.cpp">
+      <Filter>Subsytem\Core\I/O</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Core\IO\FileStream.cpp">
+      <Filter>Subsytem\Core\I/O</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Core\Math\Matrix.cpp">
+      <Filter>Subsytem\Core\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Core\Math\Vector2.cpp">
+      <Filter>Subsytem\Core\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Core\Math\Vector3.cpp">
+      <Filter>Subsytem\Core\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Audio\Audio.cpp">
+      <Filter>Subsytem\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Audio\FMOD\FMODAudio.cpp">
+      <Filter>Subsytem\Audio\FMOD</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\JobSystem\Sync\Job.cpp">
+      <Filter>Subsytem\JobSystem\Sync</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\JobSystem\Sync\JobSystem.cpp">
+      <Filter>Subsytem\JobSystem\Sync</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\JobSystem\Async\AsyncJob.cpp">
+      <Filter>Subsytem\JobSystem\Async</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\JobSystem\Async\AsyncJobSystem.cpp">
+      <Filter>Subsytem\JobSystem\Async</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\JobSystem\Async\COM.cpp">
+      <Filter>Subsytem\JobSystem\Async</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Input\Direct\DirectInput.cpp">
+      <Filter>Subsytem\Input\Direct</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Input\Input.cpp">
+      <Filter>Subsytem\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Input\InputEvents.cpp">
+      <Filter>Subsytem\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Core\Event\EventManager.cpp">
+      <Filter>Subsytem\Core\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Log\DebugLog.cpp">
+      <Filter>Subsytem\Log</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\Forward\ForwardRenderer.cpp">
+      <Filter>Subsytem\Renderer\Forward</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\LightMap.cpp">
+      <Filter>Subsytem\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\TransformCBuffer.cpp">
+      <Filter>Subsytem\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Scene\TickFunction.cpp">
+      <Filter>Subsytem\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Scene\TickManager.cpp">
+      <Filter>Subsytem\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Scene\World.cpp">
+      <Filter>Subsytem\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Scene\GameObject.cpp">
+      <Filter>Subsytem\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Scene\Factory\ComponentFactory.cpp">
+      <Filter>Subsytem\Scene\Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Scene\Factory\GameObjectFactory.cpp">
+      <Filter>Subsytem\Scene\Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Scene\Component\IComponent.cpp">
+      <Filter>Subsytem\Scene\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Scene\Component\Transform.cpp">
+      <Filter>Subsytem\Scene\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Scene\Component\Components\AudioListener.cpp">
+      <Filter>Subsytem\Scene\Component\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Scene\Component\Components\AudioSpeaker.cpp">
+      <Filter>Subsytem\Scene\Component\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Scene\Component\Components\Camera.cpp">
+      <Filter>Subsytem\Scene\Component\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Scene\Component\Components\Light.cpp">
+      <Filter>Subsytem\Scene\Component\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Scene\Component\Components\ModelRender.cpp">
+      <Filter>Subsytem\Scene\Component\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Scene\Component\Components\RenderObject.cpp">
+      <Filter>Subsytem\Scene\Component\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Resource\Factory\ResourceFactory.cpp">
+      <Filter>Subsytem\Resource\Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Resource\ResourceManager.cpp">
+      <Filter>Subsytem\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Resource\ResourceCache.cpp">
+      <Filter>Subsytem\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Resource\Resources\IResource.cpp">
+      <Filter>Subsytem\Resource\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Resource\ResourceHandle.cpp">
+      <Filter>Subsytem\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Resource\ResourceData.cpp">
+      <Filter>Subsytem\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Resource\ResourceImporter\ModelImporter\ModelImporter.cpp">
+      <Filter>Subsytem\Resource\ResourceImporter\ModelImporter</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Resource\ResourceImporter\TextureImporter\TextureImporter.cpp">
+      <Filter>Subsytem\Resource\ResourceImporter\TextureImporter</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Resource\ResourceImporter\AudioImporter\AudioImporter.cpp">
+      <Filter>Subsytem\Resource\ResourceImporter\AudioImporter</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Core\Common\pch.cpp">
+      <Filter>Subsytem\Core\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Resource\Resources\3DModel\Shader.cpp">
+      <Filter>Subsytem\Resource\Resources\3DModel</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Resource\Resources\3DModel\Texture.cpp">
+      <Filter>Subsytem\Resource\Resources\3DModel</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Resource\Resources\3DModel\Material.cpp">
+      <Filter>Subsytem\Resource\Resources\3DModel</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Resource\Resources\3DModel\Mesh.cpp">
+      <Filter>Subsytem\Resource\Resources\3DModel</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Resource\Resources\Audio\AudioClip.cpp">
+      <Filter>Subsytem\Resource\Resources\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Resource\Resources\3DModel\Model.cpp">
+      <Filter>Subsytem\Resource\Resources\3DModel</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12StructuredBuffer.cpp">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12UnorderedAccessBuffer.cpp">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Core\Event\Event.cpp">
+      <Filter>Subsytem\Core\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Core\Event\EventListener.cpp">
+      <Filter>Subsytem\Core\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\Deferred\DeferredRenderer.cpp">
+      <Filter>Subsytem\Renderer\Deferred</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\Deferred\GBuffer.cpp">
+      <Filter>Subsytem\Renderer\Deferred</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Resource\Resources\Scene\Scene.cpp">
+      <Filter>Subsytem\Resource\Resources\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Scene\SceneEvents.cpp">
+      <Filter>Subsytem\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Resource\ResourceImporter\ShaderImporter\ShaderImporter.cpp">
+      <Filter>Subsytem\Resource\ResourceImporter\ShaderImporter</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Resource\ResourceData\ProprietaryMaterialData.cpp">
+      <Filter>Subsytem\Resource\ResourceData</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Resource\ResourceData\ProprietaryMeshData.cpp">
+      <Filter>Subsytem\Resource\ResourceData</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Resource\ResourceData\ProprietaryModelData.cpp">
+      <Filter>Subsytem\Resource\ResourceData</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Resource\ResourceData\ProprietaryShaderData.cpp">
+      <Filter>Subsytem\Resource\ResourceData</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Resource\ResourceData\ProprietaryTextureData.cpp">
+      <Filter>Subsytem\Resource\ResourceData</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Resource\ResourceData\ProprietarySceneData.cpp">
+      <Filter>Subsytem\Resource\ResourceData</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Core\Config.cpp">
+      <Filter>Subsytem\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\DragDrop.cpp">
+      <Filter>Subsytem\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\EditorHelper.cpp">
+      <Filter>Subsytem\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\EditorSystem.cpp">
+      <Filter>Subsytem\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widget.cpp">
+      <Filter>Subsytem\Editor\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsWidget.cpp">
+      <Filter>Subsytem\Editor\Widget\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\LogWidget.cpp">
+      <Filter>Subsytem\Editor\Widget\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\ProfilerWidget.cpp">
+      <Filter>Subsytem\Editor\Widget\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\ResourceWidget.cpp">
+      <Filter>Subsytem\Editor\Widget\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\SceneWidget.cpp">
+      <Filter>Subsytem\Editor\Widget\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\Factory\DetailsObjectFactory.cpp">
+      <Filter>Subsytem\Editor\Widget\Widgets\Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObject.cpp">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\GameObjectDetails.cpp">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\MaterialDetails.cpp">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ResourceDetails.cpp">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\CameraDetails.cpp">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ModelRenderDetails.cpp">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\TransformDetails.cpp">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\LightDetails.cpp">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Program\ThirdParty\FMOD\include\fmod_dsp.h">
+      <Filter>ThirdParty\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\ThirdParty\FMOD\include\fmod_dsp_effects.h">
+      <Filter>ThirdParty\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\ThirdParty\FMOD\include\fmod_errors.h">
+      <Filter>ThirdParty\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\ThirdParty\FMOD\include\fmod_output.h">
+      <Filter>ThirdParty\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\ThirdParty\FMOD\include\fmod.h">
+      <Filter>ThirdParty\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\ThirdParty\FMOD\include\fmod.hpp">
+      <Filter>ThirdParty\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\ThirdParty\FMOD\include\fmod_codec.h">
+      <Filter>ThirdParty\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\ThirdParty\FMOD\include\fmod_common.h">
+      <Filter>ThirdParty\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\ThirdParty\imgui\imgui_impl_win32.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\ThirdParty\imgui\imgui_internal.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\ThirdParty\imgui\imstb_rectpack.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\ThirdParty\imgui\imstb_textedit.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\ThirdParty\imgui\imstb_truetype.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\ThirdParty\imgui\imconfig.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\ThirdParty\imgui\imgui.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\ThirdParty\imgui\imgui_impl_dx11.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\ThirdParty\imgui\imgui_impl_dx12.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Window\Window.h">
+      <Filter>Subsytem\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Core\Engine.h">
+      <Filter>Subsytem\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\Renderer.h">
+      <Filter>Subsytem\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12Buffer.h">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12CommandContext.h">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12ConstantBuffer.h">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12DescriptorAllocator.h">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12DescriptorCache.h">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12DescriptorHeap.h">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12DeviceChild.h">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12GrahicsDevice.h">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12Helper.h">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12IndexBuffer.h">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12PipelineState.h">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12RenderTexture.h">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12RootSignature.h">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12Sampler.h">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12Shader.h">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12StateCache.h">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12Texture.h">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12VertexBuffer.h">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12View.h">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Core\Common\Typedef.h">
+      <Filter>Subsytem\Core\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Core\Common\Tools\Hash.h">
+      <Filter>Subsytem\Core\Common\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Core\Common\Tools\String.h">
+      <Filter>Subsytem\Core\Common\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Core\Common\Tools\Tools.h">
+      <Filter>Subsytem\Core\Common\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Core\Common\Tools\Memory\Memory.h">
+      <Filter>Subsytem\Core\Common\Tools\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Core\Common\Common.h">
+      <Filter>Subsytem\Core\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Core\Common\Macro.h">
+      <Filter>Subsytem\Core\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Core\Context.h">
+      <Filter>Subsytem\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Core\ISubsystem.h">
+      <Filter>Subsytem\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Core\IO\FileSystem.h">
+      <Filter>Subsytem\Core\I/O</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Core\IO\FileStream.h">
+      <Filter>Subsytem\Core\I/O</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Core\Math\Vector3.h">
+      <Filter>Subsytem\Core\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Core\Math\Vector3T.h">
+      <Filter>Subsytem\Core\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Core\Math\Vector4.h">
+      <Filter>Subsytem\Core\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Core\Math\Vector4T.h">
+      <Filter>Subsytem\Core\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Core\Math\MathHelper.h">
+      <Filter>Subsytem\Core\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Core\Math\Matrix.h">
+      <Filter>Subsytem\Core\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Core\Math\Vector2.h">
+      <Filter>Subsytem\Core\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Core\Math\Vector2T.h">
+      <Filter>Subsytem\Core\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Audio\Audio.h">
+      <Filter>Subsytem\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Audio\AudioHelper.h">
+      <Filter>Subsytem\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Audio\FMOD\FMODAudio.h">
+      <Filter>Subsytem\Audio\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\JobSystem\Sync\Job.h">
+      <Filter>Subsytem\JobSystem\Sync</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\JobSystem\Sync\JobHelper.h">
+      <Filter>Subsytem\JobSystem\Sync</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\JobSystem\Sync\JobSystem.h">
+      <Filter>Subsytem\JobSystem\Sync</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\JobSystem\Async\AsyncJob.h">
+      <Filter>Subsytem\JobSystem\Async</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\JobSystem\Async\AsyncJobSystem.h">
+      <Filter>Subsytem\JobSystem\Async</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\JobSystem\Async\COM.h">
+      <Filter>Subsytem\JobSystem\Async</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Input\Direct\DirectInput.h">
+      <Filter>Subsytem\Input\Direct</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Input\Input.h">
+      <Filter>Subsytem\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Input\InputEvents.h">
+      <Filter>Subsytem\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Input\InputHelper.h">
+      <Filter>Subsytem\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Core\Event\Event.h">
+      <Filter>Subsytem\Core\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Core\Event\EventListener.h">
+      <Filter>Subsytem\Core\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Core\Event\EventManager.h">
+      <Filter>Subsytem\Core\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Log\DebugLog.h">
+      <Filter>Subsytem\Log</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Core\Common\ProjectSetting.h">
+      <Filter>Subsytem\Core\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Timer\Stopwatch.h">
+      <Filter>Subsytem\Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\Forward\ForwardRenderer.h">
+      <Filter>Subsytem\Renderer\Forward</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\LightMap.h">
+      <Filter>Subsytem\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\TransformCBuffer.h">
+      <Filter>Subsytem\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Scene\TickFunction.h">
+      <Filter>Subsytem\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Scene\TickManager.h">
+      <Filter>Subsytem\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Scene\World.h">
+      <Filter>Subsytem\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Scene\GameObject.h">
+      <Filter>Subsytem\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Scene\Factory\ComponentFactory.h">
+      <Filter>Subsytem\Scene\Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Scene\Factory\GameObjectFactory.h">
+      <Filter>Subsytem\Scene\Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Scene\Component\Transform.h">
+      <Filter>Subsytem\Scene\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Scene\Component\IComponent.h">
+      <Filter>Subsytem\Scene\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Scene\Component\Components\AudioListener.h">
+      <Filter>Subsytem\Scene\Component\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Scene\Component\Components\AudioSpeaker.h">
+      <Filter>Subsytem\Scene\Component\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Scene\Component\Components\Camera.h">
+      <Filter>Subsytem\Scene\Component\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Scene\Component\Components\Light.h">
+      <Filter>Subsytem\Scene\Component\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Scene\Component\Components\RenderObject.h">
+      <Filter>Subsytem\Scene\Component\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Resource\Factory\ResourceFactory.h">
+      <Filter>Subsytem\Resource\Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Resource\ResourceManager.h">
+      <Filter>Subsytem\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Resource\ResourceCache.h">
+      <Filter>Subsytem\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Resource\Resources\IResource.h">
+      <Filter>Subsytem\Resource\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Resource\ResourceHandle.h">
+      <Filter>Subsytem\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Resource\ResourceData.h">
+      <Filter>Subsytem\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Resource\ResourceImporter\ModelImporter\ModelImporter.h">
+      <Filter>Subsytem\Resource\ResourceImporter\ModelImporter</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Resource\ResourceImporter\TextureImporter\TextureImporter.h">
+      <Filter>Subsytem\Resource\ResourceImporter\TextureImporter</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\Geometry\Vertex.h">
+      <Filter>Subsytem\Renderer\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Resource\ResourceImporter\AudioImporter\AudioImporter.h">
+      <Filter>Subsytem\Resource\ResourceImporter\AudioImporter</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Core\Common\pch.h">
+      <Filter>Subsytem\Core\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Resource\Resources\3DModel\Shader.h">
+      <Filter>Subsytem\Resource\Resources\3DModel</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Resource\Resources\3DModel\Texture.h">
+      <Filter>Subsytem\Resource\Resources\3DModel</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Resource\Resources\3DModel\Material.h">
+      <Filter>Subsytem\Resource\Resources\3DModel</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Resource\Resources\3DModel\Mesh.h">
+      <Filter>Subsytem\Resource\Resources\3DModel</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Resource\Resources\Audio\AudioClip.h">
+      <Filter>Subsytem\Resource\Resources\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Resource\Resources\3DModel\Model.h">
+      <Filter>Subsytem\Resource\Resources\3DModel</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Resource\ResourceImporter\ModelImporter\PMDHelper.h">
+      <Filter>Subsytem\Resource\ResourceImporter\ModelImporter</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12StructuredBuffer.h">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12UnorderedAccessBuffer.h">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Timer\Timer.h">
+      <Filter>Subsytem\Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Core\Common\Tools\Array.h">
+      <Filter>Subsytem\Core\Common\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\Deferred\DeferredRenderer.h">
+      <Filter>Subsytem\Renderer\Deferred</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\Deferred\GBuffer.h">
+      <Filter>Subsytem\Renderer\Deferred</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\Geometry\Quad.h">
+      <Filter>Subsytem\Renderer\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\Geometry\TriangleList.h">
+      <Filter>Subsytem\Renderer\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Resource\Resources\Scene\Scene.h">
+      <Filter>Subsytem\Resource\Resources\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Scene\SceneEvents.h">
+      <Filter>Subsytem\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Resource\ResourceImporter\ShaderImporter\ShaderImporter.h">
+      <Filter>Subsytem\Resource\ResourceImporter\ShaderImporter</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Resource\ResourceData\ProprietaryTextureData.h">
+      <Filter>Subsytem\Resource\ResourceData</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Resource\ResourceData\ProprietaryData.h">
+      <Filter>Subsytem\Resource\ResourceData</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Resource\ResourceData\ProprietaryMaterialData.h">
+      <Filter>Subsytem\Resource\ResourceData</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Resource\ResourceData\ProprietaryMeshData.h">
+      <Filter>Subsytem\Resource\ResourceData</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Resource\ResourceData\ProprietaryModelData.h">
+      <Filter>Subsytem\Resource\ResourceData</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Resource\ResourceData\ProprietaryShaderData.h">
+      <Filter>Subsytem\Resource\ResourceData</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Resource\ResourceData\ProprietarySceneData.h">
+      <Filter>Subsytem\Resource\ResourceData</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Core\Config.h">
+      <Filter>Subsytem\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\DragDrop.h">
+      <Filter>Subsytem\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\EditorHelper.h">
+      <Filter>Subsytem\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\EditorSystem.h">
+      <Filter>Subsytem\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widget.h">
+      <Filter>Subsytem\Editor\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsWidget.h">
+      <Filter>Subsytem\Editor\Widget\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\LogWidget.h">
+      <Filter>Subsytem\Editor\Widget\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\ProfilerWidget.h">
+      <Filter>Subsytem\Editor\Widget\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\ResourceWidget.h">
+      <Filter>Subsytem\Editor\Widget\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\SceneWidget.h">
+      <Filter>Subsytem\Editor\Widget\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\Factory\DetailsObjectFactory.h">
+      <Filter>Subsytem\Editor\Widget\Widgets\Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObject.h">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\GameObjectDetails.h">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\MaterialDetails.h">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ResourceDetails.h">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\CameraDetails.h">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ModelRenderDetails.h">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\TransformDetails.h">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\LightDetails.h">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Program\ThirdParty\FMOD\include\fmod_errors.cs">
+      <Filter>ThirdParty\FMOD</Filter>
+    </None>
+    <None Include="Program\ThirdParty\FMOD\include\fmod.cs">
+      <Filter>ThirdParty\FMOD</Filter>
+    </None>
+    <None Include="Program\ThirdParty\FMOD\include\fmod_dsp.cs">
+      <Filter>ThirdParty\FMOD</Filter>
+    </None>
+  </ItemGroup>
+</Project>
