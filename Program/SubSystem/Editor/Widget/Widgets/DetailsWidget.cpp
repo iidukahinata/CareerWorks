@@ -11,6 +11,7 @@
 #include "SubSystem/Scene/World.h"
 #include "SubSystem/Resource/ResourceManager.h"
 
+bool							 DetailsWidget::m_requestUpdate		 = false;
 GameObject*						 DetailsWidget::m_selectGameObject	 = nullptr;
 ResourceData*					 DetailsWidget::m_selectResourceData = nullptr;
 DetailsWidget*					 DetailsWidget::m_detailsWidget		 = nullptr;
@@ -36,10 +37,24 @@ void DetailsWidget::Draw()
 
 	for (auto& detailsObject : m_detailsObjects)
 	{
+
 		detailsObject->Draw();
 	}
 
+	// details 描画中での変更が行えないため安全な時間を作成
+	if (m_requestUpdate) 
+	{
+		if (m_selectGameObject)	  SelectGameObject(m_selectGameObject);
+		if (m_selectResourceData) SelectResource(m_selectResourceData);
+		m_requestUpdate = false;
+	}
+
 	ImGui::End();
+}
+
+void DetailsWidget::RequestUpdate() noexcept
+{
+	m_requestUpdate = true;
 }
 
 World* DetailsWidget::GetWorld() const noexcept
@@ -59,17 +74,24 @@ void DetailsWidget::SelectGameObject(GameObject* gameObject) noexcept
 		return;
 	}
 
-	// 元に戻す処理時に DetailsObjects が生成出来ないため
-	if (m_selectGameObject)
+	if (!m_requestUpdate)
 	{
-		RegisterEditorCommand([](auto data) { SelectGameObjectInternal(data); }, gameObject, m_selectGameObject);
-	}
-	else
-	{
-		SelectGameObjectInternal(gameObject);
+		if (m_selectGameObject == gameObject)
+		{
+			return;
+		}
 	}
 
+	// 元に戻す処理時に DetailsObjects が生成出来ないため
+	if (m_selectResourceData)
+	{
+		RegisterEditorCommand([](auto data) { SelectResourceInternal(data); }, (ResourceData*)(0), m_selectResourceData);
+	}
+
+	RegisterEditorCommand([](auto data) { SelectGameObjectInternal(data); }, gameObject, m_selectGameObject);
+
 	m_selectGameObject = gameObject;
+	m_selectResourceData = nullptr;
 }
 
 void DetailsWidget::SelectResource(ResourceData* resourceData) noexcept
@@ -79,17 +101,24 @@ void DetailsWidget::SelectResource(ResourceData* resourceData) noexcept
 		return;
 	}
 
-	// 元に戻す処理時に DetailsObjects が生成出来ないため
-	if (m_selectResourceData)
+	if (!m_requestUpdate)
 	{
-		RegisterEditorCommand([](auto data) { SelectResourceInternal(data); }, resourceData, m_selectResourceData);
-	}
-	else
-	{
-		SelectResourceInternal(resourceData);
+		if (m_selectResourceData == resourceData)
+		{
+			return;
+		}
 	}
 
+	// 元に戻す処理時に DetailsObjects が生成出来ないため
+	if (m_selectGameObject)
+	{
+		RegisterEditorCommand([](auto data) { SelectGameObjectInternal(data); }, (GameObject*)(0), m_selectGameObject);
+	}
+
+	RegisterEditorCommand([](auto data) { SelectResourceInternal(data); }, resourceData, m_selectResourceData);
+
 	m_selectResourceData = resourceData;
+	m_selectGameObject = nullptr;
 }
 
 void DetailsWidget::ClearSelectObject() noexcept
@@ -103,10 +132,16 @@ void DetailsWidget::ClearSelectObject() noexcept
 
 void DetailsWidget::SelectGameObjectInternal(GameObject* gameObject) noexcept
 {
-	m_detailsObjects = DetailsObjectFactory::Create(m_detailsWidget, gameObject);
+	if (gameObject)
+	{
+		m_detailsObjects = DetailsObjectFactory::Create(m_detailsWidget, gameObject);
+	}
 }
 
 void DetailsWidget::SelectResourceInternal(ResourceData* resourceData) noexcept
 {
-	m_detailsObjects = DetailsObjectFactory::Create(m_detailsWidget, resourceData);
+	if (resourceData)
+	{
+		m_detailsObjects = DetailsObjectFactory::Create(m_detailsWidget, resourceData);
+	}
 }

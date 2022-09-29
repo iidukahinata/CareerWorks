@@ -44,6 +44,7 @@ CLASS(const CLASS&) = delete;			\
 CLASS& operator=(const CLASS&) = delete;
 
 #define CLASS_DATA(CLASS) \
+public: \
 static INLINE ClassTypeData TypeData = ClassTypeData(#CLASS, GET_HASH(CLASS));
 
 #define SUPER_CLASS(CLASS)						\

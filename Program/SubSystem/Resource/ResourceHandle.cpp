@@ -2,7 +2,7 @@
 * @file    ResourceHandle.cpp
 * @brief
 *
-* @date	   2022/09/08 2022年度初版
+* @date	   2022/09/26 2022年度初版
 */
 
 
@@ -14,14 +14,19 @@ bool ResourceHandle::IsValid() const noexcept
     return m_isCompleteLoad.load();
 }
 
-IResource* ResourceHandle::GetResource() noexcept
+uint32_t ResourceHandle::GetPriority() const noexcept
+{
+    return m_priority;
+}
+
+IResource* ResourceHandle::GetResource() const noexcept
 {
     ASSERT(IsValid());
 
     return m_resourceManager->GetResource(m_resourceData);
 }
 
-void ResourceHandle::WaitForLoadComplete() noexcept
+void ResourceHandle::WaitForLoadComplete() const noexcept
 {
     while (!IsValid())
     {

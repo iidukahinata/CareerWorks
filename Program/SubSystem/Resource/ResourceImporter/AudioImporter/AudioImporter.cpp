@@ -25,5 +25,5 @@ bool AudioImporter::CreateShaderData(StringView filePath) noexcept
 
 String AudioImporter::ConvertProprietaryPath(StringView filePath) noexcept
 {
-	return AUDIO_DIRECTORY + FileSystem::GetFilePath(filePath);
+	return String(filePath);
 }

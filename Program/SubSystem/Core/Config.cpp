@@ -16,6 +16,7 @@
 #include "SubSystem/Input/Direct/DirectInput.h"
 #include "SubSystem/Resource/ResourceManager.h"
 #include "SubSystem/Renderer/Forward/ForwardRenderer.h"
+#include "SubSystem/Renderer/Deferred/DeferredRenderer.h"
 
 extern Context* g_context;
 

@@ -24,6 +24,9 @@ public:
 	void PostInitialize() override;
 	void Draw() override;
 
+	/** 表示 DetailsObject の追加などを行う場合に使用 */
+	void RequestUpdate() noexcept;
+
 	World* GetWorld() const noexcept;
 	ResourceManager* GetResourceManager() const noexcept;
 
@@ -47,6 +50,8 @@ private:
 	World* m_world;
 
 	ResourceManager* m_resourceManager;
+
+	static bool m_requestUpdate;
 
 	static GameObject* m_selectGameObject;
 

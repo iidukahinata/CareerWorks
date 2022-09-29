@@ -17,7 +17,10 @@ public:
 	bool Create(UINT numDescriptors, D3D12_DESCRIPTOR_HEAP_TYPE type) noexcept;
 	void Set() noexcept;
 
+	void Release() noexcept;
+
 	/** アクセス */
+	UINT GetIncrementSize() const noexcept { return m_incrementSize; }
 	ID3D12DescriptorHeap* GetHeap() const noexcept { return m_descriptHeap.Get(); }
 	D3D12_CPU_DESCRIPTOR_HANDLE	GetCPUHandle() const noexcept { return m_cpuHandle; }
 	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle() const noexcept { return m_gpuHandle; }

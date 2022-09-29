@@ -36,3 +36,8 @@ void D3D12DescriptorHeap::Set() noexcept
 {
 	GetCommandContext()->SetDescriptorHeap(this);
 }
+
+void D3D12DescriptorHeap::Release() noexcept
+{
+	m_descriptHeap.Reset();
+}

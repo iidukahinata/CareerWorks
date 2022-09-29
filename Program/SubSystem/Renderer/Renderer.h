@@ -45,6 +45,7 @@ public:
 	/** Post Process Effect ÉÅÉ\ÉbÉh */
 	void RegisterPostProcess(PostProcessEffect* postProcess) noexcept;
 	void OnRegisterPostProcess(PostProcessEffect* postProcess) noexcept;
+	bool HasPostProcessSetting() noexcept;
 
 	TransformCBuffer* GetTransformCBuffer() const noexcept { return m_transformCBuffer.get(); }
 

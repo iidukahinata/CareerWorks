@@ -8,7 +8,7 @@
 
 #include "D3D12PipelineState.h"
 #include "D3D12Shader.h"
-#include "D3D12GrahicsDevice.h"
+#include "D3D12GraphicsDevice.h"
 
 bool D3D12GraphicsPipelineState::Create(const GraphicsPipelineStateDesc& desc, D3D12RootSignature* rootSignature) noexcept
 {
@@ -76,13 +76,13 @@ bool D3D12GraphicsPipelineState::Create(const GraphicsPipelineStateDesc& desc, D
 
 		case BLEND_MODE_ALPHA:
 			blendDesc.BlendEnable = true;
-			blendDesc.DestBlendAlpha = D3D12_BLEND_INV_SRC_ALPHA;
+			blendDesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
 			break;
 
 		case BLEND_MODE_ADD:
 			blendDesc.BlendEnable = true;
 			blendDesc.SrcBlend = D3D12_BLEND_ONE;
-			blendDesc.DestBlendAlpha = D3D12_BLEND_ONE;
+			blendDesc.DestBlend = D3D12_BLEND_ONE;
 			break;
 
 		case BLEND_MODE_ADD_ALPHA:
@@ -111,7 +111,8 @@ bool D3D12GraphicsPipelineState::Create(const GraphicsPipelineStateDesc& desc, D
 		default: break;
 		}
 
-		for (UINT i = 0; i < D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT; ++i) {
+		for (UINT i = 0; i < D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT; ++i) 
+		{
 			gpipeline.BlendState.RenderTarget[i] = blendDesc;
 		}
 	}
@@ -153,7 +154,7 @@ bool D3D12GraphicsPipelineState::Create(const GraphicsPipelineStateDesc& desc, D
 	// render target
 	gpipeline.NumRenderTargets = desc.NumRenderTargets;
 	for (UINT i = 0; i < 8; i++) {
-		gpipeline.RTVFormats[0] = desc.RTVForamt[0];
+		gpipeline.RTVFormats[i] = desc.RTVForamt[i];
 	}
 
 	// sample

@@ -2,7 +2,7 @@
 * @file    Material.h
 * @brief
 *
-* @date	   2022/09/06 2022年度初版
+* @date	   2022/09/24 2022年度初版
 */
 #pragma once
 
@@ -35,6 +35,7 @@ public:
 	/** asset ファイルと独自データの作成を行う */
 	static Material* Create(StringView name, const ProprietaryMaterialData& data = ProprietaryMaterialData()) noexcept;
 
+	/** 独自データ読み込み及び、各パラメータのセットアップを行う */
 	bool Load(StringView path) override;
 
 	/** 主にEditer上で使用される asset や独自データの更新処理 */
@@ -45,34 +46,29 @@ public:
 	/** パラメーター */
 	void SetBlendMode(BLEND_MODE mode) noexcept;
 	BLEND_MODE GetBlendMode() const noexcept;
+	bool IsTranslucent() const noexcept;
 	void SetRasterizerState(RASTERIZER_STATE mode) noexcept;
 	RASTERIZER_STATE GetRasterizerState() const noexcept;
-	void SetShader(ShaderType type, StringView name, bool createPipeline = true) noexcept;
+	bool SetShader(ShaderType type, StringView path, bool createPipeline = true) noexcept;
+	const Array<String, ShaderType::NumAllType>& GetShaderPaths() const noexcept;
 	void SetTexture(StringView pramName, Texture* texture, bool isDefineToShader = false) noexcept;
 	const Unordered_Map<String, TexturePramInfo>& GetTextures() const noexcept;
-	void SetDiffuse(const Math::Vector3& diffuse) noexcept;
-	const Math::Vector3& GetDiffuse() const noexcept;
-	void SetSpecular(const Math::Vector3& specular) noexcept;
-	const Math::Vector3 GetSpecular() const noexcept;
-	void SetSpecularPower(float specularPower) noexcept;
-	float GetSpecularPower() noexcept;
-	void SetAmbient(const Math::Vector3& ambient) noexcept;
-	const Math::Vector3& GetAmbient() const noexcept;
-	void SetEmissive(const Math::Vector3& emissive) noexcept;
-	const Math::Vector3 GetEmissive() const noexcept;
-
-	bool IsTranslucent() const noexcept;
+	void SetAlbedo(const Math::Vector3& albedo) noexcept;
+	const Math::Vector3& GetAlbedo() const noexcept;
+	void SetMetallic(float metallic) noexcept;
+	float GetMetallic() const noexcept;
+	void SetSmooth(float smooth) noexcept;
+	float GetSmooth() noexcept;
+	void SetEmission(const Math::Vector3& emissive) noexcept;
+	const Math::Vector3 GetEmission() const noexcept;
 
 private:
 
 	/** マテリアル設定の Define をシェーダーに定義 */
-	void DefineSettingToShader() noexcept;
+	bool DefineSettingToPixelShader(StringView path = StringView()) noexcept;
 
 	/** セットされたシェーダファイルから各パラメーター取得 */
 	void ParametricAnalysis(bool isClear = true) noexcept;
-
-	/** 2022/08/24時点では決められたサンプラーを複数生成している */
-	bool CreateSampler() noexcept;
 
 	/** 汎用的な生成にしているためコードの改変の必要はない */
 	bool CreateRootSinature() noexcept;
@@ -84,7 +80,7 @@ private:
 	bool CreateConstantBuffer() noexcept;
 
 	/** 設定中のシェーダーコンパイルを行う。*/
-	void CompileShader() noexcept;
+	bool CompileShader() noexcept;
 
 	/** GPU側のマテリアル設定の更新を行う */
 	void UpdateConstantBufferData() noexcept;
@@ -97,21 +93,20 @@ private:
 	ProprietaryMaterialData m_materialData;
 
 	// * パラメーター名からテクスチャの切り替えが出来るように Map を使用
-	Unordered_Map<String, TexturePramInfo> m_textures;
+	Unordered_Map<String, TexturePramInfo> m_textureInfos;
 
 	Shader m_shader;
 
-	Vector<D3D12Sampler> m_samplers;
-	D3D12GraphicsPipelineState m_pipeline;
+	Map<UINT, D3D12Sampler> m_samplers;
 	D3D12RootSignature m_rootSignature;
+	D3D12GraphicsPipelineState m_pipeline;
 
 	struct ConstantBufferMaterial
 	{
-		Math::Vector3 diffuse;
-		float alpha;
-		Math::Vector3 specular;
-		float specularPower;
-		Math::Vector3 ambient;
+		Math::Vector3 albedo;
+		float metallic;
+		float smooth;
+		Math::Vector3 emission;
 	};
 
 	D3D12ConstantBuffer m_constantBufferMaterial;

@@ -1,14 +1,14 @@
 /**
-* @file    D3D12GrahicsDevice.cpp
+* @file    D3D12GraphicsDevice.cpp
 * @brief
 *
 * @date	   2022/08/02 2022年度初版
 */
 
 
-#include "D3D12GrahicsDevice.h"
+#include "D3D12GraphicsDevice.h"
 
-bool D3D12GrahicsDevice::Init(HWND hwnd, UINT screenWidth, UINT screenHeight, bool isFullscreen)
+bool D3D12GraphicsDevice::Init(HWND hwnd, UINT screenWidth, UINT screenHeight, bool isFullscreen)
 {
 #ifdef _DEBUG
 	Microsoft::WRL::ComPtr<ID3D12Debug> debugLayer = nullptr;
@@ -91,33 +91,16 @@ bool D3D12GrahicsDevice::Init(HWND hwnd, UINT screenWidth, UINT screenHeight, bo
 	return true;
 }
 
-void D3D12GrahicsDevice::BegineFrame()
+void D3D12GraphicsDevice::BegineFrame()
 {
-	m_context.BegineFream();
-
-	// バックバッファのインデックスを取得
-	auto bbIdx = m_swapchain->GetCurrentBackBufferIndex();
-	ResourceBarrier(m_renderTargets[bbIdx], D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
-
-	D3D12RenderTargetView* renderTarges[] = {
-		&m_renderTargetViews[bbIdx]
-	};
-
-	// レンダーターゲットを指定
-	// 深度を指定
-	m_context.SetRenderTargets(1, renderTarges, &m_depthStencilView);
-
-	// 画面クリア
-	float clearColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-	m_context.ClearRenderTargetView(&m_renderTargetViews[bbIdx], clearColor, 0, nullptr);
-	m_context.ClearDepthStencilView(&m_depthStencilView, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+	m_context.BeginFrame();
 
 	// ビューポート、シザー矩形のセット
 	m_context.SetViewPorts(1, &m_viewport);
 	m_context.SetScissorRects(1, &m_scissorRect);
 }
 
-void D3D12GrahicsDevice::EndFrame()
+void D3D12GraphicsDevice::EndFrame()
 {
 	auto bbIdx = m_swapchain->GetCurrentBackBufferIndex();
 	ResourceBarrier(m_renderTargets[bbIdx], D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
@@ -129,12 +112,31 @@ void D3D12GrahicsDevice::EndFrame()
 	m_context.Clear();
 }
 
-void D3D12GrahicsDevice::Present()
+void D3D12GraphicsDevice::Present()
 {
 	m_swapchain->Present(1, 0);
 }
 
-void D3D12GrahicsDevice::SetViewport(float width, float height)
+void D3D12GraphicsDevice::SetRenderTarget()
+{
+	// バックバッファのインデックスを取得
+	auto bbIdx = m_swapchain->GetCurrentBackBufferIndex();
+	ResourceBarrier(m_renderTargets[bbIdx], D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+
+	D3D12RenderTargetView* renderTarges[] = {
+		&m_renderTargetViews[bbIdx]
+	};
+
+	// レンダーターゲットを指定
+	m_context.SetRenderTargets(1, renderTarges, &m_depthStencilView);
+
+	// 画面クリア
+	float clearColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	m_context.ClearRenderTargetView(&m_renderTargetViews[bbIdx], clearColor, 0, nullptr);
+	m_context.ClearDepthStencilView(&m_depthStencilView, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+}
+
+void D3D12GraphicsDevice::SetViewport(float width, float height)
 {
 	D3D12_VIEWPORT viewport = {};
 	viewport.TopLeftX = 0;
@@ -146,7 +148,7 @@ void D3D12GrahicsDevice::SetViewport(float width, float height)
 	m_context.SetViewPorts(1, &viewport);
 }
 
-void D3D12GrahicsDevice::SetScissorRect(float width, float height)
+void D3D12GraphicsDevice::SetScissorRect(float width, float height)
 {
 	D3D12_RECT rect;
 	rect.bottom = static_cast<LONG>(height);
@@ -156,13 +158,13 @@ void D3D12GrahicsDevice::SetScissorRect(float width, float height)
 	m_context.SetScissorRects(1, &rect);
 }
 
-void D3D12GrahicsDevice::ResourceBarrier(ID3D12Resource* const pResource, D3D12_RESOURCE_STATES beforeState, D3D12_RESOURCE_STATES afterState)
+void D3D12GraphicsDevice::ResourceBarrier(ID3D12Resource* const pResource, D3D12_RESOURCE_STATES beforeState, D3D12_RESOURCE_STATES afterState)
 {
 	auto transition = CD3DX12_RESOURCE_BARRIER::Transition(pResource, beforeState, afterState);
 	m_context.GetCommandList()->ResourceBarrier(1, &transition);
 }
 
-void D3D12GrahicsDevice::WaitForGpuTask()
+void D3D12GraphicsDevice::WaitForGpuTask()
 {
 	// 待ち
 	m_context.Signal(m_fence.Get(), m_fence.m_fenceValue);
@@ -170,7 +172,7 @@ void D3D12GrahicsDevice::WaitForGpuTask()
 	m_fence.WaitForSingleToFinish();
 }
 
-bool D3D12GrahicsDevice::InitDevice()
+bool D3D12GraphicsDevice::InitDevice()
 {
 	// 機能レベル
 	D3D_FEATURE_LEVEL levels[] = {
@@ -212,7 +214,7 @@ bool D3D12GrahicsDevice::InitDevice()
 	return true;
 }
 
-bool D3D12GrahicsDevice::CreateSwapChain(const HWND hwnd, UINT screenWidth, UINT screenHeight, UINT bufferCount)
+bool D3D12GraphicsDevice::CreateSwapChain(const HWND hwnd, UINT screenWidth, UINT screenHeight, UINT bufferCount)
 {
 	DXGI_SWAP_CHAIN_DESC1 swapchainDesc = {};
 	swapchainDesc.Width = screenWidth;
@@ -243,7 +245,7 @@ bool D3D12GrahicsDevice::CreateSwapChain(const HWND hwnd, UINT screenWidth, UINT
 	return true;
 }
 
-bool D3D12GrahicsDevice::CreateBackBuffer()
+bool D3D12GraphicsDevice::CreateBackBuffer()
 {
 	DXGI_SWAP_CHAIN_DESC swcDesc = {};
 	auto hr = m_swapchain->GetDesc(&swcDesc);
@@ -263,7 +265,7 @@ bool D3D12GrahicsDevice::CreateBackBuffer()
 	return true;
 }
 
-bool D3D12GrahicsDevice::CreateDepthStencil()
+bool D3D12GraphicsDevice::CreateDepthStencil()
 {
 	DXGI_SWAP_CHAIN_DESC1 desc = {};
 	auto hr = m_swapchain->GetDesc1(&desc);
@@ -305,7 +307,7 @@ bool D3D12GrahicsDevice::CreateDepthStencil()
 	return true;
 }
 
-Vector<IDXGIAdapter*> D3D12GrahicsDevice::GetAvailableAdapters()
+Vector<IDXGIAdapter*> D3D12GraphicsDevice::GetAvailableAdapters()
 {
 	Vector <IDXGIAdapter*> adapters;
 	IDXGIAdapter* adapter = nullptr;
@@ -316,7 +318,7 @@ Vector<IDXGIAdapter*> D3D12GrahicsDevice::GetAvailableAdapters()
 	return adapters;
 }
 
-IDXGIAdapter* D3D12GrahicsDevice::GetAdapterByName(WstringView name)
+IDXGIAdapter* D3D12GraphicsDevice::GetAdapterByName(WstringView name)
 {
 	Vector<IDXGIAdapter*> adapters = GetAvailableAdapters();
 
@@ -333,7 +335,7 @@ IDXGIAdapter* D3D12GrahicsDevice::GetAdapterByName(WstringView name)
 	return nullptr;
 }
 
-IDXGIAdapter* D3D12GrahicsDevice::GetAdapterWithTheHighestVRAM()
+IDXGIAdapter* D3D12GraphicsDevice::GetAdapterWithTheHighestVRAM()
 {
 	auto adapters = GetAvailableAdapters();
 

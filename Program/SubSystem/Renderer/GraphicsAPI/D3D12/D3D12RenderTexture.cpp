@@ -7,7 +7,7 @@
 
 
 #include "D3D12RenderTexture.h"
-#include "D3D12GrahicsDevice.h"
+#include "D3D12GraphicsDevice.h"
 
 bool D3D12RenderTexture::Create(int width, int height, DXGI_FORMAT colorFormat, DXGI_FORMAT depthFormat) noexcept
 {
@@ -17,20 +17,34 @@ bool D3D12RenderTexture::Create(int width, int height, DXGI_FORMAT colorFormat, 
 	if (!CreateDepthStencil(width, height, depthFormat))
 		return false;
 
-	m_renderTargetView.Create(m_renderTarget.Get(), m_renderTarget.Get()->GetDesc().Format);
+	m_shaderResourceView.Create(m_renderTarget.Get(), m_renderTarget->GetDesc());
+	m_renderTargetView.Create(m_renderTarget.Get(), m_renderTarget->GetDesc().Format);
 	m_depthStencilView.Create(m_depthStencil.Get());
 
 	return true;
 }
 
+void D3D12RenderTexture::WaitUntilToAvailable()
+{
+	auto transition = CD3DX12_RESOURCE_BARRIER::Transition(m_renderTarget.Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+	GetCommandContext()->GetCommandList()->ResourceBarrier(1, &transition);
+}
+
 void D3D12RenderTexture::SetRenderTarget() noexcept
 {
+	WaitUntilToAvailable();
+
 	D3D12RenderTargetView* renderTargets[] = {
 		&m_renderTargetView
 	};
 
 	GetCommandContext()->SetRenderTargets(1, renderTargets, &m_depthStencilView);
 	GetCommandContext()->SetViewPorts(1, &m_viewport);
+}
+
+void D3D12RenderTexture::PSSet(UINT slot) noexcept
+{
+	GetCommandContext()->SetShaderResource(PixelShader, slot, &m_shaderResourceView);
 }
 
 void D3D12RenderTexture::Clear(const Math::Vector4& color) noexcept
@@ -73,6 +87,7 @@ bool D3D12RenderTexture::CreateRenderTarget(int width, int height, DXGI_FORMAT c
 	rtvClearValue.Color[3] = 1.f;
 
 	auto heapProperties = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
+
 	auto hr = GetDevice()->CreateCommittedResource(
 		&heapProperties,
 		D3D12_HEAP_FLAG_NONE,

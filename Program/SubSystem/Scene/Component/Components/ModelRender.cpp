@@ -73,6 +73,7 @@ void ModelRender::Render() const
 		// •`‰æŽžŽg—p‚·‚é Worlds—ñ
 		auto&& transform = GetTransform().GetWorldMatrix();
 		m_renderer->GetTransformCBuffer()->SetWorld(transform.ToMatrixXM());
+		m_renderer->GetTransformCBuffer()->Bind();
 
 		for (const auto& meshes = m_model->GetAllMeshes(); auto mesh : meshes)
 		{

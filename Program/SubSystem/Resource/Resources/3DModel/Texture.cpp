@@ -25,7 +25,7 @@ void Texture::Update()
 
 void* Texture::GetData() noexcept
 {
-	return static_cast<void*>(&m_texture.GetView());
+	return &m_texture.GetView();
 }
 
 void Texture::PSSet(UINT slot) noexcept

@@ -19,8 +19,12 @@ public:
 		DXGI_FORMAT colorFormat = DXGI_FORMAT_R8G8B8A8_UNORM,
 		DXGI_FORMAT depthFormat = DXGI_FORMAT_D32_FLOAT) noexcept;
 
+	/** SetRenderTarget する前に確認するため */
+	void WaitUntilToAvailable();
+
 	/** デバイス設定するための関数です。*/
 	void SetRenderTarget() noexcept;
+	void PSSet(UINT slot) noexcept;
 
 	/** 全ての要素を指定カラーに設定 */
 	void Clear(const Math::Vector4& color) noexcept;
@@ -39,6 +43,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> m_renderTarget;
 	Microsoft::WRL::ComPtr<ID3D12Resource> m_depthStencil;
 	
+	D3D12ShaderResourceView m_shaderResourceView;
 	D3D12RenderTargetView m_renderTargetView;
 	D3D12DepthStencilView m_depthStencilView;
 

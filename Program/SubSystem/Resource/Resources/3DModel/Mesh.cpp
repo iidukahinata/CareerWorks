@@ -9,7 +9,7 @@
 #include "Mesh.h"
 #include "Material.h"
 #include "SubSystem/Resource/ResourceManager.h"
-#include "SubSystem/Renderer/GraphicsAPI/D3D12/D3D12GrahicsDevice.h"
+#include "SubSystem/Renderer/GraphicsAPI/D3D12/D3D12GraphicsDevice.h"
 
 bool Mesh::Load(StringView path)
 {
@@ -59,7 +59,7 @@ void Mesh::Render() noexcept
 	m_vertexBuffer.IASet();
 	m_indexBuffer.IASet();
 
-	D3D12GrahicsDevice::Get().GetCommandContext().DrawIndexedInstanced(m_meshData.m_indices.size(), 1, 0, 0, 0);
+	D3D12GraphicsDevice::Get().GetCommandContext().DrawIndexedInstanced(m_meshData.m_indices.size(), 1, 0, 0, 0);
 }
 
 void Mesh::SetMaterial(Material* material) noexcept

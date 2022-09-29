@@ -12,13 +12,13 @@ String GetEntryPointFromShaderType(ShaderType type)
 {
 	switch (type)
 	{
-	case VertexShader: return "vs_main";
-	case PixelShader: return "ps_main";
+	case VertexShader  : return "vs_main";
+	case PixelShader   : return "ps_main";
 	case GeometryShader: return "gs_main";
-	case HullShader: return "hs_main";
-	case DomainShader: return "ds_main";
-	case ComputeShader: return "cs_main";
-	default: return String();
+	case HullShader	   : return "hs_main";
+	case DomainShader  : return "ds_main";
+	case ComputeShader : return "cs_main";
+	default			   : return String();
 	}
 }
 
@@ -26,13 +26,13 @@ String GetTargetFromShaderType(ShaderType type)
 {
 	switch (type)
 	{
-	case VertexShader: return "vs_5_0";
-	case PixelShader: return "ps_5_0";
+	case VertexShader  : return "vs_5_0";
+	case PixelShader   : return "ps_5_0";
 	case GeometryShader: return "gs_5_0";
-	case HullShader: return "hs_5_0";
-	case DomainShader: return "ds_5_0";
-	case ComputeShader:  return "cs_5_0";
-	default: return String();
+	case HullShader	   : return "hs_5_0";
+	case DomainShader  : return "ds_5_0";
+	case ComputeShader : return "cs_5_0";
+	default			   : return String();
 	}
 }
 
@@ -46,12 +46,12 @@ D3D12Shader::D3D12Shader(
 	Compile(filePath, entryPoint, traget, defines);
 }
 
-void D3D12Shader::Compile(StringView filePath, ShaderType type, D3D_SHADER_MACRO* defines /* = nullptr */) noexcept
+bool D3D12Shader::Compile(StringView filePath, ShaderType type, D3D_SHADER_MACRO* defines /* = nullptr */) noexcept
 {
-	Compile(filePath, GetEntryPointFromShaderType(type), GetTargetFromShaderType(type), defines);
+	return Compile(filePath, GetEntryPointFromShaderType(type), GetTargetFromShaderType(type), defines);
 }
 
-void D3D12Shader::Compile(
+bool D3D12Shader::Compile(
 	StringView filePath,
 	StringView entryPoint,
 	StringView traget,
@@ -69,7 +69,7 @@ void D3D12Shader::Compile(
 		if (FAILED(hr))
 		{
 			LOG_ERROR("シェーダコンパイルに失敗。: Shader.cpp");
-			return;
+			return false;
 		}
 	}
 	else
@@ -89,7 +89,7 @@ void D3D12Shader::Compile(
 			if (hr == HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND))
 			{
 				LOG_ERROR("指定されたファイルが見つかりませんでした。: Shader.cpp");
-				return;
+				return false;
 			}
 			if (errorBlob)
 			{
@@ -98,9 +98,12 @@ void D3D12Shader::Compile(
 				std::copy_n((char*)errorBlob->GetBufferPointer(), errorBlob->GetBufferSize(), error.begin());
 				error += "\n";
 				LOG_ERROR(error.data());
+				return false;
 			}
 		}
 	}
+
+	return true;
 }
 
 Vector<D3D12_INPUT_ELEMENT_DESC> D3D12Shader::GetInputLayout() noexcept
@@ -171,7 +174,7 @@ Vector<D3D12_SHADER_INPUT_BIND_DESC> D3D12Shader::GetSRVBindDesc() noexcept
 
 	D3D12_SHADER_DESC shaderDesc;
 	m_reflection->GetDesc(&shaderDesc);
-
+	
 	Vector<D3D12_SHADER_INPUT_BIND_DESC> srvBindDescs;
 	for (int i = 0; i < shaderDesc.BoundResources; ++i)
 	{
@@ -185,6 +188,26 @@ Vector<D3D12_SHADER_INPUT_BIND_DESC> D3D12Shader::GetSRVBindDesc() noexcept
 	}
 
 	return srvBindDescs;
+}
+
+Vector<D3D12_SHADER_BUFFER_DESC> D3D12Shader::GetCBVBufferDesc() noexcept
+{
+	D3DReflect(m_blob->GetBufferPointer(), m_blob->GetBufferSize(), IID_PPV_ARGS(m_reflection.ReleaseAndGetAddressOf()));
+
+	D3D12_SHADER_DESC shaderDesc;
+	m_reflection->GetDesc(&shaderDesc);
+
+	Vector<D3D12_SHADER_BUFFER_DESC> cbvBufferDescs;
+	for (int i = 0; i <= shaderDesc.ConstantBuffers; ++i)
+	{
+		auto cb = m_reflection->GetConstantBufferByIndex(i);
+
+		D3D12_SHADER_BUFFER_DESC desc;
+		cb->GetDesc(&desc);
+
+		cbvBufferDescs.emplace_back(desc);
+	}
+	return cbvBufferDescs;
 }
 
 Vector<D3D12_SHADER_INPUT_BIND_DESC> D3D12Shader::GetSamplerBindDesc() noexcept
@@ -209,22 +232,58 @@ Vector<D3D12_SHADER_INPUT_BIND_DESC> D3D12Shader::GetSamplerBindDesc() noexcept
 	return samplerBindDescs;
 }
 
-Vector<D3D12_SHADER_BUFFER_DESC> D3D12Shader::GetCBVBufferDesc() noexcept
+Vector<DXGI_FORMAT> D3D12Shader::GetRenderTargetsDesc() noexcept
 {
 	D3DReflect(m_blob->GetBufferPointer(), m_blob->GetBufferSize(), IID_PPV_ARGS(m_reflection.ReleaseAndGetAddressOf()));
 
 	D3D12_SHADER_DESC shaderDesc;
 	m_reflection->GetDesc(&shaderDesc);
 
-	Vector<D3D12_SHADER_BUFFER_DESC> cbvBufferDescs;
-	for (int i = 0; i <= shaderDesc.ConstantBuffers; ++i)
+	Vector<DXGI_FORMAT> m_renderTargetFormats;
+	for (int i = 0; i < shaderDesc.OutputParameters; ++i)
 	{
-		auto cb = m_reflection->GetConstantBufferByIndex(i);
+		D3D12_SIGNATURE_PARAMETER_DESC paramDesc;
+		m_reflection->GetOutputParameterDesc(i, &paramDesc);
 
-		D3D12_SHADER_BUFFER_DESC desc;
-		cb->GetDesc(&desc);
+		DXGI_FORMAT format;
+		if (paramDesc.Mask == 1)
+		{
+			if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_UINT32)
+				format = DXGI_FORMAT_R32_UINT;
+			else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_SINT32)
+				format = DXGI_FORMAT_R32_SINT;
+			else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32)
+				format = DXGI_FORMAT_R32_FLOAT;
+		}
+		else if (paramDesc.Mask <= 3)
+		{
+			if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_UINT32)
+				format = DXGI_FORMAT_R32G32_UINT;
+			else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_SINT32)
+				format = DXGI_FORMAT_R32G32_SINT;
+			else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32)
+				format = DXGI_FORMAT_R32G32_FLOAT;
+		}
+		else if (paramDesc.Mask <= 7)
+		{
+			if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_UINT32)
+				format = DXGI_FORMAT_R32G32B32_UINT;
+			else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_SINT32)
+				format = DXGI_FORMAT_R32G32B32_SINT;
+			else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32)
+				format = DXGI_FORMAT_R32G32B32_FLOAT;
+		}
+		else if (paramDesc.Mask <= 15)
+		{
+			if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_UINT32)
+				format = DXGI_FORMAT_R32G32B32A32_UINT;
+			else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_SINT32)
+				format = DXGI_FORMAT_R32G32B32A32_SINT;
+			else if (paramDesc.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32)
+				format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		}
 
-		cbvBufferDescs.emplace_back(desc);
+		m_renderTargetFormats.emplace_back(format);
 	}
-	return cbvBufferDescs;
+	return m_renderTargetFormats;
 }

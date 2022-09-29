@@ -24,9 +24,5 @@ public:
 
 private:
 
-	String ConvertProprietaryPath(StringView filePath) noexcept;
-
-private:
-
 	ResourceManager* m_resourceManager;
 };

@@ -30,7 +30,7 @@ public:
 
 protected:
 
-	bool Create(
+    bool Create(
         const D3D12_HEAP_PROPERTIES* pHeapProperties,
         D3D12_HEAP_FLAGS HeapFlags,
         const D3D12_RESOURCE_DESC* pDesc,

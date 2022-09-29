@@ -7,7 +7,7 @@
 
 
 #include "D3D12Sampler.h"
-#include "D3D12GrahicsDevice.h"
+#include "D3D12GraphicsDevice.h"
 
 D3D12Sampler::~D3D12Sampler()
 {

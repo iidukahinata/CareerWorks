@@ -1,13 +1,15 @@
 /**
-* @file	   LogWidget.cpp
+* @file	   ConsoleWidget.cpp
 * @brief
 *
-* @date	   2022/09/13 2022年度初版
+* @date	   2022/09/27 2022年度初版
 */
 
 
-#include "LogWidget.h"
+#include "ConsoleWidget.h"
 #include "SubSystem/Log/DebugLog.h"
+
+#include "SubSystem/Resource/Resources/3DModel/Texture.h"
 
 void EngineLog::AddLog(StringView log, uint32_t errorLevel) noexcept
 {
@@ -27,7 +29,7 @@ void EngineLog::Clear() noexcept
 	m_logList.clear();
 }
 
-void LogWidget::Initialize()
+void ConsoleWidget::Initialize()
 {
 	DebugLog::Get().SetLogInfo(&m_logInfo);
 
@@ -35,21 +37,23 @@ void LogWidget::Initialize()
 	m_logColor[LogType_Error] = ImVec4(1.0f, 0.0f, 0.0f, 1.0f);
 }
 
-void LogWidget::Draw()
+void ConsoleWidget::Draw()
 {
 	ImGui::SetNextWindowPos(ImVec2(1100, 630), ImGuiCond_Once);
 	ImGui::SetNextWindowSize(ImVec2(435, 230), ImGuiCond_Once);
 
-	ImGui::Begin("Log Info", nullptr, ImGuiWindowFlags_NoCollapse);
+	ImGui::Begin("Console", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar);
 
-	m_logFilter.Draw("Filter", 150.0f); ImGui::SameLine();
+	ImGui::Text("Filter"); ImGui::SameLine();
+	m_logFilter.Draw("##Filter", 150.0f); ImGui::SameLine();
 
-	if (ImGui::Button("clear"))
+	if (ImGui::Button("Clear"))
 	{
 		m_logInfo.Clear();
 	}
 
-	ImGui::BeginChild(ImGui::GetID((void*)0), ImVec2(405, 170), true);
+	auto childWidth = ImGui::GetWindowWidth() - 30;
+	ImGui::BeginChild(ImGui::GetID((void*)0), ImVec2(childWidth, 170), true);
 
 	for (const auto& logList = m_logInfo.GetList(); const auto& log : logList)
 	{

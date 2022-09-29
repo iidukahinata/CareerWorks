@@ -92,6 +92,9 @@ public:
 	ResourceData* GetResourceData(uint32_t type, StringView name) noexcept;
 	ResourceData* GetResourceData(StringView path) noexcept;
 
+	/** ディレクトリ内の Assets Data を列挙 : Editor の Assets 表示等で使用 */
+	void GetResourceDataListFromDirectory(StringView path, Vector<std::pair<String, ResourceData*>>& resourceDatas) noexcept;
+
 public:
 
 	/** assets フォルダから新しくリソースのインポートを行う */
@@ -123,6 +126,7 @@ private:
 
 	/** 指定 ResourceData のファイルデータ更新 */
 	void UploadResourceData(uint32_t type, StringView name) noexcept;
+	void UploadResourceData(uint32_t type, StringView name, StringView assetPath) noexcept;
 
 	/** 指定ファイルのリソースタイプの判別に使用 */
 	bool IsModelFilePath(StringView path) const noexcept;
@@ -132,6 +136,7 @@ private:
 	bool IsProprietaryFilePath(StringView path) const noexcept;
 
 	String GetAssetPath(StringView assetName) const noexcept;
+	String ToAssetDirectory(StringView resourcePath) const noexcept;
 
 private:
 

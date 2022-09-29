@@ -9,7 +9,7 @@
 #include "Renderer.h"
 #include "LightMap.h"
 #include "SubSystem/Window/Window.h"
-#include "GraphicsAPI/D3D12/D3D12GrahicsDevice.h"
+#include "GraphicsAPI/D3D12/D3D12GraphicsDevice.h"
 
 bool Renderer::Initialize()
 {
@@ -18,7 +18,7 @@ bool Renderer::Initialize()
 	const auto height = Window::Get().GetWindowHeight();
 
 	// デバイス初期化
-	D3D12GrahicsDevice::Get().Init(handle, width, height, Window::Get().IsFullscreen());
+	D3D12GraphicsDevice::Get().Init(handle, width, height, Window::Get().IsFullscreen());
 
 	return true;
 }
@@ -99,4 +99,9 @@ void Renderer::OnRegisterPostProcess(PostProcessEffect* postProcess) noexcept
 	{
 		m_postProcessEffect = nullptr;
 	}
+}
+
+bool Renderer::HasPostProcessSetting() noexcept
+{
+	return !!m_postProcessEffect;
 }

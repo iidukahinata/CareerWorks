@@ -26,10 +26,25 @@ void ModelRenderDetails::Draw()
 	if (ImGui::CollapsingHeader(name.data(), ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		auto model = m_modelRender->GetModel();
-		auto modelPath = model ? ConvertToJapanese(model->GetFilePath()) : nullptr;
+		auto modelPath = model ? ConvertToJapanese(model->GetFilePath()) : String();
 
 		ImGui::Text("Model"); ImGui::SameLine(offsetPos);
-		ImGui::Text(modelPath.c_str());
+
+		constexpr auto itemWidth = 260;
+		ImGui::PushItemWidth(itemWidth);
+		ImGui::InputText("##", modelPath.data(), modelPath.size());
+		ImGui::PopItemWidth();
+
+		ImGui::SameLine(offsetPos + itemWidth);
+		
+		// リソースの検索を始める
+		OpenResourceHelper();
+
+		if (auto resourceData = ShowSearchResourceHelper<Model>())
+		{
+			auto model = LoadResource<Model>(resourceData);
+			m_modelRender->SetModel(model);
+		}
 
 		if (model)
 		{
@@ -43,7 +58,7 @@ void ModelRenderDetails::ShowUseMeshes(Model* model) const noexcept
 {
 	constexpr int offsetPos = 130;
 
-	if (ImGui::TreeNodeEx("Use Meshes", ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::TreeNodeEx("Use Meshes"))
 	{
 		ImGui::BeginChild(ImGui::GetID((void*)0), ImVec2(710, 270), true, ImGuiWindowFlags_NoScrollbar);
 
@@ -77,13 +92,17 @@ void ModelRenderDetails::ShowUseMaterial(Model* model) noexcept
 			auto materialPath = ConvertToJapanese(material->GetFilePath());
 
 			ImGui::Text(("Material_" + std::to_string(i)).c_str()); ImGui::SameLine(offsetPos);
-			ImGui::Text(materialPath.c_str());
+
+			constexpr auto itemWidth = 280;
+			ImGui::PushItemWidth(itemWidth);
+			ImGui::InputText("##", materialPath.data(), materialPath.size());
+			ImGui::PopItemWidth();
 
 			// ドラッグアンドドロップ有効指定
 			const auto hoverd = ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
 			
 			ShowDragDropHelper<Material>(hoverd, 40, 255, 40);
-			
+
 			// ドラッグアンドドロップでの Material 切り替えのため
 			if (ImGui::IsMouseReleased(0) && hoverd)
 			{

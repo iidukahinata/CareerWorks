@@ -33,6 +33,10 @@ void SceneWidget::Draw()
 		}
 	}
 
+	ChackClickedCommand();
+	ShowGameObjectHelper();
+	ShowGameObjectCreateWindow();
+
 	ImGui::End();
 }
 
@@ -68,5 +72,58 @@ void SceneWidget::SelectGameObject(GameObject* gameObject) noexcept
 	else
 	{
 		DetailsWidget::SelectGameObject(gameObject);
+	}
+}
+
+void SceneWidget::ShowGameObjectHelper() noexcept
+{
+	bool isCreate = false;
+
+	if (ImGui::BeginPopup("GameObject Helper"))
+	{
+		if (ImGui::Button("Create GameObject"))
+		{
+			isCreate = true;
+			ImGui::CloseCurrentPopup();
+		}
+		ImGui::EndPopup();
+	}
+
+	if (isCreate)
+	{
+		ImGui::OpenPopup("Create GameObject Window");
+	}
+}
+
+void SceneWidget::ShowGameObjectCreateWindow()
+{
+	if (ImGui::BeginPopup("Create GameObject Window"))
+	{
+		ImGui::Text("Object Name"); ImGui::SameLine();
+
+		char str[128] = "";
+		auto isCreate = ImGui::InputTextWithHint("", "none", str, IM_ARRAYSIZE(str), ImGuiInputTextFlags_EnterReturnsTrue); ImGui::Text(""); // ‰üs—p
+		auto isCancel = ImGui::Button("Cancel");
+
+		if (isCreate && !!m_world->GetCurrentScene())
+		{
+			auto gameObject = m_world->CreateGameObject();
+			gameObject->SetName(str);
+		}
+
+		if (isCreate || isCancel)
+		{
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::EndPopup();
+	}
+}
+
+void SceneWidget::ChackClickedCommand() noexcept
+{
+	if (ImGui::IsMouseClicked(1) && ImGui::IsWindowHovered())
+	{
+		ImGui::OpenPopup("GameObject Helper");
 	}
 }

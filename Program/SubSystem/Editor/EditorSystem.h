@@ -42,7 +42,10 @@ public:
 private:
 
 	/** imgui で使用される各データの初期化 */
-	bool SetUpImguiObjects() noexcept;
+	bool SetUpImGuiObjects() noexcept;
+
+	void SetUpGuiStyle() noexcept;
+	void AddFonts() noexcept;
 
 	/** 使用 Widget の登録を行う。*/
 	void RegisterWidgetsToContainer() noexcept;
@@ -54,9 +57,12 @@ private:
 
 	Job m_job;
 
+	// * コマンド入力時使用
+	Stopwatch m_stopwatch;
+
 	// * Gui 用描画クラス配列
 	Vector<UniquePtr<Widget>> m_widgets;
 
-	// * imgui 描画用
+	// * font 用ヒープ
 	D3D12DescriptorHeap m_descriptHeap;
 };

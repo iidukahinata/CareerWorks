@@ -10,15 +10,14 @@
 #include "ProprietaryMaterialData.h"
 #include "../ResourceImporter/ModelImporter/PMDHelper.h"
 
-constexpr auto BASIC_SHADER = "BasicShader.hlsl";
+constexpr auto BASIC_SHADER_PATH = "Data/Resource/Shader/BasicShader.hlsl";
 
 void ProprietaryMaterialData::Serialized(FileStream* file) const
 {
-	file->Write(m_diffuse);
-	file->Write(m_specular);
-	file->Write(m_specularPower);
-	file->Write(m_ambient);
-	file->Write(m_emissive);
+	file->Write(m_albedo);
+	file->Write(m_metallic);
+	file->Write(m_smooth);
+	file->Write(m_emission);
 	file->Write(m_blendMode);
 	file->Write(m_rasterizerState);
 
@@ -37,11 +36,10 @@ void ProprietaryMaterialData::Serialized(FileStream* file) const
 
 void ProprietaryMaterialData::Deserialization(FileStream* file)
 {
-	file->Read(&m_diffuse);
-	file->Read(&m_specular);
-	file->Read(&m_specularPower);
-	file->Read(&m_ambient);
-	file->Read(&m_emissive);
+	file->Read(&m_albedo);
+	file->Read(&m_metallic);
+	file->Read(&m_smooth);
+	file->Read(&m_emission);
 	file->Read(&m_blendMode);
 	file->Read(&m_rasterizerState);
 
@@ -69,36 +67,28 @@ ProprietaryMaterialData ProprietaryMaterialData::ConvertProprietaryData(aiMateri
 {
 	ProprietaryMaterialData materialData = {};
 
-	materialData.m_shaderPaths[VertexShader] = BASIC_SHADER;
-	materialData.m_shaderPaths[PixelShader] = BASIC_SHADER;
+	materialData.m_shaderPaths[VertexShader] = BASIC_SHADER_PATH;
+	materialData.m_shaderPaths[PixelShader]  = BASIC_SHADER_PATH;
 
-	aiColor3D colordiffuse(0.f, 0.f, 0.f);
-	material->Get(AI_MATKEY_COLOR_DIFFUSE, colordiffuse);
-	materialData.m_diffuse.x = colordiffuse.r;
-	materialData.m_diffuse.y = colordiffuse.g;
-	materialData.m_diffuse.z = colordiffuse.b;
+	aiColor3D colorAlbedo(0.f, 0.f, 0.f);
+	material->Get(AI_MATKEY_COLOR_DIFFUSE, colorAlbedo);
+	materialData.m_albedo.x = colorAlbedo.r;
+	materialData.m_albedo.y = colorAlbedo.g;
+	materialData.m_albedo.z = colorAlbedo.b;
 
 	aiColor3D colorspecular(0.f, 0.f, 0.f);
 	material->Get(AI_MATKEY_COLOR_SPECULAR, colorspecular);
-	materialData.m_specular.x = colorspecular.r;
-	materialData.m_specular.y = colorspecular.g;
-	materialData.m_specular.z = colorspecular.b;
-
-	aiColor3D colorambient(0.f, 0.f, 0.f);
-	material->Get(AI_MATKEY_COLOR_AMBIENT, colorambient);
-	materialData.m_ambient.x = colorambient.r;
-	materialData.m_ambient.y = colorambient.g;
-	materialData.m_ambient.z = colorambient.b;
-
-	aiColor3D coloremissive(0.f, 0.f, 0.f);
-	material->Get(AI_MATKEY_COLOR_EMISSIVE, coloremissive);
-	materialData.m_emissive.x = coloremissive.r;
-	materialData.m_emissive.y = coloremissive.g;
-	materialData.m_emissive.z = coloremissive.b;
+	materialData.m_metallic = colorspecular.r;
 
 	float power;
 	material->Get(AI_MATKEY_SHININESS_STRENGTH, power);
-	materialData.m_specularPower = power;
+	materialData.m_smooth = power;
+
+	aiColor3D coloremissive(0.f, 0.f, 0.f);
+	material->Get(AI_MATKEY_COLOR_EMISSIVE, coloremissive);
+	materialData.m_emission.x = coloremissive.r;
+	materialData.m_emission.y = coloremissive.g;
+	materialData.m_emission.z = coloremissive.b;
 
 	return materialData;
 }
@@ -107,22 +97,19 @@ ProprietaryMaterialData ProprietaryMaterialData::ConvertProprietaryData(PMDMater
 {
 	ProprietaryMaterialData materialData = {};
 
-	materialData.m_shaderPaths[VertexShader] = BASIC_SHADER;
-	materialData.m_shaderPaths[PixelShader] = BASIC_SHADER;
+	materialData.m_shaderPaths[VertexShader] = BASIC_SHADER_PATH;
+	materialData.m_shaderPaths[PixelShader]  = BASIC_SHADER_PATH;
 
-	materialData.m_diffuse.x = material->m_diffuse.x;
-	materialData.m_diffuse.y = material->m_diffuse.y;
-	materialData.m_diffuse.z = material->m_diffuse.z;
+	materialData.m_albedo.x = material->m_diffuse.x;
+	materialData.m_albedo.y = material->m_diffuse.y;
+	materialData.m_albedo.z = material->m_diffuse.z;
 
-	materialData.m_specular.x = material->m_specular.x;
-	materialData.m_specular.y = material->m_specular.x;
-	materialData.m_specular.z = material->m_specular.x;
+	materialData.m_metallic = material->m_specular.x;
+	materialData.m_smooth = material->m_specularity;
 
-	materialData.m_ambient.x = material->m_ambient.x;
-	materialData.m_ambient.y = material->m_ambient.y;
-	materialData.m_ambient.z = material->m_ambient.z;
-
-	materialData.m_specularPower = material->m_specularity;
+	materialData.m_emission.x = material->m_ambient.x;
+	materialData.m_emission.y = material->m_ambient.y;
+	materialData.m_emission.z = material->m_ambient.z;
 	
 	return materialData;
 }

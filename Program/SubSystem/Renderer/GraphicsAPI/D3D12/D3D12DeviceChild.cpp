@@ -7,40 +7,40 @@
 
 
 #include "D3D12DeviceChild.h"
-#include "D3D12GrahicsDevice.h"
+#include "D3D12GraphicsDevice.h"
 #include "D3D12Sampler.h"
 
 ID3D12Device* D3D12DeviceChild::GetDevice() const noexcept
 {
-	return D3D12GrahicsDevice::Get().GetDevice();
+	return D3D12GraphicsDevice::Get().GetDevice();
 }
 
 D3D12CommandContext* D3D12DeviceChild::GetCommandContext() const noexcept
 {
-	return 	&D3D12GrahicsDevice::Get().GetCommandContext();
+	return 	&D3D12GraphicsDevice::Get().GetCommandContext();
 }
 
 D3D12DescriptorAllocator& D3D12DeviceChild::GetViewDescriptorAllocator() noexcept
 {
-	return 	D3D12GrahicsDevice::Get().GetViewDescriptorAllocator();
+	return 	D3D12GraphicsDevice::Get().GetViewDescriptorAllocator();
 }
 
 D3D12DescriptorAllocator& D3D12DeviceChild::GetSamplerDescriptorAllocator() noexcept
 {
-	return 	D3D12GrahicsDevice::Get().GetSamplerDescriptorAllocator();
+	return 	D3D12GraphicsDevice::Get().GetSamplerDescriptorAllocator();
 }
 
 D3D12DescriptorAllocator& D3D12DeviceChild::GetRtvDescriptorAllocator() noexcept
 {
-	return 	D3D12GrahicsDevice::Get().GetRtvDescriptorAllocator();
+	return 	D3D12GraphicsDevice::Get().GetRtvDescriptorAllocator();
 }
 
 D3D12DescriptorAllocator& D3D12DeviceChild::GetDsvDescriptorAllocator() noexcept
 {
-	return 	D3D12GrahicsDevice::Get().GetDsvDescriptorAllocator();
+	return 	D3D12GraphicsDevice::Get().GetDsvDescriptorAllocator();
 }
 
 D3D12Map<D3D12_SAMPLER_DESC, D3D12Sampler*>& D3D12DeviceChild::GetSamplerMap() noexcept
 {
-	return 	D3D12GrahicsDevice::Get().GetSamplerMap();
+	return 	D3D12GraphicsDevice::Get().GetSamplerMap();
 }

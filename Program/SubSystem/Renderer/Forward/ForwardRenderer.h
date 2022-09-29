@@ -2,7 +2,7 @@
 * @file	   ForwardRenderer.h
 * @brief
 *
-* @date	   2022/09/02 2022年度初版
+* @date	   2022/09/16 2022年度初版
 */
 #pragma once
 
@@ -18,11 +18,17 @@ public:
 	bool Initialize() override;
 	void Shutdown() override;
 
+	/** Render */
 	void Update() noexcept;
 	void Present() noexcept;
 
 private:
 
-	// * Render と Present
+	/** Render Job の登録 */
+	void RegisterRenderJob() noexcept;
+
+private:
+
+	// * Update と Present
 	Array<Job, 2> m_jobs;
 };

@@ -7,7 +7,7 @@
 
 
 #include "D3D12CommandContext.h"
-#include "D3D12GrahicsDevice.h"
+#include "D3D12GraphicsDevice.h"
 #include "D3D12View.h"
 #include "D3D12Sampler.h"
 #include "D3D12RootSignature.h"
@@ -46,7 +46,7 @@ bool D3D12CommandContext::Create() noexcept
 	return true;
 }
 
-void D3D12CommandContext::BegineFream() noexcept
+void D3D12CommandContext::BeginFrame() noexcept
 {
 	m_stateCache.BegineFrame();
 }

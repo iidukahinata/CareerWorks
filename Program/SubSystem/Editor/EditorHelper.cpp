@@ -7,30 +7,131 @@
 
 
 #include "EditorHelper.h"
-#include "SubSystem/Renderer/GraphicsAPI/D3D12/D3D12GrahicsDevice.h"
-#include "SubSystem/Renderer/GraphicsAPI/D3D12/D3D12DescriptorHeap.h"
+#include "SubSystem/Resource/ResourceManager.h"
+#include "SubSystem/Resource/Resources/Scene/Scene.h"
+#include "SubSystem/Resource/Resources/3DModel/Model.h"
+#include "SubSystem/Resource/Resources/3DModel/Mesh.h"
+#include "SubSystem/Resource/Resources/3DModel/Shader.h"
+#include "SubSystem/Resource/Resources/3DModel/Material.h"
+#include "SubSystem/Resource/Resources/3DModel/Texture.h"
+#include "SubSystem/Resource/Resources/Audio/AudioClip.h"
+#include "SubSystem/Renderer/GraphicsAPI/D3D12/D3D12GraphicsDevice.h"
+
+extern Context* g_context;
+
+void EditorHelper::Initialize(D3D12DescriptorHeap* descriptorHeap) noexcept
+{
+	m_descriptorHeap = descriptorHeap;
+
+	RegisterIconTexture();
+}
 
 void EditorHelper::BegineRenderer() noexcept
 {
-	const auto numHeap = m_descriptorHeaps.size();
-	Vector<ID3D12DescriptorHeap*> heap(numHeap);
+	constexpr auto offset = 1;
 
-	for (size_t i = 0; i < numHeap; ++i)
+	// reset
+	m_numImage = offset;
+
+	m_descriptorHeap->Set();
+}
+
+void EditorHelper::AddImage(void* shaderResourceView, const ImVec2& imageSize, const ImVec2& uv0, const ImVec2& uv1, const ImVec4& tint_col, const ImVec4& border_col) noexcept
+{
+	auto srv = static_cast<D3D12ShaderResourceView*>(shaderResourceView);
+	auto texture = srv->GetCPUHandle();
+
+	// êVÇµÇ≠ texture Data ÇÃìoò^
+	auto cpuHandle = m_descriptorHeap->GetCPUHandle();
+	auto gpuHandle = m_descriptorHeap->GetGPUHandle();
+
+	cpuHandle.ptr += (m_descriptorHeap->GetIncrementSize() * m_numImage);
+	gpuHandle.ptr += (m_descriptorHeap->GetIncrementSize() * m_numImage);
+
+	auto size = 1U;
+	D3D12GraphicsDevice::Get().GetDevice()->CopyDescriptors(1, &cpuHandle, &size, size, &texture, nullptr, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+
+	// Image ï`âÊ
+	ImGui::Image((void*)gpuHandle.ptr, imageSize, uv0, uv1, tint_col, border_col);
+
+	++m_numImage;
+}
+
+bool EditorHelper::AddImageButton(void* shaderResourceView, const ImVec2& imageSize, const ImVec2& uv0, const ImVec2& uv1, const int frame_padding, const ImVec4& bg_col, const ImVec4& tint_col) noexcept
+{
+	auto srv = static_cast<D3D12ShaderResourceView*>(shaderResourceView);
+	auto texture = srv->GetCPUHandle();
+
+	// êVÇµÇ≠ texture Data ÇÃìoò^
+	auto cpuHandle = m_descriptorHeap->GetCPUHandle();
+	auto gpuHandle = m_descriptorHeap->GetGPUHandle();
+
+	cpuHandle.ptr += (m_descriptorHeap->GetIncrementSize() * m_numImage);
+	gpuHandle.ptr += (m_descriptorHeap->GetIncrementSize() * m_numImage);
+
+	auto size = 1U;
+	D3D12GraphicsDevice::Get().GetDevice()->CopyDescriptors(1, &cpuHandle, &size, size, &texture, nullptr, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+
+	// Image ï`âÊ
+	auto result = ImGui::ImageButton((void*)gpuHandle.ptr, imageSize, uv0, uv1, frame_padding, bg_col, tint_col);
+
+	++m_numImage;
+
+	return result;
+}
+
+Texture* EditorHelper::GetIconTexture(IconType type) const noexcept
+{
+	if (m_iconTextures.contains(type))
 	{
-		heap[i] = m_descriptorHeaps[i]->GetHeap();
+		return m_iconTextures.find(type)->second;
 	}
-
-	D3D12GrahicsDevice::Get().GetCommandContext().SetDescriptorHeaps(numHeap, heap.data());
+	return nullptr;
 }
 
-void EditorHelper::Reset() noexcept
+IconType EditorHelper::GetIconTypeFromResourceType(uint32_t type) const noexcept
 {
-	m_descriptorHeaps.clear();
+	switch (type)
+	{
+	case GET_HASH(Scene)	: return Icon_Scene;
+	case GET_HASH(Model)	: return Icon_Model;
+	case GET_HASH(Mesh)		: return Icon_Mesh;
+	case GET_HASH(Material)	: return Icon_Material;
+	case GET_HASH(Texture)	: return Icon_Texture;
+	case GET_HASH(Shader)	: return Icon_Shader;
+	case GET_HASH(AudioClip): return Icon_Audio;
+	default					: return Icon_None;
+	}
 }
 
-void EditorHelper::AddTexture(D3D12DescriptorHeap* descriptorHeap) noexcept
+uint32_t EditorHelper::GetResourceTypeByIconType(IconType type) const noexcept
 {
-	m_descriptorHeaps.emplace_back(descriptorHeap);
+	switch (type)
+	{
+	case Icon_Scene	   : return Scene::TypeData.Hash;
+	case Icon_Model	   : return Model::TypeData.Hash;
+	case Icon_Mesh	   : return Mesh::TypeData.Hash;
+	case Icon_Material : return Material::TypeData.Hash;
+	case Icon_Texture  : return Texture::TypeData.Hash;
+	case Icon_Shader   : return Shader::TypeData.Hash;
+	case Icon_Audio    : return AudioClip::TypeData.Hash;
+	default			   : return uint32_t(100);
+	}
+}
+
+ImVec4 EditorHelper::GetResourceColorByIconType(IconType type) const noexcept
+{
+	switch (type)
+	{
+	case Icon_Scene	   : return ImVec4(0.6f, 0.4f, 0.0f, 1.0f); // íÉ
+	case Icon_Model	   : return ImVec4(0.0f, 0.3f, 0.7f, 1.0f); // ê¬
+	case Icon_Mesh	   : return ImVec4(0.5f, 0.6f, 1.0f, 0.6f); // êÖ
+	case Icon_Material : return ImVec4(0.1f, 1.0f, 0.1f, 0.6f); // óŒ
+	case Icon_Texture  : return ImVec4(0.0f, 0.0f, 0.0f, 0.9f); // çï
+	case Icon_Shader   : return ImVec4(0.8f, 0.5f, 0.0f, 0.6f); // ÉIÉåÉìÉW
+	case Icon_Audio    : return ImVec4(0.9f, 0.2f, 0.0f, 0.6f); // îZÇ¢ê‘
+	default			   : return ImVec4(0, 0, 0, 0);
+	}
 }
 
 void EditorHelper::UndoCommand() noexcept
@@ -51,4 +152,28 @@ void EditorHelper::FlushCommandList() noexcept
 void EditorHelper::AddEditorCommand(UniquePtr<ICommand> command) noexcept
 {
 	m_commandList.AddCommand(std::move(command));
+}
+
+void EditorHelper::RegisterIconTexture() noexcept
+{
+	auto resourceManager = g_context->GetSubsystem<ResourceManager>();
+
+	Vector<ResourceHandle*> resourceHandles;
+	resourceHandles.emplace_back(resourceManager->Load<Texture>("folder_icon"));
+	resourceHandles.emplace_back(resourceManager->Load<Texture>("scene_icon"));
+	resourceHandles.emplace_back(resourceManager->Load<Texture>("model_icon"));
+	resourceHandles.emplace_back(resourceManager->Load<Texture>("mesh_icon"));
+	resourceHandles.emplace_back(resourceManager->Load<Texture>("material_icon"));
+	resourceHandles.emplace_back(resourceManager->Load<Texture>("texture_icon"));
+	resourceHandles.emplace_back(resourceManager->Load<Texture>("shader_icon"));
+	resourceHandles.emplace_back(resourceManager->Load<Texture>("audio_icon"));
+
+	for (int i = 0; i < resourceHandles.size(); ++i)
+	{
+		const auto& handle = resourceHandles[i];
+
+		handle->WaitForLoadComplete();
+
+		m_iconTextures[i] = handle->GetResource<Texture>();
+	}
 }

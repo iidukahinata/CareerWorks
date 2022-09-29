@@ -2,7 +2,7 @@
 * @file    ResourceHandle.h
 * @brief
 *
-* @date	   2022/09/08 2022年度初版
+* @date	   2022/09/26 2022年度初版
 */
 #pragma once
 
@@ -27,25 +27,18 @@ public:
 	bool IsValid() const noexcept;
 
 	/** 非同期での読み込み優先度を取得 */
-	uint32_t GetPriority() const noexcept
-	{
-		return m_priority;
-	}
+	uint32_t GetPriority() const noexcept;
 
 	/**
 	* ハンドルが指す、Resource への参照を行う。
 	* ！IsValid() の時に参照すると不正アクセスとして ASSRET する。
 	*/
-	IResource* GetResource() noexcept;
-
 	template<class T>
-	T* GetResource() noexcept
-	{
-		return dynamic_cast<T*>(GetResource());
-	}
+	T* GetResource() const noexcept;
+	IResource* GetResource() const noexcept;
 
 	/** 安全な処理待ちだが、atomic な変数へのアクセスがあるため高価 */
-	void WaitForLoadComplete() noexcept;
+	void WaitForLoadComplete() const noexcept;
 
 private:
 
@@ -66,3 +59,9 @@ private:
 
 	ResourceManager* m_resourceManager = nullptr;
 };
+
+template<class T>
+T* ResourceHandle::GetResource() const noexcept
+{
+	return dynamic_cast<T*>(GetResource());
+}

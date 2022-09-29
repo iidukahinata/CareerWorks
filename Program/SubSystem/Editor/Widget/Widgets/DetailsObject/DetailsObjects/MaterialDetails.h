@@ -9,7 +9,6 @@
 
 #include "../DetailsObject.h"
 
-class Texture;
 class Material;
 class ResourceData;
 
@@ -24,6 +23,12 @@ private:
 
 	/** 実際の Interface 提供 */
 	void ShowMaterialInterface() noexcept;
+
+	/** 使用中シェーダー一覧表示 */
+	void ShowShaderList(Material* material) noexcept;
+
+	/** 使用中テクスチャ一覧表示 */
+	void ShowTextureList(Material* material) noexcept;
 
 private:
 

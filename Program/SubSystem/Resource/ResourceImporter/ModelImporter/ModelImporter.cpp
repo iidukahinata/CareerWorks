@@ -28,12 +28,15 @@ ModelImporter::ModelImporter(ResourceManager* resourceManager) :
 
 bool ModelImporter::CreateModelData(StringView filePath) noexcept
 {
+	// 新規リソース生成時に使用する作業ディレクトリを取得
+	m_currentDirectory = filePath.substr(0, filePath.find_last_of("\\/") + 1);
+
 	if (!ImportFile(filePath))
 	{
 		return false;
 	}
 
-	// PMD拡張子の時のみ NULL
+	// PMD拡張子の時は NULL
 	if (m_aiScene)
 	{
 		ProcessNode(m_aiScene->mRootNode);
@@ -117,8 +120,10 @@ String ModelImporter::LoadMesh(aiMesh* mesh)
 {
 	ASSERT(mesh);
 
+	auto path = m_currentDirectory + FileSystem::GetFilePath(mesh->mName.C_Str());
+
 	// 各データを独自モデルとして出力するため変換
-	auto meshPath = ProprietaryMeshData::ConvertProprietaryPath(mesh->mName.C_Str());
+	auto meshPath = ProprietaryMeshData::ConvertProprietaryPath(path);
 	auto meshData = ProprietaryMeshData::ConvertProprietaryData(mesh);
 
 	// メッシュで使用されているマテリアルを解析
@@ -139,14 +144,11 @@ String ModelImporter::LoadMaterial(aiMaterial* material)
 {
 	ASSERT(material);
 
+	auto path = m_currentDirectory + FileSystem::GetFilePath(material->GetName().C_Str());
+
 	// 各データを独自モデルとして出力するため変換
-	auto materialPath = ProprietaryMaterialData::ConvertProprietaryPath(material->GetName().C_Str());
+	auto materialPath = ProprietaryMaterialData::ConvertProprietaryPath(path);
 	auto materialData = ProprietaryMaterialData::ConvertProprietaryData(material);
-
-	//auto texturePaths = LoadTextures(material, false);
-
-	// 参照関係だけを保持させるが、マテリアル情報には書き込まない。
-	//m_texturePaths.emplace(materialPath, texturePaths);
 
 	materialData.SaveToFile(materialPath);
 
@@ -175,7 +177,7 @@ Vector<String> ModelImporter::LoadTextures(aiMaterial* material, bool isCreate)
 
 		// テクスチャ名のディレクトリを処理出来るカレントディレクトリに変更
 		path = path.substr(path.find_last_of("\\/"), path.length() - 1);
-		auto filePath = FileSystem::Canonical(path);
+		auto filePath = FileSystem::Canonical(String("./") + path.data());
 
 		if (isCreate)
 		{
@@ -213,11 +215,6 @@ String ModelImporter::LoadMaterial(PMDMaterial* material, StringView path)
 	auto materialPath = ProprietaryMaterialData::ConvertProprietaryPath(String(path) + "Material");
 	auto materialData = ProprietaryMaterialData::ConvertProprietaryData(material);
 
-	//auto texturePath = LoadTexture(material, false);
-
-	// 参照関係だけを保持させるが、マテリアル情報には書き込まない。
-	//m_texturePaths.emplace(materialPath, texturePath);
-
 	materialData.SaveToFile(materialPath);
 
 	return materialPath;
@@ -233,7 +230,7 @@ String ModelImporter::LoadTexture(PMDMaterial* material, bool isCreate)
 
 	// テクスチャ名のディレクトリを処理出来るカレントディレクトリに変更
 	path = path.substr(path.find_last_of("\\/"), path.length() - 1);
-	auto filePath = FileSystem::Canonical(path);
+	auto filePath = FileSystem::Canonical(String("./") + path.data());
 
 	// マテリアルから取得したテクスチャをロード
 	if (isCreate)

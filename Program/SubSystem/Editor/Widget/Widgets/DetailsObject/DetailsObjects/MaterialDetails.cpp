@@ -2,7 +2,7 @@
 * @file	   MaterialDetails.cpp
 * @brief
 *
-* @date	   2022/09/13 2022年度初版
+* @date	   2022/09/20 2022年度初版
 */
 
 
@@ -42,19 +42,19 @@ void MaterialDetails::ShowMaterialInterface() noexcept
 
 	if (ImGui::CollapsingHeader("Material Interface", ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		auto material		= m_material;
-		auto path			= ConvertToJapanese(material->GetFilePath());
-		auto textures		= material->GetTextures();
-		auto blendMode		= material->GetBlendMode();
-		auto rasterizer		= material->GetRasterizerState();
-		auto ambient		= material->GetAmbient();
-		auto diffuse		= material->GetDiffuse();
-		auto emissive		= material->GetEmissive();
-		auto specular		= material->GetSpecular();
-		auto specularPower	= material->GetSpecularPower();
+		auto material	= m_material;
+		auto path		= ConvertToJapanese(material->GetFilePath());
+		auto blendMode	= material->GetBlendMode();
+		auto rasterizer	= material->GetRasterizerState();
+		auto albedo		= material->GetAlbedo();
+		auto metallic	= material->GetMetallic();
+		auto smooth		= material->GetSmooth();
+		auto emissive	= material->GetEmission();
 
 		ImGui::Text("Name"); ImGui::SameLine(offsetPos);
-		ImGui::Text(path.c_str()); ImGui::Text("");
+		ImGui::Text(path.c_str());
+
+		ShowShaderList(material);
 
 		ImGui::Text("BlendMode"); ImGui::SameLine(offsetPos);
 		auto inputBlendMode = ImGui::Combo("##BlendMode", (int*)(&blendMode), blendModeCombo);
@@ -62,60 +62,126 @@ void MaterialDetails::ShowMaterialInterface() noexcept
 		ImGui::Text("Rasterizer"); ImGui::SameLine(offsetPos);
 		auto inputRasterizer = ImGui::Combo("##Rasterizer", (int*)(&rasterizer), rasterizerCombo);
 
-		ImGui::Text("Ambient"); ImGui::SameLine(offsetPos);
-		auto inputAmbient = ImGui::DragFloat3("##Ambient", &ambient.x, 0.f, 1.f);
+		ImGui::Text("Albedo"); ImGui::SameLine(offsetPos);
+		auto inputAlbedo = ImGui::DragFloat3("##Albedo", &albedo.x, 0.1f, 0.f);
 
-		ImGui::Text("Diffuse"); ImGui::SameLine(offsetPos);
-		auto inputDiffuse = ImGui::DragFloat3("##Diffuse", &diffuse.x, 0.f, 1.f);
+		ImGui::Text("Metallic"); ImGui::SameLine(offsetPos);
+		auto inputMetallic = ImGui::SliderFloat("##Metallic", &metallic, 0.f, 256.f);
+
+		ImGui::Text("Smooth"); ImGui::SameLine(offsetPos);
+		auto inputSmooth = ImGui::SliderFloat("##Smooth", &smooth, 0.f, 10.f);
 
 		ImGui::Text("Emissive"); ImGui::SameLine(offsetPos);
-		auto inputEmissive = ImGui::DragFloat3("##Emissive", &emissive.x, 0.f, 1.f);
-
-		ImGui::Text("Specular"); ImGui::SameLine(offsetPos);
-		auto inputSpecular = ImGui::DragFloat3("##Specular", &specular.x, 0.f, 1.f);
-
-		ImGui::Text("SpecularPower"); ImGui::SameLine(offsetPos);
-		auto inputSprPower = ImGui::DragFloat("##SpecularPower", &specularPower, 0.f, 1.f);
+		auto inputEmissive = ImGui::DragFloat3("##Emissive", &emissive.x, 0.1f, 0.f);
 
 		if (ImGui::TreeNodeEx("Texture Prametor", ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			for (const auto& textureInfo : textures)
-			{
-				const auto& pramName = textureInfo.first;
-				const auto& texture = textureInfo.second.m_texture;
-
-				auto texPath = texture ? ConvertToJapanese(texture->GetFilePath().c_str()) : nullptr;
-
-				ImGui::Text(pramName.c_str()); ImGui::SameLine(offsetPos);
-				ImGui::Text(texPath.c_str());
-
-				// ドラッグアンドドロップ有効指定
-				const auto hoverd = ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
-
-				// Texture 受付用 UI 表示
-				ShowDragDropHelper<Texture>(hoverd, 220, 130, 0);
-
-				// ドラッグアンドドロップでの Texture 切り替えのため
-				if (ImGui::IsMouseReleased(0) && hoverd)
-				{
-					if (auto catchTexture = CatchDragObject<Texture>())
-					{
-						RegisterEditorCommand([material, pramName](auto data) { material->SetTexture(pramName, data); }, catchTexture, texture);
-					}
-				}
-
-				// 改行用
-				ImGui::Text("");
-			}
-			ImGui::TreePop();
+			ShowTextureList(material);
 		}
 
-		if (inputBlendMode)  RegisterEditorCommand([material](auto data) { material->SetBlendMode(data);	   }, blendMode	   , material->GetBlendMode());
-		if (inputRasterizer) RegisterEditorCommand([material](auto data) { material->SetRasterizerState(data); }, rasterizer   , material->GetRasterizerState());
-		if (inputAmbient)    RegisterEditorCommand([material](auto data) { material->SetAmbient(data);		   }, ambient	   , material->GetAmbient());
-		if (inputDiffuse)    RegisterEditorCommand([material](auto data) { material->SetDiffuse(data);		   }, diffuse	   , material->GetDiffuse());
-		if (inputEmissive)   RegisterEditorCommand([material](auto data) { material->SetEmissive(data);		   }, emissive	   , material->GetEmissive());
-		if (inputSpecular)   RegisterEditorCommand([material](auto data) { material->SetSpecular(data);		   }, specular	   , material->GetSpecular());
-		if (inputSprPower)   RegisterEditorCommand([material](auto data) { material->SetSpecularPower(data);   }, specularPower, material->GetSpecularPower());
+		if (inputBlendMode)  RegisterEditorCommand([material](auto data) { material->SetBlendMode(data);	   }, blendMode	 , material->GetBlendMode());
+		if (inputRasterizer) RegisterEditorCommand([material](auto data) { material->SetRasterizerState(data); }, rasterizer , material->GetRasterizerState());
+		if (inputAlbedo)     RegisterEditorCommand([material](auto data) { material->SetAlbedo(data);		   }, albedo	 , material->GetAlbedo());
+		if (inputMetallic)   RegisterEditorCommand([material](auto data) { material->SetMetallic(data);		   }, metallic	 , material->GetMetallic());
+		if (inputSmooth)	 RegisterEditorCommand([material](auto data) { material->SetSmooth(data);		   }, smooth	 , material->GetSmooth());
+		if (inputEmissive)   RegisterEditorCommand([material](auto data) { material->SetEmission(data);		   }, emissive	 , material->GetEmission());
 	}
+}
+
+void MaterialDetails::ShowShaderList(Material* material) noexcept
+{
+	constexpr auto offsetPos = 130;
+
+	const auto& shaderPaths = material->GetShaderPaths();
+	auto shaderPath = shaderPaths[VertexShader];
+
+	ImGui::Text("Shader"); ImGui::SameLine(offsetPos);
+
+	constexpr auto itemWidth = 260;
+	ImGui::PushItemWidth(itemWidth);
+	ImGui::InputText("##", shaderPath.data(), shaderPath.size());
+	ImGui::PopItemWidth();
+
+	ImGui::SameLine(offsetPos + itemWidth);
+	
+	OpenResourceHelper();
+	if (auto resourceData = ShowSearchResourceHelper<Shader>())
+	{
+		auto nextShaderPath = resourceData->m_resourcePath.m_path;
+		RegisterEditorCommand(
+			[material](auto data) {
+				material->SetShader(VertexShader, data, false);
+				material->SetShader(PixelShader, data);
+			}
+			, nextShaderPath, shaderPath
+		);
+	}
+
+	ImGui::Text("");
+}
+
+void MaterialDetails::ShowTextureList(Material* material) noexcept
+{
+	constexpr auto offsetPos = 130;
+
+	UINT texIndex = 0;
+	for (const auto& textureInfo : material->GetTextures())
+	{
+		const auto& pramName = textureInfo.first;
+		const auto& texture  = textureInfo.second.m_texture;
+
+		auto texturePath = texture ? ConvertToJapanese(texture->GetFilePath().c_str()) : String();
+
+		// テクスチャ名表示
+		ImGui::Text(pramName.c_str()); ImGui::SameLine(offsetPos);
+
+		constexpr auto itemWidth = 260;
+		ImGui::PushItemWidth(itemWidth);
+		ImGui::InputText("##", texturePath.data(), texturePath.size());
+		ImGui::PopItemWidth();
+
+		ImGui::SameLine(offsetPos + itemWidth);
+
+		static auto selectTex = 0;
+		if (OpenResourceHelper(texIndex++))
+		{
+			// Resource Helper が複数個呼び出される可能性があるため ID で選択中かを判別
+			selectTex = texIndex;
+		}
+
+		// 検索での Texture 切り替え
+		if (selectTex == texIndex)
+		{
+			if (auto resourceData = ShowSearchResourceHelper<Texture>())
+			{
+				auto catchTexture = LoadResource<Texture>(resourceData);
+				RegisterEditorCommand([material, pramName](auto data) { material->SetTexture(pramName, data); }, catchTexture, texture);
+			}
+		}
+
+		ImGui::Text("");
+
+		if(!texture)
+		{
+			continue;
+		}
+
+		EditorHelper::Get().AddImage(texture->GetData(), ImVec2(100, 100));
+
+		// ドラッグアンドドロップでの Texture 切り替え
+		const auto hoverd = ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
+		if (ImGui::IsMouseReleased(0) && hoverd)
+		{
+			if (auto catchTexture = CatchDragObject<Texture>())
+			{
+				RegisterEditorCommand([material, pramName](auto data) { material->SetTexture(pramName, data); }, catchTexture, texture);
+			}
+		}
+
+		ShowDragDropHelper<Texture>(hoverd, 220, 140, 0);
+
+		// 改行用
+		ImGui::Text("");
+	}
+	ImGui::TreePop();
 }

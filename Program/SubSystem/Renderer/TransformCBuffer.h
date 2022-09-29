@@ -19,25 +19,26 @@ public:
 	void Initialize() noexcept;
 	void Update(Camera* mainCamera) noexcept;
 
+	void Bind() noexcept;
+
 	void SetWorld(const DirectX::XMMATRIX& world) noexcept;
 	void SetProjection(const DirectX::XMMATRIX& proj) noexcept;
 	void SetView(const DirectX::XMMATRIX& view) noexcept;
-	void SetEye(const DirectX::XMFLOAT3& eye) noexcept;
+
+	void CreateMatrixBufferData() noexcept;
 
 private:
 
-	struct ConstantBufferWorld
-	{
-		DirectX::XMMATRIX world;//ワールド行列
-	};
-
 	struct ConstantBufferMatrix
 	{
-		DirectX::XMMATRIX view;	//ビュー行列
-		DirectX::XMMATRIX proj;	//プロジェクション行列
-		DirectX::XMFLOAT3 eye;	//視点座標
+		DirectX::XMMATRIX world;
+		DirectX::XMMATRIX worldView;
+		DirectX::XMMATRIX worldViewProjection;
+		DirectX::XMMATRIX view;
+		DirectX::XMMATRIX viewProjection;
+		DirectX::XMMATRIX viewProjectionInverse;
+		DirectX::XMMATRIX projection;
 	};
 
-	D3D12ConstantBuffer m_constantBufferWorld;
 	D3D12ConstantBuffer m_constantBufferMatrix;
 };

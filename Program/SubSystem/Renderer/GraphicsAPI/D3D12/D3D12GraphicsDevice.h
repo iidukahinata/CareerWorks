@@ -1,5 +1,5 @@
 /**
-* @file    D3D12GrahicsDevice.h
+* @file    D3D12GraphicsDevice.h
 * @brief
 *
 * @date	   2022/08/02 2022年度初版
@@ -15,16 +15,16 @@
 
 class D3D12Sampler;
 
-class D3D12GrahicsDevice
+class D3D12GraphicsDevice
 {
 	COMPLETED_DEVELOPMENT()
 
-	D3D12GrahicsDevice() = default;
+		D3D12GraphicsDevice() = default;
 public:
 
-	static D3D12GrahicsDevice& Get() noexcept
+	static D3D12GraphicsDevice& Get() noexcept
 	{
-		static D3D12GrahicsDevice instance;
+		static D3D12GraphicsDevice instance;
 		return instance;
 	}
 
@@ -37,11 +37,17 @@ public:
 	void Present();
 	void WaitForGpuTask();
 
+	// RenderTarget
+	void SetRenderTarget();
+
 	// ViewPort
 	void SetViewport(float width, float height);
 
 	// ScissorRect
 	void SetScissorRect(float width, float height);
+
+	// Barrier
+	void ResourceBarrier(ID3D12Resource* const pResource, D3D12_RESOURCE_STATES beforeState, D3D12_RESOURCE_STATES afterState);
 
 	/** アクセス */
 	ID3D12Device*			   GetDevice()					const noexcept { return m_device.Get(); }
@@ -54,8 +60,6 @@ public:
 	D3D12Map<D3D12_SAMPLER_DESC, D3D12Sampler*>& GetSamplerMap()  noexcept { return m_samplerMap; }
 
 private:
-
-	void ResourceBarrier(ID3D12Resource* const pResource, D3D12_RESOURCE_STATES beforeState, D3D12_RESOURCE_STATES afterState);
 
 	bool InitDevice();
 	bool CreateSwapChain(const HWND hwnd, UINT screenWidth, UINT screenHeight, UINT bufferCount);

@@ -55,6 +55,8 @@ private:
 
 	const aiScene* m_aiScene = nullptr;
 
+	String m_currentDirectory;
+
 	Vector<String> m_meshPaths;
 	Unordered_Map<String, String> m_materialPaths;
 	Unordered_Map<String, Vector<String>> m_texturePaths;

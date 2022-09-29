@@ -18,11 +18,10 @@ struct ProprietaryMaterialData : public ProprietaryData
 	COMPLETED_DEVELOPMENT()
 public:
 
-	Math::Vector3 m_diffuse;
-	Math::Vector3 m_specular;
-	float m_specularPower;
-	Math::Vector3 m_ambient;
-	Math::Vector3 m_emissive;
+	Math::Vector3 m_albedo;
+	float m_metallic;
+	float m_smooth;
+	Math::Vector3 m_emission;
 
 	RASTERIZER_STATE m_rasterizerState;
 	BLEND_MODE m_blendMode;

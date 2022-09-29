@@ -1,20 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="ThirdParty">
-      <UniqueIdentifier>{bfd36d69-2933-44d9-b76a-7aeec2668f5c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Subsytem">
       <UniqueIdentifier>{233e8703-b9e5-4839-8990-c2d0756cee91}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ThirdParty\directTex">
-      <UniqueIdentifier>{1e906e5b-96b3-4754-aac5-5f8169ba7e66}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ThirdParty\FMOD">
-      <UniqueIdentifier>{1391c0b2-51f5-4f9d-83ca-e19e03deabd5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ThirdParty\imgui">
-      <UniqueIdentifier>{77021a01-5412-48d6-88c6-c233088a596c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Subsytem\Audio">
       <UniqueIdentifier>{3deadd0c-1f79-4645-abcd-852db29a057c}</UniqueIdentifier>
@@ -55,9 +43,6 @@
     <Filter Include="Subsytem\Scene\Component\Components">
       <UniqueIdentifier>{c8b0cee8-b7ce-48c6-ae02-f6688fc1d1b3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Subsytem\Renderer\GraphicsAPI">
-      <UniqueIdentifier>{f95040af-d078-48cc-b4c3-a5e09826f29c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Subsytem\Renderer\Deferred">
       <UniqueIdentifier>{4575594b-593a-4a89-aebb-c6c8e8c39555}</UniqueIdentifier>
     </Filter>
@@ -69,9 +54,6 @@
     </Filter>
     <Filter Include="Subsytem\Resource\Resources">
       <UniqueIdentifier>{c0b94dd1-7d2e-471e-94cd-eda08c8e6c70}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Subsytem\Renderer\GraphicsAPI\D3D12">
-      <UniqueIdentifier>{873f6baf-de66-4b8c-b0af-06d16bad0a85}</UniqueIdentifier>
     </Filter>
     <Filter Include="Subsytem\Resource\Resources\Audio">
       <UniqueIdentifier>{15d99010-e327-48e8-92ab-69f95ded7d56}</UniqueIdentifier>
@@ -154,6 +136,27 @@
     <Filter Include="Subsytem\Core\Command">
       <UniqueIdentifier>{d8316564-a4e5-409f-b97b-7c341b406616}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Subsytem\Renderer\GraphicsAPI">
+      <UniqueIdentifier>{f95040af-d078-48cc-b4c3-a5e09826f29c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Renderer\GraphicsAPI\D3D12">
+      <UniqueIdentifier>{873f6baf-de66-4b8c-b0af-06d16bad0a85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Renderer\LightMap">
+      <UniqueIdentifier>{fe8c874c-5bcd-47ab-9e4a-a19c7303d4da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty">
+      <UniqueIdentifier>{bfd36d69-2933-44d9-b76a-7aeec2668f5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\directTex">
+      <UniqueIdentifier>{1e906e5b-96b3-4754-aac5-5f8169ba7e66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\FMOD">
+      <UniqueIdentifier>{1391c0b2-51f5-4f9d-83ca-e19e03deabd5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\imgui">
+      <UniqueIdentifier>{77021a01-5412-48d6-88c6-c233088a596c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Program\WinMain.cpp" />
@@ -223,7 +226,7 @@
     <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12Fence.cpp">
       <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
     </ClCompile>
-    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12GrahicsDevice.cpp">
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12GraphicsDevice.cpp">
       <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
     </ClCompile>
     <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12IndexBuffer.cpp">
@@ -478,13 +481,13 @@
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsWidget.cpp">
       <Filter>Subsytem\Editor\Widget\Widgets</Filter>
     </ClCompile>
-    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\LogWidget.cpp">
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\ConsoleWidget.cpp">
       <Filter>Subsytem\Editor\Widget\Widgets</Filter>
     </ClCompile>
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\ProfilerWidget.cpp">
       <Filter>Subsytem\Editor\Widget\Widgets</Filter>
     </ClCompile>
-    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\ResourceWidget.cpp">
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\AssetsWidget.cpp">
       <Filter>Subsytem\Editor\Widget\Widgets</Filter>
     </ClCompile>
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\SceneWidget.cpp">
@@ -519,6 +522,9 @@
     </ClCompile>
     <ClCompile Include="Program\SubSystem\Core\Command\CommandList.cpp">
       <Filter>Subsytem\Core\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\LightMap\DefaultLightMap.cpp">
+      <Filter>Subsytem\Renderer\LightMap</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -603,7 +609,7 @@
     <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12DeviceChild.h">
       <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
     </ClInclude>
-    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12GrahicsDevice.h">
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12GraphicsDevice.h">
       <Filter>Subsytem\Renderer\GraphicsAPI\D3D12</Filter>
     </ClInclude>
     <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12Helper.h">
@@ -927,13 +933,13 @@
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsWidget.h">
       <Filter>Subsytem\Editor\Widget\Widgets</Filter>
     </ClInclude>
-    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\LogWidget.h">
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\ConsoleWidget.h">
       <Filter>Subsytem\Editor\Widget\Widgets</Filter>
     </ClInclude>
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\ProfilerWidget.h">
       <Filter>Subsytem\Editor\Widget\Widgets</Filter>
     </ClInclude>
-    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\ResourceWidget.h">
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\AssetsWidget.h">
       <Filter>Subsytem\Editor\Widget\Widgets</Filter>
     </ClInclude>
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\SceneWidget.h">
@@ -971,6 +977,9 @@
     </ClInclude>
     <ClInclude Include="Program\SubSystem\Core\Command\CommandList.h">
       <Filter>Subsytem\Core\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\LightMap\DefaultLightMap.h">
+      <Filter>Subsytem\Renderer\LightMap</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

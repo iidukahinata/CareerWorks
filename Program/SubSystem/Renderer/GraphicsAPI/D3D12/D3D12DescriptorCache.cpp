@@ -242,7 +242,7 @@ void D3D12DescriptorCache::SetSampler(ShaderType type, SamplerCache& cache, D3D1
 	// ŽŸ‰ñŽg—p‚Å‚«‚é‚æ‚¤‚É“o˜^
 	m_samplerMap.Add(desc, gpuHandle);
 
-	const UINT rootPramIndex = rootSignature->GetUAVRootPramIndex(type);
+	const UINT rootPramIndex = rootSignature->GetSamplerRootPramIndex(type);
 
 	if (type == ComputeShader)
 	{

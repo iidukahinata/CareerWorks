@@ -13,10 +13,15 @@ void Shader::ReCompile(ShaderType type, D3D_SHADER_MACRO* defines /* = nullptr *
 	SetShader(type, m_shaderPaths[type], defines);
 }
 
-void Shader::SetShader(ShaderType type, StringView name, D3D_SHADER_MACRO* defines /* = nullptr */) noexcept
+bool Shader::SetShader(ShaderType type, StringView path, D3D_SHADER_MACRO* defines /* = nullptr */) noexcept
 {
-	m_shaderPaths[type] = name;
-	m_shaders[type].Compile(name, type, defines);
+	if (path.empty())
+	{
+		return false;
+	}
+
+	m_shaderPaths[type] = path;
+	return m_shaders[type].Compile(path, type, defines);
 }
 
 D3D12Shader* Shader::GetShader(ShaderType type) noexcept

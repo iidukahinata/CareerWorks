@@ -45,7 +45,7 @@ public:
 
 	bool Create() noexcept;
 
-	void BegineFream() noexcept;
+	void BeginFrame() noexcept;
 	void RunCommandList() noexcept;
 	void Clear(ID3D12PipelineState* const pPipelineSate = nullptr) noexcept;
 	bool Signal(ID3D12Fence* const pFence, const UINT64& currentFenceValue) noexcept;

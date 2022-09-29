@@ -183,9 +183,9 @@
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\TransformDetails.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsWidget.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\Factory\DetailsObjectFactory.cpp" />
-    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\LogWidget.cpp" />
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\ConsoleWidget.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\ProfilerWidget.cpp" />
-    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\ResourceWidget.cpp" />
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\AssetsWidget.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\SceneWidget.cpp" />
     <ClCompile Include="Program\SubSystem\Input\Direct\DirectInput.cpp" />
     <ClCompile Include="Program\SubSystem\Input\Input.cpp" />
@@ -207,7 +207,7 @@
     <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12DescriptorHeap.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12DeviceChild.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12Fence.cpp" />
-    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12GrahicsDevice.cpp" />
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12GraphicsDevice.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12IndexBuffer.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12PipelineState.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12RenderTexture.cpp" />
@@ -221,6 +221,7 @@
     <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12VertexBuffer.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12View.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\LightMap.cpp" />
+    <ClCompile Include="Program\SubSystem\Renderer\LightMap\DefaultLightMap.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\Renderer.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\TransformCBuffer.cpp" />
     <ClCompile Include="Program\SubSystem\Resource\Factory\ResourceFactory.cpp" />
@@ -322,9 +323,9 @@
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\TransformDetails.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsWidget.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\Factory\DetailsObjectFactory.h" />
-    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\LogWidget.h" />
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\ConsoleWidget.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\ProfilerWidget.h" />
-    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\ResourceWidget.h" />
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\AssetsWidget.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\SceneWidget.h" />
     <ClInclude Include="Program\SubSystem\Input\Direct\DirectInput.h" />
     <ClInclude Include="Program\SubSystem\Input\Input.h" />
@@ -350,7 +351,7 @@
     <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12DescriptorCache.h" />
     <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12DescriptorHeap.h" />
     <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12DeviceChild.h" />
-    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12GrahicsDevice.h" />
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12GraphicsDevice.h" />
     <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12Helper.h" />
     <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12IndexBuffer.h" />
     <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12PipelineState.h" />
@@ -365,6 +366,7 @@
     <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12VertexBuffer.h" />
     <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12View.h" />
     <ClInclude Include="Program\SubSystem\Renderer\LightMap.h" />
+    <ClInclude Include="Program\SubSystem\Renderer\LightMap\DefaultLightMap.h" />
     <ClInclude Include="Program\SubSystem\Renderer\Renderer.h" />
     <ClInclude Include="Program\SubSystem\Renderer\TransformCBuffer.h" />
     <ClInclude Include="Program\SubSystem\Resource\Factory\ResourceFactory.h" />

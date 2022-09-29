@@ -2,7 +2,7 @@
 * @file    ResourceManager.cpp
 * @brief
 *
-* @date	   2022/09/09 2022年度初版
+* @date	   2022/09/21 2022年度初版
 */
 
 
@@ -234,7 +234,7 @@ ResourceData* ResourceManager::CreateResourceData(uint32_t type, StringView path
     resourceData.m_resourcePath.m_path = filePath;
 
     // .asset ファイルデータの作成と初期化
-    UploadResourceData(type, assetName);
+    UploadResourceData(type, assetName, ToAssetDirectory(path));
 
     // パスからのアクセス用変数も作成
     m_resourceDataList[filePath] = &resourceData;
@@ -272,6 +272,30 @@ ResourceData* ResourceManager::GetResourceData(StringView path) noexcept
     return nullptr;
 }
 
+void ResourceManager::GetResourceDataListFromDirectory(StringView path, Vector<std::pair<String, ResourceData*>>& resourceDatas) noexcept
+{
+    auto filePaths = FileSystem::GetFilePathsFromDirectory(path);
+
+    resourceDatas.resize(filePaths.size());
+
+    // 指定ディレクトリには .asset ファイルしか存在しないとして処理
+    for (int i = 0; i < filePaths.size(); ++i)
+    {
+        FileStream file;
+        file.Load(filePaths[i], OpenMode::Read_Mode);
+
+        ASSERT(file.IsOpen());
+
+        uint32_t type;
+        file.Read(&type);
+
+        String assetName;
+        file.Read(&assetName);
+
+        resourceDatas[i] = std::make_pair(assetName, GetResourceData(type, assetName));
+    }
+}
+
 ResourceData* ResourceManager::GetResourceData(StringView type, StringView name) noexcept
 {
     return GetResourceData(GetHashFromCRC(type), name);
@@ -294,7 +318,7 @@ ResourceData* ResourceManager::GetResourceData(uint32_t type, StringView name) n
 
 void ResourceManager::ImportAssets() noexcept
 {
-    auto&& filePaths = FileSystem::GetFilePathsFromDirectory(IMPORT_ASSET_DIRECTORY);
+    auto&& filePaths = FileSystem::GetFilePathsRecursiveDirectory(IMPORT_ASSET_DIRECTORY);
 
     ImportAssets(filePaths);
 }
@@ -303,9 +327,14 @@ void ResourceManager::ImportAssets(const Vector<String>& filePaths) noexcept
 {
     for (int i = 0; i < filePaths.size(); ++i)
     {
+        StringView path = filePaths[i];
+        if (IsProprietaryFilePath(path))
+        {
+            continue;
+        }
+
         bool ret = false;
         String directory = ORIGINAL_DATA_DIRECTORY;
-        StringView path = filePaths[i];
 
         // 次回呼び出し時のために独自データを作成
         if (IsModelFilePath(path))
@@ -362,7 +391,7 @@ const Unordered_Map<String, ResourceData>& ResourceManager::GetResourceDataListB
 
 void ResourceManager::DependencyBuilding() noexcept
 {
-    auto filePaths = FileSystem::GetFilePathsFromDirectory(ASSET_DATA_DIRECTORY);
+    auto filePaths = FileSystem::GetFilePathsRecursiveDirectory(ASSET_DATA_DIRECTORY);
 
     // 指定ディレクトリには .asset ファイルしか存在しないとして処理
     // アセットファイルから ResourceData の静的構築を行う。
@@ -450,13 +479,17 @@ void ResourceManager::AsyncLoad(ResourceHandle* resourceHandle, const Vector<Res
 
 void ResourceManager::UploadResourceData(uint32_t type, StringView name) noexcept
 {
+    UploadResourceData(type, name, GetAssetPath(name));
+}
+
+void ResourceManager::UploadResourceData(uint32_t type, StringView name, StringView assetPath) noexcept
+{
     String assetName(name);
 
     ASSERT(m_resourceTypeList.contains(type));
     ASSERT(m_resourceTypeList[type].contains(assetName));
 
     auto& resourceData = m_resourceTypeList[type][assetName];
-    auto assetPath = GetAssetPath(assetName);
 
     FileStream file;
     if (file.CreateFileAndLoad(assetPath, OpenMode::Write_Mode))
@@ -477,35 +510,35 @@ bool ResourceManager::IsModelFilePath(StringView path) const noexcept
 {
     switch (GetHashFromCRC(GetExt(path)))
     {
-        CASE_EXT_RETURN("obj")
-        CASE_EXT_RETURN("3ds")
-        CASE_EXT_RETURN("max")
-        CASE_EXT_RETURN("6kt")
-        CASE_EXT_RETURN("6ks")
-        CASE_EXT_RETURN("rok")
-        CASE_EXT_RETURN("ac")
-        CASE_EXT_RETURN("c3d")
-        CASE_EXT_RETURN("cob")
-        CASE_EXT_RETURN("xsi")
-        CASE_EXT_RETURN("fbx")
-        CASE_EXT_RETURN("dae")
-        CASE_EXT_RETURN("dxf")
-        CASE_EXT_RETURN("vda")
-        CASE_EXT_RETURN("sxf")
-        CASE_EXT_RETURN("stl")
-        CASE_EXT_RETURN("xaml")
-        CASE_EXT_RETURN("ma")
-        CASE_EXT_RETURN("x")
-        CASE_EXT_RETURN("step")
-        CASE_EXT_RETURN("iges")
-        CASE_EXT_RETURN("wrl")
-        CASE_EXT_RETURN("ply")
-        CASE_EXT_RETURN("c4b")
-        CASE_EXT_RETURN("blend")
-        CASE_EXT_RETURN("sldprt")
-        CASE_EXT_RETURN("3dm")
-        CASE_EXT_RETURN("zpr")
-        CASE_EXT_RETURN("pmd")
+    CASE_EXT_RETURN("obj")
+    CASE_EXT_RETURN("3ds")
+    CASE_EXT_RETURN("max")
+    CASE_EXT_RETURN("6kt")
+    CASE_EXT_RETURN("6ks")
+    CASE_EXT_RETURN("rok")
+    CASE_EXT_RETURN("ac")
+    CASE_EXT_RETURN("c3d")
+    CASE_EXT_RETURN("cob")
+    CASE_EXT_RETURN("xsi")
+    CASE_EXT_RETURN("fbx")
+    CASE_EXT_RETURN("dae")
+    CASE_EXT_RETURN("dxf")
+    CASE_EXT_RETURN("vda")
+    CASE_EXT_RETURN("sxf")
+    CASE_EXT_RETURN("stl")
+    CASE_EXT_RETURN("xaml")
+    CASE_EXT_RETURN("ma")
+    CASE_EXT_RETURN("x")
+    CASE_EXT_RETURN("step")
+    CASE_EXT_RETURN("iges")
+    CASE_EXT_RETURN("wrl")
+    CASE_EXT_RETURN("ply")
+    CASE_EXT_RETURN("c4b")
+    CASE_EXT_RETURN("blend")
+    CASE_EXT_RETURN("sldprt")
+    CASE_EXT_RETURN("3dm")
+    CASE_EXT_RETURN("zpr")
+    CASE_EXT_RETURN("pmd")
     default: return false;
     }
 }
@@ -514,26 +547,26 @@ bool ResourceManager::IsTextureFilePath(StringView path) const noexcept
 {
     switch (GetHashFromCRC(GetExt(path)))
     {
-        CASE_EXT_RETURN("jpg")
-        CASE_EXT_RETURN("jpeg")
-        CASE_EXT_RETURN("JPG")
-        CASE_EXT_RETURN("JPEG")
-        CASE_EXT_RETURN("jpe")
-        CASE_EXT_RETURN("pjpeg")
-        CASE_EXT_RETURN("pjp")
-        CASE_EXT_RETURN("png")
-        CASE_EXT_RETURN("bmp")
-        CASE_EXT_RETURN("tga")
-        CASE_EXT_RETURN("dds")
-        CASE_EXT_RETURN("gif")
-        CASE_EXT_RETURN("tiff")
-        CASE_EXT_RETURN("tif")
-        CASE_EXT_RETURN("webp")
-        CASE_EXT_RETURN("ico")
-        CASE_EXT_RETURN("psd")
-        CASE_EXT_RETURN("hdr")
-        CASE_EXT_RETURN("svg")
-        CASE_EXT_RETURN("svgz")
+    CASE_EXT_RETURN("jpg")
+    CASE_EXT_RETURN("jpeg")
+    CASE_EXT_RETURN("JPG")
+    CASE_EXT_RETURN("JPEG")
+    CASE_EXT_RETURN("jpe")
+    CASE_EXT_RETURN("pjpeg")
+    CASE_EXT_RETURN("pjp")
+    CASE_EXT_RETURN("png")
+    CASE_EXT_RETURN("bmp")
+    CASE_EXT_RETURN("tga")
+    CASE_EXT_RETURN("dds")
+    CASE_EXT_RETURN("gif")
+    CASE_EXT_RETURN("tiff")
+    CASE_EXT_RETURN("tif")
+    CASE_EXT_RETURN("webp")
+    CASE_EXT_RETURN("ico")
+    CASE_EXT_RETURN("psd")
+    CASE_EXT_RETURN("hdr")
+    CASE_EXT_RETURN("svg")
+    CASE_EXT_RETURN("svgz")
     default: return false;
     }
 }
@@ -542,28 +575,28 @@ bool ResourceManager::IsAudioFilePath(StringView path) const noexcept
 {
     switch (GetHashFromCRC(GetExt(path)))
     {
-        CASE_EXT_RETURN("wav")
-        CASE_EXT_RETURN("mp3")
-        CASE_EXT_RETURN("mp4")
-        CASE_EXT_RETURN("wma")
-        CASE_EXT_RETURN("asf")
-        CASE_EXT_RETURN("3gp")
-        CASE_EXT_RETURN("3g2")
-        CASE_EXT_RETURN("aac")
-        CASE_EXT_RETURN("ogg")
-        CASE_EXT_RETURN("oga")
-        CASE_EXT_RETURN("mov")
-        CASE_EXT_RETURN("m4a")
-        CASE_EXT_RETURN("alac")
-        CASE_EXT_RETURN("ape")
-        CASE_EXT_RETURN("mac")
-        CASE_EXT_RETURN("tta")
-        CASE_EXT_RETURN("mka")
-        CASE_EXT_RETURN("mkv")
-        CASE_EXT_RETURN("flac")
-        CASE_EXT_RETURN("aiff")
-        CASE_EXT_RETURN("aif")
-        CASE_EXT_RETURN("aifc")
+    CASE_EXT_RETURN("wav")
+    CASE_EXT_RETURN("mp3")
+    CASE_EXT_RETURN("mp4")
+    CASE_EXT_RETURN("wma")
+    CASE_EXT_RETURN("asf")
+    CASE_EXT_RETURN("3gp")
+    CASE_EXT_RETURN("3g2")
+    CASE_EXT_RETURN("aac")
+    CASE_EXT_RETURN("ogg")
+    CASE_EXT_RETURN("oga")
+    CASE_EXT_RETURN("mov")
+    CASE_EXT_RETURN("m4a")
+    CASE_EXT_RETURN("alac")
+    CASE_EXT_RETURN("ape")
+    CASE_EXT_RETURN("mac")
+    CASE_EXT_RETURN("tta")
+    CASE_EXT_RETURN("mka")
+    CASE_EXT_RETURN("mkv")
+    CASE_EXT_RETURN("flac")
+    CASE_EXT_RETURN("aiff")
+    CASE_EXT_RETURN("aif")
+    CASE_EXT_RETURN("aifc")
     default: return false;
     }
 }
@@ -572,8 +605,9 @@ bool ResourceManager::IsShaderFilePath(StringView path) const noexcept
 {
     switch (GetHashFromCRC(GetExt(path)))
     {
-        CASE_EXT_RETURN("hlsl")
-        CASE_EXT_RETURN("cso")
+    CASE_EXT_RETURN("hlsl")
+    CASE_EXT_RETURN("hlsli")
+    CASE_EXT_RETURN("cso")
     default: return false;
     }
 }
@@ -582,10 +616,11 @@ bool ResourceManager::IsProprietaryFilePath(StringView path) const noexcept
 {
     switch (GetHashFromCRC(GetExt(path)))
     {
-        CASE_EXT_RETURN("model")
-        CASE_EXT_RETURN("mesh")
-        CASE_EXT_RETURN("material")
-        CASE_EXT_RETURN("texture")
+    CASE_EXT_RETURN("model")
+    CASE_EXT_RETURN("mesh")
+    CASE_EXT_RETURN("material")
+    CASE_EXT_RETURN("texture")
+    CASE_EXT_RETURN("asset")
     default: return false;
     }
 }
@@ -593,4 +628,13 @@ bool ResourceManager::IsProprietaryFilePath(StringView path) const noexcept
 String ResourceManager::GetAssetPath(StringView assetName) const noexcept
 {
     return ASSET_DATA_DIRECTORY + String(assetName) + ASSET_EXTENSION;
+}
+
+String ResourceManager::ToAssetDirectory(StringView resourcePath) const noexcept
+{
+    resourcePath = resourcePath.substr(resourcePath.find("/") + 1, resourcePath.size());
+    resourcePath = resourcePath.substr(resourcePath.find("/") + 1, resourcePath.size());
+    resourcePath = resourcePath.substr(0, resourcePath.find("."));
+
+    return GetAssetPath(resourcePath);
 }

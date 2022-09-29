@@ -38,20 +38,20 @@ void LightDetails::Draw()
 		auto inputColor = ImGui::ColorEdit4("##Color", &color.x);
 
 		ImGui::Text("Intensity"); ImGui::SameLine(offsetPos);
-		auto inputIntensity = ImGui::DragFloat("##Intensity", &intensity, 0.f);
+		auto inputIntensity = ImGui::DragFloat("##Intensity", &intensity, 0.1f);
 
 		auto inputIntensityRange = false;
 		if (lightType == LightType::PointLight || lightType == LightType::SpotLight)
 		{
 			ImGui::Text("InfluenceRange"); ImGui::SameLine(offsetPos);
-			inputIntensityRange = ImGui::DragFloat("##InfluenceRange", &influenceRange, 0.f);
+			inputIntensityRange = ImGui::DragFloat("##InfluenceRange", &influenceRange, 0.1f);
 		}
 
 		auto inputAngle = false;
 		if (lightType == LightType::SpotLight)
 		{
 			ImGui::Text("Angle"); ImGui::SameLine(offsetPos);
-			inputAngle = ImGui::DragFloat("##Angle", &angle);
+			inputAngle = ImGui::DragFloat("##Angle", &angle, 0.1f);
 		}
 
 		if (inputLightType)		 RegisterEditorCommand([light](auto data) { light->SetLightType(data);		}, lightType	  , light->GetLightType());

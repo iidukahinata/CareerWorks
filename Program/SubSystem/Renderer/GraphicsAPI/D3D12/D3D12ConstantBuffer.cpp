@@ -7,7 +7,7 @@
 
 
 #include "D3D12ConstantBuffer.h"
-#include "D3D12GrahicsDevice.h"
+#include "D3D12GraphicsDevice.h"
 
 bool D3D12ConstantBuffer::Create(UINT bufferSize) noexcept
 {

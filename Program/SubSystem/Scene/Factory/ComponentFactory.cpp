@@ -17,8 +17,8 @@
 #include "../Component/Components/AudioListener.h"
 #include "../Component/Components/AudioSpeaker.h"
 
+#define CASE_CREATE_COMPONENT(CLASS, COMPONENT)           case GET_HASH(CLASS): COMPONENT = std::make_unique<CLASS>(); break;
 #define CASE_CREATE_ISA_COMPONENT(CLASS, NAME, COMPONENT) case GetHashFromCRC(NAME): COMPONENT = std::make_unique<CLASS>(); break;
-#define CASE_CREATE_COMPONENT(CLASS, COMPONENT) case GET_HASH(CLASS): COMPONENT = std::make_unique<CLASS>(); break;
 
 UniquePtr<IComponent> ComponentFactory::Create(GameObject* gameObject, StringView name) noexcept
 {

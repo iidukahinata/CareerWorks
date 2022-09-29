@@ -2,12 +2,13 @@
 * @file    Material.cpp
 * @brief
 *
-* @date	   2022/09/04 2022年度初版
+* @date	   2022/09/24 2022年度初版
 */
 
 
 #include "Material.h"
 #include "SubSystem/Resource/ResourceManager.h"
+#include "SubSystem/Resource/ResourceData/ProprietaryShaderData.h"
 
 Material* Material::Create(StringView name, const ProprietaryMaterialData& data /* = ProprietaryMaterialData() */) noexcept
 {
@@ -30,36 +31,24 @@ bool Material::Load(StringView path)
 		return false;
 	}
 
-	if (!CreateConstantBuffer())
-	{
-		return false;
-	}
-
-	if (!CreateSampler())
-	{
-		return false;
-	}
-
-	if (!CreateRootSinature())
-	{
-		return false;
-	}
-
-	// テクスチャセット
+	// Set Texture Settings
 	for (auto& texturePath : m_materialData.m_texturePaths)
 	{
 		auto resourceData = m_resourceManager->GetResourceData(texturePath.second);
 		auto texture = m_resourceManager->GetResource(resourceData);
 
-		m_textures[texturePath.first].m_texture = dynamic_cast<Texture*>(texture);
+		m_textureInfos[texturePath.first].m_texture = dynamic_cast<Texture*>(texture);
 	}
 
-	CompileShader();
-
-	// 前回データのテクスチャを設定済みのため false 指定
-	ParametricAnalysis(false);
-
-	if (!CreatePipeline())
+	if (!CreateConstantBuffer())
+	{
+		return false;
+	}
+	if (!CreateRootSinature())
+	{
+		return false;
+	}
+	if (!CompileShader())
 	{
 		return false;
 	}
@@ -76,127 +65,41 @@ void Material::Update()
 
 void Material::Render() noexcept
 {
+	// Set PipelineState
 	m_pipeline.Set();
 
+	// Set ConstantBuffer
 	m_constantBufferMaterial.VSSet(2);
 
-	for (int i = 0; i < m_samplers.size(); ++i)
+	// Set Sampler
+	for (auto& sampler : m_samplers)
 	{
-		m_samplers[i].PSSet(i);
+		sampler.second.PSSet(sampler.first);
 	}
 
-	for (auto& texture : m_textures)
+	// Set Texture
+	for (auto& textureInfo : m_textureInfos)
 	{
-		auto& textureInfo = texture.second;
-		if (textureInfo.m_texture)
+		auto texture = textureInfo.second.m_texture;
+		auto bindPoint = textureInfo.second.m_bindPoint;
+
+		if (texture)
 		{
-			textureInfo.m_texture->PSSet(textureInfo.m_bindPoint);
+			texture->PSSet(bindPoint);
 		}
 	}
 }
 
-void Material::SetShader(ShaderType type, StringView name, bool createPipeline /* = true */) noexcept
+void Material::SetBlendMode(BLEND_MODE mode) noexcept
 {
-	m_shader.SetShader(type, name);
+	m_materialData.m_blendMode = mode;
 
-	// テクスチャのバインド情報を更新する必要があるため
-	if (type == PixelShader)
-	{
-		ParametricAnalysis();
-	}
-
-	// シェーダー変更の適用
-	if (createPipeline)
-	{
-		CreatePipeline();
-	}
+	CreatePipeline();
 }
 
-void Material::SetTexture(StringView pramName, Texture* texture, bool isDefineToShader /* = false */) noexcept
+BLEND_MODE Material::GetBlendMode() const noexcept
 {
-	String pram(pramName);
-
-	if (m_textures.contains(pram))
-	{
-		m_textures[pram].m_texture = texture;
-	}
-	else
-	{
-		LOG_ERROR("指定されたテクスチャパラメーターは存在しませんでした。\n ファイル名 : " + pram);
-	}
-
-	// テクスチャ設定の Define を更新し Pipeline に適用させるため
-	if (isDefineToShader)
-	{
-		DefineSettingToShader();
-
-		CreatePipeline();
-	}
-}
-
-const Unordered_Map<String, TexturePramInfo>& Material::GetTextures() const noexcept
-{
-	return m_textures;
-}
-
-void Material::SetDiffuse(const Math::Vector3& diffuse) noexcept
-{
-	m_materialData.m_diffuse = diffuse;
-
-	UpdateConstantBufferData();
-}
-
-const Math::Vector3& Material::GetDiffuse() const noexcept
-{
-	return m_materialData.m_diffuse;
-}
-
-void Material::SetSpecular(const Math::Vector3& specular) noexcept
-{
-	m_materialData.m_specular = specular;
-
-	UpdateConstantBufferData();
-}
-
-const Math::Vector3 Material::GetSpecular() const noexcept
-{
-	return m_materialData.m_specular;
-}
-
-void Material::SetSpecularPower(float specularPower) noexcept
-{
-	m_materialData.m_specularPower = specularPower;
-
-	UpdateConstantBufferData();
-}
-
-float Material::GetSpecularPower() noexcept
-{
-	return m_materialData.m_specularPower;
-}
-
-void Material::SetAmbient(const Math::Vector3& ambient) noexcept
-{
-	m_materialData.m_ambient = ambient;
-
-	UpdateConstantBufferData();
-}
-
-const Math::Vector3& Material::GetAmbient() const noexcept
-{
-	return m_materialData.m_ambient;
-}
-
-void Material::SetEmissive(const Math::Vector3& emissive) noexcept
-{
-	m_materialData.m_emissive = emissive;
-
-	UpdateConstantBufferData();
-}
-
-const Math::Vector3 Material::GetEmissive() const noexcept
-{
-	return m_materialData.m_emissive;
+	return m_materialData.m_blendMode;
 }
 
 bool Material::IsTranslucent() const noexcept
@@ -216,34 +119,155 @@ RASTERIZER_STATE Material::GetRasterizerState() const noexcept
 	return m_materialData.m_rasterizerState;
 }
 
-void Material::SetBlendMode(BLEND_MODE mode) noexcept
+bool Material::SetShader(ShaderType type, StringView path, bool createPipeline /* = true */) noexcept
 {
-	m_materialData.m_blendMode = mode;
+	const auto& shaderPaths = m_shader.GetShaderPaths();
+	if (shaderPaths[type] == path)
+	{
+		return true;
+	}
 
-	CreatePipeline();
+	// テクスチャ設定の Define を定義したコンパイルを行うため
+	if (type == PixelShader)
+	{
+		// 初期ロード時かを PixelShader の有無で判断している
+		const auto hasPixelShader = !!m_shader.GetShader(PixelShader);
+		if (hasPixelShader)
+		{
+			m_textureInfos.clear();
+		}
+
+		if (!DefineSettingToPixelShader(path))
+		{
+			return false;
+		}
+
+		ParametricAnalysis(hasPixelShader);
+	}
+	else
+	{
+		if (!m_shader.SetShader(type, path))
+		{
+			return false;
+		}
+	}
+
+	// シェーダー変更の適用
+	if (createPipeline)
+	{
+		return CreatePipeline();
+	}
+
+	return true;
 }
 
-BLEND_MODE Material::GetBlendMode() const noexcept
+const Array<String, ShaderType::NumAllType>& Material::GetShaderPaths() const noexcept
 {
-	return m_materialData.m_blendMode;
+	return m_shader.GetShaderPaths();
 }
 
-void Material::DefineSettingToShader() noexcept
+void Material::SetTexture(StringView pramName, Texture* texture, bool isDefineToShader /* = false */) noexcept
 {
-	Vector<D3D_SHADER_MACRO> defines;
+	String pram(pramName);
+
+	if (m_textureInfos.contains(pram))
+	{
+		m_textureInfos[pram].m_texture = texture;
+
+		// テクスチャ設定の Define を更新し Pipeline に適用させるため
+		if (isDefineToShader)
+		{
+			DefineSettingToPixelShader();
+
+			CreatePipeline();
+		}
+	}
+	else
+	{
+		LOG_ERROR("指定されたテクスチャパラメーターは存在しませんでした。\n ファイル名 : " + pram);
+	}
+}
+
+const Unordered_Map<String, TexturePramInfo>& Material::GetTextures() const noexcept
+{
+	return m_textureInfos;
+}
+
+void Material::SetAlbedo(const Math::Vector3& albedo) noexcept
+{
+	m_materialData.m_albedo = albedo;
+
+	UpdateConstantBufferData();
+}
+
+const Math::Vector3& Material::GetAlbedo() const noexcept
+{
+	return m_materialData.m_albedo;
+}
+
+void Material::SetMetallic(float metallic) noexcept
+{
+	m_materialData.m_metallic = metallic;
+
+	UpdateConstantBufferData();
+}
+
+float Material::GetMetallic() const noexcept
+{
+	return m_materialData.m_metallic;
+}
+
+void Material::SetSmooth(float smooth) noexcept
+{
+	m_materialData.m_smooth = smooth;
+
+	UpdateConstantBufferData();
+}
+
+float Material::GetSmooth() noexcept
+{
+	return m_materialData.m_smooth;
+}
+
+void Material::SetEmission(const Math::Vector3& emissive) noexcept
+{
+	m_materialData.m_emission = emissive;
+
+	UpdateConstantBufferData();
+}
+
+const Math::Vector3 Material::GetEmission() const noexcept
+{
+	return m_materialData.m_emission;
+}
+
+bool Material::DefineSettingToPixelShader(StringView path /* = StringView() */) noexcept
+{
+	if (path.empty())
+	{
+		path = m_materialData.m_shaderPaths[PixelShader];
+
+		if (path.empty())
+		{
+			return false;
+		}
+	}
 
 	// 変数の一時的な保存場所として使用
 	Map<String, String> macros;
 
 	// テクスチャ用のマクロ定義を作成
-	for (auto& texture : m_textures)
+	for (auto& textureInfo : m_textureInfos)
 	{
-		auto& info = texture.second;
+		auto texture = textureInfo.second.m_texture;
+		auto bindPoint = textureInfo.second.m_bindPoint;
 	
-		auto name = "HAS_SRV_" + std::to_string(info.m_bindPoint);
-		macros.emplace(std::move(name), info.m_texture ? "1" : "0");
+		auto&& name = "HAS_SRV_" + std::to_string(bindPoint);
+		macros.emplace(std::move(name), texture ? "1" : "0");
 	}
 	
+	Vector<D3D_SHADER_MACRO> defines;
+
 	constexpr auto NumNullObject = 1;
 	defines.reserve(macros.size() + NumNullObject);
 
@@ -255,41 +279,36 @@ void Material::DefineSettingToShader() noexcept
 	// 終端定義
 	defines.push_back(D3D_SHADER_MACRO(NULL, NULL));
 
-	auto& shaderPath = m_materialData.m_shaderPaths[PixelShader];
-	m_shader.SetShader(PixelShader, shaderPath, defines.data());
+	return m_shader.SetShader(PixelShader, path, defines.data());
 }
 
 void Material::ParametricAnalysis(bool isClear /* = true */) noexcept
 {
 	if (isClear)
 	{
-		m_textures.clear();
+		m_textureInfos.clear();
 	}
 
-	if (auto psShader = m_shader.GetShader(PixelShader))
+	if (const auto psShader = m_shader.GetShader(PixelShader))
 	{
-		auto&& srvPram = psShader->GetSRVBindDesc();
-		for (int i = 0; i < srvPram.size(); ++i)
+		auto srvPrams = psShader->GetSRVBindDesc();
+		for (const auto& pram : srvPrams)
 		{
-			auto& info = m_textures[srvPram[i].Name];
+			auto& info = m_textureInfos[pram.Name];
+			info.m_bindPoint = pram.BindPoint;
+		}
 
-			info.m_bindPoint = srvPram[i].BindPoint;
+		auto samplerPrams = psShader->GetSamplerBindDesc();
+		for (const auto& pram : samplerPrams)
+		{
+			auto& sampler = m_samplers[pram.BindPoint];
+			sampler.Create(D3D12_FILTER_ANISOTROPIC, D3D12_TEXTURE_ADDRESS_MODE_CLAMP, D3D12_TEXTURE_ADDRESS_MODE_CLAMP);
 		}
 	}
 }
 
-bool Material::CreateSampler() noexcept
-{
-	m_samplers.resize(2);
-	m_samplers[0].Create();
-	m_samplers[1].Create(D3D12_FILTER_ANISOTROPIC, D3D12_TEXTURE_ADDRESS_MODE_CLAMP, D3D12_TEXTURE_ADDRESS_MODE_CLAMP);
-
-	return true;
-}
-
 bool Material::CreateRootSinature() noexcept
 {
-	// パラメータ設定
 	Array<CD3DX12_DESCRIPTOR_RANGE1, 3> descTblRanges = {};
 	Array<CD3DX12_ROOT_PARAMETER1, 3> rootParams = {};
 
@@ -314,13 +333,28 @@ bool Material::CreateRootSinature() noexcept
 bool Material::CreatePipeline() noexcept
 {
 	GraphicsPipelineStateDesc desc;
-	desc.VS = m_shader.GetShader(VertexShader);
-	desc.PS = m_shader.GetShader(PixelShader);
-	desc.GS = m_shader.GetShader(GeometryShader);
-	desc.BlendMode = m_materialData.m_blendMode;
+	desc.VS				 = m_shader.GetShader(VertexShader);
+	desc.PS				 = m_shader.GetShader(PixelShader);
+	desc.GS				 = m_shader.GetShader(GeometryShader);
+	desc.BlendMode		 = m_materialData.m_blendMode;
 	desc.RasterizerState = m_materialData.m_rasterizerState;
-	desc.PrimitiveType = PRIMITIVE_TYPE_TRIANGLELIST;
-	desc.NumRenderTargets = 1;
+	desc.PrimitiveType	 = PRIMITIVE_TYPE_TRIANGLELIST;
+
+	if (desc.PS)
+	{
+		// 色んなシェーダーに対応出来るようにするためシェーダーデータから設定を取得
+		auto renderTargetsDesc = desc.PS->GetRenderTargetsDesc();
+
+		desc.NumRenderTargets = renderTargetsDesc.size();
+		for (int i = 0; i < desc.NumRenderTargets; ++i)
+		{
+			desc.RTVForamt[i] = renderTargetsDesc[i];
+		}
+	}
+	else
+	{
+		desc.NumRenderTargets = 1;
+	}
 
 	return m_pipeline.Create(desc, &m_rootSignature);
 }
@@ -336,47 +370,61 @@ bool Material::CreateConstantBuffer() noexcept
 	return false;
 }
 
-void Material::CompileShader() noexcept
+bool Material::CompileShader() noexcept
 {
+	bool result = true;
 	for (int i = 0; i < ShaderType::NumAllType; ++i)
 	{
-		if (i == PixelShader)
+		auto& name = m_materialData.m_shaderPaths[i];
+		if (name.empty())
+			continue;
+
+		if (!SetShader(static_cast<ShaderType>(i), name, false))
 		{
-			// Define を考慮したコンパイル
-			DefineSettingToShader();
-		}
-		else
-		{
-			auto& shaderPath = m_materialData.m_shaderPaths[i];
-			SetShader(static_cast<ShaderType>(i), shaderPath, false);
+			result = false;
+			break;
 		}
 	}
+
+	if (!result)
+	{
+		return false;
+	}
+
+	if (!CreatePipeline())
+	{
+		return false;
+	}
+
+	return true;
 }
 
 void Material::UpdateConstantBufferData() noexcept
 {
 	auto buffer = static_cast<ConstantBufferMaterial*>(m_constantBufferMaterial.GetCPUData());
 
-	buffer->diffuse = m_materialData.m_diffuse;
-	buffer->specular = m_materialData.m_specular;
-	buffer->specularPower = m_materialData.m_specularPower;
-	buffer->ambient = m_materialData.m_ambient;
+	buffer->albedo	 = m_materialData.m_albedo;
+	buffer->metallic = m_materialData.m_metallic;
+	buffer->smooth	 = m_materialData.m_smooth;
+	buffer->emission = m_materialData.m_emission;
 }
 
 void Material::UpdateProprietaryDataFile() noexcept
 {
-	// 次回呼び出し時適用するパラメーターパスを取得
-	m_materialData.m_shaderPaths = m_shader.GetShaderPaths();
+	auto& texturePaths = m_materialData.m_texturePaths;
+	auto& shaderPaths = m_materialData.m_shaderPaths;
 
-	// 元データの消去
-	m_materialData.m_texturePaths.clear();
+	texturePaths.clear();
 
-	for (const auto& textureInfo : m_textures)
+	// 現在シェーダ設定を反映
+	shaderPaths = m_shader.GetShaderPaths();
+
+	// 現在テクスチャ設定を反映
+	for (const auto& textureInfo : m_textureInfos)
 	{
 		if (const auto texture = textureInfo.second.m_texture)
 		{
-			const auto& texturePath = texture->GetFilePath();
-			m_materialData.m_texturePaths[textureInfo.first] = texturePath;
+			texturePaths[textureInfo.first] = texture->GetFilePath();
 		}
 	}
 
@@ -385,19 +433,18 @@ void Material::UpdateProprietaryDataFile() noexcept
 
 void Material::UpdateResourceDataFile() noexcept
 {
-	auto resourceData = GetResourceData();
+	const auto resourceData = GetResourceData();
 	auto& refResourcePaths = resourceData->m_refResourcePaths;
 
-	// 元データの消去
 	refResourcePaths.clear();
 	refResourcePaths.shrink_to_fit();
-
-	for (const auto& textureInfo : m_textures)
+	
+	// 現在テクスチャ設定を反映
+	for (const auto& textureInfo : m_textureInfos)
 	{
 		if (const auto texture = textureInfo.second.m_texture)
 		{
-			const auto& texturePath = texture->GetFilePath();
-			refResourcePaths.emplace_back(ResourcePath(Texture::TypeData.Hash, texturePath));
+			refResourcePaths.emplace_back(ResourcePath(Texture::TypeData.Hash, texture->GetFilePath()));
 		}
 	}
 

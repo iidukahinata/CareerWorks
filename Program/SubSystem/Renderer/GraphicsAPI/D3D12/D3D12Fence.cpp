@@ -7,7 +7,7 @@
 
 
 #include "D3D12CommandContext.h"
-#include "D3D12GrahicsDevice.h"
+#include "D3D12GraphicsDevice.h"
 
 D3D12Fence::~D3D12Fence()
 {

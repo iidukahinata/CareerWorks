@@ -7,7 +7,7 @@
 
 
 #include "D3D12UnorderedAccessBuffer.h"
-#include "D3D12GrahicsDevice.h"
+#include "D3D12GraphicsDevice.h"
 
 bool D3D12UnorderedAccessBuffer::Create(
 	UINT bufferSize,

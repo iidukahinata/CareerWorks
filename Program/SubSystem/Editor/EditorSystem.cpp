@@ -9,12 +9,12 @@
 #include "EditorSystem.h"
 #include "DragDrop.h"
 #include "SubSystem/Window/Window.h"
-#include "Widget/Widgets/LogWidget.h"
+#include "Widget/Widgets/ConsoleWidget.h"
 #include "Widget/Widgets/SceneWidget.h"
 #include "Widget/Widgets/DetailsWidget.h"
 #include "Widget/Widgets/ProfilerWidget.h"
-#include "Widget/Widgets/ResourceWidget.h"
-#include "SubSystem/Renderer/GraphicsAPI/D3D12/D3D12GrahicsDevice.h"
+#include "Widget/Widgets/AssetsWidget.h"
+#include "SubSystem/Renderer/GraphicsAPI/D3D12/D3D12GraphicsDevice.h"
 
 bool EditorSystem::Initialize() noexcept
 {
@@ -33,10 +33,13 @@ bool EditorSystem::Initialize() noexcept
 
 bool EditorSystem::PostInitialize() noexcept
 {
-	if (!SetUpImguiObjects())
+	if (!SetUpImGuiObjects())
 	{
 		return false;
 	}
+
+	SetUpGuiStyle();
+	AddFonts();
 
 	for (const auto& widget : m_widgets)
 	{
@@ -52,6 +55,7 @@ void EditorSystem::Shutdown() noexcept
 
 	m_widgets.clear();
 
+	m_descriptHeap.Release();
 	ImGui_ImplDX12_Shutdown();
 	ImGui::DestroyContext();
 }
@@ -62,8 +66,6 @@ void EditorSystem::Render() noexcept
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
-
-	EditorHelper::Get().AddTexture(&m_descriptHeap);
 
 	// draw user gui
 	for (const auto& widget : m_widgets)
@@ -76,17 +78,18 @@ void EditorSystem::Render() noexcept
 	// rendering
 	EditorHelper::Get().BegineRenderer();
 	ImGui::Render();
-	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), D3D12GrahicsDevice::Get().GetCommandContext().GetCommandList());
-
-	EditorHelper::Get().Reset();
+	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), D3D12GraphicsDevice::Get().GetCommandContext().GetCommandList());
 }
 
-bool EditorSystem::SetUpImguiObjects() noexcept
+bool EditorSystem::SetUpImGuiObjects() noexcept
 {
-	auto ret = m_descriptHeap.Create(1, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	constexpr auto maxTextureCount = 128;
+	auto ret = m_descriptHeap.Create(maxTextureCount, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	if (!ret) {
 		return false;
 	}
+
+	EditorHelper::Get().Initialize(&m_descriptHeap);
 
 	if (!ImGui::CreateContext()) {
 		return false;
@@ -98,7 +101,7 @@ bool EditorSystem::SetUpImguiObjects() noexcept
 	}
 
 	ret = ImGui_ImplDX12_Init(
-		D3D12GrahicsDevice::Get().GetDevice(),
+		D3D12GraphicsDevice::Get().GetDevice(),
 		1, DXGI_FORMAT_R8G8B8A8_UNORM,
 		m_descriptHeap.GetHeap(),
 		m_descriptHeap.GetCPUHandle(),
@@ -108,26 +111,52 @@ bool EditorSystem::SetUpImguiObjects() noexcept
 		return false;
 	}
 
+	return true;
+}
+
+void EditorSystem::SetUpGuiStyle() noexcept
+{
 	ImGui::StyleColorsClassic();
 
-    ImGuiStyle* style = &ImGui::GetStyle();
-    ImVec4* colors = style->Colors;
-	
-	colors[ImGuiCol_TitleBgCollapsed] = ImVec4(0.40f, 0.40f, 0.80f, 0.90f);
+	ImGuiStyle* style = &ImGui::GetStyle();
+	ImVec4* colors = style->Colors;
 
+    colors[ImGuiCol_WindowBg]             = ImVec4(0.10f, 0.10f, 0.10f, 1.00f);
+    colors[ImGuiCol_FrameBg]              = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
+    colors[ImGuiCol_FrameBgHovered]       = ImVec4(0.32f, 0.32f, 0.32f, 1.00f);
+    colors[ImGuiCol_FrameBgActive]        = ImVec4(0.17f, 0.17f, 0.17f, 1.00f);
+    colors[ImGuiCol_TitleBg]              = ImVec4(0.17f, 0.17f, 0.17f, 1.00f);
+    colors[ImGuiCol_TitleBgActive]        = ImVec4(0.17f, 0.17f, 0.17f, 1.00f);
+    colors[ImGuiCol_TitleBgCollapsed]     = ImVec4(0.17f, 0.17f, 0.17f, 1.00f);
+    colors[ImGuiCol_Header]               = ImVec4(0.23f, 0.23f, 0.23f, 1.00f);
+    colors[ImGuiCol_HeaderHovered]        = ImVec4(0.18f, 0.18f, 0.18f, 1.00f);
+    colors[ImGuiCol_HeaderActive]         = ImVec4(0.18f, 0.18f, 0.18f, 1.00f);
+    colors[ImGuiCol_Button]               = ImVec4(0.35f, 0.35f, 0.35f, 1.00f);
+    colors[ImGuiCol_ButtonHovered]        = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
+    colors[ImGuiCol_ButtonActive]         = ImVec4(0.25f, 0.25f, 0.25f, 1.00f);
+    colors[ImGuiCol_MenuBarBg]            = ImVec4(0.40f, 0.40f, 0.55f, 0.80f);
+    colors[ImGuiCol_CheckMark]            = ImVec4(0.90f, 0.90f, 0.90f, 0.50f);
+    colors[ImGuiCol_SliderGrab]           = ImVec4(1.00f, 1.00f, 1.00f, 0.30f);
+	//colors[ImGuiCol_SliderGrabActive]     = ImVec4(1.00f, 1.00f, 1.00f, 0.50f);
+    colors[ImGuiCol_ScrollbarBg]          = ImVec4(0.10f, 0.10f, 0.10f, 1.00f);
+    colors[ImGuiCol_ScrollbarGrab]        = ImVec4(0.30f, 0.30f, 0.30f, 1.00f);
+    colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
+    colors[ImGuiCol_ScrollbarGrabActive]  = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
+}
+
+void EditorSystem::AddFonts() noexcept
+{
 	ImGuiIO& io = ImGui::GetIO();
 	io.Fonts->AddFontFromFileTTF("Data/Resource/Font/UDDigiKyokashoN-R.ttc", 14.0f, nullptr, io.Fonts->GetGlyphRangesJapanese());
-
-	return true;
 }
 
 void EditorSystem::RegisterWidgetsToContainer() noexcept
 {
-	m_widgets.emplace_back(std::make_unique<LogWidget>());
+	m_widgets.emplace_back(std::make_unique<ConsoleWidget>());
 	m_widgets.emplace_back(std::make_unique<SceneWidget>());
 	m_widgets.emplace_back(std::make_unique<DetailsWidget>());
 	m_widgets.emplace_back(std::make_unique<ProfilerWidget>());
-	m_widgets.emplace_back(std::make_unique<ResourceWidget>());
+	m_widgets.emplace_back(std::make_unique<AssetsWidget>());
 }
 
 void EditorSystem::ChackClickedCommand() noexcept
@@ -138,14 +167,20 @@ void EditorSystem::ChackClickedCommand() noexcept
 		DragDrop::Get().EndDrag();
 	}
 
-	// Undo
-	if (ImGui::IsKeyDown(VK_CONTROL) && ImGui::IsKeyReleased(0x5A /* = Z */))
+	// 長押し入力時にユーザーが認識出来る速度に調整
+	if (m_stopwatch.GetRap(Milli) > 120)
 	{
-		EditorHelper::Get().UndoCommand();
-	}
-	// Redo
-	if (ImGui::IsKeyDown(VK_CONTROL) && ImGui::IsKeyReleased(0x59 /* = Y */))
-	{
-		EditorHelper::Get().RedoCommand();
+		// Undo
+		if (ImGui::IsKeyDown(VK_CONTROL) && ImGui::IsKeyDown(0x5A /* = Z */))
+		{
+			EditorHelper::Get().UndoCommand();
+			m_stopwatch.Start();
+		}
+		// Redo
+		if (ImGui::IsKeyDown(VK_CONTROL) && ImGui::IsKeyDown(0x59 /* = Y */))
+		{
+			EditorHelper::Get().RedoCommand();
+			m_stopwatch.Start();
+		}
 	}
 }

@@ -2,7 +2,7 @@
 * @file	   TransformCBuffer.cpp
 * @brief
 *
-* @date	   2022/08/02 2022年度初版
+* @date	   2022/09/18 2022年度初版
 */
 
 
@@ -11,7 +11,6 @@
 
 void TransformCBuffer::Initialize() noexcept
 {
-	m_constantBufferWorld.Create(sizeof(ConstantBufferWorld));
 	m_constantBufferMatrix.Create(sizeof(ConstantBufferMatrix));
 }
 
@@ -19,23 +18,30 @@ void TransformCBuffer::Update(Camera* mainCamera) noexcept
 {
 	SetProjection(mainCamera->GetProjectionMatrix().ToMatrixXM());
 	SetView(mainCamera->GetViewMatrix().ToMatrixXM());
-	SetEye(mainCamera->GetTransform().GetWoldPosition());
+
+	CreateMatrixBufferData();
+}
+
+void TransformCBuffer::Bind() noexcept
+{
+	auto buffer = static_cast<ConstantBufferMatrix*>(m_constantBufferMatrix.GetCPUData());
+
+	buffer->worldView = buffer->world * buffer->view;
+	buffer->worldViewProjection = buffer->world * buffer->viewProjection;
 
 	m_constantBufferMatrix.VSSet(0);
 }
 
 void TransformCBuffer::SetWorld(const DirectX::XMMATRIX& world) noexcept
 {
-	auto buffer = static_cast<ConstantBufferWorld*>(m_constantBufferWorld.GetCPUData());
+	auto buffer = static_cast<ConstantBufferMatrix*>(m_constantBufferMatrix.GetCPUData());
 	buffer->world = world;
-
-	m_constantBufferWorld.VSSet(1);
 }
 
 void TransformCBuffer::SetProjection(const DirectX::XMMATRIX& proj) noexcept
 {
 	auto buffer = static_cast<ConstantBufferMatrix*>(m_constantBufferMatrix.GetCPUData());
-	buffer->proj = proj;
+	buffer->projection = proj;
 }
 
 void TransformCBuffer::SetView(const DirectX::XMMATRIX& view) noexcept
@@ -44,8 +50,10 @@ void TransformCBuffer::SetView(const DirectX::XMMATRIX& view) noexcept
 	buffer->view = view;
 }
 
-void TransformCBuffer::SetEye(const DirectX::XMFLOAT3& eye) noexcept
+void TransformCBuffer::CreateMatrixBufferData() noexcept
 {
 	auto buffer = static_cast<ConstantBufferMatrix*>(m_constantBufferMatrix.GetCPUData());
-	buffer->eye = eye;
+
+	buffer->viewProjection = buffer->view * buffer->projection;
+	buffer->viewProjectionInverse = DirectX::XMMatrixInverse(nullptr, buffer->viewProjection);
 }

@@ -17,16 +17,17 @@ public:
 	D3D12Shader() = default;
 	D3D12Shader(StringView filePath, StringView entryPoint, StringView traget, D3D_SHADER_MACRO* defines = nullptr);
 
-	void Compile(StringView filePath, ShaderType type, D3D_SHADER_MACRO* defines = nullptr) noexcept;
-	void Compile(StringView filePath, StringView entryPoint, StringView traget, D3D_SHADER_MACRO* defines = nullptr) noexcept;
+	bool Compile(StringView filePath, ShaderType type, D3D_SHADER_MACRO* defines = nullptr) noexcept;
+	bool Compile(StringView filePath, StringView entryPoint, StringView traget, D3D_SHADER_MACRO* defines = nullptr) noexcept;
 
 	/** アクセス */
 	ID3DBlob* GetBlob() const noexcept { return m_blob.Get(); }
 
-	Vector<D3D12_INPUT_ELEMENT_DESC> GetInputLayout() noexcept;
-	Vector<D3D12_SHADER_INPUT_BIND_DESC> GetSRVBindDesc() noexcept;
-	Vector<D3D12_SHADER_INPUT_BIND_DESC> GetSamplerBindDesc() noexcept;
-	Vector<D3D12_SHADER_BUFFER_DESC> GetCBVBufferDesc() noexcept;
+	Vector<D3D12_INPUT_ELEMENT_DESC>	 GetInputLayout()		noexcept;
+	Vector<D3D12_SHADER_INPUT_BIND_DESC> GetSRVBindDesc()		noexcept;
+	Vector<D3D12_SHADER_BUFFER_DESC>	 GetCBVBufferDesc()	    noexcept;
+	Vector<D3D12_SHADER_INPUT_BIND_DESC> GetSamplerBindDesc()	noexcept;
+	Vector<DXGI_FORMAT>					 GetRenderTargetsDesc() noexcept;
 
 private:
 

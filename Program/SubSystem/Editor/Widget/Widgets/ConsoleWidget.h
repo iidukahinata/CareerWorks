@@ -1,8 +1,8 @@
 /**
-* @file	   LogWidget.h
+* @file	   ConsoleWidget.h
 * @brief
 *
-* @date	   2022/09/09 2022年度初版
+* @date	   2022/09/27 2022年度初版
 */
 #pragma once
 
@@ -28,7 +28,7 @@ public:
 	void Clear() noexcept;
 };
 
-class LogWidget : public Widget
+class ConsoleWidget : public Widget
 {
 	COMPLETED_DEVELOPMENT()
 public:
