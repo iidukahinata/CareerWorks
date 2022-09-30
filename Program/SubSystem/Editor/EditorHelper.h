@@ -44,6 +44,7 @@ public:
 
 	void Initialize(D3D12DescriptorHeap* descriptorHeap) noexcept;
 	void BegineRenderer() noexcept;
+	void Shutdown() noexcept;
 
 	/**
 	* •\¦‚·‚é Texture DescriptorHeap ‚ğŠÇ—‚·‚é‚½‚ß‚Éì¬B

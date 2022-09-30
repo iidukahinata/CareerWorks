@@ -66,10 +66,10 @@ void MaterialDetails::ShowMaterialInterface() noexcept
 		auto inputAlbedo = ImGui::DragFloat3("##Albedo", &albedo.x, 0.1f, 0.f);
 
 		ImGui::Text("Metallic"); ImGui::SameLine(offsetPos);
-		auto inputMetallic = ImGui::SliderFloat("##Metallic", &metallic, 0.f, 256.f);
+		auto inputMetallic = ImGui::SliderFloat("##Metallic", &metallic, 0.f, 1.f);
 
 		ImGui::Text("Smooth"); ImGui::SameLine(offsetPos);
-		auto inputSmooth = ImGui::SliderFloat("##Smooth", &smooth, 0.f, 10.f);
+		auto inputSmooth = ImGui::SliderFloat("##Smooth", &smooth, 0.f, 1.f);
 
 		ImGui::Text("Emissive"); ImGui::SameLine(offsetPos);
 		auto inputEmissive = ImGui::DragFloat3("##Emissive", &emissive.x, 0.1f, 0.f);
@@ -97,7 +97,7 @@ void MaterialDetails::ShowShaderList(Material* material) noexcept
 
 	ImGui::Text("Shader"); ImGui::SameLine(offsetPos);
 
-	constexpr auto itemWidth = 260;
+	constexpr auto itemWidth = 270;
 	ImGui::PushItemWidth(itemWidth);
 	ImGui::InputText("##", shaderPath.data(), shaderPath.size());
 	ImGui::PopItemWidth();
@@ -135,7 +135,7 @@ void MaterialDetails::ShowTextureList(Material* material) noexcept
 		// テクスチャ名表示
 		ImGui::Text(pramName.c_str()); ImGui::SameLine(offsetPos);
 
-		constexpr auto itemWidth = 260;
+		constexpr auto itemWidth = 270;
 		ImGui::PushItemWidth(itemWidth);
 		ImGui::InputText("##", texturePath.data(), texturePath.size());
 		ImGui::PopItemWidth();

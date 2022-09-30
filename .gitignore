@@ -466,3 +466,11 @@ FodyWeavers.xsd
 /Data/Original/Shader/Core.hlsli
 /Data/Resource/Model/Renault.model
 /Data/Resource/Mesh/toros_body.mesh
+/Data/asset/Standard/texture_icon.asset
+/Data/asset/Standard/shader_icon.asset
+/Data/asset/Standard/scene_icon.asset
+/Data/asset/Standard/model_icon.asset
+/Data/asset/Standard/mesh_icon.asset
+/Data/asset/Standard/material_icon.asset
+/Data/asset/Standard/folder_icon.asset
+/Data/asset/Standard/audio_icon.asset

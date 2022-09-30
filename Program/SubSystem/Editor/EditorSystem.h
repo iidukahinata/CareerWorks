@@ -1,5 +1,5 @@
 /**
-* @file    MyGui.h
+* @file    EditorSystem.h
 * @brief   gui管理クラス
 *
 * @date	   2022/09/11 2022年度初版
@@ -12,7 +12,7 @@
 #include "SubSystem/Renderer/GraphicsAPI/D3D12/D3D12DescriptorHeap.h"
 
 class Widget;
-class EditerHelper;
+class EditorHelper;
 
 class EditorSystem
 {

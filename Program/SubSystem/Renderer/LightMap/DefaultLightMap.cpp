@@ -36,7 +36,7 @@ DefaultLightMap::ConstantBufferLight DefaultLightMap::CreateConstantBufferLight(
 	int pointLightCount = 0;
 	int spotLightCount = 0;
 
-	// 各Light情報を取得し、bufferにセット
+	// 各 Light 情報を取得し、buffer にセット
 	for (auto light : m_lights)
 	{
 		switch (light->GetLightType())
@@ -70,7 +70,7 @@ DefaultLightMap::ConstantBufferLight DefaultLightMap::CreateConstantBufferLight(
 		}
 	}
 
-	// 他Lightデータを設定
+	// 他 Light データを設定
 	buffer.eyePos		   = Math::Vector4(mainCamera->GetTransform().GetPosition(), 0);
 	buffer.ambientLight    = m_ambientLight;
 	buffer.pointLightCount = pointLightCount;

@@ -70,6 +70,9 @@ void ModelRender::Render() const
 {
 	if (m_model)
 	{
+		auto rot = GetTransform().GetRotation();
+		GetTransform().SetRotation(rot + Math::Vector3(0, 0.01, 0));
+
 		// •`‰æŽžŽg—p‚·‚é Worlds—ñ
 		auto&& transform = GetTransform().GetWorldMatrix();
 		m_renderer->GetTransformCBuffer()->SetWorld(transform.ToMatrixXM());

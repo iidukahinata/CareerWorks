@@ -30,14 +30,13 @@ void DetailsWidget::PostInitialize()
 
 void DetailsWidget::Draw()
 {
-	ImGui::SetNextWindowPos(ImVec2(1100, 0), ImGuiCond_Once);
-	ImGui::SetNextWindowSize(ImVec2(435, 630), ImGuiCond_Once);
+	ImGui::SetNextWindowPos(ImVec2(1100, 20), ImGuiCond_Once);
+	ImGui::SetNextWindowSize(ImVec2(440, 845), ImGuiCond_Once);
 
-	ImGui::Begin("Details", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove);
+	ImGui::Begin("Details", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
 	for (auto& detailsObject : m_detailsObjects)
 	{
-
 		detailsObject->Draw();
 	}
 

@@ -36,4 +36,6 @@ public:
 	static Vector<String> GetFilePathsRecursiveDirectory(StringView filePath) noexcept;
 
 	static Vector<String> GetDirectorysFromDirectory(StringView filePath) noexcept;
+
+	static Vector<String> GetDirectorysRecursiveDirectory(StringView filePath) noexcept;
 };

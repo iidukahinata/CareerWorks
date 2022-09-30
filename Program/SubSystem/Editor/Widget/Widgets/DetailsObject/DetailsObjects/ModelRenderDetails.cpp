@@ -30,7 +30,7 @@ void ModelRenderDetails::Draw()
 
 		ImGui::Text("Model"); ImGui::SameLine(offsetPos);
 
-		constexpr auto itemWidth = 260;
+		constexpr auto itemWidth = 270;
 		ImGui::PushItemWidth(itemWidth);
 		ImGui::InputText("##", modelPath.data(), modelPath.size());
 		ImGui::PopItemWidth();

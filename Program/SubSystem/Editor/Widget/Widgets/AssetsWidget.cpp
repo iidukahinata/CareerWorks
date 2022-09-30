@@ -29,24 +29,18 @@ void AssetsWidget::PostInitialize()
 	ASSERT(m_resourceManager);
 
 	m_currentDirectory = "Data/asset";
-	m_directoryTree.emplace_back("asset");
 	NavigateToDirectory(m_currentDirectory);
 }
 
 void AssetsWidget::Draw()
 {
-	ImGui::SetNextWindowPos(ImVec2( 0, 530), ImGuiCond_Once);
-	ImGui::SetNextWindowSize(ImVec2(755, 333), ImGuiCond_Once);
+	ImGui::SetNextWindowPos(ImVec2(420, 550), ImGuiCond_Once);
+	ImGui::SetNextWindowSize(ImVec2(680, 315), ImGuiCond_Once);
 
-	ImGui::Begin("Assets", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove);
+	ImGui::Begin("Assets", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
 	ShowResourceMenu();
-	ShowCurrentDirectoryResourceList();
-	//ShowResourceList();
-
-	ChackClickedCommand();
-
-	// Draw Helper Window
+	ShowResourceList();
 	ShowResourceHelper();
 
 	ImGui::End();
@@ -93,22 +87,22 @@ ImGui::NextColumn();
 	// 文字列検索用 Filter 定義
 	m_filter.Draw("Search", 200.0f);
 
+	ImGui::Separator();
+	ImGui::Text("asset"); ImGui::SameLine();
+
 	auto numTree = m_directoryTree.size();
 	for (int i = 0; i < numTree; ++i)
 	{
-		if (i != 0)
+		if (ImGui::SmallButton(String(">##" + std::to_string(i)).c_str()))
 		{
-			if (ImGui::Button(">"))
+			for (int index = numTree - i; index > 0; --index)
 			{
-				for (int index = 0; index < numTree - i; ++index)
-				{
-					CurrentDirectoryToParent();
-				}
-				break;
+				CurrentDirectoryToParent();
 			}
-
-			ImGui::SameLine();
+			break;
 		}
+
+		ImGui::SameLine();
 
 		ImGui::Text(m_directoryTree[i].c_str()); ImGui::SameLine();
 	}
@@ -116,49 +110,29 @@ ImGui::NextColumn();
 	ImGui::Text("");
 }
 
-void AssetsWidget::ShowCurrentDirectoryResourceList() noexcept
+void AssetsWidget::ShowResourceList() noexcept
 {
 	const auto childWidth = ImGui::GetWindowContentRegionWidth();
-	const auto childHeight = ImGui::GetWindowHeight() - 60;
+	const auto childHeight = ImGui::GetWindowHeight() - 82;
 	ImGui::BeginChild(ImGui::GetID((void*)0), ImVec2(childWidth, childHeight), true, ImGuiWindowFlags_NoScrollbar);
 
 	const auto columns = static_cast<int>(std::round(max(ImGui::GetWindowContentRegionWidth() / 110.f, 1.f)));
 	ImGui::Columns(columns, nullptr, false);
 
-	for (const auto& entries : m_directoryEntries)
+	if (ImGui::IsMouseClicked(0) && !ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows))
 	{
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.5, 0.5, 0.5, 0.8));
+		m_selectResoruce = nullptr;
+	}
 
-		auto iconTexture = EditorHelper::Get().GetIconTexture(entries.type);
-		EditorHelper::Get().AddImageButton(iconTexture->GetData(), ImVec2(90, 90));
-
-		ImGui::PopStyleColor();
-
-		if (ImGui::IsItemHovered())
-		{
-			// ドラッグアンドドロップのために Down 時判定
-			if (ImGui::IsMouseDown(0) && m_selectResourceName != entries.name)
-			{
-				m_stopwatch.Start();
-				ClickResource(entries.type, entries.name);
-			}
-
-			else if (ImGui::IsMouseDoubleClicked(0))
-			{
-				DoubleClickResource(entries.type, entries.name);
-			}
-
-			// 入力終了時の選択を Details に表示させるようにするため
-			else if (ImGui::IsMouseReleased(0))
-			{
-				DetailsWidget::SelectResource(m_selectResoruce);
-			}
-		}
-
-		auto&& label = ConvertToJapanese(entries.name);
-		ImGui::Text(label.c_str());
-
-		ImGui::NextColumn();
+	// 通常は CurrentDirectory 直下のリソースのみ列挙するが、
+	// filter でリソース検索を行う場合は File 構成を考慮せずに列挙
+	if (m_filter.IsActive())
+	{
+		ShowResourceListByName();
+	}
+	else
+	{
+		ShowCurrentDirectoryResourceList();
 	}
 
 	if (m_isSelectDirectory)
@@ -171,115 +145,109 @@ void AssetsWidget::ShowCurrentDirectoryResourceList() noexcept
 	{
 		m_stopwatch.Start();
 		m_selectResourceName = String();
-		m_selectResoruce = nullptr;
 	}
 
 	ImGui::Columns(1);
 	ImGui::EndChild();
 }
 
-void AssetsWidget::ShowResourceList() noexcept
+void AssetsWidget::ShowCurrentDirectoryResourceList() noexcept
 {
-	const auto childWidth = ImGui::GetWindowContentRegionWidth();
-	const auto childHeight = ImGui::GetWindowHeight() - 60;
-	ImGui::BeginChild(ImGui::GetID((void*)0), ImVec2(childWidth, childHeight), true, ImGuiWindowFlags_NoScrollbar);
-
-	const auto columns = static_cast<int>(std::round(max(ImGui::GetWindowContentRegionWidth() / 130.f, 1.f)));
-	ImGui::Columns(columns, nullptr, false);
-
 	for (const auto& entries : m_directoryEntries)
 	{
+		DrawThumbnail(entries.type, entries.name);
+	}
+}
+
+void AssetsWidget::ShowResourceListByName() noexcept
+{
+	for (const auto& directory : FileSystem::GetDirectorysRecursiveDirectory(ASSET_DATA_DIRECTORY))
+	{
+		auto&& name = FileSystem::GetFilePath(directory);
+
 		// 指定文字列を含む Resource のみ列挙
-		if (!m_filter.PassFilter(entries.name.c_str()))
+		if (!m_filter.PassFilter(name.c_str()))
 		{
 			continue;
 		}
 
-		auto iconTexture = EditorHelper::Get().GetIconTexture(entries.type);
+		DrawThumbnail(Icon_Folder, name);
+	}
 
-		EditorHelper::Get().AddImageButton(iconTexture->GetData(), ImVec2(120, 120));
-
-		if (ImGui::IsItemHovered())
+	// 表示される Type だけ列挙
+	Vector<uint32_t> showTypeList;
+	for (const auto type : m_resourceManager->GetResourceTypes())
+	{
+		if (m_tag == TagType_ALL || m_tag == type)
 		{
-			// ドラッグアンドドロップのために Down 時判定
-			if (ImGui::IsMouseDown(0) && m_selectResourceName != entries.name)
-			{
-				m_stopwatch.Start();
-				ClickResource(entries.type, entries.name);
-			}
-			else if (ImGui::IsMouseDoubleClicked(0))
-			{
-				DoubleClickResource(entries.type, entries.name);
-			}
-
-			// 入力終了時の選択を Details に表示させるようにするため
-			if (ImGui::IsMouseClicked(0))
-			{
-				DetailsWidget::SelectResource(m_selectResoruce);
-			}
+			showTypeList.emplace_back(type);
 		}
-
-		auto&& label = ConvertToJapanese(entries.name);
-
-		auto m_itemSize = 120;
-
-		ImGui::Text(label.c_str());
-
-		ImGui::NextColumn();
 	}
 
-	if (m_isSelectDirectory)
+	// 全リソース表示ループ
+	for (const auto type : showTypeList)
 	{
-		NavigateToDirectory(m_currentDirectory);
-		m_isSelectDirectory = false;
-	}
+		const auto iconType = EditorHelper::Get().GetIconTypeFromResourceType(type);
 
-	// time out
-	if (IsTimeOut())
-	{
-		m_stopwatch.Start();
-		m_selectResourceName = String();
-		m_selectResoruce = nullptr;
-	}
+		for (const auto& resourceInfo : m_resourceManager->GetResourceDataListByType(type))
+		{
+			const auto& assetName = resourceInfo.first;
 
-	ImGui::Columns(1);
-	ImGui::EndChild();
+			// 指定文字列を含む Resource のみ列挙
+			if (!m_filter.PassFilter(assetName.c_str()))
+			{
+				continue;
+			}
+
+			DrawThumbnail(iconType, assetName);
+		}
+	}
 }
 
 void AssetsWidget::ShowResourceHelper() noexcept
 {
+	if (ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows) && ImGui::IsMouseClicked(1))
+	{
+		ImGui::OpenPopup("Assets Helper");
+		m_clickedMausePos = ImGui::GetMousePos();
+	}
+
+	const auto buttonSize = ImVec2(135, 20);
+
 	ImGui::SetNextWindowPos(m_clickedMausePos, ImGuiCond_Always);
 	ImGui::SetNextWindowSize(ImVec2(150, 200), ImGuiCond_Always);
 
-	if(ImGui::BeginPopup("Assets Helper", 0))
+	if(ImGui::BeginPopup("Assets Helper"))
 	{
-		if (ImGui::Button("Create Folder", ImVec2(135, 20)))
+		if (ImGui::Button("Create Folder", buttonSize))
 		{
 			ImGui::OpenPopup("Create Folder");
 		}
 
-		if (ImGui::Button("Create Scene", ImVec2(135, 20)))
+		if (ImGui::Button("Create Scene", buttonSize))
 		{
 			ImGui::OpenPopup("Create Resource");
 			m_resourceCreateFunc = [](StringView name) { return Scene::Create(name); };
 		}
 
-		if (ImGui::Button("Create Material", ImVec2(135, 20)))
+		if (ImGui::Button("Create Material", buttonSize))
 		{
 			ImGui::OpenPopup("Create Resource");
 			m_resourceCreateFunc = [](StringView name) { return Material::Create(name); };
 		}
 
 		bool isClosePopup = false;
+		const auto center = ImGui::GetMainViewport()->GetCenter();
 
 		// Draw Create Folder
-		auto center = ImGui::GetMainViewport()->GetCenter();
 		ImGui::SetNextWindowPos(ImVec2(center.x - 150, center.y), ImGuiCond_Once);
 		ImGui::SetNextWindowSize(ImVec2(300, 100), ImGuiCond_Once);
 
 		if (ImGui::BeginPopupModal("Create Folder"))
 		{
 			isClosePopup = ShowCreateWindow([this](StringView name) {
+
+				FileSystem::CreateDirectory(m_currentDirectory + "/" + name.data());
 
 			});
 		}
@@ -288,11 +256,11 @@ void AssetsWidget::ShowResourceHelper() noexcept
 		ImGui::SetNextWindowPos(ImVec2(center.x - 150, center.y), ImGuiCond_Once);
 		ImGui::SetNextWindowSize(ImVec2(300, 100), ImGuiCond_Once);
 
-		if (ImGui::BeginPopupModal("Create Resource", 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse))
+		if (ImGui::BeginPopupModal("Create Resource"))
 		{
 			isClosePopup = ShowCreateWindow([this](StringView name) {
 
-				auto resource = m_resourceCreateFunc(m_currentDirectory + name.data());
+				auto resource = m_resourceCreateFunc(m_currentDirectory + "/" + name.data());
 
 				// リソースの生成だけが目的のため解放
 				UnloadResource(resource);
@@ -301,6 +269,7 @@ void AssetsWidget::ShowResourceHelper() noexcept
 
 		if (isClosePopup)
 		{
+			m_isSelectDirectory = true;
 			ImGui::CloseCurrentPopup();
 		}
 
@@ -329,22 +298,59 @@ bool AssetsWidget::ShowCreateWindow(std::function<void(StringView)> createFunc) 
 
 	ImGui::EndPopup();
 
-	return isCreate || isCancel;
+	return (isCreate || isCancel);
 }
 
-void AssetsWidget::ChackClickedCommand() noexcept
+void AssetsWidget::ChackClickedCommand(IconType type, StringView name) noexcept
 {
-	if (ImGui::IsMouseClicked(1))
+	if (!ImGui::IsItemHovered())
 	{
-		ImGui::OpenPopup("Assets Helper");
-		m_clickedMausePos	 = ImGui::GetMousePos();
+		return;
+	}
+
+	// ドラッグアンドドロップのために Down 時判定
+	if (ImGui::IsMouseClicked(0) && m_selectResourceName != name)
+	{
+		m_stopwatch.Start();
+		ClickResource(type, name);
+	}
+
+	else if (ImGui::IsMouseDoubleClicked(0))
+	{
+		DoubleClickResource(type, name);
+	}
+
+	// 入力終了時の選択を Details に表示させるようにする
+	else if (ImGui::IsMouseReleased(0) && m_selectResoruce)
+	{
+		DetailsWidget::SelectResource(m_selectResoruce);
 	}
 
 	// delete resource
 	if (m_selectResoruce && ImGui::IsKeyReleased(VK_DELETE))
 	{
-		
+		LOG("aaa");
 	}
+}
+
+void AssetsWidget::DrawThumbnail(IconType type, StringView name) noexcept
+{
+	// Image Button
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.5, 0.5, 0.5, 0.8));
+
+	const auto iconTexture = EditorHelper::Get().GetIconTexture(type);
+	EditorHelper::Get().AddImageButton(iconTexture->GetData(), ImVec2(90, 90));
+
+	ImGui::PopStyleColor();
+
+	// Handle Clicked
+	ChackClickedCommand(type, name);
+
+	// Label
+	auto&& label = ConvertToJapanese(name);
+	ImGui::Text(label.c_str());
+
+	ImGui::NextColumn();
 }
 
 void AssetsWidget::UnloadResource(IResource* resource) noexcept
@@ -397,11 +403,12 @@ void AssetsWidget::DoubleClickResource(IconType type, StringView name) noexcept
 	}
 }
 
-void AssetsWidget::NavigateToDirectory(StringView path)
+void AssetsWidget::NavigateToDirectory(StringView path) noexcept
 {
 	m_directoryEntries.clear();
 	m_directoryEntries.shrink_to_fit();
 
+	// ディレクトリ列挙
 	for (const auto& directory : FileSystem::GetDirectorysFromDirectory(path))
 	{
 		m_directoryEntries.emplace_back(Thumbnail(FileSystem::GetFilePath(directory), Icon_Folder));
@@ -410,6 +417,7 @@ void AssetsWidget::NavigateToDirectory(StringView path)
 	Vector<std::pair<String, ResourceData*>> resourceDatas;
 	m_resourceManager->GetResourceDataListFromDirectory(path, resourceDatas);
 
+	// リソース列挙
 	for (const auto& resourceInfo : resourceDatas)
 	{
 		const auto name = resourceInfo.first;

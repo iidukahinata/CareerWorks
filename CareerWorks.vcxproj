@@ -184,6 +184,7 @@
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsWidget.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\Factory\DetailsObjectFactory.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\ConsoleWidget.cpp" />
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\MainMenuBarWidget.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\ProfilerWidget.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\AssetsWidget.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\SceneWidget.cpp" />
@@ -324,6 +325,7 @@
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsWidget.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\Factory\DetailsObjectFactory.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\ConsoleWidget.h" />
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\MainMenuBarWidget.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\ProfilerWidget.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\AssetsWidget.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\SceneWidget.h" />

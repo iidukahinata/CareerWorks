@@ -526,6 +526,9 @@
     <ClCompile Include="Program\SubSystem\Renderer\LightMap\DefaultLightMap.cpp">
       <Filter>Subsytem\Renderer\LightMap</Filter>
     </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\MainMenuBarWidget.cpp">
+      <Filter>Subsytem\Editor\Widget\Widgets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Program\ThirdParty\FMOD\include\fmod_dsp.h">
@@ -980,6 +983,9 @@
     </ClInclude>
     <ClInclude Include="Program\SubSystem\Renderer\LightMap\DefaultLightMap.h">
       <Filter>Subsytem\Renderer\LightMap</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\MainMenuBarWidget.h">
+      <Filter>Subsytem\Editor\Widget\Widgets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

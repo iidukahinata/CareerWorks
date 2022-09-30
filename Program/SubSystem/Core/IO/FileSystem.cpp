@@ -157,6 +157,30 @@ Vector<String> FileSystem::GetDirectorysFromDirectory(StringView filePath) noexc
 
 	try
 	{
+		for (const auto& entry : std::filesystem::directory_iterator(filePath))
+		{
+			if (!entry.is_directory())
+			{
+				continue;
+			}
+
+			filePaths.emplace_back(entry.path().string());
+		}
+	}
+	catch (const std::exception&)
+	{
+		LOG_ERROR("指定されたディレクトリの検索に失敗しました。");
+	}
+
+	return filePaths;
+}
+
+Vector<String> FileSystem::GetDirectorysRecursiveDirectory(StringView filePath) noexcept
+{
+	Vector<String> filePaths;
+
+	try
+	{
 		for (const auto& entry : std::filesystem::recursive_directory_iterator(filePath))
 		{
 			if (!entry.is_directory())

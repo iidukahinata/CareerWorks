@@ -39,10 +39,10 @@ void ConsoleWidget::Initialize()
 
 void ConsoleWidget::Draw()
 {
-	ImGui::SetNextWindowPos(ImVec2(1100, 630), ImGuiCond_Once);
-	ImGui::SetNextWindowSize(ImVec2(435, 230), ImGuiCond_Once);
+	ImGui::SetNextWindowPos(ImVec2(0, 550), ImGuiCond_Once);
+	ImGui::SetNextWindowSize(ImVec2(420, 315), ImGuiCond_Once);
 
-	ImGui::Begin("Console", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar);
+	ImGui::Begin("Console", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
 	ImGui::Text("Filter"); ImGui::SameLine();
 	m_logFilter.Draw("##Filter", 150.0f); ImGui::SameLine();
@@ -52,8 +52,9 @@ void ConsoleWidget::Draw()
 		m_logInfo.Clear();
 	}
 
-	auto childWidth = ImGui::GetWindowWidth() - 30;
-	ImGui::BeginChild(ImGui::GetID((void*)0), ImVec2(childWidth, 170), true);
+	auto childWidth = ImGui::GetWindowWidth() - 15;
+	auto childHeight = ImGui::GetWindowHeight() - 60;
+	ImGui::BeginChild(ImGui::GetID((void*)0), ImVec2(childWidth, childHeight), true);
 
 	for (const auto& logList = m_logInfo.GetList(); const auto& log : logList)
 	{

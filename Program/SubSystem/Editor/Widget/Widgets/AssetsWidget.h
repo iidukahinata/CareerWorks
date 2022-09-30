@@ -25,11 +25,14 @@ private:
 	/** リソース検索メニューバーの生成 */
 	void ShowResourceMenu() noexcept;
 
+	/** 全リソース列挙 / 選択リソース情報を保持など行う。*/
+	void ShowResourceList() noexcept;
+
 	/** 選択中 Directory 内リソースの列挙 */
 	void ShowCurrentDirectoryResourceList() noexcept;
 
-	/** 全リソース列挙 / 選択リソース情報を保持など行う。*/
-	void ShowResourceList() noexcept;
+	/** フィルター検索時に指定名のリソースのみ列挙 */
+	void ShowResourceListByName() noexcept;
 
 	/** リソース生成などのメソッドを行う。*/
 	void ShowResourceHelper() noexcept;
@@ -38,7 +41,9 @@ private:
 	bool ShowCreateWindow(std::function<void(StringView)> createFunc) noexcept;
 
 	/** 入力値から Window の切り替えなどを行うため。*/
-	void ChackClickedCommand() noexcept;
+	void ChackClickedCommand(IconType type, StringView name) noexcept;
+
+	void DrawThumbnail(IconType type, StringView name) noexcept;
 
 private:
 
@@ -56,7 +61,7 @@ private:
 	void DoubleClickResource(IconType type, StringView name) noexcept;
 
 	/** 選択された Directory 内表示物の列挙 */
-	void NavigateToDirectory(StringView path);
+	void NavigateToDirectory(StringView path) noexcept;
 
 	/** Currnet Directory から一つ上の Directory に戻す */
 	void CurrentDirectoryToParent() noexcept;

@@ -1,5 +1,5 @@
 /**
-* @file    MyGui.cpp
+* @file    EditorSystem.cpp
 * @brief   gui管理クラス
 *
 * @date	   2022/09/15 2022年度初版
@@ -14,6 +14,7 @@
 #include "Widget/Widgets/DetailsWidget.h"
 #include "Widget/Widgets/ProfilerWidget.h"
 #include "Widget/Widgets/AssetsWidget.h"
+#include "Widget/Widgets/MainMenuBarWidget.h"
 #include "SubSystem/Renderer/GraphicsAPI/D3D12/D3D12GraphicsDevice.h"
 
 bool EditorSystem::Initialize() noexcept
@@ -51,6 +52,8 @@ bool EditorSystem::PostInitialize() noexcept
 
 void EditorSystem::Shutdown() noexcept
 {
+	EditorHelper::Get().Shutdown();
+
 	m_job.UnRegisterFromJobSystem();
 
 	m_widgets.clear();
@@ -128,13 +131,13 @@ void EditorSystem::SetUpGuiStyle() noexcept
     colors[ImGuiCol_TitleBg]              = ImVec4(0.17f, 0.17f, 0.17f, 1.00f);
     colors[ImGuiCol_TitleBgActive]        = ImVec4(0.17f, 0.17f, 0.17f, 1.00f);
     colors[ImGuiCol_TitleBgCollapsed]     = ImVec4(0.17f, 0.17f, 0.17f, 1.00f);
-    colors[ImGuiCol_Header]               = ImVec4(0.23f, 0.23f, 0.23f, 1.00f);
-    colors[ImGuiCol_HeaderHovered]        = ImVec4(0.18f, 0.18f, 0.18f, 1.00f);
-    colors[ImGuiCol_HeaderActive]         = ImVec4(0.18f, 0.18f, 0.18f, 1.00f);
+	colors[ImGuiCol_MenuBarBg]		      = ImVec4(0.15f, 0.15f, 0.15f, 1.00f);
+    colors[ImGuiCol_Header]               = ImVec4(0.25f, 0.25f, 0.25f, 1.00f);
+    colors[ImGuiCol_HeaderHovered]        = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
+    colors[ImGuiCol_HeaderActive]         = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
     colors[ImGuiCol_Button]               = ImVec4(0.35f, 0.35f, 0.35f, 1.00f);
     colors[ImGuiCol_ButtonHovered]        = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
     colors[ImGuiCol_ButtonActive]         = ImVec4(0.25f, 0.25f, 0.25f, 1.00f);
-    colors[ImGuiCol_MenuBarBg]            = ImVec4(0.40f, 0.40f, 0.55f, 0.80f);
     colors[ImGuiCol_CheckMark]            = ImVec4(0.90f, 0.90f, 0.90f, 0.50f);
     colors[ImGuiCol_SliderGrab]           = ImVec4(1.00f, 1.00f, 1.00f, 0.30f);
 	//colors[ImGuiCol_SliderGrabActive]     = ImVec4(1.00f, 1.00f, 1.00f, 0.50f);
@@ -157,6 +160,7 @@ void EditorSystem::RegisterWidgetsToContainer() noexcept
 	m_widgets.emplace_back(std::make_unique<DetailsWidget>());
 	m_widgets.emplace_back(std::make_unique<ProfilerWidget>());
 	m_widgets.emplace_back(std::make_unique<AssetsWidget>());
+	m_widgets.emplace_back(std::make_unique<MainMenuBarWidget>());
 }
 
 void EditorSystem::ChackClickedCommand() noexcept

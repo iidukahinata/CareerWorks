@@ -60,7 +60,7 @@ bool Window::CreateWindowClass(HINSTANCE hInstance, int width, int height, Strin
 	if (fullScreen)
 	{
 		// フルスクリーン時はタイトルバーを消す
-		windowStyles = WS_CAPTION | WS_SYSMENU | WS_MAXIMIZE;
+		windowStyles = WS_POPUPWINDOW;
 		m_width = GetSystemMetrics(SM_CXSCREEN);
 		m_height = GetSystemMetrics(SM_CYSCREEN);
 		m_fullscreen = true;

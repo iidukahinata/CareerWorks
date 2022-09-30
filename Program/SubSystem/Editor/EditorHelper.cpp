@@ -36,6 +36,19 @@ void EditorHelper::BegineRenderer() noexcept
 	m_descriptorHeap->Set();
 }
 
+void EditorHelper::Shutdown() noexcept
+{
+	auto resourceManager = g_context->GetSubsystem<ResourceManager>();
+
+	for (const auto& resource : m_iconTextures)
+	{
+		const auto& path = resource.second->GetFilePath();
+
+		auto resourceData = resourceManager->GetResourceData(path);
+		resourceManager->Unload(resourceData);
+	}
+}
+
 void EditorHelper::AddImage(void* shaderResourceView, const ImVec2& imageSize, const ImVec2& uv0, const ImVec2& uv1, const ImVec4& tint_col, const ImVec4& border_col) noexcept
 {
 	auto srv = static_cast<D3D12ShaderResourceView*>(shaderResourceView);
