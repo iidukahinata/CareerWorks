@@ -2,7 +2,7 @@
 * @file    Camera.h
 * @brief
 *
-* @date	   2022/08/02 2022年度初版
+* @date	   2022/10/02 2022年度初版
 */
 #pragma once
 
@@ -20,42 +20,41 @@ public:
 	void Serialized(FileStream* file) const override;
 	void Deserialization(FileStream* file) override;
 
-	void Initialize() override;
-	void Remove() override;
-
-	void SetActive(bool active) override;
+	void OnInitialize() override;
+	void OnStart() override;
+	void OnStop() override;
 
 public:
 
 	/** view port のサイズ設定を反映 */
-	float GetWidth() const;
-	void SetWidth(float width);
-	float GetHeight() const;
-	void SetHeight(float height);
+	float GetWidth() const noexcept;
+	void SetWidth(float width) noexcept;
+	float GetHeight() const noexcept;
+	void SetHeight(float height) noexcept;
 
 	/** 内部処理では sWidth / Height には依存しない。*/
-	float GetAspect() const;
-	void SetAspect(float aspect);
+	float GetAspect() const noexcept;
+	void SetAspect(float aspect) noexcept;
 
-	float GetFov() const;
-	void SetFov(float fov);
-	float GetNear() const;
-	void SetNear(float nearClip);
-	float GetFar() const;
-	void SetFar(float farClip);
+	float GetFov() const noexcept;
+	void SetFov(float fov) noexcept;
+	float GetNear() const noexcept;
+	void SetNear(float nearClip) noexcept;
+	float GetFar() const noexcept;
+	void SetFar(float farClip) noexcept;
 
-	const Math::Matrix& GetViewMatrix();
-	const Math::Matrix& GetProjectionMatrix();
-	const Math::Matrix& GetOrthographicMatrix();
+	const Math::Matrix& GetViewMatrix() const noexcept;
+	const Math::Matrix& GetProjectionMatrix() const noexcept;
+	const Math::Matrix& GetOrthographicMatrix() const noexcept;
 
 private:
 
 	/** 各設定から各プロジェクション行列を作成 */
-	void CreateProjectionMatrix();
-	void CreateOrthographicMatrix();
+	void CreateProjectionMatrix() noexcept;
+	void CreateOrthographicMatrix() noexcept;
 
-	void RegisterToRendererSystem();
-	void UnRegisterFromRedererSystem();
+	void RegisterToRendererSystem() noexcept;
+	void UnRegisterFromRedererSystem() noexcept;
 
 private:
 

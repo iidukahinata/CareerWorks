@@ -346,9 +346,6 @@
     <ClCompile Include="Program\SubSystem\Scene\Factory\GameObjectFactory.cpp">
       <Filter>Subsytem\Scene\Factory</Filter>
     </ClCompile>
-    <ClCompile Include="Program\SubSystem\Scene\Component\IComponent.cpp">
-      <Filter>Subsytem\Scene\Component</Filter>
-    </ClCompile>
     <ClCompile Include="Program\SubSystem\Scene\Component\Transform.cpp">
       <Filter>Subsytem\Scene\Component</Filter>
     </ClCompile>
@@ -528,6 +525,9 @@
     </ClCompile>
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\MainMenuBarWidget.cpp">
       <Filter>Subsytem\Editor\Widget\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Scene\Component\IComponent.cpp">
+      <Filter>Subsytem\Scene\Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

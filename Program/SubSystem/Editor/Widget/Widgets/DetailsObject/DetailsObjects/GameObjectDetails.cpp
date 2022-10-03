@@ -40,8 +40,15 @@ void GameObjectDetails::Draw()
 	ShowAddComponentWindow();
 
 	ImGui::Separator();
+
+	auto gameObject = m_gameObject;
+	auto name		= m_gameObject->GetName();
+	name.resize(128);
+
 	ImGui::Text("Name"); ImGui::SameLine(offsetPos);
-	ImGui::Text(m_gameObject->GetName().c_str());
+	auto inputName = ImGui::InputText("##Object Name", name.data(), name.size());
+
+	if (inputName) RegisterEditorCommand([gameObject](auto data) { gameObject->SetName(data); }, name, gameObject->GetName());
 }
 
 void GameObjectDetails::ShowAddComponentWindow() noexcept

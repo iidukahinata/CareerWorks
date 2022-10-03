@@ -33,8 +33,6 @@ bool Scene::Load(StringView path)
     const auto world = GetContext()->GetSubsystem<World>();
     ASSERT(world);
 
-    m_gameObjects;
-
     FileStream file(path, OpenMode::Read_Mode);
     ASSERT(file.IsOpen());
 
@@ -54,34 +52,6 @@ bool Scene::Load(StringView path)
 
 void Scene::Update()
 {
-    int type = -1;
-    for (int i = 0; i < m_gameObjects.size(); ++i)
-    {
-        if(m_gameObjects[i]->FindComponent("Camera"))
-        {
-            if(type == 0) RemoveGameObject(m_gameObjects[i].get());
-            type = 0;
-        }
-    }
-
-    for (int i = 0; i < m_gameObjects.size(); ++i)
-    {
-        if (m_gameObjects[i]->FindComponent("ModelRender"))
-        {
-            if (type == 1) RemoveGameObject(m_gameObjects[i].get());
-            type = 1;
-        }
-    }
-
-    for (int i = 0; i < m_gameObjects.size(); ++i)
-    {
-        if (m_gameObjects[i]->FindComponent("Light"))
-        {
-            if (type == 2) RemoveGameObject(m_gameObjects[i].get());
-            type = 2;
-        }
-    }
-
     UpdateProprietaryDataFile();
     
     // 生成時は、リソースデータは更新なし
@@ -95,7 +65,7 @@ void Scene::AddToWorld() noexcept
 {
     for (auto& gameObject : m_gameObjects)
     {
-        gameObject->SetActive(true);
+        gameObject->StartAllComponents();
     }
 }
 
@@ -103,8 +73,31 @@ void Scene::RemoveFromWorld() noexcept
 {
     for (auto& gameObject : m_gameObjects)
     {
-        gameObject->SetActive(false);
+        gameObject->StopAllComponents();
     }
+}
+
+void Scene::Clone(StringView name) noexcept
+{
+    // original data
+    const auto resourceData = GetResourceData();
+    StringView assetFullPath = resourceData->m_assetFullPath;
+    StringView resourcePath  = resourceData->m_resourcePath.m_path;
+
+    // clone data
+    auto newResourceDirectory = resourcePath.substr(0, resourcePath.find_last_of("/\\") + 1);
+    auto newAssetFullDirectory = assetFullPath.substr(0, assetFullPath.find_last_of("/\\") + 1);
+
+    String newResourcePath = String(newResourceDirectory) + name.data() + SCENE_EXTENSION;
+    String newAssetFullPath = String(newAssetFullDirectory) + name.data() + ASSET_EXTENSION;
+
+    // clone
+    FileSystem::Copy(resourcePath, newResourcePath);
+    const auto newResourceData = m_resourceManager->CreateResourceData<Scene>(newResourcePath, newAssetFullPath);
+
+    newResourceData->m_refResourcePaths = resourceData->m_refResourcePaths;
+
+    m_resourceManager->UpdateResourceData(newResourceData);
 }
 
 void Scene::AddGameObject(GameObject* gameObject) noexcept

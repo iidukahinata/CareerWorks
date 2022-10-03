@@ -2,7 +2,7 @@
 * @file    Light.h
 * @brief
 *
-* @date	   2022/09/04 2022年度初版
+* @date	   2022/10/03 2022年度初版
 */
 #pragma once
 
@@ -28,10 +28,9 @@ public:
 	void Serialized(FileStream* file) const override;
 	void Deserialization(FileStream* file) override;
 
-	void Initialize() override;
-	void Remove() override;
-
-	void SetActive(bool active) override;
+	void OnInitialize() override;
+	void OnStart() override;
+	void OnStop() override;
 
 public:
 
@@ -59,7 +58,7 @@ private:
 
 private:
 
-	Renderer* m_renderer;
+	Renderer* m_renderer = nullptr;
 
 	LightType m_lightType;
 

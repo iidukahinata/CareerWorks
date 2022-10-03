@@ -2,7 +2,7 @@
 * @file    MeshRender.cpp
 * @brief
 *
-* @date	   2022/09/09 2022年度初版
+* @date	   2022/10/03 2022年度初版
 */
 
 
@@ -11,7 +11,6 @@
 #include "SubSystem/Resource/ResourceManager.h"
 #include "SubSystem/Resource/Resources/3DModel/Mesh.h"
 #include "SubSystem/Resource/Resources/3DModel/Model.h"
-#include "SubSystem/Resource/Resources/3DModel/Material.h"
 
 void ModelRender::Serialized(FileStream* file) const
 {
@@ -70,6 +69,7 @@ void ModelRender::Render() const
 {
 	if (m_model)
 	{
+		// 仮置き
 		auto rot = GetTransform().GetRotation();
 		GetTransform().SetRotation(rot + Math::Vector3(0, 0.01, 0));
 

@@ -2,14 +2,13 @@
 * @file	   AssetsWidget.cpp
 * @brief
 *
-* @date	   2022/09/27 2022年度初版
+* @date	   2022/10/02 2022年度初版
 */
 
 
 #include "AssetsWidget.h"
 #include "DetailsWidget.h"
 #include "SubSystem/Scene/World.h"
-#include "SubSystem/Input/Input.h"
 #include "SubSystem/Editor/DragDrop.h"
 #include "SubSystem/Resource/ResourceManager.h"
 #include "SubSystem/Resource/Resources/Scene/Scene.h"
@@ -17,7 +16,6 @@
 #include "SubSystem/Resource/Resources/3DModel/Mesh.h"
 #include "SubSystem/Resource/Resources/3DModel/Shader.h"
 #include "SubSystem/Resource/Resources/3DModel/Material.h"
-#include "SubSystem/Resource/Resources/3DModel/Texture.h"
 #include "SubSystem/Resource/Resources/Audio/AudioClip.h"
 
 void AssetsWidget::PostInitialize()
@@ -28,8 +26,7 @@ void AssetsWidget::PostInitialize()
 	m_resourceManager = GetContext()->GetSubsystem<ResourceManager>();
 	ASSERT(m_resourceManager);
 
-	m_currentDirectory = "Data/asset";
-	NavigateToDirectory(m_currentDirectory);
+	NavigateToDirectory("Data/asset");
 }
 
 void AssetsWidget::Draw()
@@ -90,6 +87,7 @@ ImGui::NextColumn();
 	ImGui::Separator();
 	ImGui::Text("asset"); ImGui::SameLine();
 
+	// ファイル順の表示とバックボタンの生成
 	auto numTree = m_directoryTree.size();
 	for (int i = 0; i < numTree; ++i)
 	{
@@ -212,68 +210,67 @@ void AssetsWidget::ShowResourceHelper() noexcept
 		m_clickedMausePos = ImGui::GetMousePos();
 	}
 
-	const auto buttonSize = ImVec2(135, 20);
-
 	ImGui::SetNextWindowPos(m_clickedMausePos, ImGuiCond_Always);
 	ImGui::SetNextWindowSize(ImVec2(150, 200), ImGuiCond_Always);
 
+	bool openCreateFolder = false;
+	bool OpenCreateResource = false;
+	const auto buttonSize = ImVec2(135, 20);
+
+	// Draw Assets Helper
 	if(ImGui::BeginPopup("Assets Helper"))
 	{
 		if (ImGui::Button("Create Folder", buttonSize))
 		{
-			ImGui::OpenPopup("Create Folder");
+			openCreateFolder = true;
+			ImGui::CloseCurrentPopup();
 		}
-
 		if (ImGui::Button("Create Scene", buttonSize))
 		{
-			ImGui::OpenPopup("Create Resource");
+			OpenCreateResource = true;
 			m_resourceCreateFunc = [](StringView name) { return Scene::Create(name); };
+			ImGui::CloseCurrentPopup();
 		}
-
 		if (ImGui::Button("Create Material", buttonSize))
 		{
-			ImGui::OpenPopup("Create Resource");
+			OpenCreateResource = true;
 			m_resourceCreateFunc = [](StringView name) { return Material::Create(name); };
-		}
-
-		bool isClosePopup = false;
-		const auto center = ImGui::GetMainViewport()->GetCenter();
-
-		// Draw Create Folder
-		ImGui::SetNextWindowPos(ImVec2(center.x - 150, center.y), ImGuiCond_Once);
-		ImGui::SetNextWindowSize(ImVec2(300, 100), ImGuiCond_Once);
-
-		if (ImGui::BeginPopupModal("Create Folder"))
-		{
-			isClosePopup = ShowCreateWindow([this](StringView name) {
-
-				FileSystem::CreateDirectory(m_currentDirectory + "/" + name.data());
-
-			});
-		}
-
-		// Draw Create Resource
-		ImGui::SetNextWindowPos(ImVec2(center.x - 150, center.y), ImGuiCond_Once);
-		ImGui::SetNextWindowSize(ImVec2(300, 100), ImGuiCond_Once);
-
-		if (ImGui::BeginPopupModal("Create Resource"))
-		{
-			isClosePopup = ShowCreateWindow([this](StringView name) {
-
-				auto resource = m_resourceCreateFunc(m_currentDirectory + "/" + name.data());
-
-				// リソースの生成だけが目的のため解放
-				UnloadResource(resource);
-			});
-		}
-
-		if (isClosePopup)
-		{
-			m_isSelectDirectory = true;
 			ImGui::CloseCurrentPopup();
 		}
 
 		ImGui::EndPopup();
+	}
+
+	// Open Popup
+	if (openCreateFolder)
+	{
+		ImGui::OpenPopup("Create Folder");
+	}
+	if (OpenCreateResource)
+	{
+		ImGui::OpenPopup("Create Resource");
+	}
+
+	// Draw Create Folder
+	if (ImGui::BeginPopupModal("Create Folder"))
+	{
+		ShowCreateWindow([this](StringView name) {
+
+			FileSystem::CreateDirectory(m_currentDirectory + "/" + name.data());
+
+		});
+	}
+
+	// Draw Create Resource
+	if (ImGui::BeginPopupModal("Create Resource"))
+	{
+		ShowCreateWindow([this](StringView name) {
+
+			auto resource = m_resourceCreateFunc(m_currentDirectory + "/" + name.data());
+
+			// リソースの生成だけが目的のため解放
+			UnloadResource(resource);
+		});
 	}
 }
 
@@ -405,6 +402,8 @@ void AssetsWidget::DoubleClickResource(IconType type, StringView name) noexcept
 
 void AssetsWidget::NavigateToDirectory(StringView path) noexcept
 {
+	m_currentDirectory = path;
+
 	m_directoryEntries.clear();
 	m_directoryEntries.shrink_to_fit();
 

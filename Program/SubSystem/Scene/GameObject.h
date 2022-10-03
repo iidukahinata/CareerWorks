@@ -23,6 +23,10 @@ public:
 
 public:
 
+	void StartAllComponents() noexcept;
+	void StopAllComponents() noexcept;
+public:
+
 	/** 指定名コンポーネントの追加。指定名が存在しない等の場合、null を返す。*/
 	IComponent* AddComponent(StringView name) noexcept;
 	void AddComponent(IComponent* component) noexcept;

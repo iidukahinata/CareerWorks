@@ -2,7 +2,7 @@
 * @file    ResourceManager.h
 * @brief
 *
-* @date	   2022/09/08 2022年度初版
+* @date	   2022/09/30 2022年度初版
 */
 #pragma once
 
@@ -75,9 +75,9 @@ public:
 	* @pram name 元データがあるファイルパス
 	*/
 	template<class T>
-	ResourceData* CreateResourceData(StringView path) noexcept;
-	ResourceData* CreateResourceData(StringView type, StringView path) noexcept;
-	ResourceData* CreateResourceData(uint32_t type, StringView path) noexcept;
+	ResourceData* CreateResourceData(StringView path, StringView assetPath = StringView()) noexcept;
+	ResourceData* CreateResourceData(StringView type, StringView path, StringView assetPath = StringView()) noexcept;
+	ResourceData* CreateResourceData(uint32_t type, StringView path, StringView assetPath = StringView()) noexcept;
 
 	/** 
 	* Assetファイルの更新処理のリクエストを行う。
@@ -123,10 +123,6 @@ private:
 
 	/** 非同期の Load 処理を新規 Task として登録 */
 	void AsyncLoad(ResourceHandle* resourceHandle, const Vector<ResourcePath>& resourcePaths) noexcept;
-
-	/** 指定 ResourceData のファイルデータ更新 */
-	void UploadResourceData(uint32_t type, StringView name) noexcept;
-	void UploadResourceData(uint32_t type, StringView name, StringView assetPath) noexcept;
 
 	/** 指定ファイルのリソースタイプの判別に使用 */
 	bool IsModelFilePath(StringView path) const noexcept;
@@ -193,9 +189,9 @@ FORCEINLINE Vector<IResource*> ResourceManager::GetResourcesByType() const noexc
 }
 
 template<class T>
-FORCEINLINE ResourceData* ResourceManager::CreateResourceData(StringView path) noexcept
+FORCEINLINE ResourceData* ResourceManager::CreateResourceData(StringView path, StringView assetPath /* = StringView() */) noexcept
 {
-	return CreateResourceData(T::TypeData.Hash, path);
+	return CreateResourceData(T::TypeData.Hash, path, assetPath);
 }
 
 template<class T>

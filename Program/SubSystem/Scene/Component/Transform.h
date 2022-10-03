@@ -2,7 +2,7 @@
 * @file    Transform.h
 * @brief
 *
-* @date	   2022/08/02 2022年度初版
+* @date	   2022/10/02 2022年度初版
 */
 #pragma once
 
@@ -41,6 +41,8 @@ public:
 
 	void LockAt(const Math::Vector3& target, const Math::Vector3& up = Math::Vector3::Right);
 	void LockTo(const Math::Vector3& direction, const Math::Vector3& up = Math::Vector3::Right);
+
+public:
 
 	void SetParent(Transform* parent) noexcept;
 	void AddChild(Transform* child) noexcept;

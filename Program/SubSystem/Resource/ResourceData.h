@@ -27,6 +27,8 @@ public:
 
 struct ResourceData
 {
+	String m_assetFullPath;
+
 	ResourcePath m_resourcePath;
 
 	// * 参照関係のリソースデータ (自動ロードのために使用)

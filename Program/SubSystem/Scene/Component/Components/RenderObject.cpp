@@ -2,54 +2,35 @@
 * @file    RenderObject.cpp
 * @brief
 *
-* @date	   2022/08/02 2022年度初版
+* @date	   2022/10/03 2022年度初版
 */
 
 
 #include "RenderObject.h"
 #include "SubSystem/Renderer/Renderer.h"
 
-void RenderObject::Initialize()
+void RenderObject::OnInitialize()
 {
 	m_renderer = GetContext()->GetSubsystem<Renderer>();
-
-	RegisterToRenderer();
-
-	Do_Initialize();
 }
 
-void RenderObject::Remove()
+void RenderObject::OnStart()
+{
+	RegisterToRenderer();
+}
+
+void RenderObject::OnStop()
 {
 	UnRegisterFromRenderer();
-
-	Do_Remove();
 }
 
-void RenderObject::SetActive(bool active)
-{
-	if (GetActive() == active)
-	{
-		return;
-	}
-
-	IComponent::SetActive(active);
-	if (active)
-	{
-		RegisterToRenderer();
-	}
-	else
-	{
-		UnRegisterFromRenderer();
-	}
-}
-
-void RenderObject::RegisterToRenderer()
+void RenderObject::RegisterToRenderer() noexcept
 {
 	ASSERT(m_renderer);
 	m_renderer->AddRenderObject(this);
 }
 
-void RenderObject::UnRegisterFromRenderer()
+void RenderObject::UnRegisterFromRenderer() noexcept
 {
 	ASSERT(m_renderer);
 	m_renderer->RemoveRenderObject(this);

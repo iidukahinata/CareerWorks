@@ -2,16 +2,16 @@
 * @file    RenderObject.h
 * @brief
 *
-* @date	   2022/09/02 2022年度初版
+* @date	   2022/10/03 2022年度初版
 */
 #pragma once
 
 
 #include "../IComponent.h"
 
+class Renderer;
 class IResource;
 class Model;
-class Renderer;
 
 class RenderObject : public IComponent
 {
@@ -19,25 +19,21 @@ class RenderObject : public IComponent
 	SUB_CLASS(RenderObject)
 public:
 
-	void Initialize() override;
-	void Remove() override;
+	virtual void OnInitialize() override;
+	virtual void OnStart() override;
+	virtual void OnStop() override;
 
 	/** 各描画処理を記述。*/
 	virtual void Render() const = 0;
 
-	virtual void SetActive(bool active) override;
+private:
+
+	void RegisterToRenderer() noexcept;
+	void UnRegisterFromRenderer() noexcept;
 
 protected:
 
-	virtual void Do_Initialize() {}
-	virtual void Do_Remove() {}
-
-	void RegisterToRenderer();
-	void UnRegisterFromRenderer();
-
-protected:
-
-	Renderer* m_renderer;
+	Renderer* m_renderer = nullptr;
 };
 
 class ModelRender : public RenderObject
@@ -50,6 +46,8 @@ public:
 	void Deserialization(FileStream* file) override;
 
 	void Render() const override;
+
+public:
 
 	void SetModel(IResource* resource) noexcept;
 	void SetModel(Model* model) noexcept;

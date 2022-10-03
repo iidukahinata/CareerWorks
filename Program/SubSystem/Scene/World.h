@@ -2,7 +2,7 @@
 * @file    World.h
 * @brief
 *
-* @date	   2022/09/05 2022年度初版
+* @date	   2022/10/02 2022年度初版
 */
 #pragma once
 
@@ -21,7 +21,7 @@ enum SceneState
 
 class World : public ISubsystem
 {
-	WAIT_FOR_DEVELOPMENT("LoadScene等処理", "現在はTestで動作させるため後")
+	COMPLETED_DEVELOPMENT()
 	SUB_CLASS(World)
 public:
 
@@ -68,7 +68,6 @@ private:
 	void SetUpListenerObjects() noexcept;
 
 	void AddScene(StringView name, Scene* scene) noexcept;
-
 	void RemoveScene(Scene* scene) noexcept;
 	void RemoveScene(StringView name) noexcept;
 

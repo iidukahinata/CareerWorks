@@ -39,6 +39,9 @@ DefaultLightMap::ConstantBufferLight DefaultLightMap::CreateConstantBufferLight(
 	// 各 Light 情報を取得し、buffer にセット
 	for (auto light : m_lights)
 	{
+		if (!light->GetActive())
+			continue;
+
 		switch (light->GetLightType())
 		{
 		case LightType::DirectionalLight:

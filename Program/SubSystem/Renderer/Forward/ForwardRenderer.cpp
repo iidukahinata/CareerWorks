@@ -50,6 +50,9 @@ void ForwardRenderer::Update() noexcept
 
 		for (auto renderObject : m_renderObjects)
 		{
+			if (!renderObject->GetActive())
+				continue;
+
 			renderObject->Render();
 		}
 	}

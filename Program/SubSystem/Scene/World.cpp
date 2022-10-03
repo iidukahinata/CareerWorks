@@ -2,7 +2,7 @@
 * @file    World.cpp
 * @brief
 *
-* @date	   2022/09/05 2022年度初版
+* @date	   2022/10/02 2022年度初版
 */
 
 
@@ -40,11 +40,7 @@ void World::Update() noexcept
 	{
 		if (resourceHandle.second->IsValid())
 		{
-			const auto& name = resourceHandle.first;
-			const auto& scene = resourceHandle.second->GetResource<Scene>();
-
-			AddScene(name, scene);
-			NotifyEvent<LoadSceneCompleteEvent>(name);
+			NotifyEvent<LoadSceneCompleteEvent>(resourceHandle.first);
 		}
 	}
 }
@@ -53,41 +49,46 @@ void World::LoadScene(StringView name) noexcept
 {
 	String sceneName(name);
 
+	// Load済み
 	if (m_sceneList.contains(sceneName))
 	{
 		NotifyEvent<LoadSceneCompleteEvent>(sceneName);
 		return;
 	}
 
+	// Load中
 	if (m_resourceHandles.contains(sceneName))
 	{
 		return;
 	}
 
-	m_resourceHandles[sceneName] = m_resourceManager->Load<Scene>(name);
+	if (auto&& resourceHandle = m_resourceManager->Load<Scene>(name))
+	{
+		m_resourceHandles[sceneName] = resourceHandle;
 
-	// ロード完了チェック用に更新関数の登録
-	m_job.RegisterToJobSystem();
+		// ロード完了チェック用に更新関数の登録
+		m_job.RegisterToJobSystem();
+	}
 }
 
 void World::UnloadScene(StringView name) noexcept
 {
-	if (m_sceneList.contains(name.data()))
+	String sceneName(name);
+	if (m_sceneList.contains(sceneName))
 	{
 		RemoveScene(name);
-		m_resourceManager->Unload(Scene::TypeData.Hash, name);
+		m_resourceManager->Unload<Scene>(name);
 	}
 	else
 	{
-		LOG_ERROR("指定名の Scene は登録されていませんでした");
+		LOG_ERROR("Scene は登録されていませんでした : 指定名 => " + sceneName);
 	}
 }
 
 void World::ChangeScene(StringView name) noexcept
 {
 	String sceneName(name);
-
-	if (m_sceneList.contains(sceneName) && m_sceneList[sceneName])
+	if (m_sceneList.contains(sceneName))
 	{
 		if (m_currentScene != m_sceneList[sceneName]) 
 		{
@@ -117,7 +118,6 @@ GameObject* World::CreateGameObject(Scene* scene /* = nullptr */) noexcept
 	if (auto gameObject = GameObjectFactory::Create(this, targetScene))
 	{
 		result = gameObject.get();
-
 		targetScene->AddGameObject(gameObject.release());
 	}
 
@@ -129,6 +129,7 @@ void World::DestroyGameObject(GameObject* gameObject) noexcept
 	if (gameObject)
 	{
 		auto scene = gameObject->GetOwner();
+		ASSERT(scene);
 		scene->RemoveGameObject(gameObject);
 	}
 }
@@ -137,7 +138,7 @@ GameObject* World::GetGameObjectByName(StringView name) const noexcept
 {
 	for (const auto& scene : m_sceneList)
 	{
-		if (auto gameObject = scene.second->GetGameObjectByName(name))
+		if (const auto& gameObject = scene.second->GetGameObjectByName(name))
 		{
 			return gameObject;
 		}
@@ -155,7 +156,7 @@ void World::SetCurrentScene(Scene* scene) noexcept
 #ifdef IS_EDITOR
 		RemoveScene(m_currentScene);
 
-		auto resourceData = m_resourceManager->GetResourceData(m_currentScene->GetFilePath());
+		const auto resourceData = m_resourceManager->GetResourceData(m_currentScene->GetFilePath());
 		m_resourceManager->Unload(resourceData);
 #endif // IS_EDITER
 	}
@@ -176,14 +177,13 @@ Scene* World::GetCurrentScene() const noexcept
 Scene* World::GetScene(StringView name) noexcept
 {
 	String sceneName(name);
-
 	if (m_sceneList.contains(sceneName))
 	{
 		return m_sceneList[sceneName];
 	}
 	else
 	{
-		LOG_ERROR("Load されていない / 完了していないため取得できませんでした。");
+		LOG_ERROR("Load されていない / 完了していないため Scene 取得できません。");
 		return nullptr;
 	}
 }
@@ -204,12 +204,15 @@ void World::SetUpListenerObjects() noexcept
 
 	m_loadSceneCompleteListener.SetFunction([this](std::any data) {
 
-		auto sceneName = std::any_cast<String>(data);
-		m_resourceHandles.erase(sceneName);
+		auto name = std::any_cast<String>(data);
+		auto scene = m_resourceHandles[name]->GetResource<Scene>();
 
-		// 無駄な更新処理が入らないように登録解除
+		AddScene(name, scene);
+
+		m_resourceHandles.erase(name);
 		if (m_resourceHandles.empty())
 		{
+			// 無駄な更新処理が入らないように登録解除
 			m_job.UnRegisterFromJobSystem();
 		}
 
@@ -221,23 +224,22 @@ void World::SetUpListenerObjects() noexcept
 
 void World::AddScene(StringView name, Scene* scene) noexcept
 {
-	String sceneName(name);
+	ASSERT(scene);
 
-	if (!m_sceneList.contains(sceneName))
-	{
-		m_sceneList[sceneName] = scene;
-	}
+	String sceneName(name);
+	ASSERT(!m_sceneList.contains(sceneName));
+	m_sceneList[sceneName] = scene;
 }
 
 void World::RemoveScene(Scene* scene) noexcept
 {
 	StringView name;
-
 	for (auto& sceneInfo : m_sceneList)
 	{
 		if (sceneInfo.second == scene)
 		{
 			name = sceneInfo.first;
+			break;
 		}
 	}
 
@@ -250,9 +252,6 @@ void World::RemoveScene(Scene* scene) noexcept
 void World::RemoveScene(StringView name) noexcept
 {
 	String sceneName(name);
-
-	if (m_sceneList.contains(sceneName))
-	{
-		m_sceneList.erase(sceneName);
-	}
+	ASSERT(m_sceneList.contains(sceneName));
+	m_sceneList.erase(sceneName);
 }

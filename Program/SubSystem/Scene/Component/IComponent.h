@@ -2,7 +2,7 @@
 * @file    IComponent.h
 * @brief
 *
-* @date	   2022/09/06 2022年度初版
+* @date	   2022/10/02 2022年度初版
 */
 #pragma once
 
@@ -30,14 +30,22 @@ public:
 	virtual void Serialized(FileStream* file) const;
 	virtual void Deserialization(FileStream* file);
 
-	/** シーンロード中の可能性があるため GameObject / Component の検索は行わない方が良い。*/
-	virtual void Initialize() {}
+public:
 
-	/** GameObject から解放されるタイミングで呼び出される。 */
-	virtual void Remove() {}
+	/** シーンロード中の可能性があるため GameObject / Component の検索は行わない方が良い。*/
+	virtual void OnInitialize() {}
+
+	/** 所属 Scene が AddToWorld 適用時に呼び出される。*/
+	virtual void OnStart() {}
+
+	/** 所属 Scene が RemoveFromWorld 適用時に呼び出される。*/
+	virtual void OnStop() {}
+
+	/** GameObject から解放されるタイミングで呼び出される。*/
+	virtual void OnRemove() { OnStop(); }
 
 	/** 派生先で使用する場合は、TickFunction をシステム側に登録する必要があります。*/
-	virtual void Update(double deltaTime) {}
+	virtual void Tick(double deltaTime) {}
 
 public:
 
@@ -54,16 +62,18 @@ public:
 	/** 更新処理の前提条件を設定します。*/
 	void AddTickPrerequisite(TickFunction* prerequisite) noexcept;
 
+public:
+
 	/** テンプレート型が this と同じ型の時 true を返します。*/
 	template<class T>
 	bool IsSameClass() const noexcept;
 
 	/** アクセス */
-	Transform& GetTransform() const noexcept;
-	GameObject* GetOwner() const noexcept;
-	Scene* GetScene() const noexcept;
-	World* GetWorld() const noexcept;
-	Context* GetContext() const noexcept;
+	Transform&	GetTransform() const noexcept;
+	GameObject* GetOwner()	   const noexcept;
+	Scene*		GetScene()	   const noexcept;
+	World*		GetWorld()	   const noexcept;
+	Context*	GetContext()   const noexcept;
 
 protected:
 

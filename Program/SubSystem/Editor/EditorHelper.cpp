@@ -181,6 +181,8 @@ void EditorHelper::RegisterIconTexture() noexcept
 	resourceHandles.emplace_back(resourceManager->Load<Texture>("shader_icon"));
 	resourceHandles.emplace_back(resourceManager->Load<Texture>("audio_icon"));
 
+	std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
 	for (int i = 0; i < resourceHandles.size(); ++i)
 	{
 		const auto& handle = resourceHandles[i];

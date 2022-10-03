@@ -28,6 +28,8 @@ public:
 	void AddToWorld() noexcept;
 	void RemoveFromWorld() noexcept;
 
+	void Clone(StringView name) noexcept;
+
 public:
 
 	/** GameObject ÉÅÉ\ÉbÉh */

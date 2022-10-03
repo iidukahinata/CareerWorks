@@ -11,7 +11,7 @@
 
 void TickComponentFunction::Tick(double deltaTime)
 {
-	m_component->Update(deltaTime);
+	m_component->Tick(deltaTime);
 }
 
 IComponent::IComponent()
@@ -39,6 +39,9 @@ void IComponent::Deserialization(FileStream* file)
 
 void IComponent::SetActive(bool active)
 {
+	if (GetActive() == active)
+		return;
+
 	m_active = active;
 
 	SetTickEnable(active);

@@ -2,7 +2,7 @@
 * @file    ResourceManager.cpp
 * @brief
 *
-* @date	   2022/09/21 2022年度初版
+* @date	   2022/09/30 2022年度初版
 */
 
 
@@ -191,6 +191,7 @@ IResource* ResourceManager::GetResource(const ResourcePath& resourcePath) const 
         return resource;
     }
 
+    LOG_ERROR("ロードされていないリソースへアクセスされました。");
     return nullptr;
 }
 
@@ -209,14 +210,21 @@ Vector<IResource*> ResourceManager::GetResources() const noexcept
     return m_resourceCache->GetResources();
 }
 
-ResourceData* ResourceManager::CreateResourceData(StringView type, StringView path) noexcept
+ResourceData* ResourceManager::CreateResourceData(StringView type, StringView path, StringView assetPath /* = StringView() */) noexcept
 {
-    return CreateResourceData(GetHashFromCRC(type), path);
+    return CreateResourceData(GetHashFromCRC(type), path, assetPath);
 }
 
-ResourceData* ResourceManager::CreateResourceData(uint32_t type, StringView path) noexcept
+ResourceData* ResourceManager::CreateResourceData(uint32_t type, StringView path, StringView assetPath /* = StringView() */) noexcept
 {
     String filePath(path);
+    String assetFullPath(assetPath);
+
+    if (assetFullPath.empty())
+    {
+        assetFullPath = ToAssetDirectory(path);
+    }
+
     auto noExtPath = path.substr(0, path.find("."));
 
     // 生成する asset ファイルパスの作成
@@ -232,9 +240,10 @@ ResourceData* ResourceManager::CreateResourceData(uint32_t type, StringView path
     auto& resourceData = m_resourceTypeList[type][assetName];
     resourceData.m_resourcePath.m_type = type;
     resourceData.m_resourcePath.m_path = filePath;
+    resourceData.m_assetFullPath       = assetFullPath;
 
     // .asset ファイルデータの作成と初期化
-    UploadResourceData(type, assetName, ToAssetDirectory(path));
+    UpdateResourceData(&resourceData);
 
     // パスからのアクセス用変数も作成
     m_resourceDataList[filePath] = &resourceData;
@@ -252,11 +261,23 @@ void ResourceManager::UpdateResourceData(ResourceData* resourceData) noexcept
 
     auto type = resourcePath.m_type;
     auto path = StringView(resourcePath.m_path);
-
-    // assetName に変換
     path = path.substr(0, path.find("."));
 
-    UploadResourceData(type, FileSystem::GetFilePath(path));
+    // assetName に変換
+    auto assetName = FileSystem::GetFilePath(path);
+    auto assetPath = resourceData->m_assetFullPath;
+
+    FileStream file;
+    if (file.CreateFileAndLoad(assetPath, OpenMode::Write_Mode))
+    {
+        file.Write(type);
+        file.Write(assetName);
+        resourceData->Serialized(&file);
+    }
+    else
+    {
+        LOG_ERROR("asset データの更新処理に失敗しました。\n ファイル名 : ");
+    }
 }
 
 ResourceData* ResourceManager::GetResourceData(StringView path) noexcept
@@ -397,8 +418,10 @@ void ResourceManager::DependencyBuilding() noexcept
     // アセットファイルから ResourceData の静的構築を行う。
     for (int i = 0; i < filePaths.size(); ++i)
     {
+        const auto& path = filePaths[i];
+
         FileStream file;
-        file.Load(filePaths[i], OpenMode::Read_Mode);
+        file.Load(path, OpenMode::Read_Mode);
 
         ASSERT(file.IsOpen());
 
@@ -409,13 +432,14 @@ void ResourceManager::DependencyBuilding() noexcept
         file.Read(&assetName);
 
         ResourceData resourceData;
+        resourceData.m_assetFullPath = path;
         resourceData.Deserialization(&file);
 
         m_resourceTypeList[type][assetName] = resourceData;
 
         // 直接パスからのアクセス用変数も作成
-        auto path = resourceData.m_resourcePath.m_path;
-        m_resourceDataList[path] = &m_resourceTypeList[type][assetName];
+        const auto& resourcePath = resourceData.m_resourcePath.m_path;
+        m_resourceDataList[resourcePath] = &m_resourceTypeList[type][assetName];
     }
 }
 
@@ -475,33 +499,6 @@ void ResourceManager::AsyncLoad(ResourceHandle* resourceHandle, const Vector<Res
 
     // スレッドタスクとして追加
     asyncJob->RegisterToJobSystem();
-}
-
-void ResourceManager::UploadResourceData(uint32_t type, StringView name) noexcept
-{
-    UploadResourceData(type, name, GetAssetPath(name));
-}
-
-void ResourceManager::UploadResourceData(uint32_t type, StringView name, StringView assetPath) noexcept
-{
-    String assetName(name);
-
-    ASSERT(m_resourceTypeList.contains(type));
-    ASSERT(m_resourceTypeList[type].contains(assetName));
-
-    auto& resourceData = m_resourceTypeList[type][assetName];
-
-    FileStream file;
-    if (file.CreateFileAndLoad(assetPath, OpenMode::Write_Mode))
-    {
-        file.Write(type);
-        file.Write(assetName);
-        resourceData.Serialized(&file);
-    }
-    else
-    {
-        LOG_ERROR("asset データの更新処理に失敗しました。\n ファイル名 : ");
-    }
 }
 
 #define CASE_EXT_RETURN(EXT) case GetHashFromCRC(EXT): return true;
@@ -632,6 +629,7 @@ String ResourceManager::GetAssetPath(StringView assetName) const noexcept
 
 String ResourceManager::ToAssetDirectory(StringView resourcePath) const noexcept
 {
+    // Data/Resource/ : 拡張子の消去
     resourcePath = resourcePath.substr(resourcePath.find("/") + 1, resourcePath.size());
     resourcePath = resourcePath.substr(resourcePath.find("/") + 1, resourcePath.size());
     resourcePath = resourcePath.substr(0, resourcePath.find("."));

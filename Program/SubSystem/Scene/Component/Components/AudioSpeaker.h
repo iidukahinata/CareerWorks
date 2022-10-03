@@ -1,8 +1,8 @@
 /**
-* @file		AudioSpeaker.h
+* @file    AudioSpeaker.h
 * @brief
 *
-* @date	2022/09/04 2022年度初版
+* @date	   2022/10/02 2022年度初版
 */
 #pragma once
 
@@ -20,10 +20,12 @@ public:
 	void Serialized(FileStream* file) const override;
 	void Deserialization(FileStream* file) override;
 
-	void Initialize() override;
-	void Remove() override;
+public:
 
-	void Update(double deltaTime) override;
+	void OnStart() override;
+	void OnStop() override;
+
+	void Tick(double deltaTime) override;
 
 public:
 
@@ -91,6 +93,7 @@ private:
 	AudioClip* m_audioClip = nullptr;
 
 	// * Audio 設定
+	bool  m_playOnAwake	   = false;
 	bool  m_mute           = false;
 	bool  m_isLoop         = false;
 	int	  m_priority       = 128;

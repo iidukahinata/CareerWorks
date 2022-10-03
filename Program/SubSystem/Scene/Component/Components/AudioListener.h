@@ -2,7 +2,7 @@
 * @file    AudioListener.h
 * @brief
 *
-* @date	   2022/08/02 2022年度初版
+* @date	   2022/10/02 2022年度初版
 */
 #pragma once
 
@@ -17,10 +17,9 @@ class AudioListener : public IComponent
 	SUB_CLASS(AudioListener)
 public:
 
-	void Initialize() override;
-	void Remove() override;
-
-	void SetActive(bool active) override;
+	void OnInitialize() override;
+	void OnStart() override;
+	void OnStop() override;
 
 public:
 

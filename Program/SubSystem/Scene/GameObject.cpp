@@ -46,6 +46,22 @@ void GameObject::Deserialization(FileStream* file)
 	}
 }
 
+void GameObject::StartAllComponents() noexcept
+{
+	for (const auto& component : m_components)
+	{
+		component.second->OnStart();
+	}
+}
+
+void GameObject::StopAllComponents() noexcept
+{
+	for (const auto& component : m_components)
+	{
+		component.second->OnStop();
+	}
+}
+
 IComponent* GameObject::AddComponent(StringView name) noexcept
 {
 	IComponent* result = nullptr;
@@ -69,7 +85,7 @@ void GameObject::AddComponent(IComponent* component) noexcept
 	}
 	else
 	{
-		component->Initialize();
+		component->OnInitialize();
 		m_components.emplace(hash, component);
 	}
 }
@@ -79,7 +95,7 @@ void GameObject::RemoveComponent(IComponent* component) noexcept
 	const auto hash = component->GetTypeData().Hash;
 	if (m_components.contains(hash))
 	{
-		component->Remove();
+		component->OnRemove();
 		m_components.erase(hash);
 	}
 }

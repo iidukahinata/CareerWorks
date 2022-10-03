@@ -1,8 +1,8 @@
 /**
-* @file    Light.h
+* @file    Light.cpp
 * @brief
 *
-* @date	   2022/09/04 2022年度初版
+* @date	   2022/10/03 2022年度初版
 */
 
 
@@ -31,11 +31,9 @@ void Light::Deserialization(FileStream* file)
 	file->Read(&m_angle);
 }
 
-void Light::Initialize()
+void Light::OnInitialize()
 {
 	m_renderer = GetContext()->GetSubsystem<Renderer>();
-
-	RegisterToLightMap();
 
 	// init data
 	m_lightType = LightType::DirectionalLight;
@@ -47,27 +45,14 @@ void Light::Initialize()
 	GetTransform().SetRotation(Math::Vector3(0.5f, -0.5f, -1.f));
 }
 
-void Light::Remove()
+void Light::OnStart()
 {
-	UnRegisterFromLightMap();
+	RegisterToLightMap();
 }
 
-void Light::SetActive(bool active)
+void Light::OnStop()
 {
-	if (GetActive() == active)
-	{
-		return;
-	}
-
-	IComponent::SetActive(active);
-	if (active)
-	{
-		RegisterToLightMap();
-	}
-	else
-	{
-		UnRegisterFromLightMap();
-	}
+	UnRegisterFromLightMap();
 }
 
 void Light::SetLightType(LightType lightType) noexcept

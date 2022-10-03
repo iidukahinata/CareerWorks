@@ -2,41 +2,26 @@
 * @file    AudioListener.cpp
 * @brief
 *
-* @date	   2022/08/02 2022年度初版
+* @date	   2022/10/02 2022年度初版
 */
 
 
 #include "AudioListener.h"
 #include "SubSystem/Audio/Audio.h"
 
-void AudioListener::Initialize()
+void AudioListener::OnInitialize()
 {
 	m_audio = GetContext()->GetSubsystem<Audio>();
+}
 
+void AudioListener::OnStart()
+{
 	RegisterToAudioSystem();
 }
 
-void AudioListener::Remove()
+void AudioListener::OnStop()
 {
 	UnRegisterFromAudioSystem();
-}
-
-void AudioListener::SetActive(bool active)
-{
-	if (GetActive() == active)
-	{
-		return;
-	}
-
-	IComponent::SetActive(active);
-	if (active)
-	{
-		RegisterToAudioSystem();
-	}
-	else
-	{
-		UnRegisterFromAudioSystem();
-	}
 }
 
 void AudioListener::SetVelocity(const Math::Vector3& velocity) noexcept
@@ -51,10 +36,12 @@ const Math::Vector3& AudioListener::GetVelocity() const noexcept
 
 void AudioListener::RegisterToAudioSystem()
 {
+	ASSERT(m_audio);
 	m_audio->SetAudioListener(this);
 }
 
 void AudioListener::UnRegisterFromAudioSystem()
 {
+	ASSERT(m_audio);
 	m_audio->SetAudioListener(nullptr);
 }
