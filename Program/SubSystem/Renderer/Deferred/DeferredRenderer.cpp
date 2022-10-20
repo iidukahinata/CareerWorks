@@ -156,7 +156,7 @@ bool DeferredRenderer::SetUpRenderingObjects(UINT width, UINT height) noexcept
 }
 
 bool DeferredRenderer::SetUpLightingObjects(UINT width, UINT height) noexcept
-{	
+{
 	auto deferredShaderPath = FileSystem::FindFilePath(SHADER_DIRECTORY, "Deferred.hlsl");
 
 	Array<D3D12Shader, 2> deferredShaders;
@@ -272,11 +272,11 @@ void DeferredRenderer::PostPass() noexcept
 	m_sampler.PSSet();
 
 	// Texture Set
-	m_lightingRenderTexture.PSSet(0);
 	m_gbuffer->GetRenderTexture(GBufferType::Albedo	 ).PSSet(0);
 	m_gbuffer->GetRenderTexture(GBufferType::Specular).PSSet(1);
 	m_gbuffer->GetRenderTexture(GBufferType::Normal	 ).PSSet(2);
 	m_gbuffer->GetRenderTexture(GBufferType::Depth	 ).PSSet(3);
+	m_lightingRenderTexture.PSSet(4);
 
 	// Mesh Set
 	m_vertexBuffer.IASet();

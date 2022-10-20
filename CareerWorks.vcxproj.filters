@@ -529,6 +529,12 @@
     <ClCompile Include="Program\SubSystem\Scene\Component\IComponent.cpp">
       <Filter>Subsytem\Scene\Component</Filter>
     </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\AudioSpeakerDetails.cpp">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\AudioListenerDetails.cpp">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Program\ThirdParty\FMOD\include\fmod_dsp.h">
@@ -986,6 +992,12 @@
     </ClInclude>
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\MainMenuBarWidget.h">
       <Filter>Subsytem\Editor\Widget\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\AudioSpeakerDetails.h">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\AudioListenerDetails.h">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

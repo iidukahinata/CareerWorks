@@ -8,7 +8,6 @@
 
 
 #include <Windows.h>
-#include "Context.h"
 
 class Engine
 {
@@ -33,7 +32,7 @@ public:
 private:
 
 	/** 主に、通常のウィンドウとデバックウィンドウを生成します。*/
-	bool StartUpScreen(HINSTANCE hInstance) noexcept;
+	bool StartUpScreen(HINSTANCE hInstance) const noexcept;
 
 	/** 登録された各システムのセットアップを行う。*/
 	bool InitializeSubsystems() noexcept;

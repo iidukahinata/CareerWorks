@@ -20,6 +20,7 @@
 GameObjectDetails::GameObjectDetails(DetailsWidget* detailsWidget, GameObject* gameObject) :
 	DetailsObject(detailsWidget), m_gameObject(gameObject)
 {
+	// Add Component ‚ÌŒŸõ‚Ég—p
 	RegisterComponent<Light>();
 	RegisterComponent<Camera>();
 	RegisterComponent<ModelRender>();
@@ -43,12 +44,17 @@ void GameObjectDetails::Draw()
 
 	auto gameObject = m_gameObject;
 	auto name		= m_gameObject->GetName();
+	auto active		= m_gameObject->GetActive();
 	name.resize(128);
 
 	ImGui::Text("Name"); ImGui::SameLine(offsetPos);
 	auto inputName = ImGui::InputText("##Object Name", name.data(), name.size());
 
-	if (inputName) RegisterEditorCommand([gameObject](auto data) { gameObject->SetName(data); }, name, gameObject->GetName());
+	ImGui::Text("Active"); ImGui::SameLine(offsetPos);
+	auto inputActive = ImGui::Checkbox("##Active Mode", &active);
+
+	if (inputName)   RegisterEditorCommand([gameObject](auto data) { gameObject->SetName(data); }, name, gameObject->GetName());
+	if (inputActive) RegisterEditorCommand([gameObject](auto data) { gameObject->SetActive(data); }, active, gameObject->GetActive());
 }
 
 void GameObjectDetails::ShowAddComponentWindow() noexcept

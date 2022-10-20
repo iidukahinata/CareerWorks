@@ -17,8 +17,6 @@
 #include "SubSystem/Resource/Resources/Audio/AudioClip.h"
 #include "SubSystem/Renderer/GraphicsAPI/D3D12/D3D12GraphicsDevice.h"
 
-extern Context* g_context;
-
 void EditorHelper::Initialize(D3D12DescriptorHeap* descriptorHeap) noexcept
 {
 	m_descriptorHeap = descriptorHeap;
@@ -28,6 +26,7 @@ void EditorHelper::Initialize(D3D12DescriptorHeap* descriptorHeap) noexcept
 
 void EditorHelper::BegineRenderer() noexcept
 {
+	// font óp
 	constexpr auto offset = 1;
 
 	// reset
@@ -129,21 +128,6 @@ uint32_t EditorHelper::GetResourceTypeByIconType(IconType type) const noexcept
 	case Icon_Shader   : return Shader::TypeData.Hash;
 	case Icon_Audio    : return AudioClip::TypeData.Hash;
 	default			   : return uint32_t(100);
-	}
-}
-
-ImVec4 EditorHelper::GetResourceColorByIconType(IconType type) const noexcept
-{
-	switch (type)
-	{
-	case Icon_Scene	   : return ImVec4(0.6f, 0.4f, 0.0f, 1.0f); // íÉ
-	case Icon_Model	   : return ImVec4(0.0f, 0.3f, 0.7f, 1.0f); // ê¬
-	case Icon_Mesh	   : return ImVec4(0.5f, 0.6f, 1.0f, 0.6f); // êÖ
-	case Icon_Material : return ImVec4(0.1f, 1.0f, 0.1f, 0.6f); // óŒ
-	case Icon_Texture  : return ImVec4(0.0f, 0.0f, 0.0f, 0.9f); // çï
-	case Icon_Shader   : return ImVec4(0.8f, 0.5f, 0.0f, 0.6f); // ÉIÉåÉìÉW
-	case Icon_Audio    : return ImVec4(0.9f, 0.2f, 0.0f, 0.6f); // îZÇ¢ê‘
-	default			   : return ImVec4(0, 0, 0, 0);
 	}
 }
 

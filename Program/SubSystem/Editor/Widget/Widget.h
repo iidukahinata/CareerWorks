@@ -16,7 +16,6 @@ public:
 
 	virtual ~Widget() {}
 
-	virtual void Initialize() {}
 	virtual void PostInitialize() {}
 	virtual void Draw() {}
 

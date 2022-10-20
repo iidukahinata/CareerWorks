@@ -18,8 +18,6 @@
 #include "SubSystem/Renderer/Forward/ForwardRenderer.h"
 #include "SubSystem/Renderer/Deferred/DeferredRenderer.h"
 
-extern Context* g_context;
-
 void Config::RegisterSubsystemsToContainer() noexcept
 {
 	bool hasCofigData = false;

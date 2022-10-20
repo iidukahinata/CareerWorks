@@ -33,7 +33,7 @@ class ConsoleWidget : public Widget
 	COMPLETED_DEVELOPMENT()
 public:
 
-	void Initialize() override;
+	void PostInitialize() override;
 	void Draw() override;
 
 private:

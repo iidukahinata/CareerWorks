@@ -2,7 +2,7 @@
 * @file    World.h
 * @brief
 *
-* @date	   2022/10/02 2022年度初版
+* @date	   2022/10/03 2022年度初版
 */
 #pragma once
 
@@ -11,13 +11,6 @@
 #include "SubSystem/Core/ISubsystem.h"
 
 class Scene;
-
-enum SceneState
-{
-	Stop,
-	Active,
-	Change,
-};
 
 class World : public ISubsystem
 {
@@ -50,7 +43,7 @@ public:
 	GameObject* CreateGameObject(Scene* scene = nullptr) noexcept;
 
 	/** 各クラスに GameObject 消去の通達を行う。*/
-	void DestroyGameObject(GameObject* gameObject) noexcept;
+	void DestroyGameObject(GameObject* gameObject) const noexcept;
 
 	/** ロードされた全てのシーンへアクセスする検索処理(高価) */
 	GameObject* GetGameObjectByName(StringView name) const noexcept;
@@ -65,7 +58,7 @@ public:
 
 private:
 
-	void SetUpListenerObjects() noexcept;
+	void StartupListenerObjects() noexcept;
 
 	void AddScene(StringView name, Scene* scene) noexcept;
 	void RemoveScene(Scene* scene) noexcept;

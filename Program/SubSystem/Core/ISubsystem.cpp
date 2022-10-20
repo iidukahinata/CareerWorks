@@ -7,9 +7,6 @@
 
 
 #include "ISubsystem.h"
-#include "Context.h"
-
-extern Context* g_context;
 
 Context* ISubsystem::GetContext() const noexcept
 {

@@ -24,7 +24,7 @@ bool World::Initialize()
 	m_job.SetFunction([this](double) { Update(); }, FunctionType::Update);
 
 	// SceneEvent 用リスナー関数の初期化
-	SetUpListenerObjects();
+	StartupListenerObjects();
 
 	return true;
 }
@@ -124,12 +124,13 @@ GameObject* World::CreateGameObject(Scene* scene /* = nullptr */) noexcept
 	return result;
 }
 
-void World::DestroyGameObject(GameObject* gameObject) noexcept
+void World::DestroyGameObject(GameObject* gameObject) const noexcept
 {
 	if (gameObject)
 	{
 		auto scene = gameObject->GetOwner();
 		ASSERT(scene);
+
 		scene->RemoveGameObject(gameObject);
 	}
 }
@@ -193,7 +194,7 @@ const Unordered_Map<String, Scene*>& World::GetSceneList() const noexcept
 	return m_sceneList;
 }
 
-void World::SetUpListenerObjects() noexcept
+void World::StartupListenerObjects() noexcept
 {
 	m_changeSceneListener.SetFunction([this](std::any data) {
 

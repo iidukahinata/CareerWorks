@@ -2,10 +2,12 @@
 * @file    Transform.h
 * @brief
 *
-* @date	   2022/10/02 2022年度初版
+* @date	   2022/10/03 2022年度初版
 */
 #pragma once
 
+
+class GameObject;
 
 class Transform
 {
@@ -13,8 +15,7 @@ class Transform
 	CLASS_DATA(Transform)
 public:
 
-	Transform();
-	Transform(Math::Vector3 pos, Math::Vector3 rot = Math::Vector3::Zero, Math::Vector3 scale = Math::Vector3::One);
+	Transform(GameObject* gameObject);
 	~Transform();
 
 	void Serialized(FileStream* file) const noexcept;
@@ -44,6 +45,7 @@ public:
 
 public:
 
+	bool HasParent() const noexcept;
 	void SetParent(Transform* parent) noexcept;
 	void AddChild(Transform* child) noexcept;
 	void RemoveChild(Transform* child) noexcept;
@@ -53,7 +55,11 @@ public:
 	Transform* GetParent() const noexcept;
 	Transform* GetRoot() const noexcept;
 
+	GameObject* GetOwner() const noexcept;
+
 private:
+
+	GameObject* m_owner = nullptr;
 
 	Transform* m_parent = nullptr;
 	Vector<Transform*> m_children;

@@ -322,12 +322,6 @@ void AssetsWidget::ChackClickedCommand(IconType type, StringView name) noexcept
 	{
 		DetailsWidget::SelectResource(m_selectResoruce);
 	}
-
-	// delete resource
-	if (m_selectResoruce && ImGui::IsKeyReleased(VK_DELETE))
-	{
-		LOG("aaa");
-	}
 }
 
 void AssetsWidget::DrawThumbnail(IconType type, StringView name) noexcept

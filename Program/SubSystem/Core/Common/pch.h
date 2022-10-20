@@ -47,6 +47,7 @@
 #include "SubSystem/Core/Event/Event.h"
 #include "SubSystem/Core/Event/EventListener.h"
 #include "SubSystem/Input/InputEvents.h"
+#include "SubSystem/Scene/SceneEvents.h"
 
 // Job System
 #include "SubSystem/JobSystem/Sync/Job.h"

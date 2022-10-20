@@ -9,6 +9,7 @@
 
 #include "../DetailsObject.h"
 
+class Texture;
 class Material;
 class ResourceData;
 
@@ -17,6 +18,8 @@ class MaterialDetails : public DetailsObject
 public:
 
 	MaterialDetails(DetailsWidget* detailsWidget, ResourceData* resourceData);
+	~MaterialDetails();
+
 	void Draw() override;
 
 private:
@@ -30,8 +33,14 @@ private:
 	/** 使用中テクスチャ一覧表示 */
 	void ShowTextureList(Material* material) noexcept;
 
+	/** テクスチャのドラッグアンドドロップ対応 */
+	bool DragDropTexture(Material* material, Texture* texture, StringView pramName) noexcept;
+
+	/** 開かれているシーン内リソースかを判別 */
+	bool IsCurrentSceneResource() const noexcept;
+
 private:
 
-	ResourceHandle* m_resourceHandle;
-	Material* m_material;
+	ResourceHandle* m_resourceHandle = nullptr;
+	Material* m_material			 = nullptr;
 };

@@ -2,7 +2,7 @@
 * @file    GameObject.h
 * @brief
 *
-* @date	   2022/09/06 2022年度初版
+* @date	   2022/10/03 2022年度初版
 */
 #pragma once
 
@@ -14,17 +14,21 @@ class GameObject
 {
 	COMPLETED_DEVELOPMENT()
 	CLASS_DATA(GameObject)
+	COPY_PROHIBITED(GameObject)
 
 	friend struct GameObjectFactory;
 public:
 
-	void Serialized(FileStream* file) const;
-	void Deserialization(FileStream* file);
+	GameObject();
+
+	void Serialized(FileStream* file) const noexcept;
+	void Deserialization(FileStream* file) noexcept;
 
 public:
 
 	void StartAllComponents() noexcept;
 	void StopAllComponents() noexcept;
+
 public:
 
 	/** 指定名コンポーネントの追加。指定名が存在しない等の場合、null を返す。*/

@@ -25,6 +25,9 @@ void D3D12StateCache::BegineFrame() noexcept
 
 void D3D12StateCache::Reset() noexcept
 {
+	m_state.m_pipelineState = nullptr;
+	m_state.m_rootSignature = nullptr;
+
 	m_state.m_srvCache.Clear();
 	m_state.m_uavCache.Clear();
 	m_state.m_cbvCache.Clear();

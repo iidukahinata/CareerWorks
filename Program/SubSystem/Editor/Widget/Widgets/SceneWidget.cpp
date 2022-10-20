@@ -2,7 +2,7 @@
 * @file	   SceneWidget.cpp
 * @brief
 *
-* @date	   2022/09/13 2022年度初版
+* @date	   2022/10/03 2022年度初版
 */
 
 
@@ -23,26 +23,34 @@ void SceneWidget::Draw()
 	ImGui::SetNextWindowPos(ImVec2( 0, 80), ImGuiCond_Once);
 	ImGui::SetNextWindowSize(ImVec2(220, 470), ImGuiCond_Once);
 
-	ImGui::Begin("Scene", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+	const auto windowFlags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize;
 
 	if (auto currentScene = m_world->GetCurrentScene())
 	{
-		for (const auto& gameObject : currentScene->GetAllGameObjects())
-		{
-			AddGameObjectToTree(gameObject.get());
-		}
-	}
+		ImGui::Begin(currentScene->GetAssetName().data(), nullptr, windowFlags);
 
-	ChackClickedCommand();
-	ShowGameObjectHelper();
-	ShowGameObjectCreateWindow();
+		// show gameObjects
+		Vector<GameObject*> allRootGameObjects;
+		currentScene->GetAllRootGameObjects(allRootGameObjects);
+		for (const auto& rootGameObject : allRootGameObjects)
+		{
+			AddGameObjectToTree(rootGameObject);
+		}
+
+		ShowGameObjectHelper();
+		ShowGameObjectCreateWindow();
+	}
+	else
+	{
+		ImGui::Begin("None Scene", nullptr, windowFlags);
+	}
 
 	ImGui::End();
 }
 
-void SceneWidget::AddGameObjectToTree(GameObject* gameObject) noexcept
+void SceneWidget::AddGameObjectToTree(GameObject* gameObject) const noexcept
 {
-	auto flags = 0;
+	auto flags = ImGuiTreeNodeFlags_OpenOnArrow;
 	if (gameObject->GetTransform().GetChildCount() == 0)
 	{
 		flags = ImGuiTreeNodeFlags_Leaf;
@@ -50,35 +58,30 @@ void SceneWidget::AddGameObjectToTree(GameObject* gameObject) noexcept
 
 	if (ImGui::TreeNodeEx(gameObject->GetName().c_str(), flags))
 	{
-		// ドラッグアンドドロップ有効指定
-		const auto hoverd = ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
+		ChackClickedCommand(gameObject);
 
-		// ドラッグアンドドロップでの Texture 切り替えのため
-		if (ImGui::IsMouseReleased(0) && hoverd)
+		// show children
+		for (auto& child : gameObject->GetTransform().GetChildren())
 		{
-			SelectGameObject(gameObject);
+			AddGameObjectToTree(child->GetOwner());
 		}
 
 		ImGui::TreePop();
 	}
-}
-
-void SceneWidget::SelectGameObject(GameObject* gameObject) noexcept
-{
-	if (DragDrop::Get().HasDragObject())
-	{
-
-	}
 	else
 	{
-		DetailsWidget::SelectGameObject(gameObject);
+		ChackClickedCommand(gameObject);
 	}
 }
 
-void SceneWidget::ShowGameObjectHelper() noexcept
+void SceneWidget::ShowGameObjectHelper() const noexcept
 {
-	bool isCreate = false;
+	if (ImGui::IsMouseClicked(1) && ImGui::IsWindowHovered())
+	{
+		ImGui::OpenPopup("GameObject Helper");
+	}
 
+	bool isCreate = false;
 	if (ImGui::BeginPopup("GameObject Helper"))
 	{
 		if (ImGui::Button("Create GameObject"))
@@ -91,24 +94,30 @@ void SceneWidget::ShowGameObjectHelper() noexcept
 
 	if (isCreate)
 	{
-		ImGui::OpenPopup("Create GameObject Window");
+		ImGui::OpenPopup("Create GameObject");
 	}
 }
 
-void SceneWidget::ShowGameObjectCreateWindow()
+void SceneWidget::ShowGameObjectCreateWindow() noexcept
 {
-	if (ImGui::BeginPopup("Create GameObject Window"))
+	ASSERT(m_world->GetCurrentScene());
+
+	const auto center = ImGui::GetMainViewport()->GetCenter();
+	ImGui::SetNextWindowPos(ImVec2(center.x - 150, center.y), ImGuiCond_Once);
+	ImGui::SetNextWindowSize(ImVec2(300, 100), ImGuiCond_Once);
+
+	if (ImGui::BeginPopupModal("Create GameObject"))
 	{
 		ImGui::Text("Object Name"); ImGui::SameLine();
 
-		char str[128] = "";
-		auto isCreate = ImGui::InputTextWithHint("", "none", str, IM_ARRAYSIZE(str), ImGuiInputTextFlags_EnterReturnsTrue); ImGui::Text(""); // 改行用
+		char name[128] = "";
+		auto isCreate = ImGui::InputTextWithHint("", "none", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_EnterReturnsTrue); ImGui::Text(""); // 改行用
 		auto isCancel = ImGui::Button("Cancel");
 
-		if (isCreate && !!m_world->GetCurrentScene())
+		if (isCreate)
 		{
 			auto gameObject = m_world->CreateGameObject();
-			gameObject->SetName(str);
+			gameObject->SetName(name);
 		}
 
 		if (isCreate || isCancel)
@@ -120,10 +129,48 @@ void SceneWidget::ShowGameObjectCreateWindow()
 	}
 }
 
-void SceneWidget::ChackClickedCommand() noexcept
+void SceneWidget::ChackClickedCommand(GameObject* gameObject) const noexcept
 {
-	if (ImGui::IsMouseClicked(1) && ImGui::IsWindowHovered())
+	// ドラッグアンドドロップ有効指定
+	if (!ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem))
 	{
-		ImGui::OpenPopup("GameObject Helper");
+		return;
 	}
+
+	// 矢印が押された時は反応しない
+	if (ImGui::IsItemToggledOpen())
+	{
+		return;
+	}
+
+	if (ImGui::IsMouseClicked(0))
+	{
+		DragDrop::Get().StartDrag(DragDrop_GameObject, gameObject);
+	}
+
+	if (ImGui::IsMouseReleased(0))
+	{
+		if (DragDrop::Get().HasGameObject())
+		{			
+			auto dragGameObject = CatchDragObject();
+			if (dragGameObject == gameObject)
+			{
+				DetailsWidget::SelectGameObject(gameObject);
+			}
+			else
+			{
+				dragGameObject->GetTransform().SetParent(&gameObject->GetTransform());
+			}
+		}
+	}
+}
+
+GameObject* SceneWidget::CatchDragObject() const noexcept
+{
+	if (DragDrop::Get().HasGameObject())
+	{
+		auto dragObject = DragDrop::Get().GetDragObject();
+		return std::any_cast<GameObject*>(dragObject);
+	}
+	return nullptr;
 }

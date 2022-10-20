@@ -21,6 +21,8 @@ class DetailsWidget : public Widget
 	WAIT_FOR_DEVELOPMENT("ResourceWidget êßçÏå„")
 public:
 
+	~DetailsWidget();
+
 	void PostInitialize() override;
 	void Draw() override;
 

@@ -36,15 +36,15 @@ bool Scene::Load(StringView path)
     FileStream file(path, OpenMode::Read_Mode);
     ASSERT(file.IsOpen());
 
-    size_t numGameObjects;
-    file.Read(&numGameObjects);
+    size_t numRootGameObjects;
+    file.Read(&numRootGameObjects);
 
-    for (int i = 0; i < numGameObjects; ++i)
+    for (int i = 0; i < numRootGameObjects; ++i)
     {
         // this データのゲームオブジェクトを生成
-        auto gameObject = world->CreateGameObject(this);
+        auto rootGameObject = world->CreateGameObject(this);
 
-        gameObject->Deserialization(&file);
+        rootGameObject->Deserialization(&file);
     }
 
     return true;
@@ -96,7 +96,6 @@ void Scene::Clone(StringView name) noexcept
     const auto newResourceData = m_resourceManager->CreateResourceData<Scene>(newResourcePath, newAssetFullPath);
 
     newResourceData->m_refResourcePaths = resourceData->m_refResourcePaths;
-
     m_resourceManager->UpdateResourceData(newResourceData);
 }
 
@@ -149,6 +148,17 @@ void Scene::ClearGameObjects() noexcept
     m_gameObjects.shrink_to_fit();
 }
 
+void Scene::GetAllRootGameObjects(Vector<GameObject*>& gameObjects) const noexcept
+{
+    for (const auto& gameObject : m_gameObjects)
+    {
+        if (gameObject->GetTransform().HasParent())
+            continue;
+
+        gameObjects.emplace_back(gameObject.get());
+    }
+}
+
 const Vector<UniquePtr<GameObject>>& Scene::GetAllGameObjects() const noexcept
 {
     return m_gameObjects;
@@ -159,12 +169,15 @@ void Scene::UpdateProprietaryDataFile() noexcept
     FileStream file(m_filePath, OpenMode::Write_Mode);
     ASSERT(file.IsOpen());
 
-    size_t numGameObjects = m_gameObjects.size();
-    file.Write(numGameObjects);
+    Vector<GameObject*> rootGameObjects;
+    GetAllRootGameObjects(rootGameObjects);
 
-    for (int i = 0; i < numGameObjects; ++i)
+    size_t numRootGameObjects = rootGameObjects.size();
+    file.Write(numRootGameObjects);
+
+    for (int i = 0; i < numRootGameObjects; ++i)
     {
-        m_gameObjects[i]->Serialized(&file);
+        rootGameObjects[i]->Serialized(&file);
     }
 }
 
@@ -185,9 +198,7 @@ void Scene::UpdateResourceDataFile() noexcept
     for (auto resource : resources)
     {
         if (resource == this)
-        {
             continue;
-        }
 
         refResourcePaths.push_back(ResourcePath(resource->GetType(), resource->GetFilePath()));
     }

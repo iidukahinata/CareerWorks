@@ -9,6 +9,7 @@
 
 #include <typeinfo>
 #include "Common.h"
+#include "Tools/Hash.h"
 
 // * 探索を簡単にするために作成
 #define COMPLETED_DEVELOPMENT(...) // 開発完了（現時点で作業が行われることがないもの）
@@ -43,8 +44,8 @@ struct ClassTypeData
 CLASS(const CLASS&) = delete;			\
 CLASS& operator=(const CLASS&) = delete;
 
-#define CLASS_DATA(CLASS) \
-public: \
+#define CLASS_DATA(CLASS)													  \
+public:																		  \
 static INLINE ClassTypeData TypeData = ClassTypeData(#CLASS, GET_HASH(CLASS));
 
 #define SUPER_CLASS(CLASS)						\
@@ -59,10 +60,10 @@ const std::type_info& TypeInfo() noexcept		\
 	return typeid(*this);						\
 }
 
-#define SUB_CLASS(CLASS)									\
-public:														\
-CLASS_DATA(CLASS)											\
-virtual const ClassTypeData& GetTypeData() const override	\
-{															\
-	return TypeData;										\
+#define SUB_CLASS(CLASS)								 \
+public:													 \
+CLASS_DATA(CLASS)										 \
+virtual const ClassTypeData& GetTypeData() const override\
+{														 \
+	return TypeData;									 \
 }

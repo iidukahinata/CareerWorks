@@ -2,7 +2,7 @@
 * @file    EventListener.h
 * @brief
 *
-* @date	   2022/09/06 2022年度初版
+* @date	   2022/10/03 2022年度初版
 */
 #pragma once
 
@@ -21,11 +21,15 @@ public:
 	EventListener(Func&& func);
 	~EventListener();
 
+public:
+
 	/** Event 取得関数の実行を行う。*/
 	void Action(std::any data) noexcept;
 
 	/** EventManager で実行される関数 function を設定 */
 	void SetFunction(Func&& func) noexcept;
+
+public:
 
 	/** Eventを受け取れるようにするため */
 	template<class T>

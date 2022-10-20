@@ -17,6 +17,11 @@ ResourceData*					 DetailsWidget::m_selectResourceData = nullptr;
 DetailsWidget*					 DetailsWidget::m_detailsWidget		 = nullptr;
 Vector<UniquePtr<DetailsObject>> DetailsWidget::m_detailsObjects;
 
+DetailsWidget::~DetailsWidget()
+{
+	ClearSelectObject();
+}
+
 void DetailsWidget::PostInitialize()
 {
 	m_detailsWidget = this;
@@ -81,16 +86,20 @@ void DetailsWidget::SelectGameObject(GameObject* gameObject) noexcept
 		}
 	}
 
-	// å≥Ç…ñﬂÇ∑èàóùéûÇ… DetailsObjects Ç™ê∂ê¨èoóàÇ»Ç¢ÇΩÇﬂ
 	if (m_selectResourceData)
 	{
+		// å≥Ç…ñﬂÇ∑èàóùéûÇ… DetailsObjects Ç™ê∂ê¨Ç≥ÇπÇÈÇΩÇﬂ
 		RegisterEditorCommand([](auto data) { SelectResourceInternal(data); }, (ResourceData*)(0), m_selectResourceData);
 	}
 
-	RegisterEditorCommand([](auto data) { SelectGameObjectInternal(data); }, gameObject, m_selectGameObject);
-
-	m_selectGameObject = gameObject;
-	m_selectResourceData = nullptr;
+	if (m_selectGameObject)
+	{
+		RegisterEditorCommand([](auto data) { SelectGameObjectInternal(data); }, gameObject, m_selectGameObject);
+	}
+	else
+	{
+		SelectGameObjectInternal(gameObject);
+	}
 }
 
 void DetailsWidget::SelectResource(ResourceData* resourceData) noexcept
@@ -108,16 +117,20 @@ void DetailsWidget::SelectResource(ResourceData* resourceData) noexcept
 		}
 	}
 
-	// å≥Ç…ñﬂÇ∑èàóùéûÇ… DetailsObjects Ç™ê∂ê¨èoóàÇ»Ç¢ÇΩÇﬂ
 	if (m_selectGameObject)
 	{
+		// å≥Ç…ñﬂÇ∑èàóùéûÇ… DetailsObjects Ç™ê∂ê¨Ç≥ÇπÇÈÇΩÇﬂ
 		RegisterEditorCommand([](auto data) { SelectGameObjectInternal(data); }, (GameObject*)(0), m_selectGameObject);
 	}
 
-	RegisterEditorCommand([](auto data) { SelectResourceInternal(data); }, resourceData, m_selectResourceData);
-
-	m_selectResourceData = resourceData;
-	m_selectGameObject = nullptr;
+	if (m_selectResourceData)
+	{
+		RegisterEditorCommand([](auto data) { SelectResourceInternal(data); }, resourceData, m_selectResourceData);
+	}
+	else
+	{
+		SelectResourceInternal(resourceData);
+	}
 }
 
 void DetailsWidget::ClearSelectObject() noexcept
@@ -133,6 +146,9 @@ void DetailsWidget::SelectGameObjectInternal(GameObject* gameObject) noexcept
 {
 	if (gameObject)
 	{
+		ClearSelectObject();
+
+		m_selectGameObject = gameObject;
 		m_detailsObjects = DetailsObjectFactory::Create(m_detailsWidget, gameObject);
 	}
 }
@@ -141,6 +157,9 @@ void DetailsWidget::SelectResourceInternal(ResourceData* resourceData) noexcept
 {
 	if (resourceData)
 	{
+		ClearSelectObject();
+
+		m_selectResourceData = resourceData;
 		m_detailsObjects = DetailsObjectFactory::Create(m_detailsWidget, resourceData);
 	}
 }

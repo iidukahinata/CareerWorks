@@ -9,8 +9,6 @@
 #include "Window.h"
 #include "Subsystem/Timer/Timer.h"
 
-extern Context* g_context;
-
 /** この前方宣言がないと imgui の入力を使用出来ない */
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 

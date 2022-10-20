@@ -16,6 +16,8 @@ class DetailsObject
 public:
 
 	DetailsObject(DetailsWidget* detailsWidget);
+	virtual ~DetailsObject();
+
 	virtual void Draw() = 0;
 
 protected:

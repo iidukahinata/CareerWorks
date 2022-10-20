@@ -2,7 +2,7 @@
 * @file    AudioSpeaker.h
 * @brief
 *
-* @date	   2022/10/02 2022年度初版
+* @date	   2022/10/03 2022年度初版
 */
 #pragma once
 
@@ -49,31 +49,46 @@ public:
 	/** play = true の時登録と同時に音源を再生します。*/
 	void SetAudioClip(IResource* resource, bool playOnAwake = false) noexcept;
 	void SetAudioClip(AudioClip* clip, bool playOnAwake = false) noexcept;
+	AudioClip* GetAudioClip() const noexcept;
+
+	void SetPlayOnAwake(bool playOnAwake) noexcept;
+	bool GetPlayOnAwake() const noexcept;
 
 	void SetMute(bool mute) noexcept;
+	bool GetMute() const noexcept;
+
 	void SetIsLoop(bool isLoop) noexcept;
+	bool GetIsLoop() const noexcept;
 
 	/* 0 が一番優先度が高く、引数値は 0 から 256 の間に clamp されます。*/
 	void SetPriority(int priority) noexcept;
+	int GetPriority() const noexcept;
 
 	/* 1 が一番音が大きく、引数値は 0 から 1 の間に clamp されます。*/
 	void SetVolume(float volume) noexcept;
+	float GetVolume() const noexcept;
 
 	/* 2 が一番音が高く、引数値は 0 から 2 の間に clamp されます。*/
 	void SetPitch(float pitch) noexcept;
+	float GetPitch() const noexcept;
 
 	/* 0 が左右同じバランスになり、引数値は -1 から 1 の間に clamp されます。*/
 	void SetPan(float pan) noexcept;
+	float GetPan() const noexcept;
 
 	/* true にすると 3D 処理を無視します。*/
 	void SetIs2DMode(bool is2DMode) noexcept;
+	bool GetIs2DMode() const noexcept;
 
 	/* 	サウンドの減衰を停止させる距離 */
 	void SetMaxDistance(float max) noexcept;
+	float GetMaxDistance() const noexcept;
 
 	/* スピーカーの音を個別で調整する関数です。*/
 	void SetOutPutMatrix(float* matrix, int size) noexcept;
+	void SetOutPutMatrix(const Array<float, 8>& matrix) noexcept;
 	void SetOutPutMatrix(float frontleft, float frontright, float center, float lfe, float surroundleft, float surroundright, float backleft, float backright) noexcept;
+	const Array<float, 8>& GetOutPutMatrix() const noexcept;
 
 private:
 

@@ -2,7 +2,7 @@
  * @file	DirectInput.cpp
  * @brief
  *
- * @date	2022/09/06 2022年度初版
+ * @date	2022/10/03 2022年度初版
  */
 
 
@@ -14,9 +14,9 @@ bool DirectInput::Initialize()
 	m_job.SetFunction([this](double) { Update(); }, FunctionType::Update);
 	m_job.RegisterToJobSystem();
 
-	const auto width = Window::Get().GetWindowWidth();
-	const auto height = Window::Get().GetWindowHeight();
-	const auto hwnd = Window::Get().GetHandle();
+	const auto width	 = Window::Get().GetWindowWidth();
+	const auto height	 = Window::Get().GetWindowHeight();
+	const auto hwnd		 = Window::Get().GetHandle();
 	const auto hInstance = Window::Get().GetHInstance();
 
 	HRESULT	hr;
@@ -105,13 +105,16 @@ void DirectInput::Update() noexcept
 	const auto oldpreviousKeyState = m_previousKeyState;
 	ConvertMyInputData();
 
-	// 各 Event を調べる。
+	// check event
 	for (int i = 0; i < m_previousKeyState.max_size(); ++i)
 	{
+		// press
 		if (m_previousKeyState[i] && !oldpreviousKeyState[i])
 		{
 			NotifyPressKey(static_cast<Button::KeyAndMouse>(i));
 		}
+
+		// release
 		else if (!m_previousKeyState[i] && oldpreviousKeyState[i])
 		{
 			NotifyReleaseKey(static_cast<Button::KeyAndMouse>(i));

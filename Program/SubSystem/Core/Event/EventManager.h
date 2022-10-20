@@ -2,7 +2,7 @@
 * @file    EventManager.h
 * @brief
 *
-* @date	   2022/09/06 2022年度初版
+* @date	   2022/10/03 2022年度初版
 */
 #pragma once
 
@@ -25,11 +25,13 @@ public:
 		return instance;
 	}
 
-	void Initialize();
-	void Exit();
+	void Initialize() noexcept;
+	void Exit() noexcept;
 
 	/** 前フレームで発生したイベントの処理。*/
 	void Tick() noexcept;
+
+public:
 
 	/** イベントを次フレーム処理用キューに追加 */
 	bool AddToQueue(UniquePtr<IEvent> eventBase) noexcept;

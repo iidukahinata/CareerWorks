@@ -191,7 +191,7 @@ IResource* ResourceManager::GetResource(const ResourcePath& resourcePath) const 
         return resource;
     }
 
-    LOG_ERROR("ロードされていないリソースへアクセスされました。");
+    //LOG_ERROR("ロードされていないリソースへアクセスされました。");
     return nullptr;
 }
 
@@ -407,7 +407,11 @@ const Map<uint32_t, Unordered_Map<String, ResourceData>>& ResourceManager::GetAl
 
 const Unordered_Map<String, ResourceData>& ResourceManager::GetResourceDataListByType(uint32_t type) const noexcept
 {
-    return m_resourceTypeList.find(type)->second;
+    if (m_resourceTypeList.contains(type))
+    {
+        return m_resourceTypeList.find(type)->second;
+    }
+    return Unordered_Map<String, ResourceData>();
 }
 
 void ResourceManager::DependencyBuilding() noexcept

@@ -2,7 +2,7 @@
 * @file    TickManager.h
 * @brief
 *
-* @date	   2022/09/06 2022年度初版
+* @date	   2022/10/03 2022年度初版
 */
 #pragma once
 
@@ -16,6 +16,8 @@ class TickFunction;
 class TickManager
 {
 	COMPLETED_DEVELOPMENT()
+	TickManager() = default;
+	COPY_PROHIBITED(TickManager)
 
 	typedef Set<TickFunction*> TickContainer;
 public:

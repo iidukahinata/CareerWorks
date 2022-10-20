@@ -49,3 +49,6 @@ FORCEINLINE Key* Context::GetSubsystem()
 {
 	return dynamic_cast<Key*>(GetSubsystemByHash(Key::TypeData.Hash));
 }
+
+// * オブジェクト
+extern Context* g_context;

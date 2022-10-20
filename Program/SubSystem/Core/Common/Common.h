@@ -7,9 +7,6 @@
 #pragma once
 
 
-#include "Tools/Hash.h"
-
-
 #ifdef _DEBUG
 #ifdef _M_IX86 || _M_IX86_FP
 #define DEBUG_BREAK _asm { int 3 }

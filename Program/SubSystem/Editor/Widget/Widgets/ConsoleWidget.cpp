@@ -29,7 +29,7 @@ void EngineLog::Clear() noexcept
 	m_logList.clear();
 }
 
-void ConsoleWidget::Initialize()
+void ConsoleWidget::PostInitialize()
 {
 	DebugLog::Get().SetLogInfo(&m_logInfo);
 

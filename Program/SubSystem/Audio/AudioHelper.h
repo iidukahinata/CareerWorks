@@ -7,6 +7,7 @@
 #pragma once
 
 
+#include <fmod.hpp>
 #include <fmod_errors.h>
 
 #define AUDIO_EORROR_CHECK(data)								\

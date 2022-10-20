@@ -2,7 +2,7 @@
 * @file    AudioSpeaker.cpp
 * @brief
 *
-* @date	   2022/10/02 2022年度初版
+* @date	   2022/10/03 2022年度初版
 */
 
 
@@ -176,9 +176,29 @@ void AudioSpeaker::SetAudioClip(AudioClip* pAudioClip, bool playOnAwake /* = fal
 	}
 }
 
+AudioClip* AudioSpeaker::GetAudioClip() const noexcept
+{
+	return m_audioClip;
+}
+
+void AudioSpeaker::SetPlayOnAwake(bool playOnAwake) noexcept
+{
+	m_playOnAwake = playOnAwake;
+}
+
+bool AudioSpeaker::GetPlayOnAwake() const noexcept
+{
+	return m_playOnAwake;
+}
+
 void AudioSpeaker::SetMute(bool mute) noexcept
 {
 	m_mute = mute;
+}
+
+bool AudioSpeaker::GetMute() const noexcept
+{
+	return m_mute;
 }
 
 void AudioSpeaker::SetIsLoop(bool isLoop) noexcept
@@ -186,9 +206,19 @@ void AudioSpeaker::SetIsLoop(bool isLoop) noexcept
 	m_isLoop = isLoop;
 }
 
+bool AudioSpeaker::GetIsLoop() const noexcept
+{
+	return m_isLoop;
+}
+
 void AudioSpeaker::SetPriority(int priority) noexcept
 {
 	m_priority = std::clamp(priority, 0, 256);
+}
+
+int AudioSpeaker::GetPriority() const noexcept
+{
+	return m_priority;
 }
 
 void AudioSpeaker::SetVolume(float volume) noexcept
@@ -196,9 +226,19 @@ void AudioSpeaker::SetVolume(float volume) noexcept
 	m_volume = std::clamp(volume, 0.f, 1.f);
 }
 
+float AudioSpeaker::GetVolume() const noexcept
+{
+	return m_volume;
+}
+
 void AudioSpeaker::SetPitch(float pitch) noexcept
 {
 	m_pitch = std::clamp(pitch, 0.f, 2.f);
+}
+
+float AudioSpeaker::GetPitch() const noexcept
+{
+	return m_pitch;
 }
 
 void AudioSpeaker::SetPan(float pan) noexcept
@@ -206,14 +246,29 @@ void AudioSpeaker::SetPan(float pan) noexcept
 	m_pan = std::clamp(pan, -1.f, 1.f);
 }
 
+float AudioSpeaker::GetPan() const noexcept
+{
+	return m_pan;
+}
+
 void AudioSpeaker::SetIs2DMode(bool is2DMode) noexcept
 {
 	m_is2DMode = is2DMode;
 }
 
+bool AudioSpeaker::GetIs2DMode() const noexcept
+{
+	return m_is2DMode;
+}
+
 void AudioSpeaker::SetMaxDistance(float max) noexcept
 {
 	m_maxDistance = max(max, 1.f);
+}
+
+float AudioSpeaker::GetMaxDistance() const noexcept
+{
+	return m_maxDistance;
 }
 
 void AudioSpeaker::SetOutPutMatrix(float* matrix, int size) noexcept
@@ -227,16 +282,26 @@ void AudioSpeaker::SetOutPutMatrix(float* matrix, int size) noexcept
 	}
 }
 
+void AudioSpeaker::SetOutPutMatrix(const Array<float, 8>& matrix) noexcept
+{
+	m_levelMatrix = matrix;
+}
+
 void AudioSpeaker::SetOutPutMatrix(float frontleft, float frontright, float center, float lfe, float surroundleft, float surroundright, float backleft, float backright) noexcept
 {
-	m_levelMatrix[0] = frontleft;
-	m_levelMatrix[1] = frontright;
-	m_levelMatrix[2] = center;
-	m_levelMatrix[3] = lfe;
-	m_levelMatrix[4] = surroundleft;
-	m_levelMatrix[5] = surroundright;
-	m_levelMatrix[6] = backleft;
-	m_levelMatrix[7] = backright;
+	m_levelMatrix[0] = std::clamp(frontleft	   , 0.f, 1.f);
+	m_levelMatrix[1] = std::clamp(frontright   , 0.f, 1.f);
+	m_levelMatrix[2] = std::clamp(center	   , 0.f, 1.f);
+	m_levelMatrix[3] = std::clamp(lfe		   , 0.f, 1.f);
+	m_levelMatrix[4] = std::clamp(surroundleft , 0.f, 1.f);
+	m_levelMatrix[5] = std::clamp(surroundright, 0.f, 1.f);
+	m_levelMatrix[6] = std::clamp(backleft	   , 0.f, 1.f);
+	m_levelMatrix[7] = std::clamp(backright	   , 0.f, 1.f);
+}
+
+const Array<float, 8>& AudioSpeaker::GetOutPutMatrix() const noexcept
+{
+	return m_levelMatrix;
 }
 
 void AudioSpeaker::MakeAudioSettingsTheSame(AudioClip* clip) const noexcept

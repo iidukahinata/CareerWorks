@@ -2,7 +2,7 @@
 * @file		Event.cpp
 * @brief
 *
-* @date		2022/09/01 2022年度初版
+* @date		2022/10/03 2022年度初版
 */
 
 
@@ -11,7 +11,7 @@
 
 void NotifyEvent(UniquePtr<IEvent> eventBase)
 {
-	EventManager::Get().AddToQueue(UniquePtr<IEvent>(eventBase.release()));
+	EventManager::Get().AddToQueue(std::move(eventBase));
 }
 
 void CancelEvent(const EventType& type, bool isAll)

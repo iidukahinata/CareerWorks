@@ -2,7 +2,7 @@
 * @file		Event.h
 * @brief
 *
-* @date		2022/09/06 2022年度初版
+* @date		2022/10/03 2022年度初版
 */
 #pragma once
 
@@ -12,8 +12,8 @@ using EventType = ClassTypeData;
 class IEvent
 {
 	COMPLETED_DEVELOPMENT()
-	COPY_PROHIBITED(IEvent)
 	SUPER_CLASS(IEvent)
+	COPY_PROHIBITED(IEvent)
 public:
 
 	IEvent() = default;

@@ -16,6 +16,11 @@ DetailsObject::DetailsObject(DetailsWidget* detailsWidget) :
 
 }
 
+DetailsObject::~DetailsObject()
+{
+
+}
+
 void DetailsObject::ShowDragDropHelper(uint32_t selctType, bool hovered, uint32_t r, uint32_t g, uint32_t b) const noexcept
 {
 	ImDrawList* draw_list = ImGui::GetWindowDrawList();
@@ -125,6 +130,14 @@ ResourceData* DetailsObject::ShowSearchResourceHelper(uint32_t selectType) noexc
 
 		const auto&  resourceManager = m_detailsWidget->GetResourceManager();
 		const auto&  resourceDataMap = resourceManager->GetResourceDataListByType(selectType);
+
+		if (resourceDataMap.empty())
+		{
+			ImGui::Columns(1);
+			ImGui::EndChild();
+			ImGui::EndPopup();
+			return nullptr;
+		}
 
 		for (const auto& resourceInfo : resourceDataMap)
 		{

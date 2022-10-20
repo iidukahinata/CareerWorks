@@ -18,6 +18,8 @@
 #include "../DetailsObject/DetailsObjects/LightDetails.h"
 #include "../DetailsObject/DetailsObjects/CameraDetails.h"
 #include "../DetailsObject/DetailsObjects/ModelRenderDetails.h"
+#include "../DetailsObject/DetailsObjects/AudioSpeakerDetails.h"
+#include "../DetailsObject/DetailsObjects/AudioListenerDetails.h"
 
 #define CREATE_DETAILS_OBJECT(CLASS, ...) detailsObjects.emplace_back(std::make_unique<CLASS>(detailsWidget, __VA_ARGS__));
 
@@ -33,9 +35,11 @@ Vector<UniquePtr<DetailsObject>> DetailsObjectFactory::Create(DetailsWidget* det
 	{
 		switch (component.first)
 		{
-		case GET_HASH(Light)		: CREATE_DETAILS_OBJECT(LightDetails	  , component.second.get()); break;
-		case GET_HASH(Camera)		: CREATE_DETAILS_OBJECT(CameraDetails	  , component.second.get()); break;
-		case GET_HASH(ModelRender)	: CREATE_DETAILS_OBJECT(ModelRenderDetails, component.second.get()); break;
+		case GET_HASH(Light)		: CREATE_DETAILS_OBJECT(LightDetails		, component.second.get()); break;
+		case GET_HASH(Camera)		: CREATE_DETAILS_OBJECT(CameraDetails		, component.second.get()); break;
+		case GET_HASH(ModelRender)	: CREATE_DETAILS_OBJECT(ModelRenderDetails	, component.second.get()); break;
+		case GET_HASH(AudioSpeaker)	: CREATE_DETAILS_OBJECT(AudioSpeakerDetails	, component.second.get()); break;
+		case GET_HASH(AudioListener): CREATE_DETAILS_OBJECT(AudioListenerDetails, component.second.get()); break;
 		default: break;
 		}
 	}

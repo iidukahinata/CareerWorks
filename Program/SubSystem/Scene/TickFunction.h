@@ -2,7 +2,7 @@
 * @file    TickFunction.h
 * @brief
 *
-* @date	   2022/09/06 2022年度初版
+* @date	   2022/10/03 2022年度初版
 */
 #pragma once
 
@@ -10,7 +10,10 @@
 class TickFunction
 {
 	COMPLETED_DEVELOPMENT()
+	COPY_PROHIBITED(TickFunction)
 public:
+
+	TickFunction() = default;
 
 	virtual void Tick(double deltaTime) = 0;
 

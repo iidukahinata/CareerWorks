@@ -2,15 +2,21 @@
 * @file    GameObject.cpp
 * @brief
 *
-* @date	   2022/09/06 2022年度初版
+* @date	   2022/10/03 2022年度初版
 */
 
 
 #include "GameObject.h"
 #include "World.h"
 #include "Factory/ComponentFactory.h"
+#include "SubSystem/Resource/Resources/Scene/Scene.h"
 
-void GameObject::Serialized(FileStream* file) const
+GameObject::GameObject() : m_transform(this)
+{
+
+}
+
+void GameObject::Serialized(FileStream* file) const noexcept
 {
 	file->Write(m_path);
 	m_transform.Serialized(file);
@@ -18,22 +24,31 @@ void GameObject::Serialized(FileStream* file) const
 	size_t numComponent = m_components.size();
 	file->Write(numComponent);
 
-	for (const auto& componentPair : m_components)
+	for (const auto& componentInfo : m_components)
 	{
-		const auto& component = componentPair.second;
+		const auto& component = componentInfo.second;
 		auto className = component->GetTypeData().Name;
 
 		file->Write(className);
 		component->Serialized(file);
 	}
+
+	// children
+	size_t numChild = m_transform.GetChildCount();
+	file->Write(numChild);
+
+	for (auto child : m_transform.GetChildren())
+	{
+		child->GetOwner()->Serialized(file);
+	}
 }
 
-void GameObject::Deserialization(FileStream* file)
+void GameObject::Deserialization(FileStream* file) noexcept
 {
 	file->Read(&m_path);
 	m_transform.Deserialization(file);
 
-	size_t numComponent = 0;
+	size_t numComponent;
 	file->Read(&numComponent);
 
 	for (int i = 0; i < numComponent; ++i)
@@ -43,6 +58,18 @@ void GameObject::Deserialization(FileStream* file)
 
 		auto component = AddComponent(className);
 		component->Deserialization(file);
+	}
+
+	// children
+	size_t numChild;
+	file->Read(&numChild);
+
+	for (int i = 0; i < numChild; ++i)
+	{
+		auto child = GetWorld()->CreateGameObject(GetOwner());
+
+		child->Deserialization(file);
+		m_transform.AddChild(&child->GetTransform());
 	}
 }
 
@@ -77,8 +104,9 @@ IComponent* GameObject::AddComponent(StringView name) noexcept
 
 void GameObject::AddComponent(IComponent* component) noexcept
 {
-	const auto hash = component->GetTypeData().Hash;
+	ASSERT(component);
 
+	const auto hash = component->GetTypeData().Hash;
 	if (m_components.contains(hash))
 	{
 		LOG_ERROR("既に同じHash値のコンポーネントが存在しています。");
@@ -92,6 +120,8 @@ void GameObject::AddComponent(IComponent* component) noexcept
 
 void GameObject::RemoveComponent(IComponent* component) noexcept
 {
+	ASSERT(component);
+
 	const auto hash = component->GetTypeData().Hash;
 	if (m_components.contains(hash))
 	{

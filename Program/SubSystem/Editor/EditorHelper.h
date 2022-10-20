@@ -46,6 +46,8 @@ public:
 	void BegineRenderer() noexcept;
 	void Shutdown() noexcept;
 
+public:
+
 	/**
 	* 表示する Texture DescriptorHeap を管理するために作成。
 	* この関数を無視して ImGui::Image を使用すると画面表示が行われない。
@@ -76,8 +78,6 @@ public:
 	Texture* GetIconTexture(IconType type) const noexcept;
 	IconType GetIconTypeFromResourceType(uint32_t type) const noexcept;
 	uint32_t GetResourceTypeByIconType(IconType type) const noexcept;
-
-	ImVec4 GetResourceColorByIconType(IconType type) const noexcept;
 
 public:
 

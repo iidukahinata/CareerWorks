@@ -2,7 +2,7 @@
 * @file	   MaterialDetails.cpp
 * @brief
 *
-* @date	   2022/09/20 2022年度初版
+* @date	   2022/10/20 2022年度初版
 */
 
 
@@ -15,7 +15,22 @@
 MaterialDetails::MaterialDetails(DetailsWidget* detailsWidget, ResourceData* resourceData) :
 	DetailsObject(detailsWidget)
 {
-	m_resourceHandle = m_detailsWidget->GetResourceManager()->Load(resourceData);
+	if (auto resource = m_detailsWidget->GetResourceManager()->GetResource(resourceData))
+	{
+		m_material = dynamic_cast<Material*>(resource);
+	}
+	else
+	{
+		m_resourceHandle = m_detailsWidget->GetResourceManager()->Load(resourceData);
+	}
+}
+
+MaterialDetails::~MaterialDetails()
+{
+	if (!IsCurrentSceneResource() && m_material)
+	{
+		m_material->Update();
+	}
 }
 
 void MaterialDetails::Draw()
@@ -140,6 +155,12 @@ void MaterialDetails::ShowTextureList(Material* material) noexcept
 		ImGui::InputText("##", texturePath.data(), texturePath.size());
 		ImGui::PopItemWidth();
 
+		// Texture 未設定時は文字列表示部分でドラッグアンドドロップを行う
+		if (!texture)
+		{
+			DragDropTexture(material, texture, pramName);
+		}
+
 		ImGui::SameLine(offsetPos + itemWidth);
 
 		static auto selectTex = 0;
@@ -154,8 +175,10 @@ void MaterialDetails::ShowTextureList(Material* material) noexcept
 		{
 			if (auto resourceData = ShowSearchResourceHelper<Texture>())
 			{
-				auto catchTexture = LoadResource<Texture>(resourceData);
-				RegisterEditorCommand([material, pramName](auto data) { material->SetTexture(pramName, data); }, catchTexture, texture);
+				if (auto catchTexture = LoadResource<Texture>(resourceData))
+				{
+					RegisterEditorCommand([material, pramName](auto data) { material->SetTexture(pramName, data); }, catchTexture, texture);
+				}
 			}
 		}
 
@@ -167,21 +190,34 @@ void MaterialDetails::ShowTextureList(Material* material) noexcept
 		}
 
 		EditorHelper::Get().AddImage(texture->GetData(), ImVec2(100, 100));
-
-		// ドラッグアンドドロップでの Texture 切り替え
-		const auto hoverd = ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
-		if (ImGui::IsMouseReleased(0) && hoverd)
-		{
-			if (auto catchTexture = CatchDragObject<Texture>())
-			{
-				RegisterEditorCommand([material, pramName](auto data) { material->SetTexture(pramName, data); }, catchTexture, texture);
-			}
-		}
-
-		ShowDragDropHelper<Texture>(hoverd, 220, 140, 0);
-
-		// 改行用
+		DragDropTexture(material, texture, pramName);
 		ImGui::Text("");
 	}
+
 	ImGui::TreePop();
+}
+
+bool MaterialDetails::DragDropTexture(Material* material, Texture* texture, StringView pramName) noexcept
+{
+	auto result = false;
+
+	// ドラッグアンドドロップでの Texture 切り替え
+	const auto hoverd = ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
+	if (ImGui::IsMouseReleased(0) && hoverd)
+	{
+		if (auto catchTexture = CatchDragObject<Texture>())
+		{
+			RegisterEditorCommand([material, pramName](auto data) { material->SetTexture(pramName, data); }, catchTexture, texture);
+			result = true;
+		}
+	}
+
+	ShowDragDropHelper<Texture>(hoverd, 156, 0, 31);
+
+	return result;
+}
+
+bool MaterialDetails::IsCurrentSceneResource() const noexcept
+{
+	return m_resourceHandle == nullptr;
 }

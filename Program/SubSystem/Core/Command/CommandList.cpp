@@ -20,7 +20,9 @@ void CommandList::FlushCommand() noexcept
 
 void CommandList::AddCommand(UniquePtr<ICommand> command) noexcept
 {
-	// redo 用コマンドリスト
+	ASSERT(command);
+	
+	// reset redo list
 	m_redoCommandList.clear();
 
 	command->Execte();
@@ -36,6 +38,7 @@ void CommandList::Undo() noexcept
 	}
 
 	auto& back = m_commandList.back();
+	ASSERT(back);
 
 	back->Undo();
 
@@ -51,6 +54,7 @@ void CommandList::Redo() noexcept
 	}
 
 	auto& back = m_redoCommandList.back();
+	ASSERT(back);
 
 	back->Execte();
 

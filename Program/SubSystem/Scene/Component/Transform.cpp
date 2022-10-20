@@ -2,13 +2,14 @@
 * @file    Transform.cpp
 * @brief
 *
-* @date	   2022/08/02 2022年度初版
+* @date	   2022/10/03 2022年度初版
 */
 
 
 #include "Transform.h"
 
-Transform::Transform() :
+Transform::Transform(GameObject* gameObject) :
+	m_owner(gameObject),
 	m_localPosition(0.f, 0.f, 0.f),
 	m_localRotation(0.f, 0.f, 0.f),
 	m_localScale(1.f, 1.f, 1.f),
@@ -16,14 +17,7 @@ Transform::Transform() :
 	m_up(0.f, 1.f, 0.f),
 	m_forward(0.f, 0.f, 1.f)
 {
-
-}
-
-Transform::Transform(Math::Vector3 pos, Math::Vector3 rot /* = Math::Vector3::Zero */, Math::Vector3 scale /* = Math::Vector3::One */)
-{
-	SetPosition(pos);
-	SetRotation(rot);
-	SetScale(scale);
+	ASSERT(m_owner);
 }
 
 Transform::~Transform()
@@ -146,6 +140,11 @@ const Math::Vector3& Transform::GetForward() const noexcept
 	return m_forward;
 }
 
+bool Transform::HasParent() const noexcept
+{
+	return !!m_parent;
+}
+
 void Transform::SetParent(Transform* parent) noexcept
 {
 	if (parent)
@@ -195,4 +194,9 @@ Transform* Transform::GetRoot() const noexcept
 		parent = parent->m_parent;
 	}
 	return root;
+}
+
+GameObject* Transform::GetOwner() const noexcept
+{
+	return m_owner;
 }

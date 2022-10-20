@@ -2,7 +2,7 @@
 * @file    Engine.cpp
 * @brief
 *
-* @date	   2022/09/09 2022年度初版
+* @date	   2022/10/03 2022年度初版
 */
 
 
@@ -33,14 +33,14 @@ bool Engine::Initialize(HINSTANCE hInstance)
 
 	auto ret = StartUpScreen(hInstance);
 	if (!ret) {
-		//LOG_ERROR("StartUpScreenに失敗");
+		LOG_ERROR("StartUpScreenに失敗");
 		return false;
 	}
 
 	// task thread : any thread 用として初期化
 	AsyncJobSystem::Get().Initialize(2);
 
-	// 設定データがあれば、データに沿ったシステムの登録を行う。
+	// 過去の設定データがあれば、データに沿ったシステムの登録を行う。
 	Config::RegisterSubsystemsToContainer();
 
 	ret = InitializeSubsystems();
@@ -81,10 +81,11 @@ void Engine::Shutdown()
 
 	UnregisterClass("windowClass", m_hInstance);
 
+	// release subsystem
 	m_context->Release();
 }
 
-bool Engine::StartUpScreen(HINSTANCE hInstance) noexcept
+bool Engine::StartUpScreen(HINSTANCE hInstance) const noexcept
 {
 	// 第４引数 : フルスクリーンモード指定
 	if (!Window::Get().CreateWindowClass(hInstance, 1280, 720, "Test", true))
@@ -92,7 +93,10 @@ bool Engine::StartUpScreen(HINSTANCE hInstance) noexcept
 		return false;
 	}
 
-	EditorSystem::Get().Initialize();
+	if (!EditorSystem::Get().Initialize())
+	{
+		return false;
+	}
 
 	ShowWindow(Window::Get().GetHandle(), SW_SHOW);
 	UpdateWindow(Window::Get().GetHandle());
@@ -105,37 +109,37 @@ bool Engine::InitializeSubsystems() noexcept
 	// system 初期化時に使用される可能性があるため
 	EventManager::Get().Initialize();
 
-	if (!m_context->GetSubsystem<Timer>()->Initialize())
+	if (!g_context->GetSubsystem<Timer>()->Initialize())
 	{
 		LOG_ERROR("Timer初期化に失敗");
 		return false;
 	}
 
-	if (!m_context->GetSubsystem<ResourceManager>()->Initialize())
+	if (!g_context->GetSubsystem<ResourceManager>()->Initialize())
 	{
 		LOG_ERROR("ResourceManager初期化に失敗");
 		return false;
 	}
 	
-	if (!m_context->GetSubsystem<Input>()->Initialize())
+	if (!g_context->GetSubsystem<Input>()->Initialize())
 	{
 		LOG_ERROR("Input初期化に失敗");
 		return false;
 	}
 	
-	if (!m_context->GetSubsystem<Audio>()->Initialize())
+	if (!g_context->GetSubsystem<Audio>()->Initialize())
 	{
 		LOG_ERROR("Audio初期化に失敗");
 		return false;
 	}
 	
-	if (!m_context->GetSubsystem<Renderer>()->Initialize())
+	if (!g_context->GetSubsystem<Renderer>()->Initialize())
 	{
 		LOG_ERROR("Renderer初期化に失敗");
 		return false;
 	}
 	 
-	if (!m_context->GetSubsystem<World>()->Initialize())
+	if (!g_context->GetSubsystem<World>()->Initialize())
 	{
 		LOG_ERROR("World初期化に失敗");
 		return false;

@@ -56,11 +56,6 @@ void ForwardRenderer::Update() noexcept
 			renderObject->Render();
 		}
 	}
-	else
-	{
-		// gui •\Ž¦—p
-		D3D12GraphicsDevice::Get().GetCommandContext().DrawIndexedInstanced(4, 1, 0, 0, 0);
-	}
 }
 
 void ForwardRenderer::Present() noexcept

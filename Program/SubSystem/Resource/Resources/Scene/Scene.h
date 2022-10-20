@@ -39,6 +39,7 @@ public:
 	void RemoveGameObject(GameObject* gameObject) noexcept;
 	void ClearGameObjects() noexcept;
 
+	void GetAllRootGameObjects(Vector<GameObject*>& gameObjects) const noexcept;
 	const Vector<UniquePtr<GameObject>>& GetAllGameObjects() const noexcept;
 
 private:

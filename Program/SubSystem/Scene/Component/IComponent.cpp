@@ -2,7 +2,7 @@
 * @file    IComponent.cpp
 * @brief
 *
-* @date	   2022/09/06 2022年度初版
+* @date	   2022/10/03 2022年度初版
 */
 
 
@@ -28,9 +28,9 @@ void IComponent::Serialized(FileStream* file) const
 void IComponent::Deserialization(FileStream* file)
 {
 	bool active;
-	file->Read(&active);
-
 	uint32_t priority;
+
+	file->Read(&active);
 	file->Read(&priority);
 
 	SetActive(active);

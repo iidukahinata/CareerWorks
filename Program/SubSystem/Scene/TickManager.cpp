@@ -2,7 +2,7 @@
 * @file    TickManager.cpp
 * @brief
 *
-* @date	   2022/09/06 2022年度初版
+* @date	   2022/10/03 2022年度初版
 */
 
 
@@ -20,7 +20,7 @@ void TickManager::Initialize() noexcept
 	// オーバーヘッド時間の減少のため Task 統一化
 	m_anyThreadTask.SetFunction([this]()
 	{
-		for (auto& task : m_anyThreadTaskList)
+		for (auto task : m_anyThreadTaskList)
 		{
 			task->Tick(task->GetDeletaTime());
 		}
@@ -46,7 +46,7 @@ void TickManager::Tick(double deltaTime) noexcept
 	{
 		m_anyThreadTask.RegisterToJobSystem();
 
-		for (auto& task : m_gameThreadTaskList)
+		for (auto task : m_gameThreadTaskList)
 		{
 			task->Tick(task->GetDeletaTime());
 		}
@@ -57,6 +57,7 @@ void TickManager::Tick(double deltaTime) noexcept
 
 void TickManager::RegisterTickFunction(TickFunction* function) noexcept
 {
+	ASSERT(function);
 	ASSERT(!m_allTickFunctions.contains(function));
 
 	AddTickFunction(function);
@@ -65,6 +66,7 @@ void TickManager::RegisterTickFunction(TickFunction* function) noexcept
 
 void TickManager::UnRegisterTickFunction(TickFunction* function) noexcept
 {
+	ASSERT(function);
 	ASSERT(m_allTickFunctions.contains(function));
 
 	RemoveTickFunction(function);
@@ -73,10 +75,12 @@ void TickManager::UnRegisterTickFunction(TickFunction* function) noexcept
 
 void TickManager::AddTickFunction(TickFunction* function) noexcept
 {
+	ASSERT(function);
+
 	if (function->GetEnable())
 	{
-		const auto id = function->GetPriority();
-		m_tickContainers[id].insert(function);
+		const auto priority = function->GetPriority();
+		m_tickContainers[priority].insert(function);
 	}
 }
 
@@ -84,10 +88,10 @@ void TickManager::RemoveTickFunction(TickFunction* function) noexcept
 {
 	if (function->GetEnable())
 	{
-		const auto id = function->GetPriority();
-		if (m_tickContainers.contains(id))
+		const auto priority = function->GetPriority();
+		if (m_tickContainers.contains(priority))
 		{
-			m_tickContainers[id].erase(function);
+			m_tickContainers[priority].erase(function);
 		}
 	}
 }
@@ -112,6 +116,7 @@ void TickManager::CreateTaskList(double deltaTime) noexcept
 	// 前提条件を考慮した処理順を作成するために必要
 	Set<TickFunction*> registeredList;
 
+	// 深さ優先探索で前提条件を追加
 	for (const auto& container : m_tickContainers)
 	{
 		for (const auto function : container.second)
@@ -129,6 +134,8 @@ void TickManager::CreateTaskList(double deltaTime) noexcept
 
 void TickManager::RegisterToTaskList(TickFunction* function, double deltaTime, Set<TickFunction*>& registeredList) noexcept
 {
+	ASSERT(function);
+
 	registeredList.insert(function);
 
 	// 前提条件順に処理を追加するため DFS 方式を使用

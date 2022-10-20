@@ -10,14 +10,14 @@
 #include "Event.h"
 #include "EventListener.h"
 
-void EventManager::Initialize()
+void EventManager::Initialize() noexcept
 {
 	// メインスレッドジョブとしてイベントループを登録しているが、他スレッドで処理し処理分担してもいいかもしれない。
 	m_job.SetFunction([this](double) { Tick(); }, FunctionType::Update);
 	m_job.RegisterToJobSystem();
 }
 
-void EventManager::Exit()
+void EventManager::Exit() noexcept
 {
 	m_job.UnRegisterFromJobSystem();
 
@@ -46,7 +46,7 @@ bool EventManager::AddToQueue(UniquePtr<IEvent> eventBase) noexcept
 	// 指定用のリスナーコンテナがなければ処理するものがないので追加しない。
 	if (m_eventListeners.contains(eventType.Hash))
 	{
-		m_eventQueues[m_numActiveQueue].emplace_back(eventBase.release());
+		m_eventQueues[m_numActiveQueue].emplace_back(std::move(eventBase));
 		return true;
 	}
 	return false;

@@ -9,8 +9,6 @@
 #include "IResource.h"
 #include "SubSystem/Resource/ResourceManager.h"
 
-extern Context* g_context;
-
 IResource* IResource::CreateResource(uint32_t type, StringView path) noexcept
 {
     static ResourceManager* resourceManager = nullptr;

@@ -24,11 +24,6 @@ bool EditorSystem::Initialize() noexcept
 
 	RegisterWidgetsToContainer();
 
-	for (const auto& widget : m_widgets)
-	{
-		widget->Initialize();
-	}
-
 	return true;
 }
 
@@ -57,6 +52,7 @@ void EditorSystem::Shutdown() noexcept
 	m_job.UnRegisterFromJobSystem();
 
 	m_widgets.clear();
+	m_widgets.shrink_to_fit();
 
 	m_descriptHeap.Release();
 	ImGui_ImplDX12_Shutdown();
@@ -65,6 +61,9 @@ void EditorSystem::Shutdown() noexcept
 
 void EditorSystem::Render() noexcept
 {
+	// gui 表示用 ドローコール
+	D3D12GraphicsDevice::Get().GetCommandContext().DrawIndexedInstanced(4, 1, 0, 0, 0);
+
 	// start the dear ImGui frame
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();

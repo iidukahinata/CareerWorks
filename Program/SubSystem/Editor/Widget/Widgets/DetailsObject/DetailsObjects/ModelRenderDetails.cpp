@@ -25,8 +25,8 @@ void ModelRenderDetails::Draw()
 
 	if (ImGui::CollapsingHeader(name.data(), ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		auto model = m_modelRender->GetModel();
-		auto modelPath = model ? ConvertToJapanese(model->GetFilePath()) : String();
+		auto modelRenderer = m_modelRender;
+		auto modelPath = modelRenderer->GetModel() ? ConvertToJapanese(modelRenderer->GetModel()->GetFilePath()) : String();
 
 		ImGui::Text("Model"); ImGui::SameLine(offsetPos);
 
@@ -35,18 +35,29 @@ void ModelRenderDetails::Draw()
 		ImGui::InputText("##", modelPath.data(), modelPath.size());
 		ImGui::PopItemWidth();
 
+		// ドラッグアンドドロップでの Texture 切り替え
+		const auto hoverd = ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
+		if (ImGui::IsMouseReleased(0) && hoverd)
+		{
+			if (auto catchModel = CatchDragObject<Model>())
+			{
+				RegisterEditorCommand([modelRenderer](auto data) { modelRenderer->SetModel(data); }, catchModel, modelRenderer->GetModel());
+			}
+		}
+
+		ShowDragDropHelper<Model>(hoverd, 22, 120, 255);
+
 		ImGui::SameLine(offsetPos + itemWidth);
 		
 		// リソースの検索を始める
 		OpenResourceHelper();
-
 		if (auto resourceData = ShowSearchResourceHelper<Model>())
 		{
-			auto model = LoadResource<Model>(resourceData);
-			m_modelRender->SetModel(model);
+			auto catchModel = LoadResource<Model>(resourceData);
+			RegisterEditorCommand([modelRenderer](auto data) { modelRenderer->SetModel(data); }, catchModel, modelRenderer->GetModel());
 		}
 
-		if (model)
+		if (auto model = modelRenderer->GetModel())
 		{
 			ShowUseMeshes(model);
 			ShowUseMaterial(model);
@@ -98,12 +109,8 @@ void ModelRenderDetails::ShowUseMaterial(Model* model) noexcept
 			ImGui::InputText("##", materialPath.data(), materialPath.size());
 			ImGui::PopItemWidth();
 
-			// ドラッグアンドドロップ有効指定
+			// ドラッグアンドドロップでの Material 切り替え
 			const auto hoverd = ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
-			
-			ShowDragDropHelper<Material>(hoverd, 40, 255, 40);
-
-			// ドラッグアンドドロップでの Material 切り替えのため
 			if (ImGui::IsMouseReleased(0) && hoverd)
 			{
 				if (auto catchMaterial = CatchDragObject<Material>())
@@ -111,6 +118,8 @@ void ModelRenderDetails::ShowUseMaterial(Model* model) noexcept
 					RegisterEditorCommand([mesh](auto data) { mesh->SetMaterial(data); }, catchMaterial, material);
 				}
 			}
+			
+			ShowDragDropHelper<Material>(hoverd, 25, 255, 25);
 
 			// 改行用
 			ImGui::Text("");

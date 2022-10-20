@@ -2,7 +2,7 @@
 * @file    IComponent.h
 * @brief
 *
-* @date	   2022/10/02 2022年度初版
+* @date	   2022/10/03 2022年度初版
 */
 #pragma once
 
@@ -21,6 +21,7 @@ class IComponent
 {
 	COMPLETED_DEVELOPMENT()
 	SUPER_CLASS(IComponent)
+	COPY_PROHIBITED(IComponent)
 
 	friend struct ComponentFactory;
 public:
@@ -69,11 +70,11 @@ public:
 	bool IsSameClass() const noexcept;
 
 	/** アクセス */
-	Transform&	GetTransform() const noexcept;
-	GameObject* GetOwner()	   const noexcept;
-	Scene*		GetScene()	   const noexcept;
-	World*		GetWorld()	   const noexcept;
-	Context*	GetContext()   const noexcept;
+	Transform& GetTransform() const noexcept;
+	GameObject* GetOwner() const noexcept;
+	Scene* GetScene() const noexcept;
+	World* GetWorld() const noexcept;
+	Context* GetContext() const noexcept;
 
 protected:
 
@@ -84,7 +85,7 @@ private:
 
 	bool m_active;
 
-	GameObject* m_owner;
+	GameObject* m_owner = nullptr;
 };
 
 template<class T>
