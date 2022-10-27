@@ -2,7 +2,7 @@
 * @file    IComponent.h
 * @brief
 *
-* @date	   2022/10/03 2022年度初版
+* @date	   2022/10/25 2022年度初版
 */
 #pragma once
 
@@ -34,19 +34,25 @@ public:
 public:
 
 	/** シーンロード中の可能性があるため GameObject / Component の検索は行わない方が良い。*/
-	virtual void OnInitialize() {}
+	virtual void OnInitialize();
 
-	/** 所属 Scene が AddToWorld 適用時に呼び出される。*/
-	virtual void OnStart() {}
+	/** world 登録時に呼び出される。*/
+	virtual void OnRegister();
 
-	/** 所属 Scene が RemoveFromWorld 適用時に呼び出される。*/
-	virtual void OnStop() {}
+	/** world から登録解除時に呼び出される。*/
+	virtual void OnUnRegister();
+
+	/** ゲームオブジェクトの再生時 or 既に再生されている時はコンポーネント生成時に呼び出される。*/
+	virtual void OnStart();
+
+	/** コンポーネントの再生終了時に呼び出される。*/
+	virtual void OnStop();
 
 	/** GameObject から解放されるタイミングで呼び出される。*/
-	virtual void OnRemove() { OnStop(); }
+	virtual void OnRemove();
 
 	/** 派生先で使用する場合は、TickFunction をシステム側に登録する必要があります。*/
-	virtual void Tick(double deltaTime) {}
+	virtual void Tick(double deltaTime);
 
 public:
 
@@ -64,6 +70,9 @@ public:
 	void AddTickPrerequisite(TickFunction* prerequisite) noexcept;
 
 public:
+
+	bool IsRegistered() const noexcept;
+	bool IsBeginPlay() const noexcept;
 
 	/** テンプレート型が this と同じ型の時 true を返します。*/
 	template<class T>
@@ -83,9 +92,17 @@ protected:
 
 private:
 
-	bool m_active;
-
+	// * 所属ゲームオブジェクトクラスを保持
 	GameObject* m_owner = nullptr;
+
+	// * コンポーネントの有効性を保持
+	bool m_active = true;
+
+	// * world に登録されているかを保持
+	bool m_registered = false;
+
+	// * コンポーネントが再生中かどうかを保持
+	bool m_beginPlay = false;
 };
 
 template<class T>

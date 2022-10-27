@@ -2,7 +2,7 @@
 * @file    IComponent.cpp
 * @brief
 *
-* @date	   2022/10/03 2022年度初版
+* @date	   2022/10/25 2022年度初版
 */
 
 
@@ -37,13 +37,67 @@ void IComponent::Deserialization(FileStream* file)
 	SetTickPriority(priority);
 }
 
+void IComponent::OnInitialize()
+{
+
+}
+
+void IComponent::OnRegister()
+{
+	ASSERT(!m_registered);
+
+	m_registered = true;
+}
+
+void IComponent::OnUnRegister()
+{
+	ASSERT(m_registered);
+
+	m_registered = false;
+}
+
+void IComponent::OnStart()
+{
+	ASSERT(m_registered);
+	ASSERT(!m_beginPlay);
+
+	m_beginPlay = true;
+}
+
+void IComponent::OnStop()
+{
+	ASSERT(m_registered);
+	ASSERT(m_beginPlay);
+
+	m_beginPlay = false;
+}
+
+void IComponent::OnRemove()
+{
+	if (m_beginPlay)
+	{
+		OnStop();
+	}
+
+	if (m_registered)
+	{
+		OnUnRegister();
+	}
+}
+
+void IComponent::Tick(double deltaTime)
+{
+
+}
+
 void IComponent::SetActive(bool active)
 {
 	if (GetActive() == active)
+	{
 		return;
+	}
 
 	m_active = active;
-
 	SetTickEnable(active);
 }
 
@@ -65,6 +119,16 @@ void IComponent::SetTickPriority(uint32_t priority) noexcept
 void IComponent::AddTickPrerequisite(TickFunction* prerequisite) noexcept
 {
 	m_tickFunction.AddPrerequisite(prerequisite);
+}
+
+bool IComponent::IsRegistered() const noexcept
+{
+	return m_registered;
+}
+
+bool IComponent::IsBeginPlay() const noexcept
+{
+	return m_beginPlay;
 }
 
 Transform& IComponent::GetTransform() const noexcept

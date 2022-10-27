@@ -13,6 +13,7 @@ class Transform;
 
 class TransformDetails : public DetailsObject
 {
+	COMPLETED_DEVELOPMENT()
 public:
 
 	TransformDetails(DetailsWidget* detailsWidget, Transform* transform);

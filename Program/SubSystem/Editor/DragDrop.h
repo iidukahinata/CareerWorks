@@ -2,7 +2,7 @@
 * @file	   DragDrop.h
 * @brief
 *
-* @date	   2022/09/09 2022年度初版
+* @date	   2022/10/20 2022年度初版
 */
 #pragma once
 
@@ -16,7 +16,9 @@ enum DragDropType
 
 class DragDrop
 {
-	IN_DEVELOPMENT()
+	COMPLETED_DEVELOPMENT()
+	DragDrop() = default;
+	COPY_PROHIBITED(DragDrop);
 public:
 
 	static DragDrop& Get()
@@ -24,6 +26,8 @@ public:
 		static DragDrop instance;
 		return instance;
 	}
+
+public:
 
 	void StartDrag(DragDropType type, std::any dragObject) noexcept;
 	void EndDrag() noexcept;

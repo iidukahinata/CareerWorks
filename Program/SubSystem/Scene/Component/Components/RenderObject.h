@@ -2,7 +2,7 @@
 * @file    RenderObject.h
 * @brief
 *
-* @date	   2022/10/03 2022年度初版
+* @date	   2022/10/25 2022年度初版
 */
 #pragma once
 
@@ -20,8 +20,8 @@ class RenderObject : public IComponent
 public:
 
 	virtual void OnInitialize() override;
-	virtual void OnStart() override;
-	virtual void OnStop() override;
+	virtual void OnRegister() override;
+	virtual void OnUnRegister() override;
 
 	/** 各描画処理を記述。*/
 	virtual void Render() const = 0;

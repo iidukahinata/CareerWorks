@@ -2,7 +2,7 @@
 * @file	   EditerHelper.cpp
 * @brief
 *
-* @date	   2022/09/15 2022年度初版
+* @date	   2022/10/21 2022年度初版
 */
 
 
@@ -16,17 +16,19 @@
 #include "SubSystem/Resource/Resources/3DModel/Texture.h"
 #include "SubSystem/Resource/Resources/Audio/AudioClip.h"
 #include "SubSystem/Renderer/GraphicsAPI/D3D12/D3D12GraphicsDevice.h"
+#include "SubSystem/Renderer/GraphicsAPI/D3D12/D3D12DescriptorHeap.h"
 
-void EditorHelper::Initialize(D3D12DescriptorHeap* descriptorHeap) noexcept
+void EditorHelper::Initialize(D3D12DescriptorHeap* descriptorHeap, void* finalFrameSRV) noexcept
 {
 	m_descriptorHeap = descriptorHeap;
+	m_finalFrameSRV = finalFrameSRV;
 
 	RegisterIconTexture();
 }
 
 void EditorHelper::BegineRenderer() noexcept
 {
-	// font 用
+	// font offset
 	constexpr auto offset = 1;
 
 	// reset
@@ -41,8 +43,7 @@ void EditorHelper::Shutdown() noexcept
 
 	for (const auto& resource : m_iconTextures)
 	{
-		const auto& path = resource.second->GetFilePath();
-
+		const auto& path = resource->GetFilePath();
 		auto resourceData = resourceManager->GetResourceData(path);
 		resourceManager->Unload(resourceData);
 	}
@@ -60,7 +61,7 @@ void EditorHelper::AddImage(void* shaderResourceView, const ImVec2& imageSize, c
 	cpuHandle.ptr += (m_descriptorHeap->GetIncrementSize() * m_numImage);
 	gpuHandle.ptr += (m_descriptorHeap->GetIncrementSize() * m_numImage);
 
-	auto size = 1U;
+	constexpr auto size = 1U;
 	D3D12GraphicsDevice::Get().GetDevice()->CopyDescriptors(1, &cpuHandle, &size, size, &texture, nullptr, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
 	// Image 描画
@@ -81,7 +82,7 @@ bool EditorHelper::AddImageButton(void* shaderResourceView, const ImVec2& imageS
 	cpuHandle.ptr += (m_descriptorHeap->GetIncrementSize() * m_numImage);
 	gpuHandle.ptr += (m_descriptorHeap->GetIncrementSize() * m_numImage);
 
-	auto size = 1U;
+	constexpr auto size = 1U;
 	D3D12GraphicsDevice::Get().GetDevice()->CopyDescriptors(1, &cpuHandle, &size, size, &texture, nullptr, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
 	// Image 描画
@@ -92,13 +93,15 @@ bool EditorHelper::AddImageButton(void* shaderResourceView, const ImVec2& imageS
 	return result;
 }
 
+void* EditorHelper::GetFinalFrameTexture() const noexcept
+{
+	return m_finalFrameSRV;
+}
+
 Texture* EditorHelper::GetIconTexture(IconType type) const noexcept
 {
-	if (m_iconTextures.contains(type))
-	{
-		return m_iconTextures.find(type)->second;
-	}
-	return nullptr;
+	ASSERT(type < m_iconTextures.size());
+	return m_iconTextures[type];
 }
 
 IconType EditorHelper::GetIconTypeFromResourceType(uint32_t type) const noexcept
@@ -155,24 +158,18 @@ void EditorHelper::RegisterIconTexture() noexcept
 {
 	auto resourceManager = g_context->GetSubsystem<ResourceManager>();
 
-	Vector<ResourceHandle*> resourceHandles;
-	resourceHandles.emplace_back(resourceManager->Load<Texture>("folder_icon"));
-	resourceHandles.emplace_back(resourceManager->Load<Texture>("scene_icon"));
-	resourceHandles.emplace_back(resourceManager->Load<Texture>("model_icon"));
-	resourceHandles.emplace_back(resourceManager->Load<Texture>("mesh_icon"));
-	resourceHandles.emplace_back(resourceManager->Load<Texture>("material_icon"));
-	resourceHandles.emplace_back(resourceManager->Load<Texture>("texture_icon"));
-	resourceHandles.emplace_back(resourceManager->Load<Texture>("shader_icon"));
-	resourceHandles.emplace_back(resourceManager->Load<Texture>("audio_icon"));
-
-	std::this_thread::sleep_for(std::chrono::milliseconds(10));
-
-	for (int i = 0; i < resourceHandles.size(); ++i)
-	{
-		const auto& handle = resourceHandles[i];
-
+	auto iconTextureLoad = [resourceManager](StringView path) {
+		auto handle = resourceManager->Load<Texture>(path);
 		handle->WaitForLoadComplete();
+		return handle->GetResource<Texture>();
+	};
 
-		m_iconTextures[i] = handle->GetResource<Texture>();
-	}
+	m_iconTextures.emplace_back(iconTextureLoad("folder_icon"));
+	m_iconTextures.emplace_back(iconTextureLoad("scene_icon"));
+	m_iconTextures.emplace_back(iconTextureLoad("model_icon"));
+	m_iconTextures.emplace_back(iconTextureLoad("mesh_icon"));
+	m_iconTextures.emplace_back(iconTextureLoad("material_icon"));
+	m_iconTextures.emplace_back(iconTextureLoad("texture_icon"));
+	m_iconTextures.emplace_back(iconTextureLoad("shader_icon"));
+	m_iconTextures.emplace_back(iconTextureLoad("audio_icon"));
 }

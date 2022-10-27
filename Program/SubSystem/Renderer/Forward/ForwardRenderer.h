@@ -8,6 +8,7 @@
 
 
 #include "../Renderer.h"
+#include "../GraphicsAPI/D3D12/D3D12RenderTexture.h"
 
 class ForwardRenderer : public Renderer
 {
@@ -31,4 +32,10 @@ private:
 
 	// * Update と Present
 	Array<Job, 2> m_jobs;
+
+#if IS_EDITOR
+
+	// * SceneView 描画用最終フレームを保持
+	D3D12RenderTexture m_renderTexture;
+#endif // IS_EDITOR
 };

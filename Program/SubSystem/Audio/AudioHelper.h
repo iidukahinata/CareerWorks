@@ -16,7 +16,7 @@ if (data != FMOD_OK)											\
 	LOG_ERROR(String("FMOD ERROR : ") + FMOD_ErrorString(data));\
 }
 
-constexpr FMOD_VECTOR ToFMODVector(const Math::Vector3 & v)
+constexpr FMOD_VECTOR ToFMODVector(const Math::Vector3& v)
 {
 	return FMOD_VECTOR(v.x, v.y, v.z);
 }

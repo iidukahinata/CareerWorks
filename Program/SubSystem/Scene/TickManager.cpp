@@ -15,7 +15,10 @@ void TickManager::Initialize() noexcept
 	ASSERT(m_hEvent);
 
 	m_job.SetFunction([this](double deltaTime) { Tick(deltaTime); }, FunctionType::Update);
+
+#if !IS_EDITOR
 	m_job.RegisterToJobSystem();
+#endif // IS_EDITOR
 
 	// オーバーヘッド時間の減少のため Task 統一化
 	m_anyThreadTask.SetFunction([this]()
@@ -34,6 +37,16 @@ void TickManager::Exit() noexcept
 	m_job.UnRegisterFromJobSystem();
 
 	CloseHandle(m_hEvent);
+}
+
+void TickManager::Start() noexcept
+{
+	m_job.RegisterToJobSystem();
+}
+
+void TickManager::Stop() noexcept
+{
+	m_job.UnRegisterFromJobSystem();
 }
 
 void TickManager::Tick(double deltaTime) noexcept

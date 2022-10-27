@@ -71,6 +71,8 @@ void AudioSpeaker::Deserialization(FileStream* file)
 
 void AudioSpeaker::OnStart()
 {
+	IComponent::OnStart();
+
 	if (m_playOnAwake)
 	{
 		Play();
@@ -81,6 +83,8 @@ void AudioSpeaker::OnStart()
 
 void AudioSpeaker::OnStop()
 {
+	IComponent::OnStop();
+
 	Stop();
 
 	m_tickFunction.UnRegisterFromTickManager();
@@ -88,6 +92,10 @@ void AudioSpeaker::OnStop()
 
 void AudioSpeaker::Tick(double deltaTime)
 {
+	// ‰¼’u‚«
+	auto rot = GetTransform().GetRotation();
+	GetTransform().SetRotation(rot + Math::Vector3(0, 0.03, 0));
+
 	Math::Vector3 worldPos = GetTransform().GetWoldPosition();
 	m_velocity = worldPos - m_oldPos;
 

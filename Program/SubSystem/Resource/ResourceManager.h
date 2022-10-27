@@ -2,7 +2,7 @@
 * @file    ResourceManager.h
 * @brief
 *
-* @date	   2022/09/30 2022年度初版
+* @date	   2022/10/21 2022年度初版
 */
 #pragma once
 
@@ -116,6 +116,10 @@ public:
 
 private:
 
+#if IS_EDITOR
+	void StartupListenerObjects() noexcept;
+#endif // IS_EDITOR
+
 	/** アプリケーション起動時、リソース関係の構築を行う */
 	void DependencyBuilding() noexcept;
 
@@ -156,6 +160,10 @@ private:
 
 	// * ロード完了 リソース管理オブジェクト
 	UniquePtr<ResourceCache> m_resourceCache;
+
+#if IS_EDITOR
+	EventListener m_deleteObjectListener;
+#endif // IS_EDITOR
 };
 
 template<class T>

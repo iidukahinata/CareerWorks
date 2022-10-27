@@ -11,7 +11,7 @@
 
 class ProfilerWidget : public Widget
 {
-	IN_DEVELOPMENT("各処理の実行時間の表示などが未作成")
+	WAIT_FOR_DEVELOPMENT("各処理の実行時間の表示などが未作成")
 public:
 
 	void Draw() override;

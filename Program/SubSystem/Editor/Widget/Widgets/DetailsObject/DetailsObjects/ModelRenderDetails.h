@@ -2,19 +2,19 @@
 * @file	   ModelRenderDetails.h
 * @brief
 *
-* @date	   2022/09/13 2022年度初版
+* @date	   2022/10/23 2022年度初版
 */
 #pragma once
 
 
-#include "../DetailsObject.h"
+#include "../ComponentDetails.h"
 
 class Model;
-class IComponent;
 class ModelRender;
 
-class ModelRenderDetails : public DetailsObject
+class ModelRenderDetails : public ComponentDetails
 {
+	COMPLETED_DEVELOPMENT()
 public:
 
 	ModelRenderDetails(DetailsWidget* detailsWidget, IComponent* component);

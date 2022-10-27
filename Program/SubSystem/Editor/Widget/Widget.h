@@ -2,7 +2,7 @@
 * @file		Widget.h
 * @brief
 *
-* @date		2022/09/07 2022年度初版
+* @date		2022/10/20 2022年度初版
 */
 #pragma once
 
@@ -12,16 +12,16 @@
 class Widget
 {
 	COMPLETED_DEVELOPMENT()
+	COPY_PROHIBITED(Widget);
 public:
 
-	virtual ~Widget() {}
+	Widget() = default;
+	virtual ~Widget() = default;
+
+public:
 
 	virtual void PostInitialize() {}
 	virtual void Draw() {}
 
 	Context* GetContext() noexcept;
-
-private:
-
-	bool m_isRegistered = false;
 };

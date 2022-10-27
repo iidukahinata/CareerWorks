@@ -18,8 +18,8 @@ class AudioListener : public IComponent
 public:
 
 	void OnInitialize() override;
-	void OnStart() override;
-	void OnStop() override;
+	void OnRegister() override;
+	void OnUnRegister() override;
 
 public:
 

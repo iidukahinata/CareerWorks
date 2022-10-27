@@ -8,7 +8,7 @@
 
 #include "Audio.h"
 
-void Audio::SetAudioListener(AudioListener* const listener) noexcept
+void Audio::SetAudioListener(AudioListener* listener) noexcept
 {
 	m_lisrener = listener;
 }

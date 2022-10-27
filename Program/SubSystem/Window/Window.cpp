@@ -36,13 +36,17 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpar
 		if (LOWORD(wparam) != WA_INACTIVE)
 		{
 			if (auto timer = g_context->GetSubsystem<Timer>())
+			{
 				timer->ResetMeasurement();
+			}
 		}
 		break;
 
 	case WM_EXITSIZEMOVE:
 		if (auto timer = g_context->GetSubsystem<Timer>())
+		{
 			timer->ResetMeasurement();
+		}
 		break;
 
 	default:

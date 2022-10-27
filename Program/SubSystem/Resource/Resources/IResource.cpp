@@ -21,11 +21,6 @@ IResource* IResource::CreateResource(uint32_t type, StringView path) noexcept
     return resourceManager->CreateResource(type, path);
 }
 
-bool IResource::IsErasable() const noexcept
-{
-    return true;
-}
-
 uint32_t IResource::GetType() const noexcept
 {
     return m_type;
@@ -33,11 +28,7 @@ uint32_t IResource::GetType() const noexcept
 
 String IResource::GetAssetName() const noexcept
 {
-    StringView path(m_filePath);
-    auto noExtPath = path.substr(0, path.find("."));
-
-    // 生成する asset ファイルパスの作成
-    return FileSystem::GetFilePath(noExtPath);
+    return GetResourceData()->m_assetName;
 }
 
 const String& IResource::GetFilePath() const noexcept
@@ -45,12 +36,12 @@ const String& IResource::GetFilePath() const noexcept
     return m_filePath;
 }
 
-ResourceData* IResource::GetResourceData() noexcept
-{
-    return m_resourceManager->GetResourceData(m_filePath);
-}
-
-Context* IResource::GetContext() noexcept
+Context* IResource::GetContext() const noexcept
 {
     return g_context;
+}
+
+ResourceData* IResource::GetResourceData() const noexcept
+{
+    return m_resourceManager->GetResourceData(m_filePath);
 }

@@ -7,7 +7,6 @@
 
 
 #include "Widget.h"
-#include "../EditorSystem.h"
 
 Context* Widget::GetContext() noexcept
 {

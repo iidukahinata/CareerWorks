@@ -170,9 +170,11 @@
     <ClCompile Include="Program\SubSystem\Core\Math\Vector2.cpp" />
     <ClCompile Include="Program\SubSystem\Core\Math\Vector3.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\DragDrop.cpp" />
+    <ClCompile Include="Program\SubSystem\Editor\EditorEvents.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\EditorHelper.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\EditorSystem.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widget.cpp" />
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\ComponentDetails.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObject.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\AudioListenerDetails.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\AudioSpeakerDetails.cpp" />
@@ -190,6 +192,7 @@
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\ProfilerWidget.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\AssetsWidget.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\SceneWidget.cpp" />
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\ViewPortWidget.cpp" />
     <ClCompile Include="Program\SubSystem\Input\Direct\DirectInput.cpp" />
     <ClCompile Include="Program\SubSystem\Input\Input.cpp" />
     <ClCompile Include="Program\SubSystem\Input\InputEvents.cpp" />
@@ -286,6 +289,7 @@
     <ClInclude Include="Program\SubSystem\Core\Command\Command.h" />
     <ClInclude Include="Program\SubSystem\Core\Command\CommandList.h" />
     <ClInclude Include="Program\SubSystem\Core\Common\Common.h" />
+    <ClInclude Include="Program\SubSystem\Core\Common\GlobalValues.h" />
     <ClInclude Include="Program\SubSystem\Core\Common\Macro.h" />
     <ClInclude Include="Program\SubSystem\Core\Common\pch.h" />
     <ClInclude Include="Program\SubSystem\Core\Common\ProjectSetting.h" />
@@ -313,9 +317,11 @@
     <ClInclude Include="Program\SubSystem\Core\Math\Vector4.h" />
     <ClInclude Include="Program\SubSystem\Core\Math\Vector4T.h" />
     <ClInclude Include="Program\SubSystem\Editor\DragDrop.h" />
+    <ClInclude Include="Program\SubSystem\Editor\EditorEvents.h" />
     <ClInclude Include="Program\SubSystem\Editor\EditorHelper.h" />
     <ClInclude Include="Program\SubSystem\Editor\EditorSystem.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widget.h" />
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\ComponentDetails.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObject.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\AudioListenerDetails.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\AudioSpeakerDetails.h" />
@@ -333,6 +339,7 @@
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\ProfilerWidget.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\AssetsWidget.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\SceneWidget.h" />
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\ViewPortWidget.h" />
     <ClInclude Include="Program\SubSystem\Input\Direct\DirectInput.h" />
     <ClInclude Include="Program\SubSystem\Input\Input.h" />
     <ClInclude Include="Program\SubSystem\Input\InputEvents.h" />

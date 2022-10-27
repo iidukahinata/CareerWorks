@@ -476,3 +476,6 @@ FodyWeavers.xsd
 /Data/asset/Standard/audio_icon.asset
 /Data/asset/Scene/new_scene.asset
 /Data/Resource/Scene/new_scene.scene
+/Data/asset/Standard/black.asset
+/Data/asset/Standard/normal.asset
+/Data/asset/Standard/white.asset

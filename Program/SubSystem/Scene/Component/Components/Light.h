@@ -29,8 +29,8 @@ public:
 	void Deserialization(FileStream* file) override;
 
 	void OnInitialize() override;
-	void OnStart() override;
-	void OnStop() override;
+	void OnRegister() override;
+	void OnUnRegister() override;
 
 public:
 

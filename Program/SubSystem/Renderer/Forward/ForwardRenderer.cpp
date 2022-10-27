@@ -12,6 +12,9 @@
 #include "SubSystem/Scene/Component/Components/Camera.h"
 #include "SubSystem/Scene/Component/Components/RenderObject.h"
 
+#include "SubSystem/Window/Window.h"
+#include "SubSystem/Editor/EditorSystem.h"
+
 bool ForwardRenderer::Initialize()
 {
 	Renderer::Initialize();
@@ -23,6 +26,12 @@ bool ForwardRenderer::Initialize()
 	// Create TransCBuffer
 	m_transformCBuffer = std::make_unique<TransformCBuffer>();
 	m_transformCBuffer->Initialize();
+
+#if IS_EDITOR
+	m_renderTexture.Create(Window::Get().GetWindowWidth(), Window::Get().GetWindowHeight());
+
+	EditorSystem::Get().PostInitialize(m_renderTexture.GetShaderResourceView());
+#endif // IS_EDITOR
 
 	RegisterRenderJob();
 
@@ -41,7 +50,13 @@ void ForwardRenderer::Update() noexcept
 {
 	// ëSëÃÇÃï`âÊèÄîı
 	D3D12GraphicsDevice::Get().BegineFrame();
+
+#if IS_EDITOR
+	m_renderTexture.SetRenderTarget();
+	m_renderTexture.Clear(Math::Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+#else
 	D3D12GraphicsDevice::Get().SetRenderTarget();
+#endif // IS_EDITOR
 
 	if (m_mainCamera)
 	{

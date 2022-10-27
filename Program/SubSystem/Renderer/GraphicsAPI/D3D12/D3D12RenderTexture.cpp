@@ -21,6 +21,13 @@ bool D3D12RenderTexture::Create(int width, int height, DXGI_FORMAT colorFormat, 
 	m_renderTargetView.Create(m_renderTarget.Get(), m_renderTarget->GetDesc().Format);
 	m_depthStencilView.Create(m_depthStencil.Get());
 
+	m_viewport.TopLeftX = 0;
+	m_viewport.TopLeftY = 0;
+	m_viewport.Width	= width;
+	m_viewport.Height   = height;
+	m_viewport.MinDepth = 0.0f;
+	m_viewport.MaxDepth = 1.0f;
+
 	return true;
 }
 
@@ -62,6 +69,11 @@ D3D12RenderTargetView* D3D12RenderTexture::GetRenderTargetView() noexcept
 D3D12DepthStencilView* D3D12RenderTexture::GetDepthStencilView() noexcept
 {
 	return &m_depthStencilView;
+}
+
+D3D12ShaderResourceView* D3D12RenderTexture::GetShaderResourceView() noexcept
+{
+	return &m_shaderResourceView;
 }
 
 bool D3D12RenderTexture::CreateRenderTarget(int width, int height, DXGI_FORMAT colorFormat) noexcept

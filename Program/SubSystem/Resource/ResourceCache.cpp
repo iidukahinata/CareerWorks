@@ -34,7 +34,7 @@ IResource* ResourceCache::GetResource(const ResourcePath& path) const noexcept
 		return nullptr;
 	}
 
-	const auto& resourceMap = m_resources.find(path.m_type)->second;
+	const auto& resourceMap = m_resources.at(path.m_type);
 
 	// 配列外にアクセスしないための判定
 	if (!resourceMap.contains(path.m_path))
@@ -42,8 +42,7 @@ IResource* ResourceCache::GetResource(const ResourcePath& path) const noexcept
 		return nullptr;
 	}
 
-	const auto& resource = resourceMap.find(path.m_path)->second;
-
+	const auto& resource = resourceMap.at(path.m_path);
 	return resource.get();
 }
 
@@ -72,7 +71,7 @@ Vector<IResource*> ResourceCache::GetResourcesByType(uint32_t type) const noexce
 		return Vector<IResource*>();
 	}
 
-	const auto& resourceList = m_resources.find(type)->second;
+	const auto& resourceList = m_resources.at(type);
 	uint32_t size = resourceList.size();
 
 	Vector<IResource*> result(size);

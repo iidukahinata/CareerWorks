@@ -27,6 +27,8 @@ public:
 
 struct ResourceData
 {
+	String m_assetName;
+
 	String m_assetFullPath;
 
 	ResourcePath m_resourcePath;

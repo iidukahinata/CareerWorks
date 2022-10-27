@@ -23,25 +23,27 @@ public:
 	static T* CreateResource(StringView path) noexcept;
 	static IResource* CreateResource(uint32_t type, StringView path) noexcept;
 
+public:
+
 	/** 主に独自データの読み込みを行う */
 	virtual bool Load(StringView path) = 0;
 
 	/** リソースデータファイル更新処理用 */
 	virtual void Update() = 0;
 
-	/** 他スレッドのタスク処理として使用されるなどの時に誤って消去しないようにするため */
-	bool IsErasable() const noexcept;
-
-	Context* GetContext() noexcept;
+public:
 
 	/** ResourceData */
 	uint32_t GetType() const noexcept;
 	String GetAssetName() const noexcept;
 	const String& GetFilePath() const noexcept;
 
+	/** アクセス */
+	Context* GetContext() const noexcept;
+
 protected:
 
-	ResourceData* GetResourceData() noexcept;
+	ResourceData* GetResourceData() const noexcept;
 
 protected:
 

@@ -31,6 +31,9 @@ public:
 	void Initialize() noexcept;
 	void Exit() noexcept;
 
+	void Start() noexcept;
+	void Stop() noexcept;
+
 	/** タスクリストの実行開始 */
 	void Tick(double deltaTime) noexcept;
 

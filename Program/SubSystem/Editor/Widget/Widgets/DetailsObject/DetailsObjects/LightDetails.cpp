@@ -2,7 +2,7 @@
 * @file	   LightDetails.cpp
 * @brief
 *
-* @date	   2022/09/13 2022年度初版
+* @date	   2022/10/23 2022年度初版
 */
 
 
@@ -10,7 +10,7 @@
 #include "SubSystem/Scene/Component/Components/Light.h"
 
 LightDetails::LightDetails(DetailsWidget* detailsWidget, IComponent* component) :
-	DetailsObject(detailsWidget)
+	ComponentDetails(detailsWidget)
 {
 	m_light = dynamic_cast<Light*>(component);
 	ASSERT(m_light);
@@ -21,8 +21,7 @@ void LightDetails::Draw()
 	constexpr auto offsetPos = 130;
 	constexpr auto lightTypeCombo = "DirectionalLight\0PointLight\0SpotLight\0\0";
 		
-	const auto& name = m_light->TypeData.Name;
-	if (ImGui::CollapsingHeader(name.data(), ImGuiTreeNodeFlags_DefaultOpen))
+	if (ShowComponentHeader(m_light))
 	{
 		auto light			= m_light;
 		auto lightType		= m_light->GetLightType();

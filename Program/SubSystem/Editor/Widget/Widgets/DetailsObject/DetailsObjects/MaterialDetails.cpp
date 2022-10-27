@@ -27,9 +27,17 @@ MaterialDetails::MaterialDetails(DetailsWidget* detailsWidget, ResourceData* res
 
 MaterialDetails::~MaterialDetails()
 {
-	if (!IsCurrentSceneResource() && m_material)
+	ASSERT(m_material);
+
+	m_material->Update();
+
+	if (!IsCurrentSceneResource())
 	{
-		m_material->Update();
+		auto resourceManager = m_detailsWidget->GetResourceManager();
+		if (auto resourceData = resourceManager->GetResourceData(m_material->GetFilePath()))
+		{
+			resourceManager->Unload(resourceData);
+		}
 	}
 }
 
@@ -150,7 +158,7 @@ void MaterialDetails::ShowTextureList(Material* material) noexcept
 		// テクスチャ名表示
 		ImGui::Text(pramName.c_str()); ImGui::SameLine(offsetPos);
 
-		constexpr auto itemWidth = 270;
+		constexpr auto itemWidth = 250;
 		ImGui::PushItemWidth(itemWidth);
 		ImGui::InputText("##", texturePath.data(), texturePath.size());
 		ImGui::PopItemWidth();
@@ -161,7 +169,7 @@ void MaterialDetails::ShowTextureList(Material* material) noexcept
 			DragDropTexture(material, texture, pramName);
 		}
 
-		ImGui::SameLine(offsetPos + itemWidth);
+		ImGui::SameLine(offsetPos + itemWidth + 5);
 
 		static auto selectTex = 0;
 		if (OpenResourceHelper(texIndex++))

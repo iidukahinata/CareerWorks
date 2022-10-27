@@ -2,14 +2,15 @@
 * @file	   AudioListenerDetails.cpp
 * @brief
 *
-* @date	   2022/10/03 2022年度初版
+* @date	   2022/10/23 2022年度初版
 */
 
 #include "AudioListenerDetails.h"
 #include "SubSystem/Scene/Component/Components/AudioListener.h"
+#include "ThirdParty/imgui/imgui_internal.h"
 
 AudioListenerDetails::AudioListenerDetails(DetailsWidget* detailsWidget, IComponent* component) :
-	DetailsObject(detailsWidget)
+	ComponentDetails(detailsWidget)
 {
 	m_audioListener = dynamic_cast<AudioListener*>(component);
 	ASSERT(m_audioListener);
@@ -17,8 +18,5 @@ AudioListenerDetails::AudioListenerDetails(DetailsWidget* detailsWidget, ICompon
 
 void AudioListenerDetails::Draw()
 {
-	constexpr int offsetPos = 130;
-	const auto& name = m_audioListener->TypeData.Name;
-
-	ImGui::CollapsingHeader(name.data(), ImGuiTreeNodeFlags_DefaultOpen);
+	ShowComponentHeader(m_audioListener);
 }

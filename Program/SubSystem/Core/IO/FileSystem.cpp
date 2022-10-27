@@ -2,7 +2,7 @@
 * @file    FileSystem.cpp
 * @brief
 *
-* @date	   2022/09/21 2022年度初版
+* @date	   2022/10/21 2022年度初版
 */
 
 
@@ -18,6 +18,18 @@ void FileSystem::Remove(StringView path) noexcept
 	try
 	{
 		std::remove(path.data());
+	}
+	catch (const std::exception&)
+	{
+		LOG_ERROR("指定されたファイル、ディレクトリがありません。");
+	}
+}
+
+void FileSystem::RemoveAll(StringView path) noexcept
+{
+	try
+	{
+		std::filesystem::remove_all(path.data());
 	}
 	catch (const std::exception&)
 	{
@@ -197,4 +209,9 @@ Vector<String> FileSystem::GetDirectorysRecursiveDirectory(StringView filePath) 
 	}
 
 	return filePaths;
+}
+
+bool FileSystem::IsDirectoryPath(StringView path) noexcept
+{
+	return std::filesystem::is_directory(path);
 }

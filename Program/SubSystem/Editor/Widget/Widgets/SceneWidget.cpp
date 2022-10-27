@@ -2,7 +2,7 @@
 * @file	   SceneWidget.cpp
 * @brief
 *
-* @date	   2022/10/03 2022年度初版
+* @date	   2022/10/21 2022年度初版
 */
 
 
@@ -20,29 +20,28 @@ void SceneWidget::PostInitialize()
 
 void SceneWidget::Draw()
 {
-	ImGui::SetNextWindowPos(ImVec2( 0, 80), ImGuiCond_Once);
-	ImGui::SetNextWindowSize(ImVec2(220, 470), ImGuiCond_Once);
+	ImGui::SetNextWindowPos(ImVec2( 0, 80), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(220, 470), ImGuiCond_FirstUseEver);
 
-	const auto windowFlags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize;
+	const auto windowFlags = 0;
+
+	ImGui::Begin("Hierarchy", nullptr, windowFlags);
 
 	if (auto currentScene = m_world->GetCurrentScene())
 	{
-		ImGui::Begin(currentScene->GetAssetName().data(), nullptr, windowFlags);
-
-		// show gameObjects
-		Vector<GameObject*> allRootGameObjects;
-		currentScene->GetAllRootGameObjects(allRootGameObjects);
-		for (const auto& rootGameObject : allRootGameObjects)
+		if (ImGui::CollapsingHeader(currentScene->GetAssetName().data(), ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			AddGameObjectToTree(rootGameObject);
-		}
+			// show gameObjects
+			Vector<GameObject*> allRootGameObjects;
+			currentScene->GetAllRootGameObjects(allRootGameObjects);
+			for (const auto& rootGameObject : allRootGameObjects)
+			{
+				AddGameObjectToTree(rootGameObject);
+			}
 
-		ShowGameObjectHelper();
-		ShowGameObjectCreateWindow();
-	}
-	else
-	{
-		ImGui::Begin("None Scene", nullptr, windowFlags);
+			ShowGameObjectHelper();
+			ShowGameObjectCreateWindow();
+		}
 	}
 
 	ImGui::End();
@@ -111,7 +110,7 @@ void SceneWidget::ShowGameObjectCreateWindow() noexcept
 		ImGui::Text("Object Name"); ImGui::SameLine();
 
 		char name[128] = "";
-		auto isCreate = ImGui::InputTextWithHint("", "none", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_EnterReturnsTrue); ImGui::Text(""); // 改行用
+		auto isCreate = ImGui::InputTextWithHint("##GameObjectName", "none", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_EnterReturnsTrue); ImGui::Text(""); // 改行用
 		auto isCancel = ImGui::Button("Cancel");
 
 		if (isCreate)

@@ -2,7 +2,7 @@
 * @file    GameObject.h
 * @brief
 *
-* @date	   2022/10/03 2022年度初版
+* @date	   2022/10/25 2022年度初版
 */
 #pragma once
 
@@ -26,8 +26,17 @@ public:
 
 public:
 
-	void StartAllComponents() noexcept;
-	void StopAllComponents() noexcept;
+	/** component の world 登録を行う。*/
+	void RegisterAllComponents() noexcept;
+
+	/** component の world 登録解除を行う。*/
+	void UnRegisterAllComponents() noexcept;
+
+	/** ゲームオブジェクトの再生時に呼び出される。*/
+	void BeginPlay() noexcept;
+
+	/** ゲームオブジェクトの終了時に呼び出される。*/
+	void EndPlay() noexcept;
 
 public:
 
@@ -44,7 +53,9 @@ public:
 	const Map<uint32_t, UniquePtr<IComponent>>& GetAllComponent() const noexcept;
 
 	/** 指定名コンポーネントを保持する場合、そのアドレスを返す。*/
-	IComponent* FindComponent(StringView name) noexcept;
+	IComponent* FindComponent(StringView name) const noexcept;
+
+	void ClearComponets() noexcept;
 
 public:
 
@@ -67,19 +78,26 @@ public:
 
 private:
 
-	// * 所属シーンクラスを保持。
-	Scene* m_owner;
+	// * 所属シーンクラスを保持
+	Scene* m_owner = nullptr;
 
-	// * 所属ワールドクラスを保持。
-	World* m_world;
+	// * 所属ワールドクラスを保持
+	World* m_world = nullptr;
 
 	// * WorldクラスでのID値
-	uint32_t m_id;
+	uint32_t m_id = 0;
 
-	// * Worldクラスで探索時等に使用される。
-	String m_path;
+	// * Worldクラスで探索時等に使用
+	String m_path = "GameObject";
 
+	// * コンポーネントの有効性を保持
 	bool m_active = true;
+
+	// * world に登録されているかを保持
+	bool m_registered = false;
+
+	// * ゲームオブジェクトが再生中であるかを保持
+	bool m_isPlaying = false;
 
 	Transform m_transform;
 

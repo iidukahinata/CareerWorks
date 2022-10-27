@@ -13,6 +13,7 @@ class ResourceData;
 
 class ResourceDetails : public DetailsObject
 {
+	COMPLETED_DEVELOPMENT()
 public:
 
 	ResourceDetails(DetailsWidget* detailsWidget, ResourceData* resourceData);

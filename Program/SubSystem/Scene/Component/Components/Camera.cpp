@@ -55,13 +55,17 @@ void Camera::OnInitialize()
 	CreateOrthographicMatrix();
 }
 
-void Camera::OnStart()
+void Camera::OnRegister()
 {
+	IComponent::OnRegister();
+
 	RegisterToRendererSystem();
 }
 
-void Camera::OnStop()
+void Camera::OnUnRegister()
 {
+	IComponent::OnUnRegister();
+
 	UnRegisterFromRedererSystem();
 }
 

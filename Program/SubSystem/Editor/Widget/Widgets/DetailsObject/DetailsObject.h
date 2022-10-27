@@ -13,6 +13,7 @@ class IResource;
 
 class DetailsObject
 {
+	COMPLETED_DEVELOPMENT()
 public:
 
 	DetailsObject(DetailsWidget* detailsWidget);

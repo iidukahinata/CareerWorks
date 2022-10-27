@@ -22,6 +22,8 @@ public:
 		return instance;
 	}
 
+public:
+
 	/**
 	* İ’è‚³‚ê‚½’l‚Å Window ‚ğì¬
 	* 

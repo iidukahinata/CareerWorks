@@ -1,5 +1,5 @@
 /**
- * @file	InputDevice.h
+ * @file	Input.h
  * @brief   入力制御クラス
  *
  * @date	2022/09/06 2022年度初版

@@ -2,7 +2,7 @@
 * @file	   AudioSpeakerDetails.cpp
 * @brief
 *
-* @date	   2022/10/03 2022年度初版
+* @date	   2022/10/23 2022年度初版
 */
 
 #include "AudioSpeakerDetails.h"
@@ -10,7 +10,7 @@
 #include "SubSystem/Scene/Component/Components/AudioSpeaker.h"
 
 AudioSpeakerDetails::AudioSpeakerDetails(DetailsWidget* detailsWidget, IComponent* component) :
-	DetailsObject(detailsWidget)
+	ComponentDetails(detailsWidget)
 {
 	m_audioSpeaker = dynamic_cast<AudioSpeaker*>(component);
 	ASSERT(m_audioSpeaker);
@@ -19,9 +19,8 @@ AudioSpeakerDetails::AudioSpeakerDetails(DetailsWidget* detailsWidget, IComponen
 void AudioSpeakerDetails::Draw()
 {
 	constexpr int offsetPos = 130;
-	auto name = m_audioSpeaker->TypeData.Name;
 
-	if (ImGui::CollapsingHeader(name.data(), ImGuiTreeNodeFlags_DefaultOpen))
+	if (ShowComponentHeader(m_audioSpeaker))
 	{
 		auto audioSpeaker = m_audioSpeaker;
 		auto audioClip	  = m_audioSpeaker->GetAudioClip();
@@ -40,12 +39,12 @@ void AudioSpeakerDetails::Draw()
 
 		ImGui::Text("AudioClip"); ImGui::SameLine(offsetPos);
 
-		constexpr auto itemWidth = 280;
+		constexpr auto itemWidth = 250;
 		ImGui::PushItemWidth(itemWidth);
 		ImGui::InputText("##", clipPath.data(), clipPath.size());
 		ImGui::PopItemWidth();
 
-		ImGui::SameLine(offsetPos + itemWidth);
+		ImGui::SameLine(offsetPos + itemWidth + 5);
 
 		// ドラッグアンドドロップ有効指定
 		const auto hoverd = ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);

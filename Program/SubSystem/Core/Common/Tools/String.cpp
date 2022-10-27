@@ -12,7 +12,7 @@
 Wstring ToWstring(StringView str, uint32_t cp /* = CP_ACP */) noexcept
 {
 	// •ÏŠ·Œã‚Ì•¶Žš—ñ‚Ì’·‚³‚ðŽæ“¾
-	int lenght = MultiByteToWideChar(cp, MB_PRECOMPOSED | MB_ERR_INVALID_CHARS, str.data(), -1, nullptr, 0);
+	auto lenght = MultiByteToWideChar(cp, MB_PRECOMPOSED | MB_ERR_INVALID_CHARS, str.data(), -1, nullptr, 0);
 
 	Wstring wstr;
 	wstr.reserve(lenght);
@@ -26,7 +26,7 @@ Wstring ToWstring(StringView str, uint32_t cp /* = CP_ACP */) noexcept
 String ToString(WstringView str, uint32_t cp /* = CP_OEMCP */) noexcept
 {
 	// •ÏŠ·Œã‚Ì•¶Žš—ñ‚Ì’·‚³‚ðŽæ“¾
-	int lenght = WideCharToMultiByte(cp, 0, str.data(), -1, (char*)NULL, 0, NULL, NULL);
+	auto lenght = WideCharToMultiByte(cp, 0, str.data(), -1, (char*)NULL, 0, NULL, NULL);
 
 	String ret;
 	ret.resize(lenght);
@@ -40,14 +40,14 @@ String ToString(WstringView str, uint32_t cp /* = CP_OEMCP */) noexcept
 #ifdef __cpp_lib_char8_t
 String ToString(u8StringView str) noexcept
 {
-	auto wStr = ToWstring(String(str.begin(), str.end()), CP_UTF8);
+	auto&& wStr = ToWstring(String(str.begin(), str.end()), CP_UTF8);
 
 	return ToString(wStr);
 }
 
 u8String ToU8String(StringView str) noexcept
 {
-	auto wStr = ToWstring(str);
+	auto&& wStr = ToWstring(str);
 	auto&& temp = ToString(wStr, CP_UTF8);
 
 	return u8String(temp.begin(), temp.end());

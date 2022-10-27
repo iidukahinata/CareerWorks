@@ -14,6 +14,7 @@ class IComponent;
 
 class GameObjectDetails : public DetailsObject
 {
+	COMPLETED_DEVELOPMENT()
 public:
 
 	GameObjectDetails(DetailsWidget* detailsWidget, GameObject* gameObject);

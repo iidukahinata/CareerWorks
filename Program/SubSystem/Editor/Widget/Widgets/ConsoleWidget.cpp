@@ -2,7 +2,7 @@
 * @file	   ConsoleWidget.cpp
 * @brief
 *
-* @date	   2022/09/27 2022年度初版
+* @date	   2022/10/21 2022年度初版
 */
 
 
@@ -39,10 +39,10 @@ void ConsoleWidget::PostInitialize()
 
 void ConsoleWidget::Draw()
 {
-	ImGui::SetNextWindowPos(ImVec2(0, 550), ImGuiCond_Once);
-	ImGui::SetNextWindowSize(ImVec2(420, 315), ImGuiCond_Once);
+	ImGui::SetNextWindowPos(ImVec2(0, 550), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(420, 315), ImGuiCond_FirstUseEver);
 
-	ImGui::Begin("Console", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+	ImGui::Begin("Console", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar);
 
 	ImGui::Text("Filter"); ImGui::SameLine();
 	m_logFilter.Draw("##Filter", 150.0f); ImGui::SameLine();

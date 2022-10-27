@@ -2,7 +2,7 @@
 * @file	   DetailsWidget.cpp
 * @brief
 *
-* @date	   2022/09/13 2022年度初版
+* @date	   2022/10/21 2022年度初版
 */
 
 
@@ -35,14 +35,15 @@ void DetailsWidget::PostInitialize()
 
 void DetailsWidget::Draw()
 {
-	ImGui::SetNextWindowPos(ImVec2(1100, 20), ImGuiCond_Once);
-	ImGui::SetNextWindowSize(ImVec2(440, 845), ImGuiCond_Once);
+	ImGui::SetNextWindowPos(ImVec2(1100, 20), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(440, 845), ImGuiCond_FirstUseEver);
 
-	ImGui::Begin("Details", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+	ImGui::Begin("Details", nullptr, ImGuiWindowFlags_NoCollapse);
 
 	for (auto& detailsObject : m_detailsObjects)
 	{
 		detailsObject->Draw();
+		ImGui::Separator();
 	}
 
 	// details 描画中での変更が行えないため安全な時間を作成

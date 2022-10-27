@@ -2,7 +2,7 @@
 * @file	   AssetsWidget.cpp
 * @brief
 *
-* @date	   2022/10/02 2022年度初版
+* @date	   2022/10/21 2022年度初版
 */
 
 
@@ -16,7 +16,7 @@
 #include "SubSystem/Resource/Resources/3DModel/Mesh.h"
 #include "SubSystem/Resource/Resources/3DModel/Shader.h"
 #include "SubSystem/Resource/Resources/3DModel/Material.h"
-#include "SubSystem/Resource/Resources/Audio/AudioClip.h"
+#include "SubSystem/Resource/Resources/Audio/AudioClip.h"\
 
 void AssetsWidget::PostInitialize()
 {
@@ -31,10 +31,10 @@ void AssetsWidget::PostInitialize()
 
 void AssetsWidget::Draw()
 {
-	ImGui::SetNextWindowPos(ImVec2(420, 550), ImGuiCond_Once);
-	ImGui::SetNextWindowSize(ImVec2(680, 315), ImGuiCond_Once);
+	ImGui::SetNextWindowPos(ImVec2(420, 550), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(680, 315), ImGuiCond_FirstUseEver);
 
-	ImGui::Begin("Assets", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+	ImGui::Begin("Assets", nullptr, ImGuiWindowFlags_NoCollapse);
 
 	ShowResourceMenu();
 	ShowResourceList();
@@ -105,6 +105,11 @@ ImGui::NextColumn();
 		ImGui::Text(m_directoryTree[i].c_str()); ImGui::SameLine();
 	}
 
+	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && ImGui::IsKeyReleased(ImGuiKey_Backspace))
+	{
+		CurrentDirectoryToParent();
+	}
+
 	ImGui::Text("");
 }
 
@@ -117,8 +122,9 @@ void AssetsWidget::ShowResourceList() noexcept
 	const auto columns = static_cast<int>(std::round(max(ImGui::GetWindowContentRegionWidth() / 110.f, 1.f)));
 	ImGui::Columns(columns, nullptr, false);
 
-	if (ImGui::IsMouseClicked(0) && !ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows))
+	if (!m_isOpenPopupWindow && ImGui::IsMouseClicked(0) && !ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows))
 	{
+		m_selectResourceName = "";
 		m_selectResoruce = nullptr;
 	}
 
@@ -142,7 +148,6 @@ void AssetsWidget::ShowResourceList() noexcept
 	if (IsTimeOut())
 	{
 		m_stopwatch.Start();
-		m_selectResourceName = String();
 	}
 
 	ImGui::Columns(1);
@@ -206,6 +211,7 @@ void AssetsWidget::ShowResourceHelper() noexcept
 {
 	if (ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows) && ImGui::IsMouseClicked(1))
 	{
+		m_isOpenPopupWindow = true;
 		ImGui::OpenPopup("Assets Helper");
 		m_clickedMausePos = ImGui::GetMousePos();
 	}
@@ -213,9 +219,12 @@ void AssetsWidget::ShowResourceHelper() noexcept
 	ImGui::SetNextWindowPos(m_clickedMausePos, ImGuiCond_Always);
 	ImGui::SetNextWindowSize(ImVec2(150, 200), ImGuiCond_Always);
 
+	bool openDeleteObject = false;
 	bool openCreateFolder = false;
 	bool OpenCreateResource = false;
-	const auto buttonSize = ImVec2(135, 20);
+
+	constexpr auto buttonSize = ImVec2(135, 20);
+	const auto isSlectObject = !m_selectResourceName.empty();
 
 	// Draw Assets Helper
 	if(ImGui::BeginPopup("Assets Helper"))
@@ -237,11 +246,27 @@ void AssetsWidget::ShowResourceHelper() noexcept
 			m_resourceCreateFunc = [](StringView name) { return Material::Create(name); };
 			ImGui::CloseCurrentPopup();
 		}
+		if (isSlectObject && ImGui::Button("Delete Object", buttonSize))
+		{
+			openDeleteObject = true;
+			ImGui::CloseCurrentPopup();
+		}
 
 		ImGui::EndPopup();
 	}
 
+	// ボタン操作でのオブジェクト消去
+	if (!m_selectResourceName.empty() && ImGui::IsKeyReleased(ImGuiKey_Delete))
+	{
+		m_isOpenPopupWindow = true;
+		openDeleteObject = true;
+	}
+
 	// Open Popup
+	if (openDeleteObject)
+	{
+		ImGui::OpenPopup("Delete Object");
+	}
 	if (openCreateFolder)
 	{
 		ImGui::OpenPopup("Create Folder");
@@ -251,11 +276,18 @@ void AssetsWidget::ShowResourceHelper() noexcept
 		ImGui::OpenPopup("Create Resource");
 	}
 
+	// Draw Delete Object
+	if (ImGui::BeginPopupModal("Delete Object"))
+	{
+		ShowDeleteWindow();
+	}
+
 	// Draw Create Folder
 	if (ImGui::BeginPopupModal("Create Folder"))
 	{
 		ShowCreateWindow([this](StringView name) {
 
+			m_isOpenPopupWindow = false;
 			FileSystem::CreateDirectory(m_currentDirectory + "/" + name.data());
 
 		});
@@ -266,7 +298,16 @@ void AssetsWidget::ShowResourceHelper() noexcept
 	{
 		ShowCreateWindow([this](StringView name) {
 
-			auto resource = m_resourceCreateFunc(m_currentDirectory + "/" + name.data());
+			m_isOpenPopupWindow = false;
+			auto resource = m_resourceCreateFunc(name.data());
+			auto resourceData = m_resourceManager->GetResourceData(resource->GetFilePath());
+
+			const auto oldAssetPath = resourceData->m_assetFullPath;
+			const auto newAssetPath = m_currentDirectory + "/" + name.data() + ASSET_EXTENSION;
+
+			// asset path を currentDirectory 上ファイルとしてフォルダ移動させる
+			FileSystem::Rename(oldAssetPath, newAssetPath);
+			resourceData->m_assetFullPath = newAssetPath;
 
 			// リソースの生成だけが目的のため解放
 			UnloadResource(resource);
@@ -274,17 +315,74 @@ void AssetsWidget::ShowResourceHelper() noexcept
 	}
 }
 
+bool AssetsWidget::ShowDeleteWindow() noexcept
+{
+	auto&& explanation = ConvertToJapanese("本当にオブジェクトを消去してもよろしいでしょうか？");
+	auto&& objectName = ConvertToJapanese(m_selectResourceName.c_str());
+
+	ImGui::Text(explanation.c_str());
+	ImGui::Text("Object Name : "); ImGui::SameLine();
+	ImGui::Text(objectName.c_str()); ImGui::Text(""); // 改行
+
+	auto isDelete = ImGui::Button("Delete"); ImGui::SameLine();
+	auto isCancel = ImGui::Button("Cancel");
+	isDelete |= ImGui::IsKeyReleased(ImGuiKey_Enter);
+
+	if (isDelete)
+	{
+		m_isSelectDirectory = true;
+		DetailsWidget::ClearSelectObject();
+
+		String removePath;
+		if (m_selectResoruce)
+		{
+			removePath = m_selectResoruce->m_resourcePath.m_path;
+
+			auto type = m_selectResoruce->m_resourcePath.m_type;
+			if (type == Scene::TypeData.Hash)
+			{
+				auto currentPath = m_world->GetCurrentScene() ? m_world->GetCurrentScene()->GetFilePath() : "";
+				if (removePath == currentPath)
+				{
+					m_world->SetCurrentScene(nullptr);
+				}
+			}
+		}
+		else
+		{
+			removePath = m_currentDirectory + "/" + m_selectResourceName;
+		}
+
+		// 生成した asset 構築データの変更を要求
+		NotifyEvent<DeleteObjectEvent>(removePath);
+
+		m_selectResourceName = "";
+		m_selectResoruce = nullptr;
+	}
+
+	if (isDelete || isCancel)
+	{
+		m_isOpenPopupWindow = false;
+		ImGui::CloseCurrentPopup();
+	}
+
+	ImGui::EndPopup();
+
+	return (isDelete || isCancel);
+}
+
 bool AssetsWidget::ShowCreateWindow(std::function<void(StringView)> createFunc) noexcept
 {
-	ImGui::Text("Object Name"); ImGui::SameLine();
+	ImGui::Text("Name"); ImGui::SameLine();
 
 	char name[128] = "";
-	auto isCreate = ImGui::InputTextWithHint("", "none", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_EnterReturnsTrue); ImGui::Text(""); // 改行
-	auto isCancel = ImGui::Button("Cancel");
+	const auto isCreate = ImGui::InputTextWithHint("##ResourceName", "none", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_EnterReturnsTrue); ImGui::Text(""); // 改行
+	const auto isCancel = ImGui::Button("Cancel");
 
 	if (isCreate)
 	{
 		createFunc(name);
+		m_isSelectDirectory = true;
 	}
 
 	if (isCreate || isCancel)
@@ -361,11 +459,11 @@ void AssetsWidget::ClickResource(IconType type, StringView name) noexcept
 	else
 	{
 		const auto resourceType = EditorHelper::Get().GetResourceTypeByIconType(type);
-
 		if (auto resourceData = m_resourceManager->GetResourceData(resourceType, name))
 		{
 			m_selectResourceName = name;
 			m_selectResoruce = resourceData;
+
 			DragDrop::Get().StartDrag(DragDrop_Resource, resourceData);
 		}
 	}
@@ -375,8 +473,10 @@ void AssetsWidget::DoubleClickResource(IconType type, StringView name) noexcept
 {
 	if (type == Icon_Folder)
 	{
+		// フォルダ構成情報を更新
 		m_directoryTree.emplace_back(name);
 		m_currentDirectory += String("/") + name.data();
+
 		m_isSelectDirectory = true;
 	}
 	else
@@ -392,6 +492,8 @@ void AssetsWidget::DoubleClickResource(IconType type, StringView name) noexcept
 			m_world->ChangeScene(name);
 		}
 	}
+
+	m_selectResourceName = "";
 }
 
 void AssetsWidget::NavigateToDirectory(StringView path) noexcept
@@ -416,9 +518,12 @@ void AssetsWidget::NavigateToDirectory(StringView path) noexcept
 		const auto name = resourceInfo.first;
 		const auto type = resourceInfo.second->m_resourcePath.m_type;
 
-		if (m_tag != TagType_ALL && m_tag != type)
+		if (m_tag != TagType_ALL)
 		{
-			continue;
+			if (m_tag != type)
+			{
+				continue;
+			}
 		}
 
 		const auto iconType = EditorHelper::Get().GetIconTypeFromResourceType(type);
@@ -429,9 +534,12 @@ void AssetsWidget::NavigateToDirectory(StringView path) noexcept
 
 void AssetsWidget::CurrentDirectoryToParent() noexcept
 {
-	m_directoryTree.pop_back();
-	m_currentDirectory = FileSystem::GetParentDirectory(m_currentDirectory);
-	m_isSelectDirectory = true;
+	if (!m_directoryTree.empty())
+	{
+		m_directoryTree.pop_back();
+		m_currentDirectory = FileSystem::GetParentDirectory(m_currentDirectory);
+		m_isSelectDirectory = true;
+	}
 }
 
 bool AssetsWidget::IsTimeOut() noexcept

@@ -14,7 +14,7 @@ class ResourceManager;
 
 class AssetsWidget : public Widget
 {
-	IN_DEVELOPMENT("リソース消去")
+	IN_DEVELOPMENT("Scene消去時のSceneWidgetのエラー && リソースの解放")
 public:
 
 	void PostInitialize() override;
@@ -36,6 +36,9 @@ private:
 
 	/** リソース生成などのメソッドを行う。*/
 	void ShowResourceHelper() noexcept;
+
+	/** リソース、ファイルの消去を行う。*/
+	bool ShowDeleteWindow() noexcept;
 
 	/** リソース生成時の設定などの指定を行う。*/
 	bool ShowCreateWindow(std::function<void(StringView)> createFunc) noexcept;
@@ -77,10 +80,10 @@ private:
 	};
 
 	// * シーン切り替え用
-	World* m_world;
+	World* m_world = nullptr;
 
 	// * Resource 情報取得用
-	ResourceManager* m_resourceManager;
+	ResourceManager* m_resourceManager = nullptr;
 
 	// * ダブルクリック時間計測用
 	Stopwatch m_stopwatch;
@@ -93,13 +96,17 @@ private:
 	// * filter 検索用
 	ImGuiTextFilter m_filter;
 
-	bool m_isSelectDirectory;
-
 	// * 現在表示 Directory 名
 	String m_currentDirectory;
 
 	// * Assets Directory からのファイル構成
 	Vector<String> m_directoryTree;
+
+	// * 現在選択中リソース名
+	String m_selectResourceName;
+
+	// * 現在選択中リソース
+	ResourceData* m_selectResoruce = nullptr;
 
 	struct Thumbnail
 	{
@@ -110,11 +117,9 @@ private:
 	// * Current Directory に所属物のリスト
 	Vector<Thumbnail> m_directoryEntries;
 
-	// * 現在選択中リソース名
-	String m_selectResourceName;
-
-	// * 現在選択中リソース
-	ResourceData* m_selectResoruce = nullptr;
+	// * flags
+	bool m_isSelectDirectory = false;
+	bool m_isOpenPopupWindow = false;
 
 private:
 

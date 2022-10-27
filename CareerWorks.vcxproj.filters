@@ -484,9 +484,6 @@
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\ProfilerWidget.cpp">
       <Filter>Subsytem\Editor\Widget\Widgets</Filter>
     </ClCompile>
-    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\AssetsWidget.cpp">
-      <Filter>Subsytem\Editor\Widget\Widgets</Filter>
-    </ClCompile>
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\SceneWidget.cpp">
       <Filter>Subsytem\Editor\Widget\Widgets</Filter>
     </ClCompile>
@@ -534,6 +531,18 @@
     </ClCompile>
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\AudioListenerDetails.cpp">
       <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\EditorEvents.cpp">
+      <Filter>Subsytem\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\AssetsWidget.cpp">
+      <Filter>Subsytem\Editor\Widget\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\ViewPortWidget.cpp">
+      <Filter>Subsytem\Editor\Widget\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\ComponentDetails.cpp">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -998,6 +1007,18 @@
     </ClInclude>
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\AudioListenerDetails.h">
       <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\EditorEvents.h">
+      <Filter>Subsytem\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\ViewPortWidget.h">
+      <Filter>Subsytem\Editor\Widget\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\ComponentDetails.h">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Core\Common\GlobalValues.h">
+      <Filter>Subsytem\Core\Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

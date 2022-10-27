@@ -46,6 +46,7 @@
 // Event System
 #include "SubSystem/Core/Event/Event.h"
 #include "SubSystem/Core/Event/EventListener.h"
+#include "SubSystem/Editor/EditorEvents.h"
 #include "SubSystem/Input/InputEvents.h"
 #include "SubSystem/Scene/SceneEvents.h"
 

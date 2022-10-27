@@ -10,6 +10,17 @@
 #include "GameObject.h"
 #include "SubSystem/Core/ISubsystem.h"
 
+enum class WorldType
+{
+	Game,
+
+	Editor,
+
+	PlayEditor,
+
+	None,
+};
+
 class Scene;
 
 class World : public ISubsystem
@@ -25,7 +36,7 @@ public:
 
 public:
 
-	/** 
+	/**
 	* 指定されたシーンリソースのロード処理発行を行う。
 	* ロード完了時は LoadSceneCompleteEvent が発行され、通知される。
 	*/
@@ -39,7 +50,7 @@ public:
 
 public:
 
-	/** CurrentScene または指定されたシーン上で GameObject を生成。*/
+	/** CurrentScene または指定された Scene 上で GameObject を生成。*/
 	GameObject* CreateGameObject(Scene* scene = nullptr) noexcept;
 
 	/** 各クラスに GameObject 消去の通達を行う。*/
@@ -58,13 +69,29 @@ public:
 
 private:
 
-	void StartupListenerObjects() noexcept;
-
+	/** Scene メソッド */
 	void AddScene(StringView name, Scene* scene) noexcept;
 	void RemoveScene(Scene* scene) noexcept;
 	void RemoveScene(StringView name) noexcept;
 
+public:
+
+	/** Editor 起動時は実行中のみ true になる。*/
+	bool IsGameMode() const noexcept;
+
+	/** Editor 起動時は実行中でも true になる。*/
+	bool IsEditorMode() const noexcept;
+
 private:
+
+	void StartupListenerObjects() noexcept;
+
+	void ChangeWorldType(WorldType type) noexcept;
+
+private:
+
+	// * Load / Unload 発行用
+	ResourceManager* m_resourceManager = nullptr;
 
 	// * Update 用
 	Job m_job;
@@ -72,6 +99,11 @@ private:
 	// * Listener Objects
 	EventListener m_changeSceneListener;
 	EventListener m_loadSceneCompleteListener;
+
+#ifdef IS_EDITOR
+	EventListener m_changeEditorStateListener;
+#endif // IS_EDITOR
+
 
 	// * 使用中シーンオブジェクト
 	Scene* m_currentScene = nullptr;
@@ -82,6 +114,6 @@ private:
 	// * 複数シーンの同時読み込みに対応させるため
 	Unordered_Map<String, ResourceHandle*> m_resourceHandles;
 
-	// * Load / Unload 発行用
-	ResourceManager* m_resourceManager;
+	// * 
+	WorldType m_worldType = WorldType::None;
 };

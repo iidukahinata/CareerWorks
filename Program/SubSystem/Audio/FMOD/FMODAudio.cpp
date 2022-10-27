@@ -40,7 +40,7 @@ void FMODAudio::Update() const noexcept
 	// 3D Mode Žžˆ—
 	if (m_lisrener)
 	{
-		auto& transform = m_lisrener->GetTransform();
+		const auto& transform = m_lisrener->GetTransform();
 		
 		auto position = ToFMODVector(transform.GetPosition());
 		auto forward  = ToFMODVector(transform.GetForward());

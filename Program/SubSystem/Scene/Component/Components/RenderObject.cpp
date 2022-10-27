@@ -2,7 +2,7 @@
 * @file    RenderObject.cpp
 * @brief
 *
-* @date	   2022/10/03 2022年度初版
+* @date	   2022/10/25 2022年度初版
 */
 
 
@@ -14,13 +14,17 @@ void RenderObject::OnInitialize()
 	m_renderer = GetContext()->GetSubsystem<Renderer>();
 }
 
-void RenderObject::OnStart()
+void RenderObject::OnRegister()
 {
+	IComponent::OnRegister();
+
 	RegisterToRenderer();
 }
 
-void RenderObject::OnStop()
+void RenderObject::OnUnRegister()
 {
+	IComponent::OnUnRegister();
+
 	UnRegisterFromRenderer();
 }
 

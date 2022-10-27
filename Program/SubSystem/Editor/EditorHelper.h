@@ -2,14 +2,13 @@
 * @file	   EditerHelper.h
 * @brief
 *
-* @date	   2022/09/15 2022年度初版
+* @date	   2022/10/21 2022年度初版
 */
 #pragma once
 
 
 #include "SubSystem/Core/Command/Command.h"
 #include "SubSystem/Core/Command/CommandList.h"
-#include "SubSystem/Renderer/GraphicsAPI/D3D12/D3D12DescriptorHeap.h"
 
 class Texture;
 class D3D12DescriptorHeap;
@@ -42,7 +41,7 @@ public:
 
 public:
 
-	void Initialize(D3D12DescriptorHeap* descriptorHeap) noexcept;
+	void Initialize(D3D12DescriptorHeap* descriptorHeap, void* finalFrameSRV) noexcept;
 	void BegineRenderer() noexcept;
 	void Shutdown() noexcept;
 
@@ -75,9 +74,16 @@ public:
 		const ImVec4& tint_col = ImVec4(1, 1, 1, 1)
 	) noexcept;
 
+public:
+
+	void* GetFinalFrameTexture() const noexcept;
 	Texture* GetIconTexture(IconType type) const noexcept;
 	IconType GetIconTypeFromResourceType(uint32_t type) const noexcept;
 	uint32_t GetResourceTypeByIconType(IconType type) const noexcept;
+
+private:
+
+	void RegisterIconTexture() noexcept;
 
 public:
 
@@ -89,18 +95,21 @@ public:
 
 private:
 
-	void RegisterIconTexture() noexcept;
-
-private:
-
-	Map<uint32_t, Texture*> m_iconTextures;
-
+	// * Undo & Redo 用の Editor コマンドリスト
 	CommandList m_commandList;
 
+	// * GUI で使用される icon Texture
+	Vector<Texture*> m_iconTextures;
+
+	// * Image 表示用
 	UINT m_numImage = 1;
 	D3D12DescriptorHeap* m_descriptorHeap;
+
+	// * Last Frame データ保持
+	void* m_finalFrameSRV = nullptr;
 };
 
+/** Editor コマンド発行の簡略化のための Register 関数 */
 template<class Lambda, class T>
 void RegisterEditorCommand(Lambda&& func, const T& next, const T& pre)
 {

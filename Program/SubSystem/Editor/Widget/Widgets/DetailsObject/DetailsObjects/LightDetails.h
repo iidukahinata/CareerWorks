@@ -2,18 +2,18 @@
 * @file	   LightDetails.h
 * @brief
 *
-* @date	   2022/09/13 2022年度初版
+* @date	   2022/10/23 2022年度初版
 */
 #pragma once
 
 
-#include "../DetailsObject.h"
+#include "../ComponentDetails.h"
 
 class Light;
-class IComponent;
 
-class LightDetails : public DetailsObject
+class LightDetails : public ComponentDetails
 {
+	COMPLETED_DEVELOPMENT()
 public:
 
 	LightDetails(DetailsWidget* detailsWidget, IComponent* component);

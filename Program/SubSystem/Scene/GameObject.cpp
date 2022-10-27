@@ -2,7 +2,7 @@
 * @file    GameObject.cpp
 * @brief
 *
-* @date	   2022/10/03 2022年度初版
+* @date	   2022/10/25 2022年度初版
 */
 
 
@@ -27,9 +27,9 @@ void GameObject::Serialized(FileStream* file) const noexcept
 	for (const auto& componentInfo : m_components)
 	{
 		const auto& component = componentInfo.second;
-		auto className = component->GetTypeData().Name;
+		auto componentName = component->GetTypeData().Name;
 
-		file->Write(className);
+		file->Write(componentName);
 		component->Serialized(file);
 	}
 
@@ -37,7 +37,7 @@ void GameObject::Serialized(FileStream* file) const noexcept
 	size_t numChild = m_transform.GetChildCount();
 	file->Write(numChild);
 
-	for (auto child : m_transform.GetChildren())
+	for (const auto& child : m_transform.GetChildren())
 	{
 		child->GetOwner()->Serialized(file);
 	}
@@ -53,10 +53,10 @@ void GameObject::Deserialization(FileStream* file) noexcept
 
 	for (int i = 0; i < numComponent; ++i)
 	{
-		String className;
-		file->Read(&className);
+		String componentName;
+		file->Read(&componentName);
 
-		auto component = AddComponent(className);
+		auto component = AddComponent(componentName);
 		component->Deserialization(file);
 	}
 
@@ -73,19 +73,63 @@ void GameObject::Deserialization(FileStream* file) noexcept
 	}
 }
 
-void GameObject::StartAllComponents() noexcept
+void GameObject::RegisterAllComponents() noexcept
 {
+	ASSERT(!m_registered);
+	m_registered = true;
+
 	for (const auto& component : m_components)
 	{
-		component.second->OnStart();
+		if (!component.second->IsRegistered())
+		{
+			component.second->OnRegister();
+		}
 	}
 }
 
-void GameObject::StopAllComponents() noexcept
+void GameObject::UnRegisterAllComponents() noexcept
 {
+	ASSERT(m_registered);
+	m_registered = false;
+
 	for (const auto& component : m_components)
 	{
-		component.second->OnStop();
+		if (component.second->IsRegistered())
+		{
+			component.second->OnUnRegister();
+		}
+	}
+}
+
+void GameObject::BeginPlay() noexcept
+{
+	if (!m_isPlaying)
+	{
+		m_isPlaying = true;
+
+		for (const auto& component : m_components)
+		{
+			if (!component.second->IsBeginPlay())
+			{
+				component.second->OnStart();
+			}
+		}
+	}
+}
+
+void GameObject::EndPlay() noexcept
+{
+	if (m_isPlaying)
+	{
+		m_isPlaying = false;
+
+		for (const auto& component : m_components)
+		{
+			if (component.second->IsBeginPlay())
+			{
+				component.second->OnStop();
+			}
+		}
 	}
 }
 
@@ -107,14 +151,25 @@ void GameObject::AddComponent(IComponent* component) noexcept
 	ASSERT(component);
 
 	const auto hash = component->GetTypeData().Hash;
-	if (m_components.contains(hash))
+	if (!m_components.contains(hash))
 	{
-		LOG_ERROR("既に同じHash値のコンポーネントが存在しています。");
+		component->OnInitialize();
+
+		if (m_registered && !component->IsRegistered())
+		{
+			component->OnRegister();
+		}
+
+		if (m_isPlaying && !component->IsBeginPlay())
+		{
+			component->OnStart();
+		}
+
+		m_components.emplace(hash, component);
 	}
 	else
 	{
-		component->OnInitialize();
-		m_components.emplace(hash, component);
+		LOG_ERROR("既に同じHash値のコンポーネントが存在しています。");
 	}
 }
 
@@ -126,6 +181,7 @@ void GameObject::RemoveComponent(IComponent* component) noexcept
 	if (m_components.contains(hash))
 	{
 		component->OnRemove();
+
 		m_components.erase(hash);
 	}
 }
@@ -135,14 +191,26 @@ const Map<uint32_t, UniquePtr<IComponent>>& GameObject::GetAllComponent() const 
 	return m_components;
 }
 
-IComponent* GameObject::FindComponent(StringView name) noexcept
+IComponent* GameObject::FindComponent(StringView name) const noexcept
 {
-	const ComponentType type(name);
+	const auto type = ComponentType(name);
+
 	if (m_components.contains(type.Hash))
 	{
-		return m_components[type.Hash].get();
+		return m_components.at(type.Hash).get();
 	}
+
 	return nullptr;
+}
+
+void GameObject::ClearComponets() noexcept
+{
+	for (const auto& component : m_components)
+	{
+		component.second->OnRemove();
+	}
+
+	m_components.clear();
 }
 
 void GameObject::SetActive(bool active) noexcept

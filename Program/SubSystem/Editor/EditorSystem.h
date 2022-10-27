@@ -1,8 +1,8 @@
 /**
 * @file    EditorSystem.h
-* @brief   gui管理クラス
+* @brief
 *
-* @date	   2022/09/11 2022年度初版
+* @date	   2022/10/21 2022年度初版
 */
 #pragma once
 
@@ -27,11 +27,13 @@ public:
 		return instance;
 	}
 
+public:
+
 	/** Window 生成時の初期化のみ行う。*/
 	bool Initialize() noexcept;
 
 	/** API クラスセットアップ完了後に各 Widget セットアップを行う。*/
-	bool PostInitialize() noexcept;
+	bool PostInitialize(void* shaderResourceView) noexcept;
 
 	/** API、JobSystem クラスより先に消去する必要があるため */
 	void Shutdown() noexcept;
@@ -42,13 +44,15 @@ public:
 private:
 
 	/** imgui で使用される各データの初期化 */
-	bool SetUpImGuiObjects() noexcept;
-
+	bool SetUpImGuiObjects(void* finalFrameSRV) noexcept;
 	void SetUpGuiStyle() noexcept;
 	void AddFonts() noexcept;
 
 	/** 使用 Widget の登録を行う。*/
 	void RegisterWidgetsToContainer() noexcept;
+
+	/** Window のドッキングを行うウィンドウを生成 */
+	void ShowDockingWindow() const noexcept;
 
 	/** Undo Redo ドラッグアンドドロップなどに使用 */
 	void ChackClickedCommand() noexcept;

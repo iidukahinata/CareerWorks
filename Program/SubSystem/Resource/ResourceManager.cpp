@@ -2,7 +2,7 @@
 * @file    ResourceManager.cpp
 * @brief
 *
-* @date	   2022/09/30 2022年度初版
+* @date	   2022/10/21 2022年度初版
 */
 
 
@@ -13,12 +13,14 @@ bool ResourceManager::Initialize()
 {
 #ifdef IS_EDITOR
     // create importer
-    m_modelImporter = std::make_unique<ModelImporter>(this);
+    m_modelImporter   = std::make_unique<ModelImporter>(this);
     m_textureImporter = std::make_unique<TextureImporter>(this);
-    m_shaderImporter = std::make_unique<ShaderImporter>(this);
-    m_audioImporter = std::make_unique<AudioImporter>(this);
+    m_shaderImporter  = std::make_unique<ShaderImporter>(this);
+    m_audioImporter   = std::make_unique<AudioImporter>(this);
 
     ImportAssets();
+
+    StartupListenerObjects();
 #endif // IS_EDITOR
 
     DependencyBuilding();
@@ -47,7 +49,7 @@ IResource* ResourceManager::CreateResource(uint32_t type, StringView path) noexc
 {
     IResource* result = nullptr;
 
-    if (auto resourceData = CreateResourceData(type, path))
+    if (const auto resourceData = CreateResourceData(type, path))
     {
         auto resource = ResourceFactory::Create(type, path, this);
         ASSERT(resource);
@@ -86,8 +88,8 @@ ResourceHandle* ResourceManager::Load(ResourceData* resourceData, uint32_t prior
 
     // ユーザー用 Handle の生成
     auto resourceHandle = new ResourceHandle();
-    resourceHandle->m_priority = priority;
-    resourceHandle->m_resourceData = resourceData;
+    resourceHandle->m_priority        = priority;
+    resourceHandle->m_resourceData    = resourceData;
     resourceHandle->m_resourceManager = this;
 
     m_resourceHandles[resourceData].reset(resourceHandle);
@@ -100,7 +102,7 @@ ResourceHandle* ResourceManager::Load(ResourceData* resourceData, uint32_t prior
     CreateAsyncLoadList(resourceData, resourcePaths, addResourceList);
 
     // Unload時使用する参照数をカウント
-    for (auto resource : addResourceList)
+    for (const auto& resource : addResourceList)
     {
         resource->m_numLoading++;
     }
@@ -142,7 +144,7 @@ void ResourceManager::Unload(ResourceData* resourceData) noexcept
         CreateAsyncLoadList(resourceData, resourcePaths, addResourceList);
 
         // リストの参照カウントを現象させる
-        for (auto resource : addResourceList)
+        for (const auto& resource : addResourceList)
         {
             resource->m_numLoading--;
             if (resource->m_numLoading == 0)
@@ -152,16 +154,6 @@ void ResourceManager::Unload(ResourceData* resourceData) noexcept
         }
 
         m_resourceHandles.erase(resourceData);
-    }
-    else
-    {
-        if (!m_resourceCache->HasResource(resourceData->m_resourcePath))
-        {
-            LOG_ERROR("指定された Resource は Load されていませんでした。");
-            return;
-        }
-
-        m_resourceCache->RemoveResource(resourceData->m_resourcePath);
     }
 }
 
@@ -186,12 +178,10 @@ IResource* ResourceManager::GetResource(ResourceData* resourceData) const noexce
 
 IResource* ResourceManager::GetResource(const ResourcePath& resourcePath) const noexcept
 {
-    if (auto resource = m_resourceCache->GetResource(resourcePath))
+    if (const auto resource = m_resourceCache->GetResource(resourcePath))
     {
         return resource;
     }
-
-    //LOG_ERROR("ロードされていないリソースへアクセスされました。");
     return nullptr;
 }
 
@@ -225,9 +215,8 @@ ResourceData* ResourceManager::CreateResourceData(uint32_t type, StringView path
         assetFullPath = ToAssetDirectory(path);
     }
 
-    auto noExtPath = path.substr(0, path.find("."));
-
     // 生成する asset ファイルパスの作成
+    auto noExtPath = path.substr(0, path.find("."));
     auto assetName = FileSystem::GetFilePath(noExtPath);
 
     // 二つ同じデータが存在しないようにするための判定
@@ -240,6 +229,7 @@ ResourceData* ResourceManager::CreateResourceData(uint32_t type, StringView path
     auto& resourceData = m_resourceTypeList[type][assetName];
     resourceData.m_resourcePath.m_type = type;
     resourceData.m_resourcePath.m_path = filePath;
+    resourceData.m_assetName           = assetName;
     resourceData.m_assetFullPath       = assetFullPath;
 
     // .asset ファイルデータの作成と初期化
@@ -247,7 +237,7 @@ ResourceData* ResourceManager::CreateResourceData(uint32_t type, StringView path
 
     // パスからのアクセス用変数も作成
     m_resourceDataList[filePath] = &resourceData;
-    return &resourceData;
+    return m_resourceDataList[filePath];
 }
 
 void ResourceManager::UpdateResourceData(ResourceData* resourceData) noexcept
@@ -257,15 +247,11 @@ void ResourceManager::UpdateResourceData(ResourceData* resourceData) noexcept
         return;
     }
 
+    // asset data 取得
     const auto& resourcePath = resourceData->m_resourcePath;
-
-    auto type = resourcePath.m_type;
-    auto path = StringView(resourcePath.m_path);
-    path = path.substr(0, path.find("."));
-
-    // assetName に変換
-    auto assetName = FileSystem::GetFilePath(path);
-    auto assetPath = resourceData->m_assetFullPath;
+    const auto& type         = resourcePath.m_type;
+    const auto& assetName    = resourceData->m_assetName;
+    const auto& assetPath    = resourceData->m_assetFullPath;
 
     FileStream file;
     if (file.CreateFileAndLoad(assetPath, OpenMode::Write_Mode))
@@ -295,7 +281,7 @@ ResourceData* ResourceManager::GetResourceData(StringView path) noexcept
 
 void ResourceManager::GetResourceDataListFromDirectory(StringView path, Vector<std::pair<String, ResourceData*>>& resourceDatas) noexcept
 {
-    auto filePaths = FileSystem::GetFilePathsFromDirectory(path);
+    auto&& filePaths = FileSystem::GetFilePathsFromDirectory(path);
 
     resourceDatas.resize(filePaths.size());
 
@@ -409,14 +395,62 @@ const Unordered_Map<String, ResourceData>& ResourceManager::GetResourceDataListB
 {
     if (m_resourceTypeList.contains(type))
     {
-        return m_resourceTypeList.find(type)->second;
+        return m_resourceTypeList.at(type);
     }
     return Unordered_Map<String, ResourceData>();
 }
 
+#ifdef IS_EDITOR
+void ResourceManager::StartupListenerObjects() noexcept
+{    
+    m_deleteObjectListener.SetFunction([this](std::any data) {
+
+        auto DeleteResource = [this](ResourceData* resourceData) {
+
+            const auto assetName     = resourceData->m_assetName;
+            const auto assetFullPath = resourceData->m_assetFullPath;
+            const auto type          = resourceData->m_resourcePath.m_type;
+            const auto fullPath      = resourceData->m_resourcePath.m_path;
+
+            Unload(resourceData);
+            m_resourceDataList.erase(fullPath);
+            m_resourceTypeList[type].erase(assetName);
+
+            FileSystem::RemoveAll(fullPath);
+            FileSystem::RemoveAll(assetFullPath);
+
+        };
+
+        const auto path = std::any_cast<String>(data);
+        if (FileSystem::IsDirectoryPath(path))
+        {
+            Vector<std::pair<String, ResourceData*>> resourceDatas;
+            GetResourceDataListFromDirectory(path, resourceDatas);
+
+            for (const auto& resourceData : resourceDatas)
+            {
+                DeleteResource(resourceData.second);
+            }
+
+            FileSystem::RemoveAll(path);
+        }
+        else
+        {
+            DeleteResource(m_resourceDataList[path]);
+        }
+
+    });
+
+    m_deleteObjectListener.RegisterToEventManager<DeleteObjectEvent>();
+}
+#endif // IS_EDITOR
+
 void ResourceManager::DependencyBuilding() noexcept
 {
-    auto filePaths = FileSystem::GetFilePathsRecursiveDirectory(ASSET_DATA_DIRECTORY);
+    m_resourceTypeList.clear();
+    m_resourceDataList.clear();
+
+    auto&& filePaths = FileSystem::GetFilePathsRecursiveDirectory(ASSET_DATA_DIRECTORY);
 
     // 指定ディレクトリには .asset ファイルしか存在しないとして処理
     // アセットファイルから ResourceData の静的構築を行う。
@@ -436,6 +470,7 @@ void ResourceManager::DependencyBuilding() noexcept
         file.Read(&assetName);
 
         ResourceData resourceData;
+        resourceData.m_assetName     = assetName;
         resourceData.m_assetFullPath = path;
         resourceData.Deserialization(&file);
 
@@ -455,7 +490,7 @@ void ResourceManager::CreateAsyncLoadList(ResourceData* resourceData, Vector<Res
     const auto& refResourcePaths = resourceData->m_refResourcePaths;
     for (const auto& resourcePath : refResourcePaths)
     {
-        auto data = GetResourceData(resourcePath.m_path);
+        const auto& data = GetResourceData(resourcePath.m_path);
         if (!addResourceList.contains(data))
         {
             CreateAsyncLoadList(data, resourcePaths, addResourceList);

@@ -32,6 +32,7 @@ public:
 	/** アクセス */
 	D3D12RenderTargetView* GetRenderTargetView() noexcept;
 	D3D12DepthStencilView* GetDepthStencilView() noexcept;
+	D3D12ShaderResourceView* GetShaderResourceView() noexcept;
 
 private:
 

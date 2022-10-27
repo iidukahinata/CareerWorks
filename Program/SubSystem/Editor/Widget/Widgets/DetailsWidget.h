@@ -2,7 +2,7 @@
 * @file	   DetailsWidget.h
 * @brief
 *
-* @date	   2022/09/09 2022年度初版
+* @date	   2022/10/21 2022年度初版
 */
 #pragma once
 
@@ -18,7 +18,7 @@ class ResourceManager;
 
 class DetailsWidget : public Widget
 {
-	WAIT_FOR_DEVELOPMENT("ResourceWidget 制作後")
+	COMPLETED_DEVELOPMENT()
 public:
 
 	~DetailsWidget();
@@ -49,14 +49,15 @@ private:
 
 private:
 
-	World* m_world;
+	World* m_world = nullptr;
 
-	ResourceManager* m_resourceManager;
+	ResourceManager* m_resourceManager = nullptr;
 
+	// * 表示中オブジェクトの更新要請のため
 	static bool m_requestUpdate;
 
+	// * select objects
 	static GameObject* m_selectGameObject;
-
 	static ResourceData* m_selectResourceData;
 
 	// * this object pointor

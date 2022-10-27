@@ -2,7 +2,7 @@
 * @file    FileSystem.h
 * @brief
 *
-* @date	   2022/09/21 2022年度初版
+* @date	   2022/10/21 2022年度初版
 */
 #pragma once
 
@@ -18,6 +18,8 @@ public:
 	static bool CreateDirectory(StringView path) noexcept;
 
 	static void Remove(StringView path) noexcept;
+
+	static void RemoveAll(StringView path) noexcept;
 
 	static bool Copy(StringView oldPath, StringView newPath) noexcept;
 
@@ -38,4 +40,6 @@ public:
 	static Vector<String> GetDirectorysFromDirectory(StringView filePath) noexcept;
 
 	static Vector<String> GetDirectorysRecursiveDirectory(StringView filePath) noexcept;
+
+	static bool IsDirectoryPath(StringView path) noexcept;
 };

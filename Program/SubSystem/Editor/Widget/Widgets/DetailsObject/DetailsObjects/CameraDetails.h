@@ -2,18 +2,18 @@
 * @file	   CameraDetails.h
 * @brief
 *
-* @date	   2022/09/13 2022年度初版
+* @date	   2022/10/23 2022年度初版
 */
 #pragma once
 
 
-#include "../DetailsObject.h"
+#include "../ComponentDetails.h"
 
 class Camera;
-class IComponent;
 
-class CameraDetails : public DetailsObject
+class CameraDetails : public ComponentDetails
 {
+	COMPLETED_DEVELOPMENT()
 public:
 
 	CameraDetails(DetailsWidget* detailsWidget, IComponent* component);

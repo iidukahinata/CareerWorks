@@ -67,20 +67,18 @@ Model* ModelRender::GetModel() const noexcept
 
 void ModelRender::Render() const
 {
-	if (m_model)
+	if (!m_model)
 	{
-		// 仮置き
-		auto rot = GetTransform().GetRotation();
-		GetTransform().SetRotation(rot + Math::Vector3(0, 0.01, 0));
+		return;
+	}
 
-		// 描画時使用する World行列
-		auto&& transform = GetTransform().GetWorldMatrix();
-		m_renderer->GetTransformCBuffer()->SetWorld(transform.ToMatrixXM());
-		m_renderer->GetTransformCBuffer()->Bind();
+	// 描画時使用する World行列
+	auto&& transform = GetTransform().GetWorldMatrix();
+	m_renderer->GetTransformCBuffer()->SetWorld(transform.ToMatrixXM());
+	m_renderer->GetTransformCBuffer()->Bind();
 
-		for (const auto& meshes = m_model->GetAllMeshes(); auto mesh : meshes)
-		{
-			mesh->Render();
-		}
+	for (const auto& meshes = m_model->GetAllMeshes(); auto mesh : meshes)
+	{
+		mesh->Render();
 	}
 }

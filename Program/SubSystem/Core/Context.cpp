@@ -10,7 +10,7 @@
 
 void Context::Release()
 {
-	for (auto& subsystem : m_subsystems)
+	for (const auto& subsystem : m_subsystems)
 	{
 		subsystem.second->Shutdown();
 	}

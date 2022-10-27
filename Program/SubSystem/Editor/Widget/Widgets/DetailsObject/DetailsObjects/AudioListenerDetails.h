@@ -2,18 +2,18 @@
 * @file	   AudioListenerDetails.h
 * @brief
 *
-* @date	   2022/10/03 2022年度初版
+* @date	   2022/10/23 2022年度初版
 */
 #pragma once
 
 
-#include "../DetailsObject.h"
+#include "../ComponentDetails.h"
 
 class AudioListener;
-class IComponent;
 
-class AudioListenerDetails : public DetailsObject
+class AudioListenerDetails : public ComponentDetails
 {
+	COMPLETED_DEVELOPMENT()
 public:
 
 	AudioListenerDetails(DetailsWidget* detailsWidget, IComponent* component);

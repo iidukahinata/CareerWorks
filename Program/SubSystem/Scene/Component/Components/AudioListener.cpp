@@ -14,13 +14,17 @@ void AudioListener::OnInitialize()
 	m_audio = GetContext()->GetSubsystem<Audio>();
 }
 
-void AudioListener::OnStart()
+void AudioListener::OnRegister()
 {
+	IComponent::OnRegister();
+
 	RegisterToAudioSystem();
 }
 
-void AudioListener::OnStop()
+void AudioListener::OnUnRegister()
 {
+	IComponent::OnUnRegister();
+
 	UnRegisterFromAudioSystem();
 }
 

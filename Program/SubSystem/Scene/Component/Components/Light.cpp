@@ -45,13 +45,17 @@ void Light::OnInitialize()
 	GetTransform().SetRotation(Math::Vector3(0.5f, -0.5f, -1.f));
 }
 
-void Light::OnStart()
+void Light::OnRegister()
 {
+	IComponent::OnRegister();
+
 	RegisterToLightMap();
 }
 
-void Light::OnStop()
+void Light::OnUnRegister()
 {
+	IComponent::OnUnRegister();
+
 	UnRegisterFromLightMap();
 }
 

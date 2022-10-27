@@ -38,3 +38,10 @@
 
 #define ASSERT(expr)
 #endif // _DEBUG
+
+#define SAFE_DELETE(ptr) \
+if(ptr)					 \
+{						 \
+	delete ptr;			 \
+	ptr = nullptr;		 \
+}

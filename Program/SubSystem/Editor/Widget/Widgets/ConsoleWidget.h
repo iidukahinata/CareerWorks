@@ -2,7 +2,7 @@
 * @file	   ConsoleWidget.h
 * @brief
 *
-* @date	   2022/09/27 2022年度初版
+* @date	   2022/10/21 2022年度初版
 */
 #pragma once
 
@@ -38,9 +38,12 @@ public:
 
 private:
 
+	// * Log 情報保持クラス
 	EngineLog m_logInfo;
 
+	// * filter 検索用
 	ImGuiTextFilter m_logFilter;
 
+	// * TextColor List
 	Array<ImVec4, LogType_Max> m_logColor;
 };

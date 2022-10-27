@@ -56,8 +56,8 @@ bool Engine::Initialize(HINSTANCE hInstance)
 
 long Engine::MainLoop()
 {
-	Window& window = Window::Get();
-	Timer* timer = m_context->GetSubsystem<Timer>();
+	auto& window = Window::Get();
+	auto timer = m_context->GetSubsystem<Timer>();
 	
 	while (window.Tick())
 	{
@@ -144,8 +144,6 @@ bool Engine::InitializeSubsystems() noexcept
 		LOG_ERROR("World‰Šú‰»‚É¸”s");
 		return false;
 	}
-
-	EditorSystem::Get().PostInitialize();
 
 	return true;
 }

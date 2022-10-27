@@ -14,7 +14,7 @@ class GameObject;
 
 class SceneWidget : public Widget
 {
-	IN_DEVELOPMENT()
+	WAIT_FOR_DEVELOPMENT("GameObjectÇÃè¡ãé")
 public:
 
 	void PostInitialize() override;
@@ -38,5 +38,5 @@ private:
 
 private:
 
-	World* m_world;
+	World* m_world = nullptr;
 };
