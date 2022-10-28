@@ -19,7 +19,6 @@ class Scene : public IResource
 public:
 
 	Scene();
-	~Scene();
 
 	/** asset ファイルと独自データの作成を行う。*/
 	static Scene* Create(StringView name) noexcept;

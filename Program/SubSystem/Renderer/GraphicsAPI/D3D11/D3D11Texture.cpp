@@ -78,15 +78,15 @@ bool D3D11Texture::Create(const DirectX::Image* images, size_t imageSize, const 
 {
 	ASSERT(images, "引数値 imageに値をいれてください。");
 
-	auto hr = DirectX::CreateShaderResourceView(
-		GetDevice(),
-		images, imageSize, meta,
-		m_shaderResourceView.ReleaseAndGetAddressOf());
+	//auto hr = DirectX::CreateShaderResourceView(
+	//	GetDevice(),
+	//	images, imageSize, meta,
+	//	m_shaderResourceView.ReleaseAndGetAddressOf());
 
-	if (FAILED(hr)) {
-		LOG_ERROR("ShaderResourceView の生成に失敗しました。");
-		return false;
-	}
+	//if (FAILED(hr)) {
+	//	LOG_ERROR("ShaderResourceView の生成に失敗しました。");
+	//	return false;
+	//}
 	return true;
 }
 

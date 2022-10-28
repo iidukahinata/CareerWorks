@@ -36,5 +36,5 @@ private:
 
 	Math::Vector3 m_velocity;
 
-	Audio* m_audio;
+	Audio* m_audio = nullptr;
 };

@@ -2,7 +2,7 @@
 * @file	   GameObjectDetails.cpp
 * @brief
 *
-* @date	   2022/09/13 2022年度初版
+* @date	   2022/10/27 2022年度初版
 */
 
 
@@ -31,9 +31,10 @@ GameObjectDetails::GameObjectDetails(DetailsWidget* detailsWidget, GameObject* g
 void GameObjectDetails::Draw()
 {
 	constexpr int offsetPos = 130;
+	auto width = ImGui::GetWindowWidth() - offsetPos;
 
-	ImGui::SameLine(70);
-	if (ImGui::Button("Add Component", ImVec2(300, 50)))
+	ImGui::SameLine(65);
+	if (ImGui::Button("Add Component", ImVec2(width, 50)))
 	{
 		ImGui::OpenPopup("AddComponent");
 	}
@@ -66,11 +67,14 @@ void GameObjectDetails::ShowAddComponentWindow() noexcept
 
 		ImGui::BeginChild("##Components", ImVec2(180, 500));
 
-		for (auto& component : m_components)
+		for (const auto& component : m_components)
 		{
 			auto name = component->GetTypeData().Name;
 
 			if (!m_filter.PassFilter(name.data()))
+				continue;
+
+			if (m_gameObject->FindComponent(name))
 				continue;
 
 			if (ImGui::Button(name.data(), ImVec2(180, 20)))

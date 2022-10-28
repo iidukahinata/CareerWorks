@@ -15,7 +15,7 @@ public:
 	virtual ~ProprietaryData() {}
 
 	virtual void Serialized(FileStream* file) const = 0;
-	virtual void Deserialization(FileStream* file) = 0;
+	virtual void Deserialized(FileStream* file) = 0;
 
 	bool SaveToFile(StringView path) const noexcept
 	{
@@ -40,7 +40,7 @@ public:
 			return false;
 		}
 
-		Deserialization(&file);
+		Deserialized(&file);
 
 		return true;
 	}

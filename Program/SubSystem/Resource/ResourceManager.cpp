@@ -155,6 +155,10 @@ void ResourceManager::Unload(ResourceData* resourceData) noexcept
 
         m_resourceHandles.erase(resourceData);
     }
+    else if (m_resourceCache->HasResource(resourceData->m_resourcePath))
+    {
+        m_resourceCache->RemoveResource(resourceData->m_resourcePath);
+    }
 }
 
 IResource* ResourceManager::GetResource(StringView type, StringView name) noexcept
@@ -441,7 +445,26 @@ void ResourceManager::StartupListenerObjects() noexcept
 
     });
 
+    m_importResourceListener.SetFunction([this](std::any data) {
+
+        auto path = std::any_cast<String>(data);
+
+        Vector<String> filePaths;
+        if (FileSystem::IsDirectoryPath(path))
+        {
+            filePaths = FileSystem::GetFilePathsRecursiveDirectory(path);
+        }
+        else
+        {
+            filePaths.emplace_back(path);
+        }
+
+        ImportAssets(filePaths);
+
+    });
+
     m_deleteObjectListener.RegisterToEventManager<DeleteObjectEvent>();
+    m_importResourceListener.RegisterToEventManager<ImportResourceEvent>();
 }
 #endif // IS_EDITOR
 
@@ -472,7 +495,7 @@ void ResourceManager::DependencyBuilding() noexcept
         ResourceData resourceData;
         resourceData.m_assetName     = assetName;
         resourceData.m_assetFullPath = path;
-        resourceData.Deserialization(&file);
+        resourceData.Deserialized(&file);
 
         m_resourceTypeList[type][assetName] = resourceData;
 

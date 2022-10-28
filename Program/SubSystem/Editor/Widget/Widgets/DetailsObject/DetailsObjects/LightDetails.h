@@ -2,7 +2,7 @@
 * @file	   LightDetails.h
 * @brief
 *
-* @date	   2022/10/23 2022年度初版
+* @date	   2022/10/27 2022年度初版
 */
 #pragma once
 
@@ -21,5 +21,5 @@ public:
 
 private:
 
-	Light* m_light;
+	Light* m_light = nullptr;
 };

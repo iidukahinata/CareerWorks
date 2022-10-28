@@ -2,7 +2,7 @@
 * @file	   ConsoleWidget.cpp
 * @brief
 *
-* @date	   2022/10/21 2022年度初版
+* @date	   2022/10/27 2022年度初版
 */
 
 
@@ -52,8 +52,8 @@ void ConsoleWidget::Draw()
 		m_logInfo.Clear();
 	}
 
-	auto childWidth = ImGui::GetWindowWidth() - 15;
-	auto childHeight = ImGui::GetWindowHeight() - 60;
+	const auto childWidth = ImGui::GetWindowWidth() - 15;
+	const auto childHeight = ImGui::GetWindowHeight() - 60;
 	ImGui::BeginChild(ImGui::GetID((void*)0), ImVec2(childWidth, childHeight), true);
 
 	for (const auto& logList = m_logInfo.GetList(); const auto& log : logList)
@@ -63,7 +63,7 @@ void ConsoleWidget::Draw()
 
 		ImGui::PushStyleColor(ImGuiCol_Text, m_logColor[log.errorLevel]);
 
-		auto logText = ConvertToJapanese(log.str);
+		const auto logText = ConvertToJapanese(log.str);
 		ImGui::Text(logText.c_str());
 
 		ImGui::PopStyleColor();

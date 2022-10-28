@@ -2,7 +2,7 @@
 * @file	   ModelRenderDetails.cpp
 * @brief
 *
-* @date	   2022/10/23 2022年度初版
+* @date	   2022/10/27 2022年度初版
 */
 
 #include "ModelRenderDetails.h"
@@ -49,7 +49,7 @@ void ModelRenderDetails::Draw()
 		ImGui::SameLine(offsetPos + itemWidth + 5);
 		
 		// リソースの検索を始める
-		OpenResourceHelper();
+		OpenResourceHelper("MoedelRender");
 		if (auto resourceData = ShowSearchResourceHelper<Model>())
 		{
 			auto catchModel = LoadResource<Model>(resourceData);
@@ -66,11 +66,12 @@ void ModelRenderDetails::Draw()
 
 void ModelRenderDetails::ShowUseMeshes(Model* model) const noexcept
 {
-	constexpr int offsetPos = 130;
+	constexpr int offsetPos = 90;
+	auto width = ImGui::GetWindowWidth() - 50;
 
 	if (ImGui::TreeNodeEx("Use Meshes"))
 	{
-		ImGui::BeginChild(ImGui::GetID((void*)0), ImVec2(710, 270), true, ImGuiWindowFlags_NoScrollbar);
+		ImGui::BeginChild(ImGui::GetID((void*)0), ImVec2(width, 270), true, ImGuiWindowFlags_NoScrollbar);
 
 		auto meshes = model->GetAllMeshes();
 		for (int i = 0; i < meshes.size(); ++i)
@@ -100,8 +101,9 @@ void ModelRenderDetails::ShowUseMaterial(Model* model) noexcept
 			auto material = mesh->GetMaterial();
 
 			auto materialPath = ConvertToJapanese(material->GetFilePath());
+			auto materialId = "Material_" + std::to_string(i);
 
-			ImGui::Text(("Material_" + std::to_string(i)).c_str()); ImGui::SameLine(offsetPos);
+			ImGui::Text(materialId.c_str()); ImGui::SameLine(offsetPos);
 
 			constexpr auto itemWidth = 250;
 			ImGui::PushItemWidth(itemWidth);
@@ -122,22 +124,13 @@ void ModelRenderDetails::ShowUseMaterial(Model* model) noexcept
 
 			ImGui::SameLine(offsetPos + itemWidth + 5);
 
-			static auto selectMat = 0;
-			if (OpenResourceHelper(i))
-			{
-				// Resource Helper が複数個呼び出される可能性があるため ID で選択中かを判別
-				selectMat = i;
-			}
-
 			// 検索での Material 切り替え
-			if (selectMat == i)
+			OpenResourceHelper(materialId);
+			if (auto resourceData = ShowSearchResourceHelper<Material>())
 			{
-				if (auto resourceData = ShowSearchResourceHelper<Material>())
+				if (auto catchMaterial = CatchDragObject<Material>())
 				{
-					if (auto catchMaterial = CatchDragObject<Material>())
-					{
-						RegisterEditorCommand([mesh](auto data) { mesh->SetMaterial(data); }, catchMaterial, material);
-					}
+					RegisterEditorCommand([mesh](auto data) { mesh->SetMaterial(data); }, catchMaterial, material);
 				}
 			}
 

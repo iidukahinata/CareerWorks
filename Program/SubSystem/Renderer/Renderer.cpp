@@ -35,32 +35,29 @@ void Renderer::RemoveLight(Light* light) noexcept
 
 void Renderer::AddCamera(Camera* camera) noexcept
 {
-	if (m_cameras.contains(camera)) 
-	{
-		return;
-	}
+	m_cameras.emplace_back(camera);
 
 	if (!m_mainCamera) 
 	{
 		m_mainCamera = camera;
 	}
-
-	m_cameras.insert(camera);
 }
 
 void Renderer::RemoveCamera(Camera* camera) noexcept
 {
-	if (!m_cameras.contains(camera)) 
-	{
-		return;
-	}
+	std::erase(m_cameras, camera);
 
 	if (m_mainCamera == camera)
 	{
-		m_mainCamera = nullptr;
+		if (m_cameras.empty())
+		{
+			m_mainCamera = nullptr;
+		}
+		else
+		{
+			m_mainCamera = m_cameras.front();
+		}
 	}
-
-	m_cameras.erase(camera);
 }
 
 Camera* Renderer::GetMainCamera() const noexcept
@@ -70,22 +67,12 @@ Camera* Renderer::GetMainCamera() const noexcept
 
 void Renderer::AddRenderObject(RenderObject* rederObject) noexcept
 {
-	if (m_renderObjects.contains(rederObject)) 
-	{
-		return;
-	}
-
-	m_renderObjects.insert(rederObject);
+	m_renderObjects.emplace_back(rederObject);
 }
 
 void Renderer::RemoveRenderObject(RenderObject* rederObject) noexcept
 {
-	if (!m_renderObjects.contains(rederObject)) 
-	{
-		return;
-	}
-
-	m_renderObjects.erase(rederObject);
+	std::erase(m_renderObjects, rederObject);
 }
 
 void Renderer::RegisterPostProcess(PostProcessEffect* postProcess) noexcept

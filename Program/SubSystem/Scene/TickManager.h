@@ -65,6 +65,7 @@ private:
 
 private:
 
+	// * 別スレッドでの更新処理の終了 Event
 	HANDLE m_hEvent;
 
 	// * 更新関数セット用

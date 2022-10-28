@@ -2,10 +2,25 @@
 * @file    EditorEvents.h
 * @brief
 *
-* @date	   2022/10/25 2022年度初版
+* @date	   2022/10/28 2022年度初版
 */
 #pragma once
 
+
+class ImportResourceEvent : public IEvent
+{
+	COMPLETED_DEVELOPMENT()
+	SUB_CLASS(ImportResourceEvent)
+public:
+
+	ImportResourceEvent(String importFilePath);
+	std::any GetData() override;
+
+private:
+
+	// * 読み込みファイルパス
+	String m_importFilePath;
+};
 
 class DeleteObjectEvent : public IEvent
 {

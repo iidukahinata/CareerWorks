@@ -2,7 +2,7 @@
 * @file	   MaterialDetails.h
 * @brief
 *
-* @date	   2022/09/13 2022年度初版
+* @date	   2022/10/27 2022年度初版
 */
 #pragma once
 

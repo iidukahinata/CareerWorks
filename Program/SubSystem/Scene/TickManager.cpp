@@ -23,7 +23,7 @@ void TickManager::Initialize() noexcept
 	// ƒI[ƒo[ƒwƒbƒhŠÔ‚ÌŒ¸­‚Ì‚½‚ß Task “ˆê‰»
 	m_anyThreadTask.SetFunction([this]()
 	{
-		for (auto task : m_anyThreadTaskList)
+		for (const auto& task : m_anyThreadTaskList)
 		{
 			task->Tick(task->GetDeletaTime());
 		}
@@ -59,7 +59,7 @@ void TickManager::Tick(double deltaTime) noexcept
 	{
 		m_anyThreadTask.RegisterToJobSystem();
 
-		for (auto task : m_gameThreadTaskList)
+		for (const auto& task : m_gameThreadTaskList)
 		{
 			task->Tick(task->GetDeletaTime());
 		}
@@ -92,7 +92,7 @@ void TickManager::AddTickFunction(TickFunction* function) noexcept
 
 	if (function->GetEnable())
 	{
-		const auto priority = function->GetPriority();
+		auto priority = function->GetPriority();
 		m_tickContainers[priority].insert(function);
 	}
 }
@@ -101,7 +101,7 @@ void TickManager::RemoveTickFunction(TickFunction* function) noexcept
 {
 	if (function->GetEnable())
 	{
-		const auto priority = function->GetPriority();
+		auto priority = function->GetPriority();
 		if (m_tickContainers.contains(priority))
 		{
 			m_tickContainers[priority].erase(function);
@@ -132,7 +132,7 @@ void TickManager::CreateTaskList(double deltaTime) noexcept
 	// [‚³—Dæ’Tõ‚Å‘O’ñğŒ‚ğ’Ç‰Á
 	for (const auto& container : m_tickContainers)
 	{
-		for (const auto function : container.second)
+		for (const auto& function : container.second)
 		{
 			// ‘O’ñğŒ‚ğl—¶‚µ‚½Û‚ÉŠù‚É“o˜^‚³‚ê‚Ä‚¢‚éê‡‚ª‚ ‚é‚½‚ß
 			if (registeredList.contains(function))
@@ -152,7 +152,7 @@ void TickManager::RegisterToTaskList(TickFunction* function, double deltaTime, S
 	registeredList.insert(function);
 
 	// ‘O’ñğŒ‡‚Éˆ—‚ğ’Ç‰Á‚·‚é‚½‚ß DFS •û®‚ğg—p
-	for (auto& prerequisites = function->GetPrerequisites(); auto prerequisite : prerequisites)
+	for (const auto& prerequisites = function->GetPrerequisites(); const auto& prerequisite : prerequisites)
 	{
 		if (!registeredList.contains(prerequisite))
 		{

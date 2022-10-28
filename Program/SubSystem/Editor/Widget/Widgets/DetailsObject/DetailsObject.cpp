@@ -2,7 +2,7 @@
 * @file	   DetailsObject.cpp
 * @brief
 *
-* @date	   2022/09/13 2022年度初版
+* @date	   2022/10/27 2022年度初版
 */
 
 
@@ -26,18 +26,21 @@ void DetailsObject::ShowDragDropHelper(uint32_t selctType, bool hovered, uint32_
 	ImDrawList* draw_list = ImGui::GetWindowDrawList();
 	auto min = ImGui::GetItemRectMin();
 	auto max = ImGui::GetItemRectMax();
+
+	// 少し大きめの枠にする
 	min.x -= 3; min.y -= 3;
 	max.x += 3; max.y += 3;
 
 	if (DragDrop::Get().HasResource())
 	{
-		constexpr int select = 255;
-		constexpr int noSelect = 200;
+		constexpr int selectAlpha = 255;
+		constexpr int noSelectAlpha = 200;
 		int thickness = 3;
 
 		const auto resrouceData = std::any_cast<ResourceData*>(DragDrop::Get().GetDragObject());
 		const auto type = resrouceData->m_resourcePath.m_type;
 
+		// 同じリソースタイプのみ受付
 		if (type == selctType)
 		{
 			if (hovered)
@@ -48,8 +51,7 @@ void DetailsObject::ShowDragDropHelper(uint32_t selctType, bool hovered, uint32_
 				thickness = 4;
 			}
 
-			// 指定型のみ受付する
-			auto alpha = hovered ? select : noSelect;
+			auto alpha = hovered ? selectAlpha : noSelectAlpha;
 			draw_list->AddRect(min, max, IM_COL32(r, g, b, alpha), 0, 0, thickness);
 		}
 		else
@@ -104,21 +106,11 @@ GameObject* DetailsObject::CatchDragGameObject() const noexcept
 	return std::any_cast<GameObject*>(DragDrop::Get().GetDragObject());
 }
 
-bool DetailsObject::OpenResourceHelper(UINT index /* = 0 */) noexcept
-{
-	if(ImGui::Button((String("*##") + std::to_string(index)).c_str(), ImVec2(20, 20)))
-	{
-		ImGui::OpenPopup("SearchResourceHelper");
-		return true;
-	}
-	return false;
-}
-
 ResourceData* DetailsObject::ShowSearchResourceHelper(uint32_t selectType) noexcept
 {
 	ResourceData* resourceData = nullptr;
 
-	if (ImGui::BeginPopup("SearchResourceHelper"))
+	if (ImGui::BeginPopup(m_searchResourceLavel.c_str()))
 	{
 		// 文字列検索用 Filter 定義
 		m_searchResourceFilter.Draw("Search", 220.0f);
@@ -131,33 +123,28 @@ ResourceData* DetailsObject::ShowSearchResourceHelper(uint32_t selectType) noexc
 		const auto&  resourceManager = m_detailsWidget->GetResourceManager();
 		const auto&  resourceDataMap = resourceManager->GetResourceDataListByType(selectType);
 
-		if (resourceDataMap.empty())
+		if (!resourceDataMap.empty())
 		{
-			ImGui::Columns(1);
-			ImGui::EndChild();
-			ImGui::EndPopup();
-			return nullptr;
-		}
-
-		for (const auto& resourceInfo : resourceDataMap)
-		{
-			const auto& assetName = resourceInfo.first;
-			const auto& assetData = resourceInfo.second;
-
-			// 指定文字列を含む Resource のみ列挙
-			if (!m_searchResourceFilter.PassFilter(assetName.c_str()))
+			for (const auto& resourceInfo : resourceDataMap)
 			{
-				continue;
-			}
+				const auto& assetName = resourceInfo.first;
+				const auto& assetData = resourceInfo.second;
 
-			auto&& label = ConvertToJapanese(assetName);
-			if (ImGui::Button(label.c_str(), ImVec2(130, 120)))
-			{
-				resourceData = resourceManager->GetResourceData(selectType, assetName);
-				ImGui::CloseCurrentPopup();
-				break;
+				// 指定文字列を含む Resource のみ列挙
+				if (!m_searchResourceFilter.PassFilter(assetName.c_str()))
+				{
+					continue;
+				}
+
+				auto&& label = ConvertToJapanese(assetName);
+				if (ImGui::Button(label.c_str(), ImVec2(130, 120)))
+				{
+					resourceData = resourceManager->GetResourceData(selectType, assetName);
+					ImGui::CloseCurrentPopup();
+					break;
+				}
+				ImGui::NextColumn();
 			}
-			ImGui::NextColumn();
 		}
 
 		ImGui::Columns(1);
@@ -166,6 +153,19 @@ ResourceData* DetailsObject::ShowSearchResourceHelper(uint32_t selectType) noexc
 	}
 
 	return resourceData;
+}
+
+bool DetailsObject::OpenResourceHelper(StringView lavel) noexcept
+{
+	const auto buttonLavel = String("*##") + lavel.data();
+	m_searchResourceLavel  = String("SearchResourceHelper") + lavel.data();
+
+	if (ImGui::Button(buttonLavel.c_str(), ImVec2(20, 20)))
+	{
+		ImGui::OpenPopup(m_searchResourceLavel.c_str());
+		return true;
+	}
+	return false;
 }
 
 IResource* DetailsObject::LoadResource(ResourceData* resourceData) const noexcept

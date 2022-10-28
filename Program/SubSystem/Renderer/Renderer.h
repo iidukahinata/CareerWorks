@@ -57,12 +57,12 @@ protected:
 	UniquePtr<LightMap> m_lightMap;
 
 	// * Sceneに設置された描画オブジェクト配列。
-	Set<RenderObject*> m_renderObjects;
+	Vector<RenderObject*> m_renderObjects;
 
 	Camera* m_mainCamera = nullptr;
 
 	// * 配列にするのは後にレイヤーなどでUIなどの描画を制御させていくため。
-	Set<Camera*> m_cameras;
+	Vector<Camera*> m_cameras;
 
 	PostProcessEffect* m_postProcessEffect = nullptr;
 };

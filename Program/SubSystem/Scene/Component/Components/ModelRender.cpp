@@ -26,9 +26,9 @@ void ModelRender::Serialized(FileStream* file) const
 	}
 }
 
-void ModelRender::Deserialization(FileStream* file)
+void ModelRender::Deserialized(FileStream* file)
 {
-	IComponent::Deserialization(file);
+	IComponent::Deserialized(file);
 
 	String modelPath;
 	file->Read(&modelPath);

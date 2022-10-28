@@ -2,7 +2,7 @@
 * @file	   ModelRenderDetails.h
 * @brief
 *
-* @date	   2022/10/23 2022年度初版
+* @date	   2022/10/27 2022年度初版
 */
 #pragma once
 
@@ -30,5 +30,5 @@ private:
 
 private:
 
-	ModelRender* m_modelRender;
+	ModelRender* m_modelRender = nullptr;
 };

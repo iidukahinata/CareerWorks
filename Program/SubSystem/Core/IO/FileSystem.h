@@ -42,4 +42,6 @@ public:
 	static Vector<String> GetDirectorysRecursiveDirectory(StringView filePath) noexcept;
 
 	static bool IsDirectoryPath(StringView path) noexcept;
+
+	static bool Exists(StringView path) noexcept;
 };

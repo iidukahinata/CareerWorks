@@ -2,7 +2,7 @@
 * @file	   MaterialDetails.cpp
 * @brief
 *
-* @date	   2022/10/20 2022年度初版
+* @date	   2022/10/27 2022年度初版
 */
 
 
@@ -120,14 +120,14 @@ void MaterialDetails::ShowShaderList(Material* material) noexcept
 
 	ImGui::Text("Shader"); ImGui::SameLine(offsetPos);
 
-	constexpr auto itemWidth = 270;
+	constexpr auto itemWidth = 250;
 	ImGui::PushItemWidth(itemWidth);
 	ImGui::InputText("##", shaderPath.data(), shaderPath.size());
 	ImGui::PopItemWidth();
 
-	ImGui::SameLine(offsetPos + itemWidth);
+	ImGui::SameLine(offsetPos + itemWidth + 5);
 	
-	OpenResourceHelper();
+	OpenResourceHelper("Use Shader");
 	if (auto resourceData = ShowSearchResourceHelper<Shader>())
 	{
 		auto nextShaderPath = resourceData->m_resourcePath.m_path;
@@ -171,22 +171,13 @@ void MaterialDetails::ShowTextureList(Material* material) noexcept
 
 		ImGui::SameLine(offsetPos + itemWidth + 5);
 
-		static auto selectTex = 0;
-		if (OpenResourceHelper(texIndex++))
-		{
-			// Resource Helper が複数個呼び出される可能性があるため ID で選択中かを判別
-			selectTex = texIndex;
-		}
-
 		// 検索での Texture 切り替え
-		if (selectTex == texIndex)
+		OpenResourceHelper(pramName);
+		if (auto resourceData = ShowSearchResourceHelper<Texture>())
 		{
-			if (auto resourceData = ShowSearchResourceHelper<Texture>())
+			if (auto catchTexture = LoadResource<Texture>(resourceData))
 			{
-				if (auto catchTexture = LoadResource<Texture>(resourceData))
-				{
-					RegisterEditorCommand([material, pramName](auto data) { material->SetTexture(pramName, data); }, catchTexture, texture);
-				}
+				RegisterEditorCommand([material, pramName](auto data) { material->SetTexture(pramName, data); }, catchTexture, texture);
 			}
 		}
 

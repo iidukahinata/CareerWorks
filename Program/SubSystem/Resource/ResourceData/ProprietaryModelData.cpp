@@ -13,7 +13,7 @@ void ProprietaryModelData::Serialized(FileStream* file) const
     file->Write(m_meshPaths);
 }
 
-void ProprietaryModelData::Deserialization(FileStream* file)
+void ProprietaryModelData::Deserialized(FileStream* file)
 {
     file->Read(&m_meshPaths);
 }

@@ -2,7 +2,7 @@
 * @file    Engine.cpp
 * @brief
 *
-* @date	   2022/10/03 2022年度初版
+* @date	   2022/10/27 2022年度初版
 */
 
 
@@ -27,6 +27,9 @@ Context* g_context = nullptr;
 
 bool Engine::Initialize(HINSTANCE hInstance)
 {
+	// 全て生成済みの場合は何も起きない。
+	Config::GenerateUseFile();
+
 	// system コンテナク作成
 	m_context = std::make_unique<Context>();
 	g_context = m_context.get();
@@ -77,7 +80,10 @@ long Engine::MainLoop()
 void Engine::Shutdown()
 {
 	EventManager::Get().Exit();
+
+#ifdef IS_EDITOR
 	EditorSystem::Get().Shutdown();
+#endif // IS_EDITOR
 
 	UnregisterClass("windowClass", m_hInstance);
 
@@ -87,16 +93,21 @@ void Engine::Shutdown()
 
 bool Engine::StartUpScreen(HINSTANCE hInstance) const noexcept
 {
+	const auto width  = GetSystemMetrics(SM_CXSCREEN);
+	const auto height = GetSystemMetrics(SM_CYSCREEN);
+
 	// 第４引数 : フルスクリーンモード指定
-	if (!Window::Get().CreateWindowClass(hInstance, 1280, 720, "Test", true))
+	if (!Window::Get().CreateWindowClass(hInstance, width, height, "HEngine", true))
 	{
 		return false;
 	}
 
+#ifdef IS_EDITOR
 	if (!EditorSystem::Get().Initialize())
 	{
 		return false;
 	}
+#endif // IS_EDITOR
 
 	ShowWindow(Window::Get().GetHandle(), SW_SHOW);
 	UpdateWindow(Window::Get().GetHandle());
@@ -132,16 +143,16 @@ bool Engine::InitializeSubsystems() noexcept
 		LOG_ERROR("Audio初期化に失敗");
 		return false;
 	}
+
+	if (!g_context->GetSubsystem<World>()->Initialize())
+	{
+		LOG_ERROR("World初期化に失敗");
+		return false;
+	}
 	
 	if (!g_context->GetSubsystem<Renderer>()->Initialize())
 	{
 		LOG_ERROR("Renderer初期化に失敗");
-		return false;
-	}
-	 
-	if (!g_context->GetSubsystem<World>()->Initialize())
-	{
-		LOG_ERROR("World初期化に失敗");
 		return false;
 	}
 

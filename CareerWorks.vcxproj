@@ -129,6 +129,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -205,6 +206,17 @@
     <ClCompile Include="Program\SubSystem\Renderer\Deferred\DeferredRenderer.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\Deferred\GBuffer.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\Forward\ForwardRenderer.cpp" />
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11ComputeShader.cpp" />
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11GrahicsDevice.cpp" />
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11IndexBuffer.cpp" />
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11InputLayout.cpp" />
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11PixelShader.cpp" />
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11RenderTexture.cpp" />
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11SamplerState.cpp" />
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11Shader.cpp" />
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11Texture.cpp" />
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11VertexShader.cpp" />
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\RenderStates.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12Buffer.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12CommandContext.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12ConstantBuffer.cpp" />
@@ -357,6 +369,17 @@
     <ClInclude Include="Program\SubSystem\Renderer\Geometry\Quad.h" />
     <ClInclude Include="Program\SubSystem\Renderer\Geometry\TriangleList.h" />
     <ClInclude Include="Program\SubSystem\Renderer\Geometry\Vertex.h" />
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11ConstantBuffer.h" />
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11DeviceChild.h" />
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11GrahicsDevice.h" />
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11IndexBuffer.h" />
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11InputLayout.h" />
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11RenderTexture.h" />
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11SamplerState.h" />
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11Shader.h" />
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11Texture.h" />
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11VertexBuffer.h" />
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\RenderStates.h" />
     <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12Buffer.h" />
     <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12CommandContext.h" />
     <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12ConstantBuffer.h" />

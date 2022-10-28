@@ -9,6 +9,7 @@
 #include "MainMenuBarWidget.h"
 #include "DetailsWidget.h"
 #include "SubSystem/Scene/World.h"
+#include "SubSystem/Window/Window.h"
 #include "SubSystem/Resource/ResourceManager.h"
 #include "SubSystem/Resource/Resources/Scene/Scene.h"
 
@@ -33,6 +34,7 @@ void MainMenuBarWidget::Draw()
     saveAsScene |= ImGui::IsKeyDown(ImGuiKey_ModCtrl) &&  ImGui::IsKeyDown(ImGuiKey_ModShift) && ImGui::IsKeyReleased(ImGuiKey_S);
 
     ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.30f, 0.30f, 0.30f, 1.00f));
+    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.20f, 0.20f, 0.20f, 0.10f));
 
 	if (ImGui::BeginMainMenuBar())
 	{
@@ -53,26 +55,42 @@ void MainMenuBarWidget::Draw()
             ImGui::EndMenu();
         }
 
-        if (ImGui::BeginMenu("View"))
+        if (ImGui::BeginMenu("Editor"))
         {
-            if (ImGui::MenuItem("Profiler")) 
+            if (ImGui::MenuItem("Undo", "Ctrl+Z"))
             {
-
+                EditorHelper::Get().UndoCommand();
             }
-            if (ImGui::MenuItem("Settings")) 
+            if (ImGui::MenuItem("Redo", "Ctrl+Y"))
             {
-
-            }
-            if (ImGui::MenuItem("Renderer")) 
-            {
-
+                EditorHelper::Get().RedoCommand();
             }
             ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Assets"))
+        {
+            if (ImGui::MenuItem("Import"))
+            {
+                system("explorer");
+            }
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("View"))
+        {
+            ImGui::EndMenu();
+        }
+
+        if (Window::Get().IsFullscreen())
+        {
+            ShowWindowMenu();
         }
 
         ImGui::EndMainMenuBar();
 	}
 
+    ImGui::PopStyleColor();
     ImGui::PopStyleColor();
 
     // Handle Command
@@ -107,8 +125,9 @@ void MainMenuBarWidget::ShowNewSceneModal() noexcept
         ImGui::Text("Name"); ImGui::SameLine();
 
         char name[128] = "Untitled";
-        const auto isCreate = ImGui::InputTextWithHint("##NewSceneName", "none", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_EnterReturnsTrue); ImGui::Text(""); // 改行
-        const auto isCancel = ImGui::Button("Cancel");
+        auto isCreate = ImGui::InputTextWithHint("##NewSceneName", "none", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_EnterReturnsTrue); ImGui::Text(""); // 改行
+        auto isCancel = ImGui::Button("Cancel");
+        isCreate |= ImGui::IsKeyDown(ImGuiKey_Enter);
 
         if (isCreate)
         {
@@ -123,13 +142,15 @@ void MainMenuBarWidget::ShowNewSceneModal() noexcept
                 DirectionalLight->SetName("Directional Light");
                 DirectionalLight->AddComponent("Light");
 
+                scene->Update();
+
+                m_resourceManager->Unload<Scene>(name);
+
                 // シーン切り替えでリソースが消去されるため
                 DetailsWidget::ClearSelectObject();
                 EditorHelper::Get().FlushCommandList();
 
                 m_world->ChangeScene(name);
-
-                scene->Update();
             }
         }
 
@@ -176,4 +197,35 @@ void MainMenuBarWidget::ShowSaveAsModal() noexcept
 
         ImGui::EndPopup();
     }
+}
+
+void MainMenuBarWidget::ShowWindowMenu() noexcept
+{
+    auto width = ImGui::GetWindowWidth();
+    static auto minmize = ConvertToJapanese("ー");
+    static auto destroy = ConvertToJapanese("X");
+
+    // show minmize button
+    ImGui::SameLine(width - 69);
+    if (ImGui::Button(minmize.c_str(), ImVec2(30, 20)))
+    {
+        ShowWindow(Window::Get().GetHandle(), SW_MINIMIZE);
+        CloseWindow(Window::Get().GetHandle());
+    }
+
+    ImDrawList* draw_list = ImGui::GetWindowDrawList();
+    auto min = ImGui::GetItemRectMin();
+    auto max = ImGui::GetItemRectMax();
+    draw_list->AddRect(min, max, IM_COL32(100, 100, 100, 200), 0, 0, 2);
+
+    // show destroy button
+    ImGui::SameLine(width - 39);
+    if (ImGui::Button(destroy.c_str(), ImVec2(30, 20)))
+    {
+        DestroyWindow(Window::Get().GetHandle());
+    }
+
+    min = ImGui::GetItemRectMin();
+    max = ImGui::GetItemRectMax();
+    draw_list->AddRect(min, max, IM_COL32(100, 100, 100, 200), 0, 0, 2);
 }

@@ -12,7 +12,7 @@
 
 class ForwardRenderer : public Renderer
 {
-	IN_DEVELOPMENT("別スレッド上での動作を開発予定 & LightMap 生成待ち")
+	IN_DEVELOPMENT("別スレッド上での動作を開発予定")
 	SUB_CLASS(ForwardRenderer)
 public:
 

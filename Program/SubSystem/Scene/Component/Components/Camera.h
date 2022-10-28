@@ -18,7 +18,7 @@ class Camera : public IComponent
 public:
 
 	void Serialized(FileStream* file) const override;
-	void Deserialization(FileStream* file) override;
+	void Deserialized(FileStream* file) override;
 
 	void OnInitialize() override;
 	void OnRegister() override;
@@ -58,7 +58,7 @@ private:
 
 private:
 
-	Renderer* m_renderer;
+	Renderer* m_renderer = nullptr;
 
 	Math::Matrix m_projection;
 	Math::Matrix m_orthographic;

@@ -29,7 +29,7 @@ public:
 	IComponent();
 
 	virtual void Serialized(FileStream* file) const;
-	virtual void Deserialization(FileStream* file);
+	virtual void Deserialized(FileStream* file);
 
 public:
 

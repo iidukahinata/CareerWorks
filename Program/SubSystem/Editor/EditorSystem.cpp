@@ -2,7 +2,7 @@
 * @file    EditorSystem.cpp
 * @brief
 *
-* @date	   2022/10/21 2022年度初版
+* @date	   2022/10/27 2022年度初版
 */
 
 
@@ -43,11 +43,35 @@ bool EditorSystem::PostInitialize(void* shaderResourceView) noexcept
 		widget->PostInitialize();
 	}
 
+	// load editor setting
+	if (FileSystem::Exists(EDITOR_SETTINGS_PATH))
+	{
+		FileStream file(EDITOR_SETTINGS_PATH, OpenMode::Read_Mode);
+		ASSERT(file.IsOpen());
+
+		// 過去設定データから Editor 情報を更新
+		for (const auto& widget : m_widgets)
+		{
+			widget->Deserialized(&file);
+		}
+	}
+
 	return true;
 }
 
 void EditorSystem::Shutdown() noexcept
 {
+	// save editor setting
+	{
+		FileStream file(EDITOR_SETTINGS_PATH, OpenMode::Write_Mode);
+		ASSERT(file.IsOpen());
+
+		for (const auto& widget : m_widgets)
+		{
+			widget->Serialized(&file);
+		}
+	}
+
 	EditorHelper::Get().Shutdown();
 
 	m_job.UnRegisterFromJobSystem();
@@ -167,10 +191,10 @@ void EditorSystem::AddFonts() noexcept
 
 void EditorSystem::RegisterWidgetsToContainer() noexcept
 {
+	m_widgets.emplace_back(std::make_unique<DetailsWidget>());
 	m_widgets.emplace_back(std::make_unique<ConsoleWidget>());
 	m_widgets.emplace_back(std::make_unique<AssetsWidget>());
 	m_widgets.emplace_back(std::make_unique<SceneWidget>());
-	m_widgets.emplace_back(std::make_unique<DetailsWidget>());
 	m_widgets.emplace_back(std::make_unique<ViewPortWidget>());
 	m_widgets.emplace_back(std::make_unique<ProfilerWidget>());
 	m_widgets.emplace_back(std::make_unique<MainMenuBarWidget>());

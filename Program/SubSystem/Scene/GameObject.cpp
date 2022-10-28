@@ -43,10 +43,10 @@ void GameObject::Serialized(FileStream* file) const noexcept
 	}
 }
 
-void GameObject::Deserialization(FileStream* file) noexcept
+void GameObject::Deserialized(FileStream* file) noexcept
 {
 	file->Read(&m_path);
-	m_transform.Deserialization(file);
+	m_transform.Deserialized(file);
 
 	size_t numComponent;
 	file->Read(&numComponent);
@@ -57,7 +57,7 @@ void GameObject::Deserialization(FileStream* file) noexcept
 		file->Read(&componentName);
 
 		auto component = AddComponent(componentName);
-		component->Deserialization(file);
+		component->Deserialized(file);
 	}
 
 	// children
@@ -68,8 +68,8 @@ void GameObject::Deserialization(FileStream* file) noexcept
 	{
 		auto child = GetWorld()->CreateGameObject(GetOwner());
 
-		child->Deserialization(file);
-		m_transform.AddChild(&child->GetTransform());
+		child->Deserialized(file);
+		child->GetTransform().SetParent(&m_transform);
 	}
 }
 

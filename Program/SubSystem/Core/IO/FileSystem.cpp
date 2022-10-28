@@ -215,3 +215,8 @@ bool FileSystem::IsDirectoryPath(StringView path) noexcept
 {
 	return std::filesystem::is_directory(path);
 }
+
+bool FileSystem::Exists(StringView path) noexcept
+{
+	return 	std::filesystem::exists(path);
+}

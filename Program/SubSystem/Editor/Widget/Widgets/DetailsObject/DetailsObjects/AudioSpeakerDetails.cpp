@@ -2,7 +2,7 @@
 * @file	   AudioSpeakerDetails.cpp
 * @brief
 *
-* @date	   2022/10/23 2022年度初版
+* @date	   2022/10/27 2022年度初版
 */
 
 #include "AudioSpeakerDetails.h"
@@ -44,14 +44,8 @@ void AudioSpeakerDetails::Draw()
 		ImGui::InputText("##", clipPath.data(), clipPath.size());
 		ImGui::PopItemWidth();
 
-		ImGui::SameLine(offsetPos + itemWidth + 5);
-
-		// ドラッグアンドドロップ有効指定
+		// ドラッグアンドドロップでの AudioClip 切り替え
 		const auto hoverd = ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
-
-		ShowDragDropHelper<AudioClip>(hoverd, 221, 0, 0);
-
-		// ドラッグアンドドロップでの Material 切り替えのため
 		if (ImGui::IsMouseReleased(0) && hoverd)
 		{
 			if (auto catchAudioClip = CatchDragObject<AudioClip>())
@@ -60,9 +54,12 @@ void AudioSpeakerDetails::Draw()
 			}
 		}
 
-		// リソースの検索を始める
-		OpenResourceHelper();
+		ShowDragDropHelper<AudioClip>(hoverd, 221, 0, 0);
 
+		ImGui::SameLine(offsetPos + itemWidth + 5);
+
+		// リソースの検索を始める
+		OpenResourceHelper("AudioSpeaker");
 		if (auto resourceData = ShowSearchResourceHelper<AudioClip>())
 		{
 			auto clip = LoadResource<AudioClip>(resourceData);

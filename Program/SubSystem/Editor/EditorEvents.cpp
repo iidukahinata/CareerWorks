@@ -2,11 +2,22 @@
 * @file    EditorEvents.cpp
 * @brief
 *
-* @date	   2022/10/25 2022年度初版
+* @date	   2022/10/28 2022年度初版
 */
 
 
 #include "EditorEvents.h"
+
+ImportResourceEvent::ImportResourceEvent(String importFilePath) :
+	m_importFilePath(importFilePath)
+{
+
+}
+
+std::any ImportResourceEvent::GetData()
+{
+	return m_importFilePath;
+}
 
 DeleteObjectEvent::DeleteObjectEvent(String deleteObject) : 
 	m_deleteObject(deleteObject)

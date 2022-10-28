@@ -2,7 +2,7 @@
 * @file	   ViewPortWidget.cpp
 * @brief
 *
-* @date	   2022/10/25 2022年度初版
+* @date	   2022/10/27 2022年度初版
 */
 
 
@@ -84,12 +84,15 @@ void ViewPortWidget::ShowViewPort() noexcept
 	auto width	 = (int)ImGui::GetWindowWidth();
 	auto height  = (int)ImGui::GetWindowHeight() - 52;
 
-	const auto wRate = (width / 16);
-	const auto hRate = (height / 9);
-	const auto rate = wRate < hRate ? wRate : hRate;
+	// view のアスペクトを合わせる
+	{
+		const auto wRate = (width / 16);
+		const auto hRate = (height / 9);
+		const auto rate = wRate < hRate ? wRate : hRate;
 
-	width = rate * 16;
-	height = rate * 9;
+		width = rate * 16;
+		height = rate * 9;
+	}
 
 	ImGui::SetCursorPos(ImVec2(0.0f, 55.0f));
 	EditorHelper::Get().AddImage(texture, ImVec2(width, height));

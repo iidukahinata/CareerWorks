@@ -37,9 +37,9 @@ void AudioSpeaker::Serialized(FileStream* file) const
 	}
 }
 
-void AudioSpeaker::Deserialization(FileStream* file)
+void AudioSpeaker::Deserialized(FileStream* file)
 {
-	IComponent::Deserialization(file);
+	IComponent::Deserialized(file);
 
 	file->Read(&m_playOnAwake);
 	file->Read(&m_mute);

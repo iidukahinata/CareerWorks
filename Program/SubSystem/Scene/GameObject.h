@@ -22,7 +22,7 @@ public:
 	GameObject();
 
 	void Serialized(FileStream* file) const noexcept;
-	void Deserialization(FileStream* file) noexcept;
+	void Deserialized(FileStream* file) noexcept;
 
 public:
 
@@ -55,6 +55,7 @@ public:
 	/** 指定名コンポーネントを保持する場合、そのアドレスを返す。*/
 	IComponent* FindComponent(StringView name) const noexcept;
 
+	/** 全コンポーネントの消去を行う。*/
 	void ClearComponets() noexcept;
 
 public:

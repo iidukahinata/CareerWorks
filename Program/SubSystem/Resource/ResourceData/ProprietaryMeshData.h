@@ -29,7 +29,7 @@ public:
 public:
 
 	void Serialized(FileStream* file) const override;
-	void Deserialization(FileStream* file) override;
+	void Deserialized(FileStream* file) override;
 
 	/** assimp データから独自データに変換、テクスチャ生成で使用 */
 	static ProprietaryMeshData ConvertProprietaryData(aiMesh* mesh) noexcept;

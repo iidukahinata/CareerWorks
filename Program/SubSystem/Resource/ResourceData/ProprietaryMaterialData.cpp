@@ -12,6 +12,19 @@
 
 constexpr auto BASIC_SHADER_PATH = "Data/Resource/Shader/BasicShader.hlsl";
 
+ProprietaryMaterialData::ProprietaryMaterialData()
+{
+	m_shaderPaths[VertexShader] = BASIC_SHADER_PATH;
+	m_shaderPaths[PixelShader]  = BASIC_SHADER_PATH;
+
+	m_albedo		  = Math::Vector3::Zero;
+	m_metallic		  = 0.0f;
+	m_smooth		  = 0.0f;
+	m_emission		  = Math::Vector3::Zero;
+	m_blendMode		  = BLEND_MODE::BLEND_MODE_NO_ALPHA;
+	m_rasterizerState = RASTERIZER_STATE::NO_CULL;
+}
+
 void ProprietaryMaterialData::Serialized(FileStream* file) const
 {
 	file->Write(m_albedo);
@@ -34,7 +47,7 @@ void ProprietaryMaterialData::Serialized(FileStream* file) const
 	}
 }
 
-void ProprietaryMaterialData::Deserialization(FileStream* file)
+void ProprietaryMaterialData::Deserialized(FileStream* file)
 {
 	file->Read(&m_albedo);
 	file->Read(&m_metallic);
@@ -80,7 +93,7 @@ ProprietaryMaterialData ProprietaryMaterialData::ConvertProprietaryData(aiMateri
 	material->Get(AI_MATKEY_COLOR_SPECULAR, colorspecular);
 	materialData.m_metallic = colorspecular.r;
 
-	float power;
+	float power = 0.0f;
 	material->Get(AI_MATKEY_SHININESS_STRENGTH, power);
 	materialData.m_smooth = power;
 

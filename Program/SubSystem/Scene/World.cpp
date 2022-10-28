@@ -2,7 +2,7 @@
 * @file    World.cpp
 * @brief
 *
-* @date	   2022/10/02 2022年度初版
+* @date	   2022/10/27 2022年度初版
 */
 
 
@@ -104,7 +104,7 @@ void World::ChangeScene(StringView name) noexcept
 	else
 	{
 		// 指定シーンが無い場合はシーンロードを行う。
-		LoadScene(name);
+		LoadScene(sceneName);
 
 		auto& handle = m_resourceHandles[sceneName];
 		handle->WaitForLoadComplete();
@@ -117,18 +117,8 @@ void World::ChangeScene(StringView name) noexcept
 GameObject* World::CreateGameObject(Scene* scene /* = nullptr */) noexcept
 {
 	GameObject* result = nullptr;
-	Scene* targetScene = nullptr;
-	bool registerObject = false;
-
-	if (scene)
-	{
-		targetScene = scene;
-	}
-	else
-	{
-		registerObject = true;
-		targetScene = m_currentScene;
-	}
+	auto targetScene = scene ? scene : m_currentScene;
+	auto registerObject = targetScene == m_currentScene;
 
 	ASSERT(targetScene);
 
@@ -198,8 +188,10 @@ void World::AddScene(StringView name, Scene* scene) noexcept
 	ASSERT(scene);
 
 	String sceneName(name);
-	ASSERT(!m_sceneList.contains(sceneName));
-	m_sceneList[sceneName] = scene;
+	if (!m_sceneList.contains(sceneName))
+	{
+		m_sceneList[sceneName] = scene;
+	}
 }
 
 void World::RemoveScene(Scene* scene) noexcept
@@ -223,8 +215,10 @@ void World::RemoveScene(Scene* scene) noexcept
 void World::RemoveScene(StringView name) noexcept
 {
 	String sceneName(name);
-	ASSERT(m_sceneList.contains(sceneName));
-	m_sceneList.erase(sceneName);
+	if (m_sceneList.contains(sceneName))
+	{
+		m_sceneList.erase(sceneName);
+	}
 }
 
 Scene* World::GetScene(StringView name) noexcept
@@ -296,10 +290,9 @@ void World::StartupListenerObjects() noexcept
 			TickManager::Get().Start();
 			break;
 
-		case EditorState::Stop: 
+		case EditorState::Stop:
 			ChangeWorldType(WorldType::Editor);
 			m_currentScene->Load(tempScenePath);
-			m_currentScene->AddToWorld();
 			TickManager::Get().Stop();
 			break;
 
@@ -325,7 +318,14 @@ void World::StartupListenerObjects() noexcept
 
 void World::ChangeWorldType(WorldType type) noexcept
 {
-	m_currentScene->RemoveFromWorld();
-	m_worldType = type;
-	m_currentScene->AddToWorld();
+	if (m_currentScene)
+	{
+		m_currentScene->RemoveFromWorld();
+		m_worldType = type;
+		m_currentScene->AddToWorld();
+	}
+	else
+	{
+		m_worldType = type;
+	}
 }

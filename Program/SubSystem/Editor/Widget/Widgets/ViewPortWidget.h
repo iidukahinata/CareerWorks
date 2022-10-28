@@ -2,7 +2,7 @@
 * @file	   ViewPortWidget.h
 * @brief
 *
-* @date	   2022/10/25 2022年度初版
+* @date	   2022/10/27 2022年度初版
 */
 #pragma once
 
@@ -27,7 +27,7 @@ private:
 	/** シーン or ゲーム画面の表示を行う。*/
 	void ShowViewPort() noexcept;
 
-	/** 各 State Button が使用されているかの判別がしやすい為に関数化 */
+	/** 各 State Button が使用されているかの判別がしやすくする処理 */
 	bool ShowStateButton(bool state, std::function<bool()> func) noexcept;
 
 private:

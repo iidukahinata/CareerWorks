@@ -22,9 +22,9 @@ void Camera::Serialized(FileStream* file) const
 	file->Write(m_far);
 }
 
-void Camera::Deserialization(FileStream* file)
+void Camera::Deserialized(FileStream* file)
 {
-	IComponent::Deserialization(file);
+	IComponent::Deserialized(file);
 
 	file->Read(&m_aspect);
 	file->Read(&m_width);

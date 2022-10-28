@@ -39,6 +39,7 @@ private:
 	// * Input Update “o˜^—p
 	Job m_job;
 
+	// * input objects
 	Microsoft::WRL::ComPtr<IDirectInput8> m_directInput;
 	Microsoft::WRL::ComPtr<IDirectInputDevice8>	m_directKeyboard;
 	Microsoft::WRL::ComPtr<IDirectInputDevice8>	m_directMouse;

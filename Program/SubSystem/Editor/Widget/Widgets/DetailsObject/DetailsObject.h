@@ -2,7 +2,7 @@
 * @file	   DetailsWidget.h
 * @brief
 *
-* @date	   2022/09/13 2022年度初版
+* @date	   2022/10/27 2022年度初版
 */
 #pragma once
 
@@ -39,7 +39,7 @@ protected:
 	template<class T>
 	ResourceData* ShowSearchResourceHelper() noexcept;
 	ResourceData* ShowSearchResourceHelper(uint32_t selectType) noexcept;
-	bool OpenResourceHelper(UINT index = 0) noexcept;
+	bool OpenResourceHelper(StringView lavel) noexcept;
 
 	template<class T>
 	T* LoadResource(ResourceData* resourceData) const noexcept;
@@ -47,12 +47,15 @@ protected:
 
 protected:
 
-	DetailsWidget* m_detailsWidget;
+	DetailsWidget* m_detailsWidget = nullptr;
 
 private:
 
-	// * filter 検索用
+	// * 検索 helper 関数用 filter 検索用
 	ImGuiTextFilter m_searchResourceFilter;
+
+	// * 検索用 Popup Lavel
+	String m_searchResourceLavel;
 };
 
 template<class T>

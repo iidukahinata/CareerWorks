@@ -136,12 +136,6 @@
     <Filter Include="Subsytem\Core\Command">
       <UniqueIdentifier>{d8316564-a4e5-409f-b97b-7c341b406616}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Subsytem\Renderer\GraphicsAPI">
-      <UniqueIdentifier>{f95040af-d078-48cc-b4c3-a5e09826f29c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Subsytem\Renderer\GraphicsAPI\D3D12">
-      <UniqueIdentifier>{873f6baf-de66-4b8c-b0af-06d16bad0a85}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Subsytem\Renderer\LightMap">
       <UniqueIdentifier>{fe8c874c-5bcd-47ab-9e4a-a19c7303d4da}</UniqueIdentifier>
     </Filter>
@@ -156,6 +150,15 @@
     </Filter>
     <Filter Include="ThirdParty\imgui">
       <UniqueIdentifier>{77021a01-5412-48d6-88c6-c233088a596c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Renderer\GraphicsAPI">
+      <UniqueIdentifier>{f95040af-d078-48cc-b4c3-a5e09826f29c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Renderer\GraphicsAPI\D3D11">
+      <UniqueIdentifier>{2baefc7a-77f2-4f55-8524-cfeea6c8cdb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Renderer\GraphicsAPI\D3D12">
+      <UniqueIdentifier>{873f6baf-de66-4b8c-b0af-06d16bad0a85}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -543,6 +546,39 @@
     </ClCompile>
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\ComponentDetails.cpp">
       <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11IndexBuffer.cpp">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11InputLayout.cpp">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11PixelShader.cpp">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11RenderTexture.cpp">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11SamplerState.cpp">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11Shader.cpp">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11Texture.cpp">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11VertexShader.cpp">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\RenderStates.cpp">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11ComputeShader.cpp">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11GrahicsDevice.cpp">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D11</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1019,6 +1055,39 @@
     </ClInclude>
     <ClInclude Include="Program\SubSystem\Core\Common\GlobalValues.h">
       <Filter>Subsytem\Core\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11IndexBuffer.h">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11InputLayout.h">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11RenderTexture.h">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11SamplerState.h">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11Shader.h">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11Texture.h">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11VertexBuffer.h">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\RenderStates.h">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11ConstantBuffer.h">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11DeviceChild.h">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11GrahicsDevice.h">
+      <Filter>Subsytem\Renderer\GraphicsAPI\D3D11</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

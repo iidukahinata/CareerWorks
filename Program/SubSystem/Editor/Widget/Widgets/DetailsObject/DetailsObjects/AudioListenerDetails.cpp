@@ -2,12 +2,11 @@
 * @file	   AudioListenerDetails.cpp
 * @brief
 *
-* @date	   2022/10/23 2022年度初版
+* @date	   2022/10/27 2022年度初版
 */
 
 #include "AudioListenerDetails.h"
 #include "SubSystem/Scene/Component/Components/AudioListener.h"
-#include "ThirdParty/imgui/imgui_internal.h"
 
 AudioListenerDetails::AudioListenerDetails(DetailsWidget* detailsWidget, IComponent* component) :
 	ComponentDetails(detailsWidget)

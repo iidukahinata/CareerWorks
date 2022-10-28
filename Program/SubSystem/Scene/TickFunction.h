@@ -32,7 +32,7 @@ public:
 	void SetEnable(bool enable) noexcept;
 	bool GetEnable() noexcept;
 
-	/** この設定は前提条件の設定にも影響します。 */
+	/** この設定は前提条件に指定されている TickFunction の設定にも影響します。 */
 	void SetPriority(uint32_t priority) noexcept;
 	uint32_t GetPriority() const noexcept;
 

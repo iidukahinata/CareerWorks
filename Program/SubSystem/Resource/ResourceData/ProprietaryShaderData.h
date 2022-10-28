@@ -15,7 +15,7 @@ struct ProprietaryShaderData : public ProprietaryData
 public:
 
 	void Serialized(FileStream* file) const override {};
-	void Deserialization(FileStream* file) override {};
+	void Deserialized(FileStream* file) override {};
 
 	/** 独自データとして保存される出力先ファイルパスに変換 */
 	static String ConvertProprietaryPath(StringView filePath) noexcept;

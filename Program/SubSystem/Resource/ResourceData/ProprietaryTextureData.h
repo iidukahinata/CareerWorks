@@ -24,7 +24,7 @@ public:
 public:
 
 	void Serialized(FileStream* file) const override;
-	void Deserialization(FileStream* file) override;
+	void Deserialized(FileStream* file) override;
 
 	/** DirectTexデータから独自データに変換、テクスチャ生成で使用 */
 	static ProprietaryTextureData ConvertProprietaryData(DirectX::TexMetadata& meta, DirectX::ScratchImage* image) noexcept;

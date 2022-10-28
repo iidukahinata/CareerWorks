@@ -2,7 +2,7 @@
 * @file	   GameObjectDetails.h
 * @brief
 *
-* @date	   2022/09/13 2022年度初版
+* @date	   2022/10/27 2022年度初版
 */
 #pragma once
 
@@ -32,9 +32,11 @@ private:
 
 private:
 
+	// * AddComponent に表示するコンポーネント一覧
 	Vector<UniquePtr<IComponent>> m_components;
 
+	// * AddComponent 用フィルター
 	ImGuiTextFilter m_filter;
 
-	GameObject* m_gameObject;
+	GameObject* m_gameObject = nullptr;
 };

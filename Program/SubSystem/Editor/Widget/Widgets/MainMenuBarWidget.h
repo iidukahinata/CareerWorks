@@ -2,7 +2,7 @@
 * @file	   MainMenuBarWidget.h
 * @brief
 *
-* @date	   2022/10/21 2022年度初版
+* @date	   2022/10/27 2022年度初版
 */
 #pragma once
 
@@ -14,7 +14,7 @@ class ResourceManager;
 
 class MainMenuBarWidget : public Widget
 {
-	WAIT_FOR_DEVELOPMENT("View && Editor など")
+	WAIT_FOR_DEVELOPMENT("View && Assets など未作成")
 public:
 
 	void PostInitialize() override;
@@ -27,6 +27,9 @@ private:
 
 	/** セーブ先 Scene 名の取得を行う。*/
 	void ShowSaveAsModal() noexcept;
+
+	/** フルスクリーン時に ImGui で WindowMenu を表示 */
+	void ShowWindowMenu() noexcept;
 
 private:
 

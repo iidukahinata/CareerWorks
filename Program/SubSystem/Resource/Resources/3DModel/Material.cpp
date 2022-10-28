@@ -2,7 +2,7 @@
 * @file    Material.cpp
 * @brief
 *
-* @date	   2022/09/24 2022年度初版
+* @date	   2022/10/27 2022年度初版
 */
 
 
@@ -16,12 +16,14 @@ Material* Material::Create(StringView name, const ProprietaryMaterialData& data 
 	auto path = ProprietaryMaterialData::ConvertProprietaryPath(name);
 
 	// 各データの作成
-	auto material = CreateResource<Material>(path);
-	material->m_materialData = data;
+	if (const auto material = CreateResource<Material>(path))
+	{
+		material->m_materialData = data;
+		material->Update();
+		return material;
+	}
 
-	material->Update();
-
-	return material;
+	return nullptr;
 }
 
 bool Material::Load(StringView path)
@@ -416,8 +418,12 @@ void Material::UpdateProprietaryDataFile() noexcept
 
 	texturePaths.clear();
 
-	// 現在シェーダ設定を反映
-	shaderPaths = m_shader.GetShaderPaths();
+	// 初期化時は保持していないため
+	if (m_shader.HasShader())
+	{
+		// 現在シェーダ設定を反映
+		shaderPaths = m_shader.GetShaderPaths();
+	}
 
 	// 現在テクスチャ設定を反映
 	for (const auto& textureInfo : m_textureInfos)

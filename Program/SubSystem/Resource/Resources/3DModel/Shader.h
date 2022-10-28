@@ -19,6 +19,8 @@ public:
 	bool SetShader(ShaderType type, StringView path, D3D_SHADER_MACRO* defines = nullptr) noexcept;
 	D3D12Shader* GetShader(ShaderType type) noexcept;
 
+	bool HasShader() const noexcept;
+
 	const Array<String, ShaderType::NumAllType>& GetShaderPaths() const noexcept { return m_shaderPaths; }
 
 private:

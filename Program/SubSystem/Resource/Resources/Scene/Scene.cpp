@@ -2,7 +2,7 @@
 * @file    Scene.cpp
 * @brief
 *
-* @date	   2022/10/25 2022年度初版
+* @date	   2022/10/27 2022年度初版
 */
 
 
@@ -18,24 +18,18 @@ Scene::Scene()
     ASSERT(m_world);
 }
 
-Scene::~Scene()
-{
-    RemoveFromWorld();
-}
-
 Scene* Scene::Create(StringView name) noexcept
 {
     auto&& path = ProprietarySceneData::ConvertProprietaryPath(name);
 
     // create scene
-    const auto scene = CreateResource<Scene>(path);
-
-    if (scene)
+    if (const auto scene = CreateResource<Scene>(path))
     {
         scene->Update();
+        return scene;
     }
 
-    return scene;
+    return nullptr;
 }
 
 void Scene::Save(StringView path) noexcept
@@ -87,7 +81,7 @@ bool Scene::Load(StringView path)
 
         if (rootGameObject)
         {
-            rootGameObject->Deserialization(&file);
+            rootGameObject->Deserialized(&file);
         }
     }
 
@@ -183,11 +177,6 @@ void Scene::GetAllRootGameObjects(Vector<GameObject*>& gameObjects) const noexce
 void Scene::RemoveGameObject(GameObject* gameObject) noexcept
 {
     ASSERT(gameObject);
-
-    if (m_world->IsGameMode())
-    {
-        gameObject->EndPlay();
-    }
 
     gameObject->ClearComponets();
 

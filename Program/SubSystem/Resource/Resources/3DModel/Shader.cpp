@@ -35,3 +35,8 @@ D3D12Shader* Shader::GetShader(ShaderType type) noexcept
 		return nullptr;
 	}
 }
+
+bool Shader::HasShader() const noexcept
+{
+	return !m_shaders.empty();
+}

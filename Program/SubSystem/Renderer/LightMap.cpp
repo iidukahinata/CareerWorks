@@ -26,14 +26,7 @@ void LightMap::AddLight(Light* light) noexcept
 
 void LightMap::RemoveLight(Light* light) noexcept
 {
-	for (auto it = m_lights.begin(); it != m_lights.end(); it++)
-	{
-		if (*it == light)
-		{
-			m_lights.erase(it);
-			break;
-		}
-	}
+	std::erase(m_lights, light);
 }
 
 void LightMap::SetAmbient(const Math::Vector4& ambientLight) noexcept

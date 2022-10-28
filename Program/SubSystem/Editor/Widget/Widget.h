@@ -2,7 +2,7 @@
 * @file		Widget.h
 * @brief
 *
-* @date		2022/10/20 2022年度初版
+* @date		2022/10/27 2022年度初版
 */
 #pragma once
 
@@ -22,6 +22,9 @@ public:
 
 	virtual void PostInitialize() {}
 	virtual void Draw() {}
+
+	virtual void Serialized(FileStream* file) const {}
+	virtual  void Deserialized(FileStream* file) {}
 
 	Context* GetContext() noexcept;
 };

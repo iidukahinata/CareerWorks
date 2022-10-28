@@ -2,7 +2,7 @@
 * @file	   AssetsWidget.cpp
 * @brief
 *
-* @date	   2022/10/21 2022年度初版
+* @date	   2022/10/27 2022年度初版
 */
 
 
@@ -16,7 +16,7 @@
 #include "SubSystem/Resource/Resources/3DModel/Mesh.h"
 #include "SubSystem/Resource/Resources/3DModel/Shader.h"
 #include "SubSystem/Resource/Resources/3DModel/Material.h"
-#include "SubSystem/Resource/Resources/Audio/AudioClip.h"\
+#include "SubSystem/Resource/Resources/Audio/AudioClip.h"
 
 void AssetsWidget::PostInitialize()
 {
@@ -88,7 +88,7 @@ ImGui::NextColumn();
 	ImGui::Text("asset"); ImGui::SameLine();
 
 	// ファイル順の表示とバックボタンの生成
-	auto numTree = m_directoryTree.size();
+	const auto numTree = m_directoryTree.size();
 	for (int i = 0; i < numTree; ++i)
 	{
 		if (ImGui::SmallButton(String(">##" + std::to_string(i)).c_str()))
@@ -115,7 +115,7 @@ ImGui::NextColumn();
 
 void AssetsWidget::ShowResourceList() noexcept
 {
-	const auto childWidth = ImGui::GetWindowContentRegionWidth();
+	const auto childWidth = ImGui::GetWindowContentRegionWidth() + 2;
 	const auto childHeight = ImGui::GetWindowHeight() - 82;
 	ImGui::BeginChild(ImGui::GetID((void*)0), ImVec2(childWidth, childHeight), true, ImGuiWindowFlags_NoScrollbar);
 
@@ -179,7 +179,7 @@ void AssetsWidget::ShowResourceListByName() noexcept
 
 	// 表示される Type だけ列挙
 	Vector<uint32_t> showTypeList;
-	for (const auto type : m_resourceManager->GetResourceTypes())
+	for (const auto& type : m_resourceManager->GetResourceTypes())
 	{
 		if (m_tag == TagType_ALL || m_tag == type)
 		{
@@ -188,9 +188,9 @@ void AssetsWidget::ShowResourceListByName() noexcept
 	}
 
 	// 全リソース表示ループ
-	for (const auto type : showTypeList)
+	for (const auto& type : showTypeList)
 	{
-		const auto iconType = EditorHelper::Get().GetIconTypeFromResourceType(type);
+		const auto& iconType = EditorHelper::Get().GetIconTypeFromResourceType(type);
 
 		for (const auto& resourceInfo : m_resourceManager->GetResourceDataListByType(type))
 		{
@@ -299,18 +299,25 @@ void AssetsWidget::ShowResourceHelper() noexcept
 		ShowCreateWindow([this](StringView name) {
 
 			m_isOpenPopupWindow = false;
-			auto resource = m_resourceCreateFunc(name.data());
-			auto resourceData = m_resourceManager->GetResourceData(resource->GetFilePath());
+			if (const auto resource = m_resourceCreateFunc(name.data()))
+			{
+				const auto resourceData = m_resourceManager->GetResourceData(resource->GetFilePath());
 
-			const auto oldAssetPath = resourceData->m_assetFullPath;
-			const auto newAssetPath = m_currentDirectory + "/" + name.data() + ASSET_EXTENSION;
+				const auto oldAssetPath = resourceData->m_assetFullPath;
+				const auto newAssetPath = m_currentDirectory + "/" + name.data() + ASSET_EXTENSION;
 
-			// asset path を currentDirectory 上ファイルとしてフォルダ移動させる
-			FileSystem::Rename(oldAssetPath, newAssetPath);
-			resourceData->m_assetFullPath = newAssetPath;
+				// asset path を currentDirectory 上ファイルとしてフォルダ移動させる
+				FileSystem::Rename(oldAssetPath, newAssetPath);
+				resourceData->m_assetFullPath = newAssetPath;
 
-			// リソースの生成だけが目的のため解放
-			UnloadResource(resource);
+				// リソースの生成だけが目的のため解放
+				UnloadResource(resource);
+			}
+			else
+			{
+				LOG_ERROR("既に同じ名前のリソースが存在しています。");
+			}
+
 		});
 	}
 }
@@ -444,7 +451,7 @@ void AssetsWidget::DrawThumbnail(IconType type, StringView name) noexcept
 
 void AssetsWidget::UnloadResource(IResource* resource) noexcept
 {
-	if (auto resourceData = m_resourceManager->GetResourceData(resource->GetFilePath()))
+	if (const auto resourceData = m_resourceManager->GetResourceData(resource->GetFilePath()))
 	{
 		m_resourceManager->Unload(resourceData);
 	}
@@ -459,7 +466,7 @@ void AssetsWidget::ClickResource(IconType type, StringView name) noexcept
 	else
 	{
 		const auto resourceType = EditorHelper::Get().GetResourceTypeByIconType(type);
-		if (auto resourceData = m_resourceManager->GetResourceData(resourceType, name))
+		if (const auto resourceData = m_resourceManager->GetResourceData(resourceType, name))
 		{
 			m_selectResourceName = name;
 			m_selectResoruce = resourceData;
@@ -515,8 +522,8 @@ void AssetsWidget::NavigateToDirectory(StringView path) noexcept
 	// リソース列挙
 	for (const auto& resourceInfo : resourceDatas)
 	{
-		const auto name = resourceInfo.first;
-		const auto type = resourceInfo.second->m_resourcePath.m_type;
+		const auto& name = resourceInfo.first;
+		const auto& type = resourceInfo.second->m_resourcePath.m_type;
 
 		if (m_tag != TagType_ALL)
 		{

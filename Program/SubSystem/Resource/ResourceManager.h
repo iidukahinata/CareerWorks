@@ -163,6 +163,7 @@ private:
 
 #if IS_EDITOR
 	EventListener m_deleteObjectListener;
+	EventListener m_importResourceListener;
 #endif // IS_EDITOR
 };
 

@@ -41,7 +41,7 @@ void D3D12DescriptorCache::SetDescriptorHeap() noexcept
 		samplerDescriptorHeap
 	};
 
-	GetCommandContext()->GetCommandList()->SetDescriptorHeaps(_countof(heaps), heaps);
+	GetCommandContext()->SetDescriptorHeaps(_countof(heaps), heaps);
 }
 
 void D3D12DescriptorCache::SetRenderTargets(UINT numRenderTargets, D3D12RenderTargetView** renderTargets, D3D12DepthStencilView* depthStencil) noexcept

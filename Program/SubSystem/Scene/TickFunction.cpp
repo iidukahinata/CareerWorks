@@ -111,13 +111,7 @@ void TickFunction::AddPrerequisite(TickFunction* tickFunction) noexcept
 
 void TickFunction::RemovePrerequisite(TickFunction* tickFunction) noexcept
 {
-	for (auto it = m_prerequisites.begin(); it != m_prerequisites.end(); it++)
-	{
-		if (*it._Ptr == tickFunction)
-		{
-			m_prerequisites.erase(it);
-		}
-	}
+	std::erase(m_prerequisites, tickFunction);
 }
 
 const Vector<TickFunction*>& TickFunction::GetPrerequisites() const noexcept

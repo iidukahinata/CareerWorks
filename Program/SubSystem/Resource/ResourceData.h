@@ -22,7 +22,7 @@ public:
 	ResourcePath(StringView type, String path);
 
 	void Serialized(FileStream* file) const noexcept;
-	void Deserialization(FileStream* file) noexcept;
+	void Deserialized(FileStream* file) noexcept;
 };
 
 struct ResourceData
@@ -42,7 +42,7 @@ struct ResourceData
 public:
 
 	void Serialized(FileStream* file) const noexcept;
-	void Deserialization(FileStream* file) noexcept;
+	void Deserialized(FileStream* file) noexcept;
 
 	bool operator==(const ResourceData& data) noexcept;
 	bool operator!=(const ResourceData& data) noexcept;

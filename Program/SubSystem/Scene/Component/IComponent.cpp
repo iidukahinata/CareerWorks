@@ -25,7 +25,7 @@ void IComponent::Serialized(FileStream* file) const
 	file->Write(m_tickFunction.GetPriority());
 }
 
-void IComponent::Deserialization(FileStream* file)
+void IComponent::Deserialized(FileStream* file)
 {
 	bool active;
 	uint32_t priority;

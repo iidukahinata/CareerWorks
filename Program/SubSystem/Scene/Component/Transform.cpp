@@ -23,6 +23,11 @@ Transform::Transform(GameObject* gameObject) :
 Transform::~Transform()
 {
 	SetParent(nullptr);
+
+	for (auto child : m_children)
+	{
+		child->SetParent(nullptr);
+	}
 }
 
 void Transform::Serialized(FileStream* file) const noexcept
@@ -32,7 +37,7 @@ void Transform::Serialized(FileStream* file) const noexcept
 	file->Write(m_localScale);
 }
 
-void Transform::Deserialization(FileStream* file) noexcept
+void Transform::Deserialized(FileStream* file) noexcept
 {
 	file->Read(&m_localPosition);
 	file->Read(&m_localRotation);
@@ -147,16 +152,17 @@ bool Transform::HasParent() const noexcept
 
 void Transform::SetParent(Transform* parent) noexcept
 {
+	if (m_parent)
+	{
+		m_parent->RemoveChild(this);
+	}
+
 	if (parent)
 	{
-		m_parent = parent;
-		m_parent->AddChild(this);
+		parent->AddChild(this);
 	}
-	else
-	{
-		if (m_parent) m_parent->RemoveChild(this);
-		m_parent = nullptr;
-	}
+
+	m_parent = parent;
 }
 
 void Transform::AddChild(Transform* child) noexcept

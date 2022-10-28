@@ -17,7 +17,7 @@ void ProprietaryTextureData::Serialized(FileStream* file) const
 	file->Write(m_meta);
 }
 
-void ProprietaryTextureData::Deserialization(FileStream* file)
+void ProprietaryTextureData::Deserialized(FileStream* file)
 {
 	file->Read(&m_imageCount);
 	file->Read(&m_rowPitch);

@@ -2,7 +2,7 @@
 * @file	   ComponentDetails.cpp
 * @brief
 *
-* @date	   2022/10/23 2022年度初版
+* @date	   2022/10/27 2022年度初版
 */
 
 
@@ -24,9 +24,11 @@ ComponentDetails::~ComponentDetails()
 
 bool ComponentDetails::ShowComponentHeader(IComponent* component) noexcept
 {
-	auto name		= component->GetTypeData().Name;
-	auto gameObject = component->GetOwner();
-	auto isActive   = component->GetActive();
+	auto name		   = component->GetTypeData().Name;
+	auto gameObject	   = component->GetOwner();
+	auto isActive	   = component->GetActive();
+	auto buttonLavel   = String("=##") + name.data();
+	auto settginsLavel = String("Component Settings##") + name.data();
 
 	auto GImGui = ImGui::GetCurrentContext();
 	auto contentRegionAvailable = ImGui::GetContentRegionAvail();
@@ -39,16 +41,16 @@ bool ComponentDetails::ShowComponentHeader(IComponent* component) noexcept
 	bool isOpen = ImGui::CollapsingHeader(name.data(), treeNodeFlags);
 
 	ImGui::SameLine(contentRegionAvailable.x - lineHeight * 0.5f);
-	if (ImGui::Button("=", ImVec2(lineHeight, lineHeight)))
+	if (ImGui::Button(buttonLavel.c_str(), ImVec2(lineHeight, lineHeight)))
 	{
-		ImGui::OpenPopup("Component Settings");
+		ImGui::OpenPopup(settginsLavel.c_str());
 	}
 
 	ImGui::SameLine(contentRegionAvailable.x - lineHeight * 1.7f);
 	auto inputActive = ImGui::Checkbox("##Active", &isActive);
 
 	auto inputRemove = false;
-	if (ImGui::BeginPopup("Component Settings"))
+	if (ImGui::BeginPopup(settginsLavel.c_str()))
 	{
 		inputRemove = ImGui::Button("Remove Component");
 		ImGui::EndPopup();

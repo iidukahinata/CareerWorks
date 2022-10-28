@@ -2,7 +2,7 @@
 * @file	   SceneWidget.cpp
 * @brief
 *
-* @date	   2022/10/21 2022年度初版
+* @date	   2022/10/27 2022年度初版
 */
 
 
@@ -40,14 +40,55 @@ void SceneWidget::Draw()
 			}
 
 			ShowGameObjectHelper();
-			ShowGameObjectCreateWindow();
+			ShowCreateWindow();
+
+			if (ImGui::IsMouseReleased(0))
+			{
+				// 選択解除
+				if (!m_selectGameObject)
+				{
+					m_gameObject = nullptr;
+				}
+
+				// 親子関係の解消のための処理
+				if (DragDrop::Get().HasGameObject())
+				{
+					auto dragGameObject = CatchDragObject();
+					dragGameObject->GetTransform().SetParent(nullptr);
+				}
+
+				m_selectGameObject = false;
+			}
 		}
 	}
 
 	ImGui::End();
 }
 
-void SceneWidget::AddGameObjectToTree(GameObject* gameObject) const noexcept
+void SceneWidget::Serialized(FileStream* file) const
+{
+	if (auto scene = m_world->GetCurrentScene())
+	{
+		file->Write(scene->GetAssetName());
+	}
+	else
+	{
+		file->Write(String(""));
+	}
+}
+
+void SceneWidget::Deserialized(FileStream* file)
+{
+	String sceneName;
+	file->Read(&sceneName);
+
+	if (!sceneName.empty())
+	{
+		m_world->ChangeScene(sceneName);
+	}
+}
+
+void SceneWidget::AddGameObjectToTree(GameObject* gameObject) noexcept
 {
 	auto flags = ImGuiTreeNodeFlags_OpenOnArrow;
 	if (gameObject->GetTransform().GetChildCount() == 0)
@@ -73,7 +114,7 @@ void SceneWidget::AddGameObjectToTree(GameObject* gameObject) const noexcept
 	}
 }
 
-void SceneWidget::ShowGameObjectHelper() const noexcept
+void SceneWidget::ShowGameObjectHelper() noexcept
 {
 	if (ImGui::IsMouseClicked(1) && ImGui::IsWindowHovered())
 	{
@@ -81,11 +122,18 @@ void SceneWidget::ShowGameObjectHelper() const noexcept
 	}
 
 	bool isCreate = false;
+	bool isDelete = m_gameObject && ImGui::IsKeyPressed(ImGuiKey_Delete);
 	if (ImGui::BeginPopup("GameObject Helper"))
 	{
 		if (ImGui::Button("Create GameObject"))
 		{
 			isCreate = true;
+			ImGui::CloseCurrentPopup();
+		}
+
+		if (m_gameObject && ImGui::Button("Delete GameObject"))
+		{
+			isDelete = true;
 			ImGui::CloseCurrentPopup();
 		}
 		ImGui::EndPopup();
@@ -95,9 +143,16 @@ void SceneWidget::ShowGameObjectHelper() const noexcept
 	{
 		ImGui::OpenPopup("Create GameObject");
 	}
+
+	if (isDelete)
+	{
+		m_world->DestroyGameObject(m_gameObject);
+		m_gameObject = nullptr;
+		DetailsWidget::ClearSelectObject();
+	}
 }
 
-void SceneWidget::ShowGameObjectCreateWindow() noexcept
+void SceneWidget::ShowCreateWindow() noexcept
 {
 	ASSERT(m_world->GetCurrentScene());
 
@@ -128,7 +183,7 @@ void SceneWidget::ShowGameObjectCreateWindow() noexcept
 	}
 }
 
-void SceneWidget::ChackClickedCommand(GameObject* gameObject) const noexcept
+void SceneWidget::ChackClickedCommand(GameObject* gameObject) noexcept
 {
 	// ドラッグアンドドロップ有効指定
 	if (!ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem))
@@ -152,8 +207,11 @@ void SceneWidget::ChackClickedCommand(GameObject* gameObject) const noexcept
 		if (DragDrop::Get().HasGameObject())
 		{			
 			auto dragGameObject = CatchDragObject();
+
+			// 違うオブジェクトにドラッグされたら親子関係を構築
 			if (dragGameObject == gameObject)
 			{
+				m_gameObject = gameObject;
 				DetailsWidget::SelectGameObject(gameObject);
 			}
 			else
@@ -161,6 +219,8 @@ void SceneWidget::ChackClickedCommand(GameObject* gameObject) const noexcept
 				dragGameObject->GetTransform().SetParent(&gameObject->GetTransform());
 			}
 		}
+
+		m_selectGameObject = true;
 	}
 }
 
@@ -169,6 +229,8 @@ GameObject* SceneWidget::CatchDragObject() const noexcept
 	if (DragDrop::Get().HasGameObject())
 	{
 		auto dragObject = DragDrop::Get().GetDragObject();
+		DragDrop::Get().EndDrag();
+
 		return std::any_cast<GameObject*>(dragObject);
 	}
 	return nullptr;

@@ -2,7 +2,7 @@
 * @file	   TransformDetails.cpp
 * @brief
 *
-* @date	   2022/09/13 2022年度初版
+* @date	   2022/10/27 2022年度初版
 */
 
 
@@ -27,13 +27,13 @@ void TransformDetails::Draw()
 		auto scale	   = transform->GetScale();
 
 		ImGui::Text("Position"); ImGui::SameLine(offsetPos);
-		auto inputPosition = ImGui::DragFloat3("##Position", &position.x);
-
+		auto inputPosition = ImGui::DragFloat3("##Position", &position.x, 0.1f);
+		
 		ImGui::Text("Rotation"); ImGui::SameLine(offsetPos);
-		auto inputRotation = ImGui::DragFloat3("##Rotation", &rotation.x);
+		auto inputRotation = ImGui::DragFloat3("##Rotation", &rotation.x, 0.05f);
 
 		ImGui::Text("Scale"); ImGui::SameLine(offsetPos);
-		auto inputScale = ImGui::DragFloat3("##Scale", &scale.x);
+		auto inputScale = ImGui::DragFloat3("##Scale", &scale.x, 0.05f);
 
 		if (inputPosition) RegisterEditorCommand([transform](auto data) { transform->SetPosition(data); }, position, transform->GetPosition());
 		if (inputRotation) RegisterEditorCommand([transform](auto data) { transform->SetRotation(data); }, rotation, transform->GetRotation());

@@ -14,7 +14,7 @@ class ResourceManager;
 
 class AssetsWidget : public Widget
 {
-	IN_DEVELOPMENT("Scene消去時のSceneWidgetのエラー && リソースの解放")
+	COMPLETED_DEVELOPMENT()
 public:
 
 	void PostInitialize() override;

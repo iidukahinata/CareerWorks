@@ -39,7 +39,7 @@ void EditorHelper::BegineRenderer() noexcept
 
 void EditorHelper::Shutdown() noexcept
 {
-	auto resourceManager = g_context->GetSubsystem<ResourceManager>();
+	const auto resourceManager = g_context->GetSubsystem<ResourceManager>();
 
 	for (const auto& resource : m_iconTextures)
 	{
@@ -51,8 +51,8 @@ void EditorHelper::Shutdown() noexcept
 
 void EditorHelper::AddImage(void* shaderResourceView, const ImVec2& imageSize, const ImVec2& uv0, const ImVec2& uv1, const ImVec4& tint_col, const ImVec4& border_col) noexcept
 {
-	auto srv = static_cast<D3D12ShaderResourceView*>(shaderResourceView);
-	auto texture = srv->GetCPUHandle();
+	const auto srv = static_cast<D3D12ShaderResourceView*>(shaderResourceView);
+	const auto texture = srv->GetCPUHandle();
 
 	// V‚µ‚­ texture Data ‚Ì“o˜^
 	auto cpuHandle = m_descriptorHeap->GetCPUHandle();
@@ -72,8 +72,8 @@ void EditorHelper::AddImage(void* shaderResourceView, const ImVec2& imageSize, c
 
 bool EditorHelper::AddImageButton(void* shaderResourceView, const ImVec2& imageSize, const ImVec2& uv0, const ImVec2& uv1, const int frame_padding, const ImVec4& bg_col, const ImVec4& tint_col) noexcept
 {
-	auto srv = static_cast<D3D12ShaderResourceView*>(shaderResourceView);
-	auto texture = srv->GetCPUHandle();
+	const auto srv = static_cast<D3D12ShaderResourceView*>(shaderResourceView);
+	const auto texture = srv->GetCPUHandle();
 
 	// V‚µ‚­ texture Data ‚Ì“o˜^
 	auto cpuHandle = m_descriptorHeap->GetCPUHandle();
@@ -86,7 +86,7 @@ bool EditorHelper::AddImageButton(void* shaderResourceView, const ImVec2& imageS
 	D3D12GraphicsDevice::Get().GetDevice()->CopyDescriptors(1, &cpuHandle, &size, size, &texture, nullptr, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
 	// Image •`‰æ
-	auto result = ImGui::ImageButton((void*)gpuHandle.ptr, imageSize, uv0, uv1, frame_padding, bg_col, tint_col);
+	const auto result = ImGui::ImageButton((void*)gpuHandle.ptr, imageSize, uv0, uv1, frame_padding, bg_col, tint_col);
 
 	++m_numImage;
 
@@ -156,7 +156,7 @@ void EditorHelper::AddEditorCommand(UniquePtr<ICommand> command) noexcept
 
 void EditorHelper::RegisterIconTexture() noexcept
 {
-	auto resourceManager = g_context->GetSubsystem<ResourceManager>();
+	const auto resourceManager = g_context->GetSubsystem<ResourceManager>();
 
 	auto iconTextureLoad = [resourceManager](StringView path) {
 		auto handle = resourceManager->Load<Texture>(path);

@@ -20,9 +20,9 @@ void Light::Serialized(FileStream* file) const
 	file->Write(m_angle);
 }
 
-void Light::Deserialization(FileStream* file)
+void Light::Deserialized(FileStream* file)
 {
-	IComponent::Deserialization(file);
+	IComponent::Deserialized(file);
 
 	file->Read(&m_lightType);
 	file->Read(&m_color);
@@ -41,8 +41,6 @@ void Light::OnInitialize()
 	m_angle = 0;
 	m_intensity = 1;
 	m_influenceRange = 5;
-
-	GetTransform().SetRotation(Math::Vector3(0.5f, -0.5f, -1.f));
 }
 
 void Light::OnRegister()

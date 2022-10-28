@@ -2,7 +2,7 @@
 * @file	   ResourceDetails.cpp
 * @brief
 *
-* @date	   2022/09/13 2022年度初版
+* @date	   2022/10/27 2022年度初版
 */
 
 
@@ -18,10 +18,12 @@ ResourceDetails::ResourceDetails(DetailsWidget* detailsWidget, ResourceData* res
 void ResourceDetails::Draw()
 {
 	constexpr int offsetPos = 130;
+	constexpr int childoffset = 15;
 
 	if (ImGui::CollapsingHeader("Resource Data", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		auto&& path = ConvertToJapanese(m_resourceData->m_resourcePath.m_path);
+		auto width = ImGui::GetWindowWidth() - childoffset;
 
 		ImGui::Text("Name"); ImGui::SameLine(offsetPos);
 		ImGui::Text(path.c_str()); ImGui::Text("");
@@ -29,7 +31,7 @@ void ResourceDetails::Draw()
 		ImGui::Text("Ref Resource Names");
 
 		// 参照リソースの表示
-		ImGui::BeginChild(ImGui::GetID((void*)0), ImVec2(405, 250), ImGuiWindowFlags_NoTitleBar);
+		ImGui::BeginChild(ImGui::GetID((void*)0), ImVec2(width, 250), ImGuiWindowFlags_NoTitleBar);
 		for (auto& resourcePath : m_resourceData->m_refResourcePaths)
 		{
 			auto&& refPath = ConvertToJapanese(resourcePath.m_path);

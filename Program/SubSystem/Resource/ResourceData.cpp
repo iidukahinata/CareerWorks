@@ -28,7 +28,7 @@ void ResourcePath::Serialized(FileStream* file) const noexcept
 	file->Write(m_path);
 }
 
-void ResourcePath::Deserialization(FileStream* file) noexcept
+void ResourcePath::Deserialized(FileStream* file) noexcept
 {
 	file->Read(&m_type);
 	file->Read(&m_path);
@@ -47,9 +47,9 @@ void ResourceData::Serialized(FileStream* file) const noexcept
 	}
 }
 
-void ResourceData::Deserialization(FileStream* file) noexcept
+void ResourceData::Deserialized(FileStream* file) noexcept
 {
-	m_resourcePath.Deserialization(file);
+	m_resourcePath.Deserialized(file);
 
 	size_t size;
 	file->Read(&size);
@@ -59,7 +59,7 @@ void ResourceData::Deserialization(FileStream* file) noexcept
 	// 参照関係オブジェクト取得
 	for (int i = 0; i < m_refResourcePaths.size(); ++i)
 	{
-		m_refResourcePaths[i].Deserialization(file);
+		m_refResourcePaths[i].Deserialized(file);
 	}
 }
 

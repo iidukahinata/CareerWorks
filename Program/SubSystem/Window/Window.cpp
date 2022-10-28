@@ -19,11 +19,25 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpar
 
 	switch (msg)
 	{
+	case WM_DROPFILES:
+	{
+		auto hDropInfo = reinterpret_cast<HDROP>(wparam);
+		char buffer[MAX_PATH + 1];
+
+		DragQueryFile(hDropInfo, 0, buffer, MAX_PATH + 1);
+
+		NotifyEvent<ImportResourceEvent>(buffer);
+
+		DragFinish(hDropInfo);
+		break;
+	}
 	case WM_DESTROY:
+	{
 		PostQuitMessage(0);
 		break;
-
+	}
 	case WM_KEYDOWN:
+	{
 		switch (wparam)
 		{
 		case VK_ESCAPE:
@@ -31,8 +45,9 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpar
 			break;
 		}
 		break;
-
+	}
 	case WM_ACTIVATE:
+	{
 		if (LOWORD(wparam) != WA_INACTIVE)
 		{
 			if (auto timer = g_context->GetSubsystem<Timer>())
@@ -41,14 +56,15 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpar
 			}
 		}
 		break;
-
-	case WM_EXITSIZEMOVE:
+	}
+	case WM_EXITSIZEMOVE: 
+	{
 		if (auto timer = g_context->GetSubsystem<Timer>())
 		{
 			timer->ResetMeasurement();
 		}
 		break;
-
+	}
 	default:
 		return DefWindowProc(hwnd, msg, wparam, lparam);
 	}
@@ -58,12 +74,12 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpar
 bool Window::CreateWindowClass(HINSTANCE hInstance, int width, int height, StringView title, bool fullScreen) noexcept
 {
 	// タイトルバーと境界線があるウィンドウ
-	unsigned long windowStyles = WS_OVERLAPPEDWINDOW;
+	unsigned long windowStyles = WS_SIZEBOX | WS_OVERLAPPEDWINDOW;
 	if (fullScreen)
 	{
 		// フルスクリーン時はタイトルバーを消す
 		windowStyles = WS_POPUPWINDOW;
-		m_width = GetSystemMetrics(SM_CXSCREEN);
+		m_width  = GetSystemMetrics(SM_CXSCREEN);
 		m_height = GetSystemMetrics(SM_CYSCREEN);
 		m_fullscreen = true;
 	}
@@ -78,12 +94,20 @@ bool Window::CreateWindowClass(HINSTANCE hInstance, int width, int height, Strin
 	w.cbSize = sizeof(WNDCLASSEX);
 	w.lpfnWndProc = (WNDPROC)WindowProcedure;
 	w.lpszClassName = "windowClass";
+	w.style = CS_CLASSDC | CS_HREDRAW | CS_VREDRAW;
 	w.hInstance = hInstance;
 	if (!RegisterClassEx(&w))
 	{
 		LOG_ERROR("RegisterClassEx に失敗しました。");
 		return false;
 	}
+
+	RECT wr;
+	wr.left = 100;
+	wr.right = width + wr.left;
+	wr.top = 100;
+	wr.bottom = height + wr.top;
+	AdjustWindowRectEx(&wr, WS_CAPTION | WS_MINIMIZE | WS_SYSMENU, FALSE, NULL);
 
 	m_hWnd = CreateWindow(
 		w.lpszClassName,
@@ -105,6 +129,10 @@ bool Window::CreateWindowClass(HINSTANCE hInstance, int width, int height, Strin
 	}
 
 	m_hInstance = hInstance;
+
+#ifdef IS_EDITOR
+	DragAcceptFiles(m_hWnd, true);
+#endif // IS_EDITOR
 
 	return true;
 }

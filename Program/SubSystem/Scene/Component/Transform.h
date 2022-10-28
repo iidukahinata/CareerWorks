@@ -19,7 +19,7 @@ public:
 	~Transform();
 
 	void Serialized(FileStream* file) const noexcept;
-	void Deserialization(FileStream* file) noexcept;
+	void Deserialized(FileStream* file) noexcept;
 
 public:
 

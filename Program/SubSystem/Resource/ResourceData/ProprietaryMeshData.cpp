@@ -17,7 +17,7 @@ void ProprietaryMeshData::Serialized(FileStream* file) const
 	file->Write(m_materialPath);
 }
 
-void ProprietaryMeshData::Deserialization(FileStream* file)
+void ProprietaryMeshData::Deserialized(FileStream* file)
 {
 	file->Read(&m_vertices);
 	file->Read(&m_indices);

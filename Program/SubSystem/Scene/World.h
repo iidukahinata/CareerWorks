@@ -2,7 +2,7 @@
 * @file    World.h
 * @brief
 *
-* @date	   2022/10/03 2022年度初版
+* @date	   2022/10/27 2022年度初版
 */
 #pragma once
 
@@ -25,7 +25,7 @@ class Scene;
 
 class World : public ISubsystem
 {
-	COMPLETED_DEVELOPMENT()
+	WAIT_FOR_DEVELOPMENT("現在シーンの再ロードの申請時の処理はまだない && Play Stop 後のリソースアクセス等は仕様が決まり次第作成")
 	SUB_CLASS(World)
 public:
 
@@ -84,13 +84,15 @@ public:
 
 private:
 
+	/** Event Listener オブジェクト初期化 */
 	void StartupListenerObjects() noexcept;
 
+	/** Editor 時の State 変更時のシーン処理を記述 */
 	void ChangeWorldType(WorldType type) noexcept;
 
 private:
 
-	// * Load / Unload 発行用
+	// * Scene Load / Unload 発行用
 	ResourceManager* m_resourceManager = nullptr;
 
 	// * Update 用
@@ -114,6 +116,6 @@ private:
 	// * 複数シーンの同時読み込みに対応させるため
 	Unordered_Map<String, ResourceHandle*> m_resourceHandles;
 
-	// * 
+	// * Game Mode 実行時の時は常に WorldType::Game になる
 	WorldType m_worldType = WorldType::None;
 };

@@ -18,7 +18,7 @@ class AudioSpeaker : public IComponent
 public:
 
 	void Serialized(FileStream* file) const override;
-	void Deserialization(FileStream* file) override;
+	void Deserialized(FileStream* file) override;
 
 public:
 
