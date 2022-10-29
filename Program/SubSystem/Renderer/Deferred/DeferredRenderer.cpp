@@ -34,7 +34,6 @@ bool DeferredRenderer::Initialize()
 
 	// Create TransCBuffer
 	m_transformCBuffer = std::make_unique<TransformCBuffer>();
-	m_transformCBuffer->Initialize();
 
 	// SetUp Object
 	{

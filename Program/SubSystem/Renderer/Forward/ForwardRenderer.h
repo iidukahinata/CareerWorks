@@ -37,5 +37,6 @@ private:
 
 	// * SceneView 描画用最終フレームを保持
 	D3D12RenderTexture m_renderTexture;
+
 #endif // IS_EDITOR
 };

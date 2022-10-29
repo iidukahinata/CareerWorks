@@ -86,6 +86,13 @@ void D3D12ShaderResourceView::Create(ID3D12Resource* resource, const D3D12_RESOU
 				srvDesc.Texture2D.PlaneSlice = 0;
 				srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
 			}
+			else if (desc.DepthOrArraySize == 6)
+			{
+				srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
+				srvDesc.TextureCube.MipLevels = desc.MipLevels;
+				srvDesc.TextureCube.MostDetailedMip = 0;
+				srvDesc.TextureCube.ResourceMinLODClamp = 0.0f;
+			}
 			else
 			{
 				srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2DARRAY;

@@ -14,7 +14,7 @@
 bool Renderer::Initialize()
 {
 	const auto handle = Window::Get().GetHandle();
-	const auto width = Window::Get().GetWindowWidth();
+	const auto width  = Window::Get().GetWindowWidth();
 	const auto height = Window::Get().GetWindowHeight();
 
 	// デバイス初期化
@@ -80,12 +80,17 @@ void Renderer::RegisterPostProcess(PostProcessEffect* postProcess) noexcept
 	m_postProcessEffect = postProcess;
 }
 
-void Renderer::OnRegisterPostProcess(PostProcessEffect* postProcess) noexcept
+void Renderer::UnRegisterPostProcess(PostProcessEffect* postProcess) noexcept
 {
 	if (m_postProcessEffect == postProcess)
 	{
 		m_postProcessEffect = nullptr;
 	}
+}
+
+PostProcessEffect* Renderer::GetPostProcess() noexcept
+{
+	return m_postProcessEffect;
 }
 
 bool Renderer::HasPostProcessSetting() noexcept

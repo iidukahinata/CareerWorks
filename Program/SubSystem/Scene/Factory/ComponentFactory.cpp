@@ -12,6 +12,7 @@
 #include "../Component/Components/Camera.h"
 #include "../Component/Components/Light.h"
 #include "../Component/Components/RenderObject.h"
+#include "../Component/Components/PostProcessEffect.h"
 
 // Audio
 #include "../Component/Components/AudioListener.h"
@@ -32,6 +33,7 @@ UniquePtr<IComponent> ComponentFactory::Create(GameObject* gameObject, StringVie
     CASE_CREATE_COMPONENT(ModelRender       , component);
     CASE_CREATE_COMPONENT(AudioListener     , component);
     CASE_CREATE_COMPONENT(AudioSpeaker      , component);
+    CASE_CREATE_COMPONENT(PostProcessEffect , component);
     default: break;
     }
 

@@ -50,6 +50,7 @@ public:
 	/** 型名からコンポーネントを検索。*/
 	template<class T>
 	T* GetComponent();
+	void GetAllComponent(Vector<IComponent*>& components) const noexcept;
 	const Map<uint32_t, UniquePtr<IComponent>>& GetAllComponent() const noexcept;
 
 	/** 指定名コンポーネントを保持する場合、そのアドレスを返す。*/

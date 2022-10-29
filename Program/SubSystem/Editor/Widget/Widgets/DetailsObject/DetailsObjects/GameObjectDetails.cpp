@@ -16,6 +16,7 @@
 #include "SubSystem/Scene/Component/Components/RenderObject.h"
 #include "SubSystem/Scene/Component/Components/AudioSpeaker.h"
 #include "SubSystem/Scene/Component/Components/AudioListener.h"
+#include "SubSystem/Scene/Component/Components/PostProcessEffect.h"
 
 GameObjectDetails::GameObjectDetails(DetailsWidget* detailsWidget, GameObject* gameObject) :
 	DetailsObject(detailsWidget), m_gameObject(gameObject)
@@ -26,6 +27,7 @@ GameObjectDetails::GameObjectDetails(DetailsWidget* detailsWidget, GameObject* g
 	RegisterComponent<ModelRender>();
 	RegisterComponent<AudioSpeaker>();
 	RegisterComponent<AudioListener>();
+	RegisterComponent<PostProcessEffect>();
 }
 
 void GameObjectDetails::Draw()

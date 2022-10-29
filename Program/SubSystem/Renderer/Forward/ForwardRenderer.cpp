@@ -19,13 +19,16 @@ bool ForwardRenderer::Initialize()
 {
 	Renderer::Initialize();
 
+	// Create SkyBox
+	m_skyBox = std::make_unique<SkyBox>();
+	m_skyBox->Initialize();
+
 	// Create LightMap
 	m_lightMap = std::make_unique<DefaultLightMap>();
 	m_lightMap->Initialize();
 
 	// Create TransCBuffer
 	m_transformCBuffer = std::make_unique<TransformCBuffer>();
-	m_transformCBuffer->Initialize();
 
 #if IS_EDITOR
 	m_renderTexture.Create(Window::Get().GetWindowWidth(), Window::Get().GetWindowHeight());
@@ -63,6 +66,7 @@ void ForwardRenderer::Update() noexcept
 		m_lightMap->Update(m_mainCamera);
 		m_transformCBuffer->Update(m_mainCamera);
 
+		// Renderer Model
 		for (auto renderObject : m_renderObjects)
 		{
 			if (!renderObject->GetActive())
@@ -70,6 +74,9 @@ void ForwardRenderer::Update() noexcept
 
 			renderObject->Render();
 		}
+
+		// Renderer SkyBox
+		m_skyBox->Render(m_mainCamera);
 	}
 }
 

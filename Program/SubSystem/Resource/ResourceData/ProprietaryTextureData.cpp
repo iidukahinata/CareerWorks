@@ -30,7 +30,7 @@ ProprietaryTextureData ProprietaryTextureData::ConvertProprietaryData(DirectX::T
 {
 	ProprietaryTextureData textureData;
 
-	textureData.m_imageCount = image->GetImageCount();
+	textureData.m_imageCount = meta.arraySize;
 	textureData.m_meta		 = meta;
 	textureData.m_rowPitch	 = image->GetImages()->rowPitch;
 	textureData.m_slicePitch = image->GetImages()->slicePitch;

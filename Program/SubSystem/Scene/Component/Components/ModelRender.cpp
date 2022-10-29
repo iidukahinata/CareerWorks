@@ -2,7 +2,7 @@
 * @file    MeshRender.cpp
 * @brief
 *
-* @date	   2022/10/03 2022年度初版
+* @date	   2022/10/28 2022年度初版
 */
 
 
@@ -65,17 +65,21 @@ Model* ModelRender::GetModel() const noexcept
 	return m_model;
 }
 
-void ModelRender::Render() const
+void ModelRender::Render()
 {
 	if (!m_model)
 	{
 		return;
 	}
 
-	// 描画時使用する World行列
-	auto&& transform = GetTransform().GetWorldMatrix();
-	m_renderer->GetTransformCBuffer()->SetWorld(transform.ToMatrixXM());
-	m_renderer->GetTransformCBuffer()->Bind();
+	// 描画時使用する MatrixBuffer の更新
+	{
+		auto&& handle	 = m_constantBufferMatrix.GetCPUData();
+		auto&& transform = GetTransform().GetWorldMatrix().ToMatrixXM();
+
+		m_renderer->GetTransformCBuffer()->Bind(handle, transform);
+		m_constantBufferMatrix.VSSet(0);
+	}
 
 	for (const auto& meshes = m_model->GetAllMeshes(); auto mesh : meshes)
 	{

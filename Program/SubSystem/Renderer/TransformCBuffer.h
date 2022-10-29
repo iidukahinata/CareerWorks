@@ -2,7 +2,7 @@
 * @file	   TransformCBuffer.h
 * @brief
 *
-* @date	   2022/08/02 2022年度初版
+* @date	   2022/10/28 2022年度初版
 */
 #pragma once
 
@@ -16,18 +16,17 @@ class TransformCBuffer
 	COMPLETED_DEVELOPMENT()
 public:
 
-	void Initialize() noexcept;
 	void Update(Camera* mainCamera) noexcept;
 
-	void Bind() noexcept;
-
-	void SetWorld(const DirectX::XMMATRIX& world) noexcept;
-	void SetProjection(const DirectX::XMMATRIX& proj) noexcept;
-	void SetView(const DirectX::XMMATRIX& view) noexcept;
-
-	void CreateMatrixBufferData() noexcept;
+	void Bind(void* matrixBuffer, const DirectX::XMMATRIX& world) noexcept;
 
 private:
+
+	DirectX::XMMATRIX m_world;
+	DirectX::XMMATRIX m_view;
+	DirectX::XMMATRIX m_viewProjection;
+	DirectX::XMMATRIX m_viewProjectionInverse;
+	DirectX::XMMATRIX m_projection;
 
 	struct ConstantBufferMatrix
 	{
@@ -39,6 +38,4 @@ private:
 		DirectX::XMMATRIX viewProjectionInverse;
 		DirectX::XMMATRIX projection;
 	};
-
-	D3D12ConstantBuffer m_constantBufferMatrix;
 };

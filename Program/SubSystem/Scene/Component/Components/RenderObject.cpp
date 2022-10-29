@@ -12,6 +12,8 @@
 void RenderObject::OnInitialize()
 {
 	m_renderer = GetContext()->GetSubsystem<Renderer>();
+
+	m_constantBufferMatrix.Create(sizeof(ConstantBufferMatrix));
 }
 
 void RenderObject::OnRegister()

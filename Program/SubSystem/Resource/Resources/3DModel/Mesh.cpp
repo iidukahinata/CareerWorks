@@ -56,6 +56,7 @@ void Mesh::Render() noexcept
 
 	m_material->Render();
 	
+	// Set Mesh Buffer
 	m_vertexBuffer.IASet();
 	m_indexBuffer.IASet();
 

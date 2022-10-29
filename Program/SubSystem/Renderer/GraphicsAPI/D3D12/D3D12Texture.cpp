@@ -40,7 +40,7 @@ bool D3D12Texture::Create(const DirectX::TexMetadata& meta) noexcept
 	{
 		texDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE3D;
 	}
-
+;
 	//texDesc.Alignment;
 	texDesc.DepthOrArraySize = meta.arraySize;
 	//texDesc.Flags;

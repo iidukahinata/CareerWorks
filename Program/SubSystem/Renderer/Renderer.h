@@ -2,11 +2,12 @@
 * @file	   Renderer.h
 * @brief
 *
-* @date	   2022/09/09 2022年度初版
+* @date	   2022/10/28 2022年度初版
 */
 #pragma once
 
 
+#include "SkyBox.h"
 #include "LightMap.h"
 #include "TransformCBuffer.h"
 #include "SubSystem/Core/ISubsystem.h"
@@ -44,17 +45,24 @@ public:
 
 	/** Post Process Effect メソッド */
 	void RegisterPostProcess(PostProcessEffect* postProcess) noexcept;
-	void OnRegisterPostProcess(PostProcessEffect* postProcess) noexcept;
+	void UnRegisterPostProcess(PostProcessEffect* postProcess) noexcept;
+	PostProcessEffect* GetPostProcess() noexcept;
 	bool HasPostProcessSetting() noexcept;
 
+	/** アクセス */
+	SkyBox*			  GetSkyBox()			const noexcept { return m_skyBox.get(); }
 	TransformCBuffer* GetTransformCBuffer() const noexcept { return m_transformCBuffer.get(); }
 
 protected:
 
-	UniquePtr<TransformCBuffer> m_transformCBuffer;
+	// * スカイボックスクラス
+	UniquePtr<SkyBox> m_skyBox;
 
 	// * ライト管理のためのマップクラス
 	UniquePtr<LightMap> m_lightMap;
+
+	// * 行列管理のためのクラス
+	UniquePtr<TransformCBuffer> m_transformCBuffer;
 
 	// * Sceneに設置された描画オブジェクト配列。
 	Vector<RenderObject*> m_renderObjects;

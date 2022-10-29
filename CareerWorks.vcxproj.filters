@@ -160,6 +160,15 @@
     <Filter Include="Subsytem\Renderer\GraphicsAPI\D3D12">
       <UniqueIdentifier>{873f6baf-de66-4b8c-b0af-06d16bad0a85}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Subsytem\Renderer\PostEffect">
+      <UniqueIdentifier>{b9f0f46c-f47a-4b03-a2c5-2b12525bef29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Renderer\Factory">
+      <UniqueIdentifier>{a0144365-44d9-4605-9351-dd2223c303d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Renderer\PostEffect\PostEffects">
+      <UniqueIdentifier>{cdeb85fe-a552-48e2-bff3-51c24f67cff3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Program\WinMain.cpp" />
@@ -579,6 +588,30 @@
     </ClCompile>
     <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11GrahicsDevice.cpp">
       <Filter>Subsytem\Renderer\GraphicsAPI\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\SkyBox.cpp">
+      <Filter>Subsytem\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Scene\Component\Components\PostProcessEffect.cpp">
+      <Filter>Subsytem\Scene\Component\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\PostEffect\Bloom.cpp">
+      <Filter>Subsytem\Renderer\PostEffect\PostEffects</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\PostEffect\Blur.cpp">
+      <Filter>Subsytem\Renderer\PostEffect\PostEffects</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\PostEffect\DepthOfField.cpp">
+      <Filter>Subsytem\Renderer\PostEffect\PostEffects</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\PostEffect\Monotone.cpp">
+      <Filter>Subsytem\Renderer\PostEffect\PostEffects</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\Factory\PostEffectFactory.cpp">
+      <Filter>Subsytem\Renderer\Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\PostProcessEffectDetails.cpp">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1088,6 +1121,36 @@
     </ClInclude>
     <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11GrahicsDevice.h">
       <Filter>Subsytem\Renderer\GraphicsAPI\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\SkyBox.h">
+      <Filter>Subsytem\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\Geometry\Cube.h">
+      <Filter>Subsytem\Renderer\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Scene\Component\Components\PostProcessEffect.h">
+      <Filter>Subsytem\Scene\Component\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\PostEffect\PostEffect.h">
+      <Filter>Subsytem\Renderer\PostEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\PostEffect\Bloom.h">
+      <Filter>Subsytem\Renderer\PostEffect\PostEffects</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\PostEffect\Blur.h">
+      <Filter>Subsytem\Renderer\PostEffect\PostEffects</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\PostEffect\DepthOfField.h">
+      <Filter>Subsytem\Renderer\PostEffect\PostEffects</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\PostEffect\Monotone.h">
+      <Filter>Subsytem\Renderer\PostEffect\PostEffects</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\Factory\PostEffectFactory.h">
+      <Filter>Subsytem\Renderer\Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\PostProcessEffectDetails.h">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

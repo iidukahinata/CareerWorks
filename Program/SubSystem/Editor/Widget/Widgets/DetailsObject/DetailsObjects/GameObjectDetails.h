@@ -22,13 +22,11 @@ public:
 
 private:
 
+	/** コンポーネント追加用 window の表示を行う。*/
 	void ShowAddComponentWindow() noexcept;
 
 	template<class T>
-	void RegisterComponent()
-	{
-		m_components.emplace_back(std::make_unique<T>());
-	}
+	void RegisterComponent();
 
 private:
 
@@ -40,3 +38,9 @@ private:
 
 	GameObject* m_gameObject = nullptr;
 };
+
+template<class T>
+FORCEINLINE void GameObjectDetails::RegisterComponent()
+{
+	m_components.emplace_back(std::make_unique<T>());
+}

@@ -2,58 +2,32 @@
 * @file	   TransformCBuffer.cpp
 * @brief
 *
-* @date	   2022/09/18 2022年度初版
+* @date	   2022/10/28 2022年度初版
 */
 
 
 #include "TransformCBuffer.h"
 #include "SubSystem/Scene/Component/Components/Camera.h"
 
-void TransformCBuffer::Initialize() noexcept
-{
-	m_constantBufferMatrix.Create(sizeof(ConstantBufferMatrix));
-}
-
 void TransformCBuffer::Update(Camera* mainCamera) noexcept
 {
-	SetProjection(mainCamera->GetProjectionMatrix().ToMatrixXM());
-	SetView(mainCamera->GetViewMatrix().ToMatrixXM());
+	m_view		 = mainCamera->GetViewMatrix().ToMatrixXM();
+	m_projection = mainCamera->GetProjectionMatrix().ToMatrixXM();
 
-	CreateMatrixBufferData();
+	m_viewProjection		= m_view * m_projection;
+	m_viewProjectionInverse = DirectX::XMMatrixInverse(nullptr, m_viewProjection);
 }
 
-void TransformCBuffer::Bind() noexcept
+void TransformCBuffer::Bind(void* matrixBuffer, const DirectX::XMMATRIX& world) noexcept
 {
-	auto buffer = static_cast<ConstantBufferMatrix*>(m_constantBufferMatrix.GetCPUData());
+	m_world = world;
 
-	buffer->worldView = buffer->world * buffer->view;
-	buffer->worldViewProjection = buffer->world * buffer->viewProjection;
-
-	m_constantBufferMatrix.VSSet(0);
-}
-
-void TransformCBuffer::SetWorld(const DirectX::XMMATRIX& world) noexcept
-{
-	auto buffer = static_cast<ConstantBufferMatrix*>(m_constantBufferMatrix.GetCPUData());
-	buffer->world = world;
-}
-
-void TransformCBuffer::SetProjection(const DirectX::XMMATRIX& proj) noexcept
-{
-	auto buffer = static_cast<ConstantBufferMatrix*>(m_constantBufferMatrix.GetCPUData());
-	buffer->projection = proj;
-}
-
-void TransformCBuffer::SetView(const DirectX::XMMATRIX& view) noexcept
-{
-	auto buffer = static_cast<ConstantBufferMatrix*>(m_constantBufferMatrix.GetCPUData());
-	buffer->view = view;
-}
-
-void TransformCBuffer::CreateMatrixBufferData() noexcept
-{
-	auto buffer = static_cast<ConstantBufferMatrix*>(m_constantBufferMatrix.GetCPUData());
-
-	buffer->viewProjection = buffer->view * buffer->projection;
-	buffer->viewProjectionInverse = DirectX::XMMatrixInverse(nullptr, buffer->viewProjection);
+	auto buffer					  = static_cast<ConstantBufferMatrix*>(matrixBuffer);
+	buffer->world				  = m_world;
+	buffer->worldView			  = m_world * m_view;
+	buffer->worldViewProjection	  = m_world * m_viewProjection;
+	buffer->view				  = m_view;
+	buffer->viewProjection		  = m_viewProjection;
+	buffer->viewProjectionInverse = m_viewProjectionInverse;
+	buffer->projection			  = m_projection;
 }

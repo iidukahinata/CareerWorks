@@ -14,6 +14,8 @@ class D3D12Buffer : public D3D12DeviceChild
     COMPLETED_DEVELOPMENT()
 public:
 
+    virtual ~D3D12Buffer() = default;
+
     void Update(UINT destSize, void* srcPtr, UINT srcSize) noexcept;
 
     template<class T>

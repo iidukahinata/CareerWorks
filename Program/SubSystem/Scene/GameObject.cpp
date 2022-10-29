@@ -186,6 +186,16 @@ void GameObject::RemoveComponent(IComponent* component) noexcept
 	}
 }
 
+void GameObject::GetAllComponent(Vector<IComponent*>& components) const noexcept
+{
+	components.resize(m_components.size());
+
+	for (const auto& componentInfo : m_components)
+	{
+		components.push_back(componentInfo.second.get());
+	}
+}
+
 const Map<uint32_t, UniquePtr<IComponent>>& GameObject::GetAllComponent() const noexcept
 {
 	return m_components;

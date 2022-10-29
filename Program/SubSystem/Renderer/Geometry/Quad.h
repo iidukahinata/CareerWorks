@@ -2,7 +2,7 @@
 * @file	   Quad.h
 * @brief
 *
-* @date	   2022/09/02 2022年度初版
+* @date	   2022/10/28 2022年度初版
 */
 #pragma once
 
@@ -14,18 +14,18 @@ class Quad
 public:
 
 	template<class T>
-	static TriangleList<T> Create(float width, float height) noexcept
+	static TriangleList<T> Create(float width = 1.0f, float height = 1.0f) noexcept
 	{
 		TriangleList<T> triangleList;
 		auto& vertices = triangleList.m_vertices;
-		auto& indices = triangleList.m_indices;
+		auto& indices  = triangleList.m_indices;
 
 		const Math::Vector2 halfSize(width / 2.f, height / 2.f);
 
 		vertices.resize(4);
 
-		vertices[0].position = Math::Vector3( halfSize.x, halfSize.y, 0.f);
-		vertices[1].position = Math::Vector3(-halfSize.x, halfSize.y, 0.f);
+		vertices[0].position = Math::Vector3( halfSize.x,  halfSize.y, 0.f);
+		vertices[1].position = Math::Vector3(-halfSize.x,  halfSize.y, 0.f);
 		vertices[2].position = Math::Vector3(-halfSize.x, -halfSize.y, 0.f);
 		vertices[3].position = Math::Vector3( halfSize.x, -halfSize.y, 0.f);
 

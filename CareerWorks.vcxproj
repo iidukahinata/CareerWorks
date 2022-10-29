@@ -184,6 +184,7 @@
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\LightDetails.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\MaterialDetails.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ModelRenderDetails.cpp" />
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\PostProcessEffectDetails.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ResourceDetails.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\TransformDetails.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsWidget.cpp" />
@@ -205,6 +206,7 @@
     <ClCompile Include="Program\SubSystem\Log\DebugLog.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\Deferred\DeferredRenderer.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\Deferred\GBuffer.cpp" />
+    <ClCompile Include="Program\SubSystem\Renderer\Factory\PostEffectFactory.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\Forward\ForwardRenderer.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11ComputeShader.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11GrahicsDevice.cpp" />
@@ -240,7 +242,12 @@
     <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12View.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\LightMap.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\LightMap\DefaultLightMap.cpp" />
+    <ClCompile Include="Program\SubSystem\Renderer\PostEffect\Bloom.cpp" />
+    <ClCompile Include="Program\SubSystem\Renderer\PostEffect\Blur.cpp" />
+    <ClCompile Include="Program\SubSystem\Renderer\PostEffect\DepthOfField.cpp" />
+    <ClCompile Include="Program\SubSystem\Renderer\PostEffect\Monotone.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\Renderer.cpp" />
+    <ClCompile Include="Program\SubSystem\Renderer\SkyBox.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\TransformCBuffer.cpp" />
     <ClCompile Include="Program\SubSystem\Resource\Factory\ResourceFactory.cpp" />
     <ClCompile Include="Program\SubSystem\Resource\ResourceCache.cpp" />
@@ -270,6 +277,7 @@
     <ClCompile Include="Program\SubSystem\Scene\Component\Components\Camera.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\Components\Light.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\Components\ModelRender.cpp" />
+    <ClCompile Include="Program\SubSystem\Scene\Component\Components\PostProcessEffect.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\Components\RenderObject.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\IComponent.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\Transform.cpp" />
@@ -342,6 +350,7 @@
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\LightDetails.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\MaterialDetails.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ModelRenderDetails.h" />
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\PostProcessEffectDetails.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ResourceDetails.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\TransformDetails.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsWidget.h" />
@@ -365,7 +374,9 @@
     <ClInclude Include="Program\SubSystem\Log\DebugLog.h" />
     <ClInclude Include="Program\SubSystem\Renderer\Deferred\DeferredRenderer.h" />
     <ClInclude Include="Program\SubSystem\Renderer\Deferred\GBuffer.h" />
+    <ClInclude Include="Program\SubSystem\Renderer\Factory\PostEffectFactory.h" />
     <ClInclude Include="Program\SubSystem\Renderer\Forward\ForwardRenderer.h" />
+    <ClInclude Include="Program\SubSystem\Renderer\Geometry\Cube.h" />
     <ClInclude Include="Program\SubSystem\Renderer\Geometry\Quad.h" />
     <ClInclude Include="Program\SubSystem\Renderer\Geometry\TriangleList.h" />
     <ClInclude Include="Program\SubSystem\Renderer\Geometry\Vertex.h" />
@@ -403,7 +414,13 @@
     <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12View.h" />
     <ClInclude Include="Program\SubSystem\Renderer\LightMap.h" />
     <ClInclude Include="Program\SubSystem\Renderer\LightMap\DefaultLightMap.h" />
+    <ClInclude Include="Program\SubSystem\Renderer\PostEffect\Bloom.h" />
+    <ClInclude Include="Program\SubSystem\Renderer\PostEffect\Blur.h" />
+    <ClInclude Include="Program\SubSystem\Renderer\PostEffect\DepthOfField.h" />
+    <ClInclude Include="Program\SubSystem\Renderer\PostEffect\Monotone.h" />
+    <ClInclude Include="Program\SubSystem\Renderer\PostEffect\PostEffect.h" />
     <ClInclude Include="Program\SubSystem\Renderer\Renderer.h" />
+    <ClInclude Include="Program\SubSystem\Renderer\SkyBox.h" />
     <ClInclude Include="Program\SubSystem\Renderer\TransformCBuffer.h" />
     <ClInclude Include="Program\SubSystem\Resource\Factory\ResourceFactory.h" />
     <ClInclude Include="Program\SubSystem\Resource\ResourceCache.h" />
@@ -434,6 +451,7 @@
     <ClInclude Include="Program\SubSystem\Scene\Component\Components\AudioSpeaker.h" />
     <ClInclude Include="Program\SubSystem\Scene\Component\Components\Camera.h" />
     <ClInclude Include="Program\SubSystem\Scene\Component\Components\Light.h" />
+    <ClInclude Include="Program\SubSystem\Scene\Component\Components\PostProcessEffect.h" />
     <ClInclude Include="Program\SubSystem\Scene\Component\Components\RenderObject.h" />
     <ClInclude Include="Program\SubSystem\Scene\Component\IComponent.h" />
     <ClInclude Include="Program\SubSystem\Scene\Component\Transform.h" />

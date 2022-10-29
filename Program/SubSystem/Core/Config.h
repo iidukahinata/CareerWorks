@@ -46,6 +46,10 @@ public:
 	/** w’è AudioSystem ‚ÉØ‚è‘Ö‚¦ */
 	static void RegisterAudioSystem(AudioType type, bool saveSettings = true) noexcept;
 
+	static RendererType GetRendererType() noexcept { return m_rendererSystem; }
+	static InputType	GetInputType()	  noexcept { return m_inputSystem; }
+	static AudioType	GetAudioType()	  noexcept { return m_audioSystem; }
+
 private:
 
 	/** Œ»İİ’è‚Å Subsystem ‚Ì‰Šú‰»‚ğs‚¤B*/
