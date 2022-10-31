@@ -2,7 +2,7 @@
 * @file	   ForwardRenderer.h
 * @brief
 *
-* @date	   2022/09/16 2022年度初版
+* @date	   2022/10/30 2022年度初版
 */
 #pragma once
 
@@ -28,6 +28,17 @@ private:
 	/** Render Job の登録 */
 	void RegisterRenderJob() noexcept;
 
+	/** PreZ Pass で使用されるパイプライン初期化 */
+	bool SetUpPrePassObjects() noexcept;
+
+private:
+
+	/** LightMap 情報などの生成 */
+	void PrePass() noexcept;
+
+	/** LightMap 情報などの生成 */
+	void LightingPass() noexcept;
+
 private:
 
 	// * Update と Present
@@ -39,4 +50,10 @@ private:
 	D3D12RenderTexture m_renderTexture;
 
 #endif // IS_EDITOR
+
+	// * rendering objects
+	D3D12RootSignature m_preZrootSignature;
+
+	// * pipeline objects
+	D3D12GraphicsPipelineState m_preZPipeline;
 };

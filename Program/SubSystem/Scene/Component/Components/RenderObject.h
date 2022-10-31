@@ -24,7 +24,10 @@ public:
 	virtual void OnRegister() override;
 	virtual void OnUnRegister() override;
 
-	/** 各描画処理を記述。*/
+	/** PreZ Pass 用レンダリング関数*/
+	virtual void PreRender() = 0;
+
+	/** 実際のモデル表示処理を記述。*/
 	virtual void Render() = 0;
 
 private:
@@ -60,6 +63,7 @@ public:
 	void Serialized(FileStream* file) const override;
 	void Deserialized(FileStream* file) override;
 
+	void PreRender() override;
 	void Render() override;
 
 public:

@@ -30,6 +30,9 @@ public:
 	void Update() noexcept;
 	void Present() noexcept;
 
+	void RegisterGBufferShader(StringView path) override;
+	String GetGBufferShader() override;
+
 private:
 
 	/** Render Job ‚Ì“o˜^ */
@@ -64,6 +67,13 @@ private:
 
 	// * renderTarget objects
 	D3D12RenderTexture m_lightingRenderTexture;
+
+#if IS_EDITOR
+
+	// * SceneView •`‰æ—pÅIƒtƒŒ[ƒ€‚ğ•Û
+	D3D12RenderTexture m_renderTexture;
+
+#endif // IS_EDITOR
 
 	// * rendering objects
 	D3D12Sampler m_sampler;

@@ -2,7 +2,7 @@
 * @file    Meshcpp
 * @brief
 *
-* @date	   2022/09/04 2022年度初版
+* @date	   2022/10/30 2022年度初版
 */
 
 
@@ -47,12 +47,20 @@ void Mesh::Update()
 	UpdateResourceDataFile();
 }
 
+void Mesh::PreRender() noexcept
+{
+	ASSERT(m_material);
+
+	// Set Mesh Buffer
+	m_vertexBuffer.IASet();
+	m_indexBuffer.IASet();
+
+	D3D12GraphicsDevice::Get().GetCommandContext().DrawIndexedInstanced(m_meshData.m_indices.size(), 1, 0, 0, 0);
+}
+
 void Mesh::Render() noexcept
 {
-	if (!m_material)
-	{
-		return;
-	}
+	ASSERT(m_material);
 
 	m_material->Render();
 	

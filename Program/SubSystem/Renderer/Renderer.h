@@ -30,6 +30,8 @@ public:
 
 	virtual bool Initialize() override;
 
+public:
+
 	/** Light メソッド */
 	void AddLight(Light* light) noexcept;
 	void RemoveLight(Light* light) noexcept;
@@ -48,6 +50,10 @@ public:
 	void UnRegisterPostProcess(PostProcessEffect* postProcess) noexcept;
 	PostProcessEffect* GetPostProcess() noexcept;
 	bool HasPostProcessSetting() noexcept;
+
+	/** Deferred Renderer */
+	virtual void RegisterGBufferShader(StringView path) {}
+	virtual String GetGBufferShader() { return "none"; }
 
 	/** アクセス */
 	SkyBox*			  GetSkyBox()			const noexcept { return m_skyBox.get(); }

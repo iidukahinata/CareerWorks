@@ -67,6 +67,11 @@ void SceneWidget::Draw()
 
 void SceneWidget::Serialized(FileStream* file) const
 {
+	if (!m_world)
+	{
+		return;
+	}
+
 	if (auto scene = m_world->GetCurrentScene())
 	{
 		file->Write(scene->GetAssetName());

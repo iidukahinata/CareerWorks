@@ -2,18 +2,17 @@
 * @file	   ForwardRenderer.cpp
 * @brief
 *
-* @date	   2022/09/16 2022年度初版
+* @date	   2022/10/30 2022年度初版
 */
 
 
 #include "ForwardRenderer.h"
+#include "SubSystem/Window/Window.h"
 #include "../LightMap/DefaultLightMap.h"
+#include "SubSystem/Editor/EditorSystem.h"
 #include "../GraphicsAPI/D3D12/D3D12GraphicsDevice.h"
 #include "SubSystem/Scene/Component/Components/Camera.h"
 #include "SubSystem/Scene/Component/Components/RenderObject.h"
-
-#include "SubSystem/Window/Window.h"
-#include "SubSystem/Editor/EditorSystem.h"
 
 bool ForwardRenderer::Initialize()
 {
@@ -30,9 +29,16 @@ bool ForwardRenderer::Initialize()
 	// Create TransCBuffer
 	m_transformCBuffer = std::make_unique<TransformCBuffer>();
 
+	// SetUp Objects
+	{
+		if (!SetUpPrePassObjects())
+		{
+			return false;
+		}
+	}
+
 #if IS_EDITOR
 	m_renderTexture.Create(Window::Get().GetWindowWidth(), Window::Get().GetWindowHeight());
-
 	EditorSystem::Get().PostInitialize(m_renderTexture.GetShaderResourceView());
 #endif // IS_EDITOR
 
@@ -63,20 +69,9 @@ void ForwardRenderer::Update() noexcept
 
 	if (m_mainCamera)
 	{
-		m_lightMap->Update(m_mainCamera);
-		m_transformCBuffer->Update(m_mainCamera);
+		PrePass();
 
-		// Renderer Model
-		for (auto renderObject : m_renderObjects)
-		{
-			if (!renderObject->GetActive())
-				continue;
-
-			renderObject->Render();
-		}
-
-		// Renderer SkyBox
-		m_skyBox->Render(m_mainCamera);
+		LightingPass();
 	}
 }
 
@@ -95,4 +90,93 @@ void ForwardRenderer::RegisterRenderJob() noexcept
 	{
 		m_jobs[i].RegisterToJobSystem();
 	}
+}
+
+bool ForwardRenderer::SetUpPrePassObjects() noexcept
+{
+	// Create RootSignature
+	{
+		Array<CD3DX12_DESCRIPTOR_RANGE1, 3> descTblRanges = {};
+		Array<CD3DX12_ROOT_PARAMETER1, 3> rootParams = {};
+
+		//===定数バッファ用設定=====================================
+		descTblRanges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 8, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC);
+		rootParams[0].InitAsDescriptorTable(1, &descTblRanges[0]);
+		//==========================================================
+
+		//===テクスチャ用設定=======================================
+		descTblRanges[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 16, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC);
+		rootParams[1].InitAsDescriptorTable(1, &descTblRanges[1], D3D12_SHADER_VISIBILITY_PIXEL);
+		//==========================================================
+
+		//===Sampler用設定==========================================
+		descTblRanges[2].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER, 8, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC);
+		rootParams[2].InitAsDescriptorTable(1, &descTblRanges[2], D3D12_SHADER_VISIBILITY_PIXEL);
+		//==========================================================
+
+		auto flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
+			D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS | D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
+			D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
+
+		if (!m_preZrootSignature.Create(rootParams.size(), rootParams.data(), 0, nullptr, flags))
+		{
+			return false;
+		}
+	}
+
+	// Create PipelineState
+	{
+		const auto preZShaderPath = FileSystem::FindFilePath(SHADER_DIRECTORY, "PreZ.hlsl");
+
+		D3D12Shader preZShader;
+		preZShader.Compile(preZShaderPath, VertexShader);
+
+		GraphicsPipelineStateDesc desc = {};
+		desc.VS				  = &preZShader;
+		desc.BlendMode		  = BLEND_MODE_NO_ALPHA;
+		desc.RasterizerState  = NO_CULL;
+		desc.PrimitiveType	  = PRIMITIVE_TYPE_POINTLIST;
+		desc.NumRenderTargets = 1;
+
+		if (!m_preZPipeline.Create(desc, &m_preZrootSignature))
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+void ForwardRenderer::PrePass() noexcept
+{
+	m_lightMap->Update(m_mainCamera);
+	m_transformCBuffer->Update(m_mainCamera);
+
+	// Z prepass
+	{
+		m_preZPipeline.Set();
+		
+		for (auto renderObject : m_renderObjects)
+		{
+			if (!renderObject->GetActive())
+				continue;
+		
+			renderObject->PreRender();
+		}
+	}
+}
+
+void ForwardRenderer::LightingPass() noexcept
+{
+	// Draw
+	for (auto renderObject : m_renderObjects)
+	{
+		if (!renderObject->GetActive())
+			continue;
+
+		renderObject->Render();
+	}
+
+	// Draw SkyBox
+	m_skyBox->Render(m_mainCamera);
 }

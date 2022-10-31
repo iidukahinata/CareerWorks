@@ -123,6 +123,11 @@ void MainMenuBarWidget::Draw()
 
 void MainMenuBarWidget::Serialized(FileStream* file) const
 {
+    if (!m_renderer)
+    {
+        return;
+    }
+
     const auto skybox = m_renderer->GetSkyBox();
     if (auto texture = skybox->GetTexture())
     {

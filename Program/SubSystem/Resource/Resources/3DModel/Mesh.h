@@ -2,7 +2,7 @@
 * @file    Mesh.h
 * @brief
 *
-* @date	   2022/09/06 2022年度初版
+* @date	   2022/10/30 2022年度初版
 */
 #pragma once
 
@@ -25,6 +25,7 @@ public:
 	/** 主にEditer上で使用される asset や独自データの更新処理 */
 	void Update() override;
 
+	void PreRender() noexcept;
 	void Render() noexcept;
 
 	/** パラメーター */

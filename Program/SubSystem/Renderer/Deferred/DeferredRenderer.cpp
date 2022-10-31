@@ -12,6 +12,7 @@
 #include "../Geometry/Vertex.h"
 #include "SubSystem/Window/Window.h"
 #include "../LightMap/DefaultLightMap.h"
+#include "SubSystem/Editor/EditorSystem.h"
 #include "../GraphicsAPI/D3D12/D3D12GraphicsDevice.h"
 #include "SubSystem/Scene/Component/Components/Camera.h"
 #include "SubSystem/Scene/Component/Components/RenderObject.h"
@@ -21,12 +22,16 @@ bool DeferredRenderer::Initialize()
 {
 	Renderer::Initialize();
 
-	const auto width = Window::Get().GetWindowWidth();
+	const auto width  = Window::Get().GetWindowWidth();
 	const auto height = Window::Get().GetWindowHeight();
 
 	// Create GBuffer
 	m_gbuffer = std::make_unique<GBuffer>();
 	m_gbuffer->Initialize(width, height);
+
+	// Create SkyBox
+	m_skyBox = std::make_unique<SkyBox>();
+	m_skyBox->Initialize();
 
 	// Create LightMap
 	m_lightMap = std::make_unique<DefaultLightMap>();
@@ -35,7 +40,7 @@ bool DeferredRenderer::Initialize()
 	// Create TransCBuffer
 	m_transformCBuffer = std::make_unique<TransformCBuffer>();
 
-	// SetUp Object
+	// SetUp Objects
 	{
 		if (!SetUpRenderingObjects(width, height))
 		{
@@ -52,6 +57,11 @@ bool DeferredRenderer::Initialize()
 			return false;
 		}
 	}
+
+#if IS_EDITOR
+	m_renderTexture.Create(Window::Get().GetWindowWidth(), Window::Get().GetWindowHeight());
+	EditorSystem::Get().PostInitialize(m_renderTexture.GetShaderResourceView());
+#endif // IS_EDITOR
 
 	RegisterRenderJob();
 
@@ -81,17 +91,22 @@ void DeferredRenderer::Update() noexcept
 
 		PostPass();
 	}
-	else
-	{
-		// gui •\Ž¦—p
-		D3D12GraphicsDevice::Get().GetCommandContext().DrawIndexedInstanced(4, 1, 0, 0, 0);
-	}
 }
 
 void DeferredRenderer::Present() noexcept
 {
 	D3D12GraphicsDevice::Get().EndFrame();
 	D3D12GraphicsDevice::Get().Present();
+}
+
+void DeferredRenderer::RegisterGBufferShader(StringView path)
+{
+
+}
+
+String DeferredRenderer::GetGBufferShader()
+{
+	return String();
 }
 
 void DeferredRenderer::RegisterRenderJob() noexcept
@@ -163,11 +178,11 @@ bool DeferredRenderer::SetUpLightingObjects(UINT width, UINT height) noexcept
 	deferredShaders[PixelShader ].Compile(deferredShaderPath, PixelShader );
 
 	GraphicsPipelineStateDesc desc = {};
-	desc.VS = &deferredShaders[VertexShader];
-	desc.PS = &deferredShaders[PixelShader ];
-	desc.BlendMode = BLEND_MODE_NO_ALPHA;
-	desc.RasterizerState = NO_CULL;
-	desc.PrimitiveType = PRIMITIVE_TYPE_TRIANGLELIST;
+	desc.VS				  = &deferredShaders[VertexShader];
+	desc.PS				  = &deferredShaders[PixelShader ];
+	desc.BlendMode		  = BLEND_MODE_NO_ALPHA;
+	desc.RasterizerState  = NO_CULL;
+	desc.PrimitiveType	  = PRIMITIVE_TYPE_TRIANGLELIST;
 	desc.NumRenderTargets = GBufferType::Max;
 
 	for (size_t i = 0; i < GBufferType::Max; ++i)
@@ -192,11 +207,11 @@ bool DeferredRenderer::SetUpPostProcessObjects(UINT width, UINT height) noexcept
 	postProcessShaders[PixelShader ].Compile(postProcessShaderPath, PixelShader );
 
 	GraphicsPipelineStateDesc desc = {};
-	desc.VS = &postProcessShaders[VertexShader];
-	desc.PS = &postProcessShaders[PixelShader ];
-	desc.BlendMode = BLEND_MODE_NO_ALPHA;
-	desc.RasterizerState = NO_CULL;
-	desc.PrimitiveType = PRIMITIVE_TYPE_TRIANGLELIST;
+	desc.VS				  = &postProcessShaders[VertexShader];
+	desc.PS				  = &postProcessShaders[PixelShader ];
+	desc.BlendMode		  = BLEND_MODE_NO_ALPHA;
+	desc.RasterizerState  = NO_CULL;
+	desc.PrimitiveType    = PRIMITIVE_TYPE_TRIANGLELIST;
 	desc.NumRenderTargets = 1;
 
 	//if (!m_postProcessPipeline.Create(desc, &m_rootSignature))
@@ -222,8 +237,14 @@ void DeferredRenderer::GBufferPass() noexcept
 	// Draw
 	for (auto renderObject : m_renderObjects)
 	{
+		if (!renderObject->GetActive())
+			continue;
+
 		renderObject->Render();
 	}
+
+	// Draw SkyBox
+	m_skyBox->Render(m_mainCamera);
 }
 
 void DeferredRenderer::LightingPass() noexcept
@@ -236,7 +257,12 @@ void DeferredRenderer::LightingPass() noexcept
 	}
 	else
 	{
+#if IS_EDITOR
+		m_renderTexture.SetRenderTarget();
+		m_renderTexture.Clear(Math::Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+#else
 		D3D12GraphicsDevice::Get().SetRenderTarget();
+#endif // IS_EDITOR
 	}
 
 	// Pipeline Set
@@ -264,7 +290,12 @@ void DeferredRenderer::PostPass() noexcept
 		return;
 	}
 
+#if IS_EDITOR
+	m_renderTexture.SetRenderTarget();
+	m_renderTexture.Clear(Math::Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+#else
 	D3D12GraphicsDevice::Get().SetRenderTarget();
+#endif // IS_EDITOR
 
 	// Pipeline Set
 	m_postProcessPipeline.Set();

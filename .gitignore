@@ -496,3 +496,6 @@ FodyWeavers.xsd
 /Data/Resource/Texture/SkyBox.texture
 /Data/Original/Shader/SkyBox.hlsl
 /Data/Resource/Shader/SkyBox.hlsl
+/Data/asset/Standard/Shader/PreZ.asset
+/Data/Original/Shader/PreZ.hlsl
+/Data/Original/Shader/PostProcess.hlsl

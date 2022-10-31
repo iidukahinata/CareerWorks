@@ -13,7 +13,7 @@
 bool D3D12GraphicsPipelineState::Create(const GraphicsPipelineStateDesc& desc, D3D12RootSignature* rootSignature) noexcept
 {
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC gpipeline = {};
-	gpipeline.pRootSignature = rootSignature->Get();
+	gpipeline.pRootSignature = rootSignature ? rootSignature->Get() : nullptr;
 
 	Vector<D3D12_INPUT_ELEMENT_DESC> inputLayout;
 
@@ -147,7 +147,7 @@ bool D3D12GraphicsPipelineState::Create(const GraphicsPipelineStateDesc& desc, D
 	// depth stencil state
 	gpipeline.DepthStencilState.DepthEnable = true;
 	gpipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-	gpipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+	gpipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 	gpipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 	gpipeline.DepthStencilState.StencilEnable = false;
 

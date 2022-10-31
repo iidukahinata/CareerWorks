@@ -61,6 +61,13 @@ bool EditorSystem::PostInitialize(void* shaderResourceView) noexcept
 
 void EditorSystem::Shutdown() noexcept
 {
+	m_job.UnRegisterFromJobSystem();
+
+	if (!m_descriptHeap.GetHeap())
+	{
+		return;
+	}
+
 	// save editor setting
 	{
 		FileStream file(EDITOR_SETTINGS_PATH, OpenMode::Write_Mode);
@@ -73,8 +80,6 @@ void EditorSystem::Shutdown() noexcept
 	}
 
 	EditorHelper::Get().Shutdown();
-
-	m_job.UnRegisterFromJobSystem();
 
 	m_widgets.clear();
 	m_widgets.shrink_to_fit();

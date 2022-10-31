@@ -65,7 +65,7 @@ Model* ModelRender::GetModel() const noexcept
 	return m_model;
 }
 
-void ModelRender::Render()
+void ModelRender::PreRender()
 {
 	if (!m_model)
 	{
@@ -74,15 +74,37 @@ void ModelRender::Render()
 
 	// 描画時使用する MatrixBuffer の更新
 	{
-		auto&& handle	 = m_constantBufferMatrix.GetCPUData();
+		auto&& handle = m_constantBufferMatrix.GetCPUData();
 		auto&& transform = GetTransform().GetWorldMatrix().ToMatrixXM();
 
 		m_renderer->GetTransformCBuffer()->Bind(handle, transform);
 		m_constantBufferMatrix.VSSet(0);
 	}
 
+	for (auto mesh : m_model->GetAllMeshes())
+	{
+		if (!mesh->GetMaterial())
+			continue;
+
+		mesh->PreRender();
+	}
+}
+
+void ModelRender::Render()
+{
+	if (!m_model)
+	{
+		return;
+	}
+
+	// PreRender で更新済み
+	m_constantBufferMatrix.VSSet(0);
+
 	for (const auto& meshes = m_model->GetAllMeshes(); auto mesh : meshes)
 	{
+		if (!mesh->GetMaterial())
+			continue;
+
 		mesh->Render();
 	}
 }
