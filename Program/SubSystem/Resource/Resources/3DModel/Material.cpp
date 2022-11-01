@@ -2,13 +2,14 @@
 * @file    Material.cpp
 * @brief
 *
-* @date	   2022/10/27 2022年度初版
+* @date	   2022/11/01 2022年度初版
 */
 
 
 #include "Material.h"
 #include "SubSystem/Resource/ResourceManager.h"
 #include "SubSystem/Resource/ResourceData/ProprietaryShaderData.h"
+#include "SubSystem/Thread/RenderingThread/RenderingThread.h"
 
 Material* Material::Create(StringView name, const ProprietaryMaterialData& data /* = ProprietaryMaterialData() */) noexcept
 {
@@ -358,14 +359,36 @@ bool Material::CreatePipeline() noexcept
 		desc.NumRenderTargets = 1;
 	}
 
-	return m_pipeline.Create(desc, &m_rootSignature);
+#ifdef IS_EDITOR
+	RegisterRenderCommand([this, desc] {
+		ASSERT(m_pipeline.Create(desc, &m_rootSignature));
+	});
+#else
+	if (IsRenderingThread())
+	{
+		ASSERT(m_pipeline.Create(desc, &m_rootSignature));
+	}
+	else
+	{
+		RegisterRenderCommand([this, desc] {
+			ASSERT(m_pipeline.Create(desc, &m_rootSignature));
+		});
+	}
+#endif // IS_EDITOR
+
+	return true;
 }
 
 bool Material::CreateConstantBuffer() noexcept
 {
 	if (m_constantBufferMaterial.Create(sizeof(ConstantBufferMaterial)))
 	{
-		UpdateConstantBufferData();
+		auto buffer = static_cast<ConstantBufferMaterial*>(m_constantBufferMaterial.GetCPUData());
+		buffer->albedo	 = m_materialData.m_albedo;
+		buffer->metallic = m_materialData.m_metallic;
+		buffer->smooth	 = m_materialData.m_smooth;
+		buffer->emission = m_materialData.m_emission;
+
 		return true;
 	}
 
@@ -403,12 +426,28 @@ bool Material::CompileShader() noexcept
 
 void Material::UpdateConstantBufferData() noexcept
 {
-	auto buffer = static_cast<ConstantBufferMaterial*>(m_constantBufferMaterial.GetCPUData());
+	if (IsRenderingThread())
+	{
+		auto buffer = static_cast<ConstantBufferMaterial*>(m_constantBufferMaterial.GetCPUData());
 
-	buffer->albedo	 = m_materialData.m_albedo;
-	buffer->metallic = m_materialData.m_metallic;
-	buffer->smooth	 = m_materialData.m_smooth;
-	buffer->emission = m_materialData.m_emission;
+		buffer->albedo = m_materialData.m_albedo;
+		buffer->metallic = m_materialData.m_metallic;
+		buffer->smooth = m_materialData.m_smooth;
+		buffer->emission = m_materialData.m_emission;
+	}
+	else
+	{
+		RegisterRenderCommand([this] {
+
+			auto buffer = static_cast<ConstantBufferMaterial*>(m_constantBufferMaterial.GetCPUData());
+
+			buffer->albedo = m_materialData.m_albedo;
+			buffer->metallic = m_materialData.m_metallic;
+			buffer->smooth = m_materialData.m_smooth;
+			buffer->emission = m_materialData.m_emission;
+
+		});
+	}
 }
 
 void Material::UpdateProprietaryDataFile() noexcept

@@ -181,6 +181,15 @@
     <Filter Include="Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\GameObject">
       <UniqueIdentifier>{65ab90f7-2fba-4a55-8227-89f499f60646}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Subsytem\Thread">
+      <UniqueIdentifier>{08cd6109-3497-43f6-92cd-1b2498112a03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Thread\RenderingThread">
+      <UniqueIdentifier>{bb038a33-9f1e-44c4-b2af-b5fbcc376e3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Thread\LoadingThread">
+      <UniqueIdentifier>{9b47ba86-8a3c-42b9-9aef-4155154714b3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Program\WinMain.cpp" />
@@ -639,6 +648,24 @@
     </ClCompile>
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\GameObjectDetails.cpp">
       <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Thread\Thread.cpp">
+      <Filter>Subsytem\Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Thread\ThreadManager.cpp">
+      <Filter>Subsytem\Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Thread\RenderingThread\RenderCommandFance.cpp">
+      <Filter>Subsytem\Thread\RenderingThread</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Thread\RenderingThread\RenderingThread.cpp">
+      <Filter>Subsytem\Thread\RenderingThread</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Thread\LoadingThread\LoadingThread.cpp">
+      <Filter>Subsytem\Thread\LoadingThread</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Window\WindowEvents.cpp">
+      <Filter>Subsytem\Window</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1196,6 +1223,24 @@
     </ClInclude>
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\GameObjectDetails.h">
       <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Thread\Thread.h">
+      <Filter>Subsytem\Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Thread\ThreadManager.h">
+      <Filter>Subsytem\Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Thread\RenderingThread\RenderCommandFance.h">
+      <Filter>Subsytem\Thread\RenderingThread</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Thread\RenderingThread\RenderingThread.h">
+      <Filter>Subsytem\Thread\RenderingThread</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Thread\LoadingThread\LoadingThread.h">
+      <Filter>Subsytem\Thread\LoadingThread</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Window\WindowEvents.h">
+      <Filter>Subsytem\Window</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

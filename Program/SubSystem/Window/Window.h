@@ -43,6 +43,8 @@ public:
 	*/
 	bool Tick();
 
+	void Shutdown();
+
 public:
 
 	/** 最後に更新された時の window 状態の詳細情報を返します。*/
@@ -60,6 +62,17 @@ public:
 	bool IsFullscreen() const noexcept;
 
 private:
+
+#ifdef IS_EDITOR
+	void SetUpListenerObjects() noexcept;
+#endif // IS_EDITOR
+
+private:
+
+#ifdef IS_EDITOR
+	EventListener m_destroyWindowListener;
+	EventListener m_commandWindowListener;
+#endif // IS_EDITOR
 
 	// * 実行時インスタンスハンドル
 	HINSTANCE m_hInstance;

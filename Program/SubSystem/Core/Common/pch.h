@@ -49,6 +49,7 @@
 #include "SubSystem/Editor/EditorEvents.h"
 #include "SubSystem/Input/InputEvents.h"
 #include "SubSystem/Scene/SceneEvents.h"
+#include "SubSystem/Window/WindowEvents.h"
 
 // Job System
 #include "SubSystem/JobSystem/Sync/Job.h"

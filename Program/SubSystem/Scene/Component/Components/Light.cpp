@@ -8,6 +8,7 @@
 
 #include "Light.h"
 #include "SubSystem/Renderer/Renderer.h"
+#include "SubSystem/Thread/RenderingThread/RenderingThread.h"
 
 void Light::Serialized(FileStream* file) const
 {
@@ -59,7 +60,14 @@ void Light::OnUnRegister()
 
 void Light::SetLightType(LightType lightType) noexcept
 {
-	m_lightType = lightType;
+	if (IsRenderingThread())
+	{
+		m_lightType = lightType;
+	}
+	else
+	{
+		RegisterRenderCommand([this, lightType] { m_lightType = lightType; });
+	}
 }
 
 LightType Light::GetLightType() const noexcept
@@ -69,7 +77,14 @@ LightType Light::GetLightType() const noexcept
 
 void Light::SetColor(const Math::Vector4& color) noexcept
 {
-	m_color = color;
+	if (IsRenderingThread())
+	{
+		m_color = color;
+	}
+	else
+	{
+		RegisterRenderCommand([this, color] { m_color = color; });
+	}
 }
 
 const Math::Vector4& Light::GetColor() const noexcept
@@ -79,7 +94,14 @@ const Math::Vector4& Light::GetColor() const noexcept
 
 void Light::SetIntensity(float intensity) noexcept
 {
-	m_intensity = intensity;
+	if (IsRenderingThread())
+	{
+		m_intensity = intensity;
+	}
+	else
+	{
+		RegisterRenderCommand([this, intensity] { m_intensity = intensity; });
+	}
 }
 
 float Light::GetIntensity() const noexcept
@@ -89,7 +111,14 @@ float Light::GetIntensity() const noexcept
 
 void Light::SetInfluenceRange(float influenceRange) noexcept
 {
-	m_influenceRange = influenceRange;
+	if (IsRenderingThread())
+	{
+		m_influenceRange = influenceRange;
+	}
+	else
+	{
+		RegisterRenderCommand([this, influenceRange] { m_influenceRange = influenceRange; });
+	}
 }
 
 float Light::GetInfluenceRange() const noexcept
@@ -99,7 +128,14 @@ float Light::GetInfluenceRange() const noexcept
 
 void Light::SetAngle(float angle) noexcept
 {
-	m_angle = angle;
+	if (IsRenderingThread())
+	{
+		m_angle = angle;
+	}
+	else
+	{
+		RegisterRenderCommand([this, angle] { m_angle = angle; });
+	}
 }
 
 float Light::GetAngle() const noexcept

@@ -23,6 +23,9 @@
 #include "SubSystem/JobSystem/Sync/JobSystem.h"
 #include "SubSystem/JobSystem/Async/AsyncJobSystem.h"
 
+#include "SubSystem/Thread/ThreadManager.h"
+#include "SubSystem/Thread/RenderingThread/RenderingThread.h"
+
 Context* g_context = nullptr;
 
 bool Engine::Initialize(HINSTANCE hInstance)
@@ -40,11 +43,13 @@ bool Engine::Initialize(HINSTANCE hInstance)
 		return false;
 	}
 
-	// task thread : any thread 用として初期化
-	AsyncJobSystem::Get().Initialize(2);
+	// renderingThread : task thread : any thread 用として初期化
+	AsyncJobSystem::Get().Initialize(3);
 
 	// 過去の設定データがあれば、データに沿ったシステムの登録を行う。
 	Config::RegisterSubsystemsToContainer();
+
+	RenderingThread::Start();
 
 	ret = InitializeSubsystems();
 	if (!ret) {
@@ -66,11 +71,14 @@ long Engine::MainLoop()
 	{
 		if (timer->ReachedNextFrame())
 		{
+			RenderingThread::BegineFrame();
+
+			ThreadManager::Get().Tick();
+
 			JobSystem::Get().Execute(timer->GetDeltaTime(), FunctionType::Update);
 			JobSystem::Get().Execute(timer->GetDeltaTime(), FunctionType::PostUpdate);
 
-			JobSystem::Get().Execute(timer->GetDeltaTime(), FunctionType::Render);
-			JobSystem::Get().Execute(timer->GetDeltaTime(), FunctionType::PostRender);
+			RenderingThread::EndFrame();
 		}
 	}
 
@@ -85,7 +93,7 @@ void Engine::Shutdown()
 	EditorSystem::Get().Shutdown();
 #endif // IS_EDITOR
 
-	UnregisterClass("windowClass", m_hInstance);
+	Window::Get().Shutdown();
 
 	// release subsystem
 	m_context->Release();

@@ -21,6 +21,14 @@ void EventManager::Exit() noexcept
 {
 	m_job.UnRegisterFromJobSystem();
 
+	for (auto eventListeners : m_eventListeners)
+	{
+		for (auto listener : eventListeners.second)
+		{
+			listener->UnRegisterFromEventManager();
+		}
+	}
+
 	m_eventListeners.clear();
 
 	for (size_t i = 0; i < m_eventQueues.max_size(); ++i)
@@ -139,7 +147,7 @@ void EventManager::Tick() noexcept
 
 		m_eventQueues[numQueue].pop_front();
 
-		// タイムアウト処理を記述予定。
+		// タイムアウト処理は未開発。
 	}
 
 	// タイムアウト処理が起きた場合、残ったタスクを次フレームに持ち越す。

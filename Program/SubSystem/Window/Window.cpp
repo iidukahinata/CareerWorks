@@ -132,6 +132,8 @@ bool Window::CreateWindowClass(HINSTANCE hInstance, int width, int height, Strin
 
 #ifdef IS_EDITOR
 	DragAcceptFiles(m_hWnd, true);
+
+	SetUpListenerObjects();
 #endif // IS_EDITOR
 
 	return true;
@@ -146,6 +148,11 @@ bool Window::Tick()
 	}
 
 	return m_message.message != WM_QUIT;
+}
+
+void Window::Shutdown()
+{
+	UnregisterClass("windowClass", m_hInstance);
 }
 
 HINSTANCE Window::GetHInstance() const noexcept
@@ -177,3 +184,39 @@ bool Window::IsFullscreen() const noexcept
 {
 	return m_fullscreen;
 }
+
+#ifdef IS_EDITOR
+void Window::SetUpListenerObjects() noexcept
+{
+	m_destroyWindowListener.SetFunction([this](std::any data) {
+
+		DestroyWindow(Window::Get().GetHandle());
+
+	});
+
+	m_commandWindowListener.SetFunction([](std::any data) {
+
+		int cmd = std::any_cast<int>(data);
+		switch (cmd)
+		{
+		case SW_MINIMIZE:        
+
+			ShowWindow(Window::Get().GetHandle(), SW_MINIMIZE);
+			CloseWindow(Window::Get().GetHandle());
+			break;
+
+		case SW_MAXIMIZE:
+
+			ShowWindow(Window::Get().GetHandle(), SW_MAXIMIZE);
+			break;
+
+		default: 
+			break;
+		}
+
+	});
+
+	m_destroyWindowListener.RegisterToEventManager<DestroyWindowEvent>();
+	m_commandWindowListener.RegisterToEventManager<CommandWindowEvent>();
+}
+#endif // IS_EDITOR

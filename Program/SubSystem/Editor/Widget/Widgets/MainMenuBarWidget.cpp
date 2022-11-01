@@ -296,8 +296,7 @@ void MainMenuBarWidget::ShowWindowMenu() noexcept
     ImGui::SameLine(width - 69);
     if (ImGui::Button(minmize.c_str(), ImVec2(30, 20)))
     {
-        ShowWindow(Window::Get().GetHandle(), SW_MINIMIZE);
-        CloseWindow(Window::Get().GetHandle());
+        NotifyEvent<CommandWindowEvent>(SW_MINIMIZE);
     }
 
     ImDrawList* draw_list = ImGui::GetWindowDrawList();
@@ -309,7 +308,7 @@ void MainMenuBarWidget::ShowWindowMenu() noexcept
     ImGui::SameLine(width - 39);
     if (ImGui::Button(destroy.c_str(), ImVec2(30, 20)))
     {
-        DestroyWindow(Window::Get().GetHandle());
+        NotifyEvent<DestroyWindowEvent>();
     }
 
     min = ImGui::GetItemRectMin();

@@ -288,8 +288,14 @@
     <ClCompile Include="Program\SubSystem\Scene\TickFunction.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\TickManager.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\World.cpp" />
+    <ClCompile Include="Program\SubSystem\Thread\LoadingThread\LoadingThread.cpp" />
+    <ClCompile Include="Program\SubSystem\Thread\RenderingThread\RenderCommandFance.cpp" />
+    <ClCompile Include="Program\SubSystem\Thread\RenderingThread\RenderingThread.cpp" />
+    <ClCompile Include="Program\SubSystem\Thread\Thread.cpp" />
+    <ClCompile Include="Program\SubSystem\Thread\ThreadManager.cpp" />
     <ClCompile Include="Program\SubSystem\Timer\Timer.cpp" />
     <ClCompile Include="Program\SubSystem\Window\Window.cpp" />
+    <ClCompile Include="Program\SubSystem\Window\WindowEvents.cpp" />
     <ClCompile Include="Program\ThirdParty\directxtex\include\DDSTextureLoader.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -497,9 +503,15 @@
     <ClInclude Include="Program\SubSystem\Scene\TickFunction.h" />
     <ClInclude Include="Program\SubSystem\Scene\TickManager.h" />
     <ClInclude Include="Program\SubSystem\Scene\World.h" />
+    <ClInclude Include="Program\SubSystem\Thread\LoadingThread\LoadingThread.h" />
+    <ClInclude Include="Program\SubSystem\Thread\RenderingThread\RenderCommandFance.h" />
+    <ClInclude Include="Program\SubSystem\Thread\RenderingThread\RenderingThread.h" />
+    <ClInclude Include="Program\SubSystem\Thread\Thread.h" />
+    <ClInclude Include="Program\SubSystem\Thread\ThreadManager.h" />
     <ClInclude Include="Program\SubSystem\Timer\Stopwatch.h" />
     <ClInclude Include="Program\SubSystem\Timer\Timer.h" />
     <ClInclude Include="Program\SubSystem\Window\Window.h" />
+    <ClInclude Include="Program\SubSystem\Window\WindowEvents.h" />
     <ClInclude Include="Program\ThirdParty\FMOD\include\fmod.h" />
     <ClInclude Include="Program\ThirdParty\FMOD\include\fmod.hpp" />
     <ClInclude Include="Program\ThirdParty\FMOD\include\fmod_codec.h" />

@@ -9,6 +9,7 @@
 #include "Camera.h"
 #include "SubSystem/Window/Window.h"
 #include "SubSystem/Renderer/Renderer.h"
+#include "SubSystem/Thread/RenderingThread/RenderingThread.h"
 
 void Camera::Serialized(FileStream* file) const
 {
@@ -51,8 +52,8 @@ void Camera::OnInitialize()
 	m_far	 = 1000.0f;
 
 	// create matrix
-	CreateProjectionMatrix();
-	CreateOrthographicMatrix();
+	m_projection   = Math::Matrix::CreatePerspectiveFovLH(m_fov, m_aspect, m_near, m_far);
+	m_orthographic = Math::Matrix::CreateOrthographicLH(m_width, m_height, m_near, m_far);
 }
 
 void Camera::OnRegister()
@@ -154,12 +155,30 @@ const Math::Matrix& Camera::GetOrthographicMatrix() const noexcept
 
 void Camera::CreateProjectionMatrix() noexcept
 {
-	m_projection = Math::Matrix::CreatePerspectiveFovLH(m_fov, m_aspect, m_near, m_far);
+	if (IsRenderingThread())
+	{
+		m_projection = Math::Matrix::CreatePerspectiveFovLH(m_fov, m_aspect, m_near, m_far);
+	}
+	else
+	{
+		RegisterRenderCommand([this] {
+			m_projection = Math::Matrix::CreatePerspectiveFovLH(m_fov, m_aspect, m_near, m_far);
+		});
+	}
 }
 
 void Camera::CreateOrthographicMatrix() noexcept
 {
-	m_orthographic = Math::Matrix::CreateOrthographicLH(m_width, m_height, m_near, m_far);
+	if (IsRenderingThread())
+	{
+		m_orthographic = Math::Matrix::CreateOrthographicLH(m_width, m_height, m_near, m_far);
+	}
+	else
+	{
+		RegisterRenderCommand([this] {
+			m_orthographic = Math::Matrix::CreateOrthographicLH(m_width, m_height, m_near, m_far);
+		});
+	}
 }
 
 void Camera::RegisterToRendererSystem() noexcept
