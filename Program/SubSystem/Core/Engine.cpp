@@ -25,6 +25,7 @@
 
 #include "SubSystem/Thread/ThreadManager.h"
 #include "SubSystem/Thread/RenderingThread/RenderingThread.h"
+#include "SubSystem/Thread/LoadingThread/LoadingThread.h"
 
 Context* g_context = nullptr;
 
@@ -50,6 +51,7 @@ bool Engine::Initialize(HINSTANCE hInstance)
 	Config::RegisterSubsystemsToContainer();
 
 	RenderingThread::Start();
+	LoadingThread::Start();
 
 	ret = InitializeSubsystems();
 	if (!ret) {
@@ -87,6 +89,9 @@ long Engine::MainLoop()
 
 void Engine::Shutdown()
 {
+	RenderingThread::Stop();
+	LoadingThread::Stop();
+
 	EventManager::Get().Exit();
 
 #ifdef IS_EDITOR

@@ -16,6 +16,8 @@
 */
 class RenderCommandList
 {
+	COMPLETED_DEVELOPMENT()
+
 	typedef std::function<void()> Command;
 public:
 
@@ -65,7 +67,12 @@ void RegisterRenderCommand(Func&& task) noexcept
 
 class RenderingThread : public IThread
 {
+	COMPLETED_DEVELOPMENT()
 	SUB_CLASS(RenderingThread)
+public:
+
+	void Run() override;
+
 public:
 
 	/** RenderingThread の立ち上げ処理を行う。*/
@@ -86,13 +93,8 @@ public:
 	*/
 	static void EndFrame() noexcept;
 
-	/**
-	* RenderingThread で処理されるコマンド処理が終了するまで待機する。
-	* 主に、アプリケーション終了時などに使用する。
-	*/
+	/** RenderingThread で処理されるコマンド処理が終了するまで待機する。*/
 	static void WiatForRenderCommand() noexcept;
-
-	void Run() override;
 
 private:
 

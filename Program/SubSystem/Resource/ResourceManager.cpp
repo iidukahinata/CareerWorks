@@ -2,12 +2,13 @@
 * @file    ResourceManager.cpp
 * @brief
 *
-* @date	   2022/10/21 2022年度初版
+* @date	   2022/11/01 2022年度初版
 */
 
 
 #include "ResourceManager.h"
 #include "Factory/ResourceFactory.h"
+#include "SubSystem/Thread/LoadingThread/LoadingThread.h"
 
 bool ResourceManager::Initialize()
 {
@@ -32,11 +33,6 @@ bool ResourceManager::Initialize()
 
 void ResourceManager::Shutdown()
 {
-    for (const auto& job : m_asyncJobs)
-    {
-        job->WaitForFinish();
-    }
-
     m_resourceCache->Clear();
 }
 
@@ -75,7 +71,7 @@ ResourceHandle* ResourceManager::Load(uint32_t type, StringView name, uint32_t p
         return nullptr;
     }
 
-    Load(resourceData, priority);
+    return Load(resourceData, priority);
 }
 
 ResourceHandle* ResourceManager::Load(ResourceData* resourceData, uint32_t priority /* = DefaltPriority */) noexcept
@@ -397,11 +393,8 @@ const Map<uint32_t, Unordered_Map<String, ResourceData>>& ResourceManager::GetAl
 
 const Unordered_Map<String, ResourceData>& ResourceManager::GetResourceDataListByType(uint32_t type) const noexcept
 {
-    if (m_resourceTypeList.contains(type))
-    {
-        return m_resourceTypeList.at(type);
-    }
-    return Unordered_Map<String, ResourceData>();
+    ASSERT(m_resourceTypeList.contains(type));
+    return m_resourceTypeList.at(type);
 }
 
 #ifdef IS_EDITOR
@@ -525,11 +518,8 @@ void ResourceManager::CreateAsyncLoadList(ResourceData* resourceData, Vector<Res
 
 void ResourceManager::AsyncLoad(ResourceHandle* resourceHandle, const Vector<ResourcePath>& resourcePaths) noexcept
 {
-    m_asyncJobs.emplace_back(std::make_unique<AsyncJob>());
-    auto& asyncJob = m_asyncJobs.back();
-
     // Async Load 処理セット
-    asyncJob->SetFunction([this, resourceHandle, resourcePaths]() {
+    RegisterLoadingCommand([this, resourceHandle, resourcePaths]() {
 
         // リソース読み込みループ
         for (int i = 0; i < resourcePaths.size(); ++i)
@@ -558,9 +548,6 @@ void ResourceManager::AsyncLoad(ResourceHandle* resourceHandle, const Vector<Res
 
         resourceHandle->NotifyCompleteLoad();
     });
-
-    // スレッドタスクとして追加
-    asyncJob->RegisterToJobSystem();
 }
 
 #define CASE_EXT_RETURN(EXT) case GetHashFromCRC(EXT): return true;

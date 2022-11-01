@@ -155,9 +155,6 @@ private:
 	// * ユーザー側で Handle が放棄されても正常動作するための Map
 	Map<ResourceData*, UniquePtr<ResourceHandle>> m_resourceHandles;
 
-	// * 非同期読み込みを行う Job
-	Vector<UniquePtr<AsyncJob>> m_asyncJobs;
-
 	// * ロード完了 リソース管理オブジェクト
 	UniquePtr<ResourceCache> m_resourceCache;
 
