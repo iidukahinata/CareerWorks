@@ -2,7 +2,7 @@
 * @file	   SceneWidget.h
 * @brief
 *
-* @date	   2022/10/27 2022年度初版
+* @date	   2022/10/31 2022年度初版
 */
 #pragma once
 
@@ -38,6 +38,8 @@ private:
 	void ChackClickedCommand(GameObject* gameObject) noexcept;
 
 	GameObject* CatchDragObject() const noexcept;
+
+	void ShowDragDropHelper() const noexcept;
 
 private:
 

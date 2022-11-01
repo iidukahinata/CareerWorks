@@ -26,14 +26,22 @@ void TransformDetails::Draw()
 		auto rotation  = transform->GetRotation();
 		auto scale	   = transform->GetScale();
 
+		rotation.x = Math::ToDegree(rotation.x);
+		rotation.y = Math::ToDegree(rotation.y);
+		rotation.z = Math::ToDegree(rotation.z);
+
 		ImGui::Text("Position"); ImGui::SameLine(offsetPos);
 		auto inputPosition = ImGui::DragFloat3("##Position", &position.x, 0.1f);
 		
 		ImGui::Text("Rotation"); ImGui::SameLine(offsetPos);
-		auto inputRotation = ImGui::DragFloat3("##Rotation", &rotation.x, 0.05f);
+		auto inputRotation = ImGui::DragFloat3("##Rotation", &rotation.x, 1.0f);
 
 		ImGui::Text("Scale"); ImGui::SameLine(offsetPos);
 		auto inputScale = ImGui::DragFloat3("##Scale", &scale.x, 0.05f);
+
+		rotation.x = Math::ToRadian(rotation.x);
+		rotation.y = Math::ToRadian(rotation.y);
+		rotation.z = Math::ToRadian(rotation.z);
 
 		if (inputPosition) RegisterEditorCommand([transform](auto data) { transform->SetPosition(data); }, position, transform->GetPosition());
 		if (inputRotation) RegisterEditorCommand([transform](auto data) { transform->SetRotation(data); }, rotation, transform->GetRotation());

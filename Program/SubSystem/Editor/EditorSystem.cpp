@@ -17,6 +17,7 @@
 #include "Widget/Widgets/ViewPortWidget.h"
 #include "Widget/Widgets/MainMenuBarWidget.h"
 #include "SubSystem/Renderer/GraphicsAPI/D3D12/D3D12GraphicsDevice.h"
+#include "ThirdParty/ImGuizmo/ImGuizmo.h"
 
 bool EditorSystem::Initialize() noexcept
 {
@@ -99,6 +100,7 @@ void EditorSystem::Render() noexcept
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+	ImGuizmo::BeginFrame();
 
 	ShowDockingWindow();
 

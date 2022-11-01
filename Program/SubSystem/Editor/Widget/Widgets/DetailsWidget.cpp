@@ -103,6 +103,11 @@ void DetailsWidget::SelectGameObject(GameObject* gameObject) noexcept
 	}
 }
 
+GameObject* DetailsWidget::GetSelectGameObject() noexcept
+{
+	return m_selectGameObject;
+}
+
 void DetailsWidget::SelectResource(ResourceData* resourceData) noexcept
 {
 	if (!resourceData)
@@ -132,6 +137,11 @@ void DetailsWidget::SelectResource(ResourceData* resourceData) noexcept
 	{
 		SelectResourceInternal(resourceData);
 	}
+}
+
+ResourceData* DetailsWidget::GetSelectResource() noexcept
+{
+	return m_selectResourceData;
 }
 
 void DetailsWidget::ClearSelectObject() noexcept

@@ -290,16 +290,51 @@
     <ClCompile Include="Program\SubSystem\Scene\World.cpp" />
     <ClCompile Include="Program\SubSystem\Timer\Timer.cpp" />
     <ClCompile Include="Program\SubSystem\Window\Window.cpp" />
-    <ClCompile Include="Program\ThirdParty\directxtex\include\DDSTextureLoader.cpp" />
+    <ClCompile Include="Program\ThirdParty\directxtex\include\DDSTextureLoader.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="Program\ThirdParty\directxtex\include\WICTextureLoader.cpp" />
-    <ClCompile Include="Program\ThirdParty\imgui\imgui.cpp" />
-    <ClCompile Include="Program\ThirdParty\imgui\imgui_demo.cpp" />
+    <ClCompile Include="Program\ThirdParty\ImGuizmo\GraphEditor.cpp" />
+    <ClCompile Include="Program\ThirdParty\ImGuizmo\ImCurveEdit.cpp" />
+    <ClCompile Include="Program\ThirdParty\ImGuizmo\ImGradient.cpp" />
+    <ClCompile Include="Program\ThirdParty\ImGuizmo\ImGuizmo.cpp" />
+    <ClCompile Include="Program\ThirdParty\ImGuizmo\ImSequencer.cpp" />
+    <ClCompile Include="Program\ThirdParty\imgui\imgui.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Program\ThirdParty\imgui\imgui_demo.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="Program\ThirdParty\imgui\imgui_draw.cpp" />
-    <ClCompile Include="Program\ThirdParty\imgui\imgui_impl_dx11.cpp" />
-    <ClCompile Include="Program\ThirdParty\imgui\imgui_impl_dx12.cpp" />
-    <ClCompile Include="Program\ThirdParty\imgui\imgui_impl_win32.cpp" />
-    <ClCompile Include="Program\ThirdParty\imgui\imgui_tables.cpp" />
-    <ClCompile Include="Program\ThirdParty\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="Program\ThirdParty\imgui\imgui_impl_dx11.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Program\ThirdParty\imgui\imgui_impl_dx12.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Program\ThirdParty\imgui\imgui_impl_win32.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Program\ThirdParty\imgui\imgui_tables.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Program\ThirdParty\imgui\imgui_widgets.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="Program\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -473,6 +508,12 @@
     <ClInclude Include="Program\ThirdParty\FMOD\include\fmod_dsp_effects.h" />
     <ClInclude Include="Program\ThirdParty\FMOD\include\fmod_errors.h" />
     <ClInclude Include="Program\ThirdParty\FMOD\include\fmod_output.h" />
+    <ClInclude Include="Program\ThirdParty\ImGuizmo\GraphEditor.h" />
+    <ClInclude Include="Program\ThirdParty\ImGuizmo\ImCurveEdit.h" />
+    <ClInclude Include="Program\ThirdParty\ImGuizmo\ImGradient.h" />
+    <ClInclude Include="Program\ThirdParty\ImGuizmo\ImGuizmo.h" />
+    <ClInclude Include="Program\ThirdParty\ImGuizmo\ImSequencer.h" />
+    <ClInclude Include="Program\ThirdParty\ImGuizmo\ImZoomSlider.h" />
     <ClInclude Include="Program\ThirdParty\imgui\imconfig.h" />
     <ClInclude Include="Program\ThirdParty\imgui\imgui.h" />
     <ClInclude Include="Program\ThirdParty\imgui\imgui_impl_dx11.h" />

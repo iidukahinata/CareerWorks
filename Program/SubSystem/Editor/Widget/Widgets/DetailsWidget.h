@@ -36,7 +36,9 @@ public:
 
 	/** コマンド発行を内部で行っているため呼び出し側での処理は不要 */
 	static void SelectGameObject(GameObject* gameObject) noexcept;
+	static GameObject* GetSelectGameObject() noexcept;
 	static void SelectResource(ResourceData* resourceData) noexcept;
+	static ResourceData* GetSelectResource() noexcept;
 
 	/** 空選択やシーン切り替え時に使用するため。*/
 	static void ClearSelectObject() noexcept;

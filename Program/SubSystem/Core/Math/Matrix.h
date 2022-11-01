@@ -132,6 +132,8 @@ namespace Math
 
 		Vector3 GetEulerAngles() const noexcept;
 
+		Vector3 GetScale() const noexcept;
+
 		bool operator==(const Matrix& Other) const noexcept
 		{
 			for (int x = 0; x < 4; ++x)

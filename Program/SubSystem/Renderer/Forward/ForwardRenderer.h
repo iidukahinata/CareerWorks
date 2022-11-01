@@ -2,7 +2,7 @@
 * @file	   ForwardRenderer.h
 * @brief
 *
-* @date	   2022/10/30 2022年度初版
+* @date	   2022/10/31 2022年度初版
 */
 #pragma once
 
@@ -12,7 +12,7 @@
 
 class ForwardRenderer : public Renderer
 {
-	IN_DEVELOPMENT("別スレッド上での動作を開発予定")
+	IN_DEVELOPMENT("カリング処理と別スレッド上での動作を開発予定")
 	SUB_CLASS(ForwardRenderer)
 public:
 
@@ -28,15 +28,15 @@ private:
 	/** Render Job の登録 */
 	void RegisterRenderJob() noexcept;
 
-	/** PreZ Pass で使用されるパイプライン初期化 */
+	/** Z prepass で使用されるオブジェクトの初期化 */
 	bool SetUpPrePassObjects() noexcept;
 
 private:
 
-	/** LightMap 情報などの生成 */
+	/** フレーム内で使用される Buffer の更新及び、Z prepass などの描画時の最適化処理を行う。*/
 	void PrePass() noexcept;
 
-	/** LightMap 情報などの生成 */
+	/** PrePass で作成した情報から通常レンダリングを行う。*/
 	void LightingPass() noexcept;
 
 private:

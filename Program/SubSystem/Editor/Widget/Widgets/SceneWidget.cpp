@@ -2,7 +2,7 @@
 * @file	   SceneWidget.cpp
 * @brief
 *
-* @date	   2022/10/27 2022年度初版
+* @date	   2022/10/31 2022年度初版
 */
 
 
@@ -103,6 +103,12 @@ void SceneWidget::AddGameObjectToTree(GameObject* gameObject) noexcept
 
 	if (ImGui::TreeNodeEx(gameObject->GetName().c_str(), flags))
 	{
+		// show select UI
+		if (m_gameObject == gameObject)
+		{
+			ShowDragDropHelper();
+		}
+
 		ChackClickedCommand(gameObject);
 
 		// show children
@@ -239,4 +245,18 @@ GameObject* SceneWidget::CatchDragObject() const noexcept
 		return std::any_cast<GameObject*>(dragObject);
 	}
 	return nullptr;
+}
+
+void SceneWidget::ShowDragDropHelper() const noexcept
+{
+	ImDrawList* draw_list = ImGui::GetWindowDrawList();
+	auto min = ImGui::GetItemRectMin();
+	auto max = ImGui::GetItemRectMax();
+
+	// 少し大きめの枠にする
+	min.x -= 1; max.x = ImGui::GetWindowWidth() - 8;
+	min.y -= 1; max.y += 1;
+
+	// 細目の白いライン表示
+	draw_list->AddRect(min, max, IM_COL32(100, 100, 100, 180), 0, 0, 1);
 }

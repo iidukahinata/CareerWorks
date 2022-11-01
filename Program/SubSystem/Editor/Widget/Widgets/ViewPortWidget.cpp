@@ -2,18 +2,24 @@
 * @file	   ViewPortWidget.cpp
 * @brief
 *
-* @date	   2022/10/27 2022年度初版
+* @date	   2022/10/31 2022年度初版
 */
 
 
 #include "ViewPortWidget.h"
 #include "DetailsWidget.h"
 #include "SubSystem/Scene/World.h"
+#include "SubSystem/Renderer/Renderer.h"
+#include "SubSystem/Scene/Component/Components/Camera.h"
+#include "ThirdParty/ImGuizmo/ImGuizmo.h"
 
 void ViewPortWidget::PostInitialize()
 {
 	m_world = GetContext()->GetSubsystem<World>();
 	ASSERT(m_world);
+
+	m_renderer = GetContext()->GetSubsystem<Renderer>();
+	ASSERT(m_renderer);
 }
 
 void ViewPortWidget::Draw()
@@ -39,7 +45,7 @@ void ViewPortWidget::ShowToolBar() noexcept
 	ImGui::Text(mode);
 
 	// State Button
-	ImGui::SameLine(ImGui::GetWindowWidth() / 2.f);
+	ImGui::SameLine(centorPos);
 
 	auto isPlay = ShowStateButton(m_isPlay, []() { return ImGui::ArrowButton("##left", ImGuiDir_Right); }); ImGui::SameLine();
 	auto isStop = ShowStateButton(m_isPouse, []() { return ImGui::Button("||"); });
@@ -80,6 +86,7 @@ void ViewPortWidget::ShowToolBar() noexcept
 
 void ViewPortWidget::ShowViewPort() noexcept
 {
+	constexpr auto cursorPos = ImVec2(0.0f, 55.0f);
 	auto texture = EditorHelper::Get().GetFinalFrameTexture();
 	auto width	 = (int)ImGui::GetWindowWidth();
 	auto height  = (int)ImGui::GetWindowHeight() - 52;
@@ -94,8 +101,78 @@ void ViewPortWidget::ShowViewPort() noexcept
 		height = rate * 9;
 	}
 
-	ImGui::SetCursorPos(ImVec2(0.0f, 55.0f));
+	ImGui::SetCursorPos(cursorPos);
 	EditorHelper::Get().AddImage(texture, ImVec2(width, height));
+
+	// editor mode 時はギズモ表示
+	if (!m_isPlay)
+	{
+		Show3DGuizmo(ImGui::GetCursorScreenPos(), width, height);
+	}
+}
+
+void ViewPortWidget::Show3DGuizmo(const ImVec2& cursorPos, float imageWidth, float imageHeight) noexcept
+{
+	ImGui::SameLine(10);
+	if (ImGui::RadioButton("Translate", m_guizmoMode == GuizmoMode::Translate))
+	{
+		m_guizmoMode = GuizmoMode::Translate;
+	}
+
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Rotate", m_guizmoMode == GuizmoMode::Rotate))
+	{
+		m_guizmoMode = GuizmoMode::Rotate;
+	}
+
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Scale", m_guizmoMode == GuizmoMode::Scale))
+	{
+		m_guizmoMode = GuizmoMode::Scale;
+	}
+
+	ImGuizmo::SetOrthographic(false);
+	ImGuizmo::SetDrawlist();
+	ImGuizmo::SetRect(cursorPos.x, 55, imageWidth, imageHeight);
+
+	const auto camera = m_renderer->GetMainCamera();
+	if (!camera)
+	{
+		return;
+	}
+
+	const auto view = camera->GetViewMatrix();
+	const auto projection = camera->GetProjectionMatrix();
+
+	ImGuizmo::OPERATION operation;
+	switch (m_guizmoMode) {
+	case GuizmoMode::Translate: operation = ImGuizmo::OPERATION::TRANSLATE; break;
+	case GuizmoMode::Rotate: operation = ImGuizmo::OPERATION::ROTATE; break;
+	case GuizmoMode::Scale: operation = ImGuizmo::OPERATION::SCALE; break;
+	}
+
+	if (auto gameObject = DetailsWidget::GetSelectGameObject())
+	{
+		auto& transform = gameObject->GetTransform();
+		auto matrix = transform.GetLocalMatrix();
+		auto delta = Math::Vector3::Zero;
+		
+		auto isMove = ImGuizmo::Manipulate(&view.m[0][0], &projection.m[0][0], operation, ImGuizmo::LOCAL, &matrix.m[0][0], &delta.x);
+		if (ImGuizmo::IsUsing() && isMove)
+		{
+			Math::Vector3 pos, rot, scale;
+			ImGuizmo::DecomposeMatrixToComponents(&matrix.m[0][0], &pos.x, &rot.x, &scale.x);
+
+			delta.x = Math::ToRadian(delta.x);
+			delta.y = Math::ToRadian(delta.y);
+			delta.z = Math::ToRadian(delta.z);
+			rot = transform.GetRotation() + delta;
+
+			transform.SetPosition(pos);
+			transform.SetRotation(rot);
+			transform.SetScale(scale);
+		}
+	}
 }
 
 bool ViewPortWidget::ShowStateButton(bool state, std::function<bool()> func) noexcept

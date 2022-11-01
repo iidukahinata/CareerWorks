@@ -24,9 +24,9 @@
 // SOFTWARE.
 //
 
-#include "imgui.h"
+#include "../imgui/imgui.h"
 #define IMGUI_DEFINE_MATH_OPERATORS
-#include "imgui_internal.h"
+#include "../imgui/imgui_internal.h"
 #include <math.h>
 #include <vector>
 #include <float.h>
@@ -124,8 +124,8 @@ static void FitNodes(Delegate& delegate, ViewState& viewState, const ImVec2 view
     }
 
     bool validNode = false;
-    ImVec2 min(FLT_MAX, FLT_MAX);
-    ImVec2 max(-FLT_MAX, -FLT_MAX);
+    ImVec2 _min(FLT_MAX, FLT_MAX);
+    ImVec2 _max(-FLT_MAX, -FLT_MAX);
     for (NodeIndex nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
     {
         const Node& node = delegate.GetNode(nodeIndex);
@@ -135,10 +135,10 @@ static void FitNodes(Delegate& delegate, ViewState& viewState, const ImVec2 view
             continue;
         }
         
-        min = ImMin(min, node.mRect.Min);
-        min = ImMin(min, node.mRect.Max);
-        max = ImMax(max, node.mRect.Min);
-        max = ImMax(max, node.mRect.Max);
+        _min = ImMin(_min, node.mRect.Min);
+        _min = ImMin(_min, node.mRect.Max);
+        _max = ImMax(_max, node.mRect.Min);
+        _max = ImMax(_max, node.mRect.Max);
         validNode = true;
     }
     
@@ -147,10 +147,10 @@ static void FitNodes(Delegate& delegate, ViewState& viewState, const ImVec2 view
         return;
     }
     
-    min -= viewSize * 0.05f;
-    max += viewSize * 0.05f;
-    ImVec2 nodesSize = max - min;
-    ImVec2 nodeCenter = (max + min) * 0.5f;
+    _min -= viewSize * 0.05f;
+    _max += viewSize * 0.05f;
+    ImVec2 nodesSize = _max - _min;
+    ImVec2 nodeCenter = (_max + _min) * 0.5f;
     
     float ratioY = viewSize.y / nodesSize.y;
     float ratioX = viewSize.x / nodesSize.x;
@@ -636,7 +636,7 @@ static bool DrawNode(ImDrawList* drawList,
 
     ImVec2 imgPos = nodeRectangleMin + ImVec2(14, 25);
     ImVec2 imgSize = nodeRectangleMax + ImVec2(-5, -5) - imgPos;
-    float imgSizeComp = std::min(imgSize.x, imgSize.y);
+    float imgSizeComp = min(imgSize.x, imgSize.y);
 
     drawList->AddRectFilled(nodeRectangleMin, nodeRectangleMax, node_bg_color, options.mRounding);
     /*float progress = delegate->NodeProgress(nodeIndex);
@@ -729,26 +729,26 @@ bool DrawMiniMap(ImDrawList* drawList, Delegate& delegate, ViewState& viewState,
         return false;
     }
 
-    ImVec2 min(FLT_MAX, FLT_MAX);
-    ImVec2 max(-FLT_MAX, -FLT_MAX);
+    ImVec2 _min(FLT_MAX, FLT_MAX);
+    ImVec2 _max(-FLT_MAX, -FLT_MAX);
     const ImVec2 margin(50, 50);
     for (NodeIndex nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
     {
         const Node& node = delegate.GetNode(nodeIndex);
-        min = ImMin(min, node.mRect.Min - margin);
-        min = ImMin(min, node.mRect.Max + margin);
-        max = ImMax(max, node.mRect.Min - margin);
-        max = ImMax(max, node.mRect.Max + margin);
+        _min = ImMin(_min, node.mRect.Min - margin);
+        _min = ImMin(_min, node.mRect.Max + margin);
+        _max = ImMax(_max, node.mRect.Min - margin);
+        _max = ImMax(_max, node.mRect.Max + margin);
     }
 
     // add view in world space
     const ImVec2 worldSizeView = canvasSize / viewState.mFactor;
     const ImVec2 viewMin(-viewState.mPosition.x, -viewState.mPosition.y);
     const ImVec2 viewMax = viewMin + worldSizeView;
-    min = ImMin(min, viewMin);
-    max = ImMax(max, viewMax);
-    const ImVec2 nodesSize = max - min;
-    const ImVec2 middleWorld = (min + max) * 0.5f;
+    _min = ImMin(_min, viewMin);
+    _max = ImMax(_max, viewMax);
+    const ImVec2 nodesSize = _max - _min;
+    const ImVec2 middleWorld = (_min + _max) * 0.5f;
     const ImVec2 minScreen = windowPos + options.mMinimap.Min * canvasSize;
     const ImVec2 maxScreen = windowPos + options.mMinimap.Max * canvasSize;
     const ImVec2 viewSize = maxScreen - minScreen;
@@ -791,28 +791,28 @@ bool DrawMiniMap(ImDrawList* drawList, Delegate& delegate, ViewState& viewState,
     if (mouseInMinimap && io.MouseClicked[0])
     {
         const ImVec2 clickedRatio = (io.MousePos - minScreen) / viewSize;
-        const ImVec2 worldPosCenter = ImVec2(ImLerp(min.x, max.x, clickedRatio.x), ImLerp(min.y, max.y, clickedRatio.y));
+        const ImVec2 worldPosCenter = ImVec2(ImLerp(_min.x, _max.x, clickedRatio.x), ImLerp(_min.y, _max.y, clickedRatio.y));
         
         ImVec2 worldPosViewMin = worldPosCenter - worldSizeView * 0.5;
         ImVec2 worldPosViewMax = worldPosCenter + worldSizeView * 0.5;
-        if (worldPosViewMin.x < min.x)
+        if (worldPosViewMin.x < _min.x)
         {
-            worldPosViewMin.x = min.x;
+            worldPosViewMin.x = _min.x;
             worldPosViewMax.x = worldPosViewMin.x + worldSizeView.x;
         }
-        if (worldPosViewMin.y < min.y)
+        if (worldPosViewMin.y < _min.y)
         {
-            worldPosViewMin.y = min.y;
+            worldPosViewMin.y = _min.y;
             worldPosViewMax.y = worldPosViewMin.y + worldSizeView.y;
         }
-        if (worldPosViewMax.x > max.x)
+        if (worldPosViewMax.x > _max.x)
         {
-            worldPosViewMax.x = max.x;
+            worldPosViewMax.x = _max.x;
             worldPosViewMin.x = worldPosViewMax.x - worldSizeView.x;
         }
-        if (worldPosViewMax.y > max.y)
+        if (worldPosViewMax.y > _max.y)
         {
-            worldPosViewMax.y = max.y;
+            worldPosViewMax.y = _max.y;
             worldPosViewMin.y = worldPosViewMax.y - worldSizeView.y;
         }
         viewState.mPosition = ImVec2(-worldPosViewMin.x, -worldPosViewMin.y);

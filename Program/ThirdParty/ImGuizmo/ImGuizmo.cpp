@@ -24,11 +24,11 @@
 // SOFTWARE.
 //
 
-#include "imgui.h"
+#include "../imgui/imgui.h"
 #ifndef IMGUI_DEFINE_MATH_OPERATORS
 #define IMGUI_DEFINE_MATH_OPERATORS
 #endif
-#include "imgui_internal.h"
+#include "../imgui/imgui_internal.h"
 #include "ImGuizmo.h"
 
 #if defined(_MSC_VER) || defined(__MINGW32__)
@@ -184,8 +184,8 @@ namespace IMGUIZMO_NAMESPACE
    }
 
    template <typename T> T Clamp(T x, T y, T z) { return ((x < y) ? y : ((x > z) ? z : x)); }
-   template <typename T> T max(T x, T y) { return (x > y) ? x : y; }
-   template <typename T> T min(T x, T y) { return (x < y) ? x : y; }
+   template <typename T> T Max(T x, T y) { return (x > y) ? x : y; }
+   template <typename T> T Min(T x, T y) { return (x < y) ? x : y; }
    template <typename T> bool IsWithin(T x, T y, T z) { return (x >= y) && (x <= z); }
 
    struct matrix_t;
@@ -1702,7 +1702,7 @@ namespace IMGUIZMO_NAMESPACE
             }
             float boundDistance = sqrtf(ImLengthSqr(worldBound1 - worldBound2));
             int stepCount = (int)(boundDistance / 10.f);
-            stepCount = min(stepCount, 1000);
+            stepCount = Min(stepCount, 1000);
             for (int j = 0; j < stepCount; j++)
             {
                float stepLength = 1.f / (float)stepCount;
@@ -2255,12 +2255,12 @@ namespace IMGUIZMO_NAMESPACE
             vec_t baseVector = gContext.mTranslationPlanOrigin - gContext.mModelLocal.v.position;
             float ratio = Dot(axisValue, baseVector + delta) / Dot(axisValue, baseVector);
 
-            gContext.mScale[axisIndex] = max(ratio, 0.001f);
+            gContext.mScale[axisIndex] = Max(ratio, 0.001f);
          }
          else
          {
             float scaleDelta = (io.MousePos.x - gContext.mSaveMousePosx) * 0.01f;
-            gContext.mScale.Set(max(1.f + scaleDelta, 0.001f));
+            gContext.mScale.Set(Max(1.f + scaleDelta, 0.001f));
          }
 
          // snap
@@ -2272,7 +2272,7 @@ namespace IMGUIZMO_NAMESPACE
 
          // no 0 allowed
          for (int i = 0; i < 3; i++)
-            gContext.mScale[i] = max(gContext.mScale[i], 0.001f);
+            gContext.mScale[i] = Max(gContext.mScale[i], 0.001f);
 
          if (gContext.mScaleLast != gContext.mScale)
          {
@@ -2317,7 +2317,7 @@ namespace IMGUIZMO_NAMESPACE
    {
       if(!Intersects(op, ROTATE) || type != MT_NONE || !gContext.mbMouseOver)
       {
-        return false;
+          return false;
       }
       ImGuiIO& io = ImGui::GetIO();
       bool applyRotationLocaly = gContext.mMode == LOCAL;
@@ -2380,11 +2380,35 @@ namespace IMGUIZMO_NAMESPACE
          }
          vec_t rotationAxisLocalSpace;
 
-         rotationAxisLocalSpace.TransformVector(makeVect(gContext.mTranslationPlan.x, gContext.mTranslationPlan.y, gContext.mTranslationPlan.z, 0.f), gContext.mModelInverse);
-         rotationAxisLocalSpace.Normalize();
+         if (gContext.mCurrentOperation == MT_ROTATE_X)
+         {
+             rotationAxisLocalSpace.x = 1.0f;
+             rotationAxisLocalSpace.y = 0.0f;
+             rotationAxisLocalSpace.z = 0.0f;
+         }
+         else if (gContext.mCurrentOperation == MT_ROTATE_Y)
+         {
+             rotationAxisLocalSpace.x = 0.0f;
+             rotationAxisLocalSpace.y = 1.0f;
+             rotationAxisLocalSpace.z = 0.0f;
+         }
+         else if (gContext.mCurrentOperation == MT_ROTATE_Z)
+         {
+             rotationAxisLocalSpace.x = 0.0f;
+             rotationAxisLocalSpace.y = 0.0f;
+             rotationAxisLocalSpace.z = 1.0f;
+         }
+         else
+         {
+             rotationAxisLocalSpace.x = 0.0f;
+             rotationAxisLocalSpace.y = 0.0f;
+             rotationAxisLocalSpace.z = 0.0f;
+         }
+
+         float rotateAngle =  gContext.mRotationAngle - gContext.mRotationAngleOrigin;
 
          matrix_t deltaRotation;
-         deltaRotation.RotationAxis(rotationAxisLocalSpace, gContext.mRotationAngle - gContext.mRotationAngleOrigin);
+         deltaRotation.RotationAxis(rotationAxisLocalSpace, rotateAngle);
          if (gContext.mRotationAngle != gContext.mRotationAngleOrigin)
          {
             modified = true;
@@ -2396,7 +2420,7 @@ namespace IMGUIZMO_NAMESPACE
 
          if (applyRotationLocaly)
          {
-            *(matrix_t*)matrix = scaleOrigin * deltaRotation * gContext.mModelLocal;
+             (*(matrix_t*)matrix) = scaleOrigin * deltaRotation * gContext.mModelLocal;
          }
          else
          {
@@ -2407,9 +2431,12 @@ namespace IMGUIZMO_NAMESPACE
             ((matrix_t*)matrix)->v.position = gContext.mModelSource.v.position;
          }
 
-         if (deltaMatrix)
+         if (modified && deltaMatrix)
          {
-            *(matrix_t*)deltaMatrix = gContext.mModelInverse * deltaRotation * gContext.mModel;
+             auto delta = rotationAxisLocalSpace * rotateAngle * 50.0f;
+             deltaMatrix[0] = delta.x;
+             deltaMatrix[1] = delta.y;
+             deltaMatrix[2] = delta.z;
          }
 
          if (!io.MouseDown[0])
@@ -2487,10 +2514,10 @@ namespace IMGUIZMO_NAMESPACE
       ComputeContext(view, projection, matrix, (operation & SCALE) ? LOCAL : mode);
 
       // set delta to identity
-      if (deltaMatrix)
-      {
-         ((matrix_t*)deltaMatrix)->SetToIdentity();
-      }
+      //if (deltaMatrix)
+      //{
+      //   ((matrix_t*)deltaMatrix)->SetToIdentity();
+      //}
 
       // behind camera
       vec_t camSpacePosition;
@@ -2507,8 +2534,8 @@ namespace IMGUIZMO_NAMESPACE
       {
          if (!gContext.mbUsingBounds)
          {
-            manipulated = HandleTranslation(matrix, deltaMatrix, operation, type, snap) ||
-                          HandleScale(matrix, deltaMatrix, operation, type, snap) ||
+            manipulated = HandleTranslation(matrix, nullptr, operation, type, snap) ||
+                          HandleScale(matrix, nullptr, operation, type, snap) ||
                           HandleRotation(matrix, deltaMatrix, operation, type, snap);
          }
       }
@@ -2729,9 +2756,9 @@ namespace IMGUIZMO_NAMESPACE
             }
             if (visible)
             {
-               ImU32 col = IM_COL32(0x80, 0x80, 0x80, 0xFF);
-               col = (fmodf(fabsf(f), 10.f) < FLT_EPSILON) ? IM_COL32(0x90, 0x90, 0x90, 0xFF) : col;
-               col = (fabsf(f) < FLT_EPSILON) ? IM_COL32(0x40, 0x40, 0x40, 0xFF): col;
+               ImU32 col = IM_COL32(0x80, 0x80, 0x80, 200);
+               col = (fmodf(fabsf(f), 10.f) < FLT_EPSILON) ? IM_COL32(0x90, 0x90, 0x90, 255) : col;
+               col = (fabsf(f) < FLT_EPSILON) ? IM_COL32(0x40, 0x40, 0x40, 120) : col;
 
                float thickness = 1.f;
                thickness = (fmodf(fabsf(f), 10.f) < FLT_EPSILON) ? 1.5f : thickness;

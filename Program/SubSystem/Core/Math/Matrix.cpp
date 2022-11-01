@@ -99,4 +99,13 @@ namespace Math
 		}
 		return Vector3(-asin(m[2][1]), atan2f(m[2][0], m[2][2]), atan2f(m[0][1], m[1][1]));
 	}
+
+	Vector3 Matrix::GetScale() const noexcept
+	{
+		Vector3 row0(m[0][0], m[0][1], m[0][2]);
+		Vector3 row1(m[1][0], m[1][1], m[1][2]);
+		Vector3 row2(m[2][0], m[2][1], m[2][2]);
+
+		return Vector3(row0.GetLenght(), row1.GetLenght(), row2.GetLenght());
+	}
 }

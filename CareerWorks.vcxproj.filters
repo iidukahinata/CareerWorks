@@ -169,6 +169,18 @@
     <Filter Include="Subsytem\Renderer\PostEffect\PostEffects">
       <UniqueIdentifier>{cdeb85fe-a552-48e2-bff3-51c24f67cff3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ThirdParty\ImGuizmo">
+      <UniqueIdentifier>{9c40832b-47f2-4378-9bf0-74a6eb957586}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\Component">
+      <UniqueIdentifier>{ced78f7a-5557-4bd7-8537-a75a906a091f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\Resource">
+      <UniqueIdentifier>{ca24d02b-931c-426f-89ae-1d6d7ba9801e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\GameObject">
+      <UniqueIdentifier>{65ab90f7-2fba-4a55-8227-89f499f60646}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Program\WinMain.cpp" />
@@ -505,27 +517,6 @@
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObject.cpp">
       <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject</Filter>
     </ClCompile>
-    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\GameObjectDetails.cpp">
-      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\MaterialDetails.cpp">
-      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ResourceDetails.cpp">
-      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\CameraDetails.cpp">
-      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ModelRenderDetails.cpp">
-      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\TransformDetails.cpp">
-      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\LightDetails.cpp">
-      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
-    </ClCompile>
     <ClCompile Include="Program\SubSystem\Core\Command\CommandList.cpp">
       <Filter>Subsytem\Core\Command</Filter>
     </ClCompile>
@@ -537,12 +528,6 @@
     </ClCompile>
     <ClCompile Include="Program\SubSystem\Scene\Component\IComponent.cpp">
       <Filter>Subsytem\Scene\Component</Filter>
-    </ClCompile>
-    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\AudioSpeakerDetails.cpp">
-      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\AudioListenerDetails.cpp">
-      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
     </ClCompile>
     <ClCompile Include="Program\SubSystem\Editor\EditorEvents.cpp">
       <Filter>Subsytem\Editor</Filter>
@@ -610,8 +595,50 @@
     <ClCompile Include="Program\SubSystem\Renderer\Factory\PostEffectFactory.cpp">
       <Filter>Subsytem\Renderer\Factory</Filter>
     </ClCompile>
+    <ClCompile Include="Program\ThirdParty\ImGuizmo\ImGuizmo.cpp">
+      <Filter>ThirdParty\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\ThirdParty\ImGuizmo\ImSequencer.cpp">
+      <Filter>ThirdParty\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\ThirdParty\ImGuizmo\GraphEditor.cpp">
+      <Filter>ThirdParty\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\ThirdParty\ImGuizmo\ImCurveEdit.cpp">
+      <Filter>ThirdParty\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\ThirdParty\ImGuizmo\ImGradient.cpp">
+      <Filter>ThirdParty\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\AudioListenerDetails.cpp">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\AudioSpeakerDetails.cpp">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\CameraDetails.cpp">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\LightDetails.cpp">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ModelRenderDetails.cpp">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\Component</Filter>
+    </ClCompile>
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\PostProcessEffectDetails.cpp">
-      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\TransformDetails.cpp">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\MaterialDetails.cpp">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ResourceDetails.cpp">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\GameObjectDetails.cpp">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\GameObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1038,27 +1065,6 @@
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObject.h">
       <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject</Filter>
     </ClInclude>
-    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\GameObjectDetails.h">
-      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\MaterialDetails.h">
-      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ResourceDetails.h">
-      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\CameraDetails.h">
-      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ModelRenderDetails.h">
-      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\TransformDetails.h">
-      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\LightDetails.h">
-      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
-    </ClInclude>
     <ClInclude Include="Program\SubSystem\Core\Command\Command.h">
       <Filter>Subsytem\Core\Command</Filter>
     </ClInclude>
@@ -1070,12 +1076,6 @@
     </ClInclude>
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\MainMenuBarWidget.h">
       <Filter>Subsytem\Editor\Widget\Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\AudioSpeakerDetails.h">
-      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\AudioListenerDetails.h">
-      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
     </ClInclude>
     <ClInclude Include="Program\SubSystem\Editor\EditorEvents.h">
       <Filter>Subsytem\Editor</Filter>
@@ -1149,8 +1149,53 @@
     <ClInclude Include="Program\SubSystem\Renderer\Factory\PostEffectFactory.h">
       <Filter>Subsytem\Renderer\Factory</Filter>
     </ClInclude>
+    <ClInclude Include="Program\ThirdParty\ImGuizmo\ImGradient.h">
+      <Filter>ThirdParty\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\ThirdParty\ImGuizmo\ImGuizmo.h">
+      <Filter>ThirdParty\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\ThirdParty\ImGuizmo\ImSequencer.h">
+      <Filter>ThirdParty\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\ThirdParty\ImGuizmo\ImZoomSlider.h">
+      <Filter>ThirdParty\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\ThirdParty\ImGuizmo\GraphEditor.h">
+      <Filter>ThirdParty\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\ThirdParty\ImGuizmo\ImCurveEdit.h">
+      <Filter>ThirdParty\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\AudioListenerDetails.h">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\AudioSpeakerDetails.h">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\CameraDetails.h">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\LightDetails.h">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ModelRenderDetails.h">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\Component</Filter>
+    </ClInclude>
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\PostProcessEffectDetails.h">
-      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects</Filter>
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\TransformDetails.h">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\MaterialDetails.h">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ResourceDetails.h">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\GameObjectDetails.h">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\GameObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
