@@ -130,17 +130,36 @@ void MaterialDetails::ShowShaderList(Material* material) noexcept
 	OpenResourceHelper("Use Shader");
 	if (auto resourceData = ShowSearchResourceHelper<Shader>())
 	{
-		auto nextShaderPath = resourceData->m_resourcePath.m_path;
-		RegisterEditorCommand(
-			[material](auto data) {
+		auto useGS = m_useGS;
+		const auto& nextShaderPath = resourceData->m_resourcePath.m_path;
+
+		RegisterEditorCommand([material, useGS](auto data) {
+
 				material->SetShader(VertexShader, data, false);
-				material->SetShader(PixelShader, data);
+
+				if (useGS)
+				{
+					material->SetShader(PixelShader, data, false);
+					material->SetShader(GeometryShader, data);
+				}
+				else
+				{
+					material->SetShader(PixelShader, data);
+				}
 			}
 			, nextShaderPath, shaderPath
 		);
 	}
 
 	ImGui::Text("");
+
+	ImGui::Text("Use GS Stage"); ImGui::SameLine(offsetPos);
+	auto inputUse = ImGui::RadioButton("##Use GeometryShader", m_useGS);
+
+	if (inputUse)
+	{
+		m_useGS = !m_useGS;
+	}
 }
 
 void MaterialDetails::ShowTextureList(Material* material) noexcept

@@ -44,4 +44,6 @@ private:
 
 	ResourceHandle* m_resourceHandle = nullptr;
 	Material* m_material			 = nullptr;
+
+	bool m_useGS = false;
 };

@@ -21,7 +21,18 @@ bool Shader::SetShader(ShaderType type, StringView path, D3D_SHADER_MACRO* defin
 	}
 
 	m_shaderPaths[type] = path;
-	return m_shaders[type].Compile(path, type, defines);
+
+	if (m_shaders[type].Compile(path, type, defines))
+	{
+		return true;
+	}
+	else
+	{
+		m_shaderPaths[type] = "";
+		m_shaders.erase(type);
+
+		return false;
+	}
 }
 
 D3D12Shader* Shader::GetShader(ShaderType type) noexcept

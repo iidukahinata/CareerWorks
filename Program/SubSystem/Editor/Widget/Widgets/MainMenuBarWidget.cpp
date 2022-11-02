@@ -30,8 +30,8 @@ void MainMenuBarWidget::PostInitialize()
 
 void MainMenuBarWidget::Draw()
 {
-    static auto saveScene = false;
-    static auto saveAsScene = false;
+    auto saveScene = false;
+    auto saveAsScene = false;
     auto newScene = false;
 
     // Input Handle
@@ -58,10 +58,6 @@ void MainMenuBarWidget::Draw()
             {
                 saveAsScene = true;
             }
-            if (ImGui::MenuItem("Settings"))
-            {
-                m_openSettginsWindow = true;
-            }
             ImGui::EndMenu();
         }
 
@@ -74,6 +70,12 @@ void MainMenuBarWidget::Draw()
             if (ImGui::MenuItem("Redo", "Ctrl+Y"))
             {
                 EditorHelper::Get().RedoCommand();
+            }
+
+            ImGui::Separator();
+            if (ImGui::MenuItem("Settings"))
+            {
+                m_openSettginsWindow = true;
             }
             ImGui::EndMenu();
         }
@@ -107,12 +109,10 @@ void MainMenuBarWidget::Draw()
     {
         m_world->GetCurrentScene()->Update();
         LOG("Successfully Saved");
-        saveScene = false;
     }
     if (saveAsScene)
     {
         ImGui::OpenPopup("Save as");
-        saveAsScene = false;
     }
 
     ShowNewSceneModal();
@@ -186,9 +186,17 @@ void MainMenuBarWidget::ShowSettingsWindow() noexcept
         ImGui::Text("AudioType"); ImGui::SameLine(offsetPos);
         auto inputAudio = ImGui::Combo("##AudioType", (int*)(&audioType), audioTypeCombo);
 
-        //if (inputRenderer) Config::RegisterRendererSystem(rendererType);
-        //if (inputInput)    Config::RegisterInputSystem(inputType);
-        //if (inputAudio)    Config::RegisterAudioSystem(audioType);
+        if (inputRenderer) Config::RegisterRendererSystem(rendererType);
+        if (inputInput)    Config::RegisterInputSystem(inputType);
+        if (inputAudio)    Config::RegisterAudioSystem(audioType);
+
+        // change system
+        if (inputRenderer || inputInput || inputAudio)
+        {
+            ImGui::OpenPopup("Change System");
+        }
+
+        ShowRestartSystemModal();
     }
 
     if (ImGui::CollapsingHeader("Renderer", ImGuiTreeNodeFlags_DefaultOpen))
@@ -278,6 +286,46 @@ void MainMenuBarWidget::ShowSaveAsModal() noexcept
         }
 
         if (isCreate || isCancel)
+        {
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::EndPopup();
+    }
+}
+
+void MainMenuBarWidget::ShowRestartSystemModal() noexcept
+{
+    const auto center = ImGui::GetMainViewport()->GetCenter();
+    ImGui::SetNextWindowPos(ImVec2(center.x - 150, center.y), ImGuiCond_Once);
+    ImGui::SetNextWindowSize(ImVec2(470, 115), ImGuiCond_Once);
+
+    if (ImGui::BeginPopupModal("Change System"))
+    {
+        auto text1 = ConvertToJapanese("System を変更するためにプログラムを再起動しますか？");
+        auto text2 = ConvertToJapanese("シーンを変更している場合、保存することをおすすめします。");
+
+        ImGui::Text(text1.c_str());
+        ImGui::Text(text2.c_str());
+
+        ImGui::Text("");
+        auto isRestart        = ImGui::Button("Restart"); ImGui::SameLine();
+        auto isRestartAndSave = ImGui::Button("Restart And Save"); ImGui::SameLine();
+        auto isCancel         = ImGui::Button("Cancel");
+
+        if (isRestart || isRestartAndSave)
+        {
+            if (auto scene = m_world->GetCurrentScene())
+            {
+                if (isRestartAndSave)
+                    scene->Update();
+            }
+
+            NotifyEvent<DestroyWindowEvent>();
+            system("start CareerWorks.exe");
+        }
+
+        if (isRestart || isRestartAndSave || isCancel)
         {
             ImGui::CloseCurrentPopup();
         }

@@ -35,6 +35,9 @@ private:
 	/** セーブ先 Scene 名の取得を行う。*/
 	void ShowSaveAsModal() noexcept;
 
+	/** プログラムの再起動確認 Window */
+	void ShowRestartSystemModal() noexcept;
+
 	/** フルスクリーン時に ImGui で WindowMenu を表示 */
 	void ShowWindowMenu() noexcept;
 

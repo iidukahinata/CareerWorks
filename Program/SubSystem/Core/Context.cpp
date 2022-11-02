@@ -21,9 +21,10 @@ void Context::Release()
 void Context::RegisterSubsystem(uint32_t hash, ISubsystem* subsystem) noexcept
 {
 	// 重複チェック
-	ASSERT(!m_subsystems.contains(hash));
-
-	m_subsystems[hash].reset(subsystem);
+	if (!m_subsystems.contains(hash))
+	{
+		m_subsystems[hash].reset(subsystem);
+	}
 }
 
 ISubsystem* Context::GetSubsystemByHash(uint32_t hash) noexcept

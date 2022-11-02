@@ -97,7 +97,6 @@ void Engine::Shutdown()
 #ifdef IS_EDITOR
 	EditorSystem::Get().Shutdown();
 #endif // IS_EDITOR
-
 	Window::Get().Shutdown();
 
 	// release subsystem

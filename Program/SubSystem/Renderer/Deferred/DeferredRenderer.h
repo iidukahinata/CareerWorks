@@ -38,6 +38,9 @@ private:
 	/** Render Job の登録 */
 	void RegisterRenderJob() noexcept;
 
+	/** Z prepass で使用されるオブジェクトの初期化 */
+	bool SetUpPrePassObjects() noexcept;
+
 	/** RootSignature などの共通的な Rendering Object の生成 */
 	bool SetUpRenderingObjects(UINT width, UINT height) noexcept;
 
@@ -78,8 +81,10 @@ private:
 	// * rendering objects
 	D3D12Sampler m_sampler;
 	D3D12RootSignature m_rootSignature;
+	D3D12RootSignature m_preZrootSignature;
 
 	// * pipeline objects
+	D3D12GraphicsPipelineState m_preZPipeline;
 	D3D12GraphicsPipelineState m_deferredPipeline;
 	D3D12GraphicsPipelineState m_postProcessPipeline;
 

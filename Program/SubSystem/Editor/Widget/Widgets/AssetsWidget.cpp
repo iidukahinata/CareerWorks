@@ -498,6 +498,15 @@ void AssetsWidget::DoubleClickResource(IconType type, StringView name) noexcept
 
 			m_world->ChangeScene(name);
 		}
+		else if (resourceType == Shader::TypeData.Hash)
+		{
+			auto resourceData = m_resourceManager->GetResourceData(resourceType, name);
+			auto resourcePath = resourceData->m_resourcePath.m_path;
+			auto cmd = String("start ") + resourcePath;
+
+			// VS プロジェクトで立ち上げ
+			system(cmd.c_str());
+		}
 	}
 
 	m_selectResourceName = "";

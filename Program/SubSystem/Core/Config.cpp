@@ -59,12 +59,12 @@ void Config::RegisterSubsystemsToContainer() noexcept
 
 	if (hasSettingsFile)
 	{
-		FileStream file(SYSTEM_SETTINGS_PATH, OpenMode::Write_Mode);
+		FileStream file(SYSTEM_SETTINGS_PATH, OpenMode::Read_Mode);
 		ASSERT(file.IsOpen());
 
-		file.Read(&m_rendererSystem);
-		file.Read(&m_inputSystem);
-		file.Read(&m_audioSystem);
+		file.Read((int*)&m_rendererSystem);
+		file.Read((int*)&m_inputSystem);
+		file.Read((int*)&m_audioSystem);
 
 		// set up save settings
 		SetUpSubsystem();
@@ -84,7 +84,7 @@ void Config::RegisterRendererSystem(RendererType type, bool saveSettings /* = tr
 {
 	switch (type)
 	{
-	case RendererType::Forward: REGISTER_SUBSYSTEM(Renderer, ForwardRenderer); break;
+	case RendererType::Forward:  REGISTER_SUBSYSTEM(Renderer, ForwardRenderer); break;
 	case RendererType::Deferred: REGISTER_SUBSYSTEM(Renderer, DeferredRenderer); break;
 	default: break;
 	}
@@ -132,7 +132,7 @@ void Config::SaveCurrentConfig() noexcept
 	FileStream file(SYSTEM_SETTINGS_PATH, OpenMode::Write_Mode);
 	ASSERT(file.IsOpen());
 
-	file.Write(m_rendererSystem);
-	file.Write(m_inputSystem);
-	file.Write(m_audioSystem);
+	file.Write((int)m_rendererSystem);
+	file.Write((int)m_inputSystem);
+	file.Write((int)m_audioSystem);
 }
