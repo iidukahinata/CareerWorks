@@ -12,14 +12,21 @@
 
 void EventManager::Initialize() noexcept
 {
-	// メインスレッドジョブとしてイベントループを登録しているが、他スレッドで処理し処理分担してもいいかもしれない。
-	m_job.SetFunction([this](double) { Tick(); }, FunctionType::Update);
-	m_job.RegisterToJobSystem();
+	m_jobs[0].SetFunction([this](double) { PreUpdate(); }, FunctionType::PreUpdate);
+	m_jobs[1].SetFunction([this](double) { Tick();		}, FunctionType::PostUpdate);
+
+	for (auto& job : m_jobs)
+	{
+		job.RegisterToJobSystem();
+	}
 }
 
 void EventManager::Exit() noexcept
 {
-	m_job.UnRegisterFromJobSystem();
+	for (auto& job : m_jobs)
+	{
+		job.UnRegisterFromJobSystem();
+	}
 
 	for (auto eventListeners : m_eventListeners)
 	{
@@ -37,6 +44,11 @@ void EventManager::Exit() noexcept
 	}
 
 	m_numActiveQueue = 0;
+}
+
+void EventManager::PreUpdate() noexcept
+{
+	m_stopwatch.Start();
 }
 
 bool EventManager::AddToQueue(UniquePtr<IEvent> eventBase) noexcept
@@ -131,15 +143,12 @@ bool EventManager::RemoveEventLisener(EventListener* eventListener, const EventT
 void EventManager::Tick() noexcept
 {
 	// キューの入れ替え
-	auto numQueue = m_numActiveQueue;
-	(++m_numActiveQueue) %= m_eventQueues.max_size();
-	m_eventQueues[m_numActiveQueue].clear();
-
+	const auto numQueue = m_numActiveQueue;
 	while (m_eventQueues[numQueue].size() != 0)
 	{
-		auto& event = m_eventQueues[numQueue].front();
+		const auto& event = m_eventQueues[numQueue].front();
 
-		auto listeners = m_eventListeners[event->GetTypeData().Hash];
+		const auto& listeners = m_eventListeners[event->GetTypeData().Hash];
 		for (auto listener : listeners)
 		{
 			listener->Action(event->GetData());
@@ -147,9 +156,18 @@ void EventManager::Tick() noexcept
 
 		m_eventQueues[numQueue].pop_front();
 
-		// タイムアウト処理は未開発。
+		// タイムアウト処理
+		constexpr double maxTime = 16.0;
+		//auto time = m_stopwatch.GetRap(Milli);
+		if (maxTime <= m_stopwatch.GetRap(Milli))
+		{
+			break;
+		}
 	}
 
+	(++m_numActiveQueue) %= m_eventQueues.max_size();
+	m_eventQueues[m_numActiveQueue].clear();
+
 	// タイムアウト処理が起きた場合、残ったタスクを次フレームに持ち越す。
-	//m_eventQueues[m_numActiveQueue].merge(m_eventQueues[numQueue]);
+	m_eventQueues[m_numActiveQueue].merge(m_eventQueues[numQueue]);
 }

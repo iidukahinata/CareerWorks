@@ -2,7 +2,7 @@
 * @file    Camera.cpp
 * @brief
 *
-* @date	   2022/10/03 2022年度初版
+* @date	   2022/11/04 2022年度初版
 */
 
 
@@ -60,14 +60,35 @@ void Camera::OnRegister()
 {
 	IComponent::OnRegister();
 
-	RegisterToRendererSystem();
+	if (GetActive())
+	{
+		RegisterToRenderer();
+	}
 }
 
 void Camera::OnUnRegister()
 {
 	IComponent::OnUnRegister();
 
-	UnRegisterFromRedererSystem();
+	if (GetActive())
+	{
+		UnRegisterFromRenderer();
+	}
+}
+
+void Camera::OnRemove()
+{
+	if (m_isRegister)
+	{
+		UnRegisterFromRenderer();
+
+		m_renderCommandFance.BegineFrame();
+	}
+}
+
+bool Camera::Erasable()
+{
+	return m_renderCommandFance.IsSingle();
 }
 
 float Camera::GetAspect() const noexcept
@@ -181,14 +202,40 @@ void Camera::CreateOrthographicMatrix() noexcept
 	}
 }
 
-void Camera::RegisterToRendererSystem() noexcept
+void Camera::RegisterToRenderer() noexcept
 {
-	ASSERT(m_renderer);
-	m_renderer->AddCamera(this);
+	if (m_isRegister)
+	{
+		return;
+	}
+
+	m_isRegister = true;
+
+	if (IsRenderingThread())
+	{
+		m_renderer->AddCamera(this);
+	}
+	else
+	{
+		RegisterRenderCommand([this] { m_renderer->AddCamera(this); });
+	}
 }
 
-void Camera::UnRegisterFromRedererSystem() noexcept
+void Camera::UnRegisterFromRenderer() noexcept
 {
-	ASSERT(m_renderer);
-	m_renderer->RemoveCamera(this);
+	if (!m_isRegister)
+	{
+		return;
+	}
+
+	m_isRegister = false;
+
+	if (IsRenderingThread())
+	{
+		m_renderer->RemoveCamera(this);
+	}
+	else
+	{
+		RegisterRenderCommand([this] { m_renderer->RemoveCamera(this); });
+	}
 }

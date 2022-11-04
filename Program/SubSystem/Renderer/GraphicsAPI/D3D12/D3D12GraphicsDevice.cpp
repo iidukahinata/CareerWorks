@@ -249,6 +249,7 @@ bool D3D12GraphicsDevice::CreateBackBuffer()
 {
 	DXGI_SWAP_CHAIN_DESC swcDesc = {};
 	auto hr = m_swapchain->GetDesc(&swcDesc);
+	auto bufferFormat = swcDesc.BufferDesc.Format;
 
 	// SRGBレンダーターゲットビュー設定
 	m_renderTargets.resize(swcDesc.BufferCount);
@@ -260,6 +261,51 @@ bool D3D12GraphicsDevice::CreateBackBuffer()
 		}
 
 		m_renderTargetViews[i].Create(m_renderTargets[i], m_renderTargets[i]->GetDesc().Format);
+	}
+
+	auto isHDR = false;
+
+#if defined(NTDDI_WIN10_RS2)
+	Microsoft::WRL::ComPtr<IDXGIOutput> output;
+	if (SUCCEEDED(m_swapchain->GetContainingOutput(output.GetAddressOf())))
+	{
+		Microsoft::WRL::ComPtr<IDXGIOutput6> output6;
+		if (SUCCEEDED(output.As(&output6)))
+		{
+			DXGI_OUTPUT_DESC1 desc;
+			hr = output6->GetDesc1(&desc);
+			if (FAILED(hr))
+			{
+				return false;
+			}
+
+			isHDR = desc.ColorSpace == DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
+		}
+	}
+#endif
+
+	DXGI_COLOR_SPACE_TYPE colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
+
+	if (isHDR)
+	{
+		switch (bufferFormat)
+		{
+		case DXGI_FORMAT_R10G10B10A2_UNORM: colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020; break;
+		case DXGI_FORMAT_R16G16B16A16_FLOAT: colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G10_NONE_P709; break;
+		default: break;
+		}
+	}
+
+	UINT colorSpaceSupport = 0;
+	if (SUCCEEDED(m_swapchain->CheckColorSpaceSupport(colorSpace, &colorSpaceSupport)))
+	{
+		if (colorSpaceSupport == DXGI_SWAP_CHAIN_COLOR_SPACE_SUPPORT_FLAG_PRESENT)
+		{
+			hr = m_swapchain->SetColorSpace1(colorSpace);
+			if (FAILED(hr)) {
+				return false;
+			}
+		}
 	}
 
 	return true;

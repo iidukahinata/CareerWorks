@@ -2,7 +2,7 @@
 * @file    Scene.h
 * @brief
 *
-* @date	   2022/10/25 2022年度初版
+* @date	   2022/11/04 2022年度初版
 */
 #pragma once
 
@@ -19,6 +19,7 @@ class Scene : public IResource
 public:
 
 	Scene();
+	~Scene();
 
 	/** asset ファイルと独自データの作成を行う。*/
 	static Scene* Create(StringView name) noexcept;

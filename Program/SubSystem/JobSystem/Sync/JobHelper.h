@@ -12,6 +12,8 @@
 */
 enum FunctionType
 {
+	PreUpdate,
+
 	Update,
 
 	PostUpdate,

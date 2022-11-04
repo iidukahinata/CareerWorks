@@ -24,6 +24,7 @@ GameObjectDetails::GameObjectDetails(DetailsWidget* detailsWidget, GameObject* g
 	// Add Component ‚ÌŒŸõ‚Ég—p
 	RegisterComponent<Light>();
 	RegisterComponent<Camera>();
+	RegisterComponent<MeshRender>();
 	RegisterComponent<ModelRender>();
 	RegisterComponent<AudioSpeaker>();
 	RegisterComponent<AudioListener>();

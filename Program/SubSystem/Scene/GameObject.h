@@ -2,7 +2,7 @@
 * @file    GameObject.h
 * @brief
 *
-* @date	   2022/10/25 2022年度初版
+* @date	   2022/11/04 2022年度初版
 */
 #pragma once
 
@@ -38,6 +38,9 @@ public:
 	/** ゲームオブジェクトの終了時に呼び出される。*/
 	void EndPlay() noexcept;
 
+	/** 自身の消去を行う。*/
+	void Destroy() noexcept;
+
 public:
 
 	/** 指定名コンポーネントの追加。指定名が存在しない等の場合、null を返す。*/
@@ -71,6 +74,8 @@ public:
 	/** Worldクラスで以外で使用されると、場合によってはScene終了時までメモリが解放されず残り続けます。*/
 	void SetID(uint32_t id) noexcept;
 	uint32_t GetID() const noexcept;
+
+	bool RequestAutoDestroy() const noexcept;
 
 	/** アクセス */
 	Transform& GetTransform() noexcept;

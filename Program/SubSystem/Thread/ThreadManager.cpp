@@ -8,6 +8,13 @@
 
 #include "ThreadManager.h"
 
+void ThreadManager::Initialize() noexcept
+{
+	m_job.SetFunction([this](double) { Tick(); }, FunctionType::PreUpdate);
+
+	m_job.RegisterToJobSystem();
+}
+
 void ThreadManager::Tick() noexcept
 {
 	for (const auto& thread : m_threads)

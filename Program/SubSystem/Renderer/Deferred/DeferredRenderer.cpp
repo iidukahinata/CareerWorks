@@ -16,6 +16,7 @@
 #include "../GraphicsAPI/D3D12/D3D12GraphicsDevice.h"
 #include "SubSystem/Scene/Component/Components/Camera.h"
 #include "SubSystem/Scene/Component/Components/RenderObject.h"
+#include "SubSystem/Scene/Component/Components/PostProcessEffect.h"
 #include "SubSystem/Resource/ResourceData/ProprietaryShaderData.h"
 
 bool DeferredRenderer::Initialize()
@@ -92,8 +93,10 @@ void DeferredRenderer::Update() noexcept
 
 		GBufferPass();
 
-		LightingPass();
+		PreLightingPass();
 
+		LightingPass();
+		
 		PostPass();
 	}
 }
@@ -147,9 +150,8 @@ bool DeferredRenderer::SetUpPrePassObjects() noexcept
 		rootParams[2].InitAsDescriptorTable(1, &descTblRanges[2], D3D12_SHADER_VISIBILITY_PIXEL);
 		//==========================================================
 
-		auto flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
-			D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS | D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
-			D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
+		auto flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |	D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
+			D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS | D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
 
 		if (!m_preZrootSignature.Create(rootParams.size(), rootParams.data(), 0, nullptr, flags))
 		{
@@ -182,6 +184,11 @@ bool DeferredRenderer::SetUpPrePassObjects() noexcept
 
 bool DeferredRenderer::SetUpRenderingObjects(UINT width, UINT height) noexcept
 {
+	// Create Matrix
+	m_Camera2DProj = Math::Matrix::CreateOrthographicLH(width, height, 0.1f, 100.0f);
+	m_Camera2DView = Math::Matrix(Math::Vector3(0, 0, 1), Math::Vector3::Zero, Math::Vector3::One);
+	m_constantBuffer.Create(sizeof(ConstantBufferMatrix));
+
 	// Create Sampler
 	m_sampler.Create();
 
@@ -220,7 +227,10 @@ bool DeferredRenderer::SetUpRenderingObjects(UINT width, UINT height) noexcept
 		rootParams[2].InitAsDescriptorTable(1, &descTblRanges[2], D3D12_SHADER_VISIBILITY_PIXEL);
 		//==========================================================
 
-		if (!m_rootSignature.Create(rootParams.size(), rootParams.data(), 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT))
+		auto flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT | D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
+			D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS | D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
+
+		if (!m_rootSignature.Create(rootParams.size(), rootParams.data(), 0, nullptr, flags))
 		{
 			return false;
 		}
@@ -243,12 +253,8 @@ bool DeferredRenderer::SetUpLightingObjects(UINT width, UINT height) noexcept
 	desc.BlendMode		  = BLEND_MODE_NO_ALPHA;
 	desc.RasterizerState  = NO_CULL;
 	desc.PrimitiveType	  = PRIMITIVE_TYPE_TRIANGLELIST;
-	desc.NumRenderTargets = GBufferType::Max;
-
-	for (size_t i = 0; i < GBufferType::Max; ++i)
-	{
-		desc.RTVForamt[i] = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	}
+	desc.NumRenderTargets = 1;
+	desc.RTVForamt[0]	  = DXGI_FORMAT_R32G32B32A32_FLOAT;
 
 	if (!m_deferredPipeline.Create(desc, &m_rootSignature))
 	{
@@ -262,9 +268,13 @@ bool DeferredRenderer::SetUpPostProcessObjects(UINT width, UINT height) noexcept
 {
 	auto postProcessShaderPath = FileSystem::FindFilePath(SHADER_DIRECTORY, "PostProcess.hlsl");
 
+	Vector<D3D_SHADER_MACRO> defines;
+	defines.emplace_back("Luma", "1");
+	defines.emplace_back(D3D_SHADER_MACRO(NULL, NULL));
+
 	Array<D3D12Shader, 2> postProcessShaders;
-	postProcessShaders[VertexShader].Compile(postProcessShaderPath, VertexShader);
-	postProcessShaders[PixelShader ].Compile(postProcessShaderPath, PixelShader );
+	postProcessShaders[VertexShader].Compile(postProcessShaderPath, VertexShader, defines.data());
+	postProcessShaders[PixelShader ].Compile(postProcessShaderPath, PixelShader , defines.data());
 
 	GraphicsPipelineStateDesc desc = {};
 	desc.VS				  = &postProcessShaders[VertexShader];
@@ -274,10 +284,20 @@ bool DeferredRenderer::SetUpPostProcessObjects(UINT width, UINT height) noexcept
 	desc.PrimitiveType    = PRIMITIVE_TYPE_TRIANGLELIST;
 	desc.NumRenderTargets = 1;
 
-	//if (!m_postProcessPipeline.Create(desc, &m_rootSignature))
-	//{
-	//	return false;
-	//}
+	if (!m_postProcessPipeline.Create(desc, &m_rootSignature))
+	{
+		return false;
+	}
+
+	if (!m_luminousRenderTexture.Create(width, height, DXGI_FORMAT_R32G32B32A32_FLOAT))
+	{
+		return false;
+	}
+
+	if (!m_lightingRenderTexture.Create(width, height, DXGI_FORMAT_R32G32B32A32_FLOAT))
+	{
+		return false;
+	}
 
 	return true;
 }
@@ -294,12 +314,12 @@ void DeferredRenderer::PrePass() noexcept
 	// Z prepass
 	{
 		m_preZPipeline.Set();
-
+	
 		for (auto renderObject : m_renderObjects)
 		{
 			if (!renderObject->GetActive())
 				continue;
-
+	
 			renderObject->PreRender();
 		}
 	}
@@ -320,6 +340,14 @@ void DeferredRenderer::GBufferPass() noexcept
 	m_skyBox->Render(m_mainCamera);
 }
 
+void DeferredRenderer::PreLightingPass() noexcept
+{
+	m_transformCBuffer->Update(m_Camera2DView.ToMatrixXM(), m_Camera2DProj.ToMatrixXM());
+	m_transformCBuffer->Bind(m_constantBuffer.GetCPUData(), Math::Matrix::Identity.ToMatrixXM());
+
+	m_constantBuffer.VSSet(0);
+}
+
 void DeferredRenderer::LightingPass() noexcept
 {
 	// RenderTarget Set
@@ -328,7 +356,7 @@ void DeferredRenderer::LightingPass() noexcept
 		m_lightingRenderTexture.SetRenderTarget();
 		m_lightingRenderTexture.Clear(Math::Vector4(0.f, 0.f, 0.f, 1.f));
 	}
-	else
+	//else
 	{
 #if IS_EDITOR
 		m_renderTexture.SetRenderTarget();
@@ -347,6 +375,7 @@ void DeferredRenderer::LightingPass() noexcept
 	m_gbuffer->GetRenderTexture(GBufferType::Specular).PSSet(1);
 	m_gbuffer->GetRenderTexture(GBufferType::Normal	 ).PSSet(2);
 	m_gbuffer->GetRenderTexture(GBufferType::Depth	 ).PSSet(3);
+	m_gbuffer->GetRenderTexture(GBufferType::Position).PSSet(4);
 
 	// Mesh Set
 	m_vertexBuffer.IASet();
@@ -363,6 +392,10 @@ void DeferredRenderer::PostPass() noexcept
 		return;
 	}
 
+	LuminousPass();
+
+	// RenderTarget Set
+
 #if IS_EDITOR
 	m_renderTexture.SetRenderTarget();
 	m_renderTexture.Clear(Math::Vector4(0.0f, 0.0f, 0.0f, 1.0f));
@@ -370,16 +403,30 @@ void DeferredRenderer::PostPass() noexcept
 	D3D12GraphicsDevice::Get().SetRenderTarget();
 #endif // IS_EDITOR
 
-	// Pipeline Set
-	m_postProcessPipeline.Set();
-	m_sampler.PSSet();
-
 	// Texture Set
 	m_gbuffer->GetRenderTexture(GBufferType::Albedo	 ).PSSet(0);
 	m_gbuffer->GetRenderTexture(GBufferType::Specular).PSSet(1);
 	m_gbuffer->GetRenderTexture(GBufferType::Normal	 ).PSSet(2);
 	m_gbuffer->GetRenderTexture(GBufferType::Depth	 ).PSSet(3);
-	m_lightingRenderTexture.PSSet(4);
+	m_gbuffer->GetRenderTexture(GBufferType::Position).PSSet(4);
+	m_lightingRenderTexture.PSSet(5);
+	m_luminousRenderTexture.PSSet(6);
+
+	m_postProcessEffect->Render();
+}
+
+void DeferredRenderer::LuminousPass() noexcept
+{
+	// RenderTarget Set
+	m_luminousRenderTexture.SetRenderTarget();
+	m_luminousRenderTexture.Clear(Math::Vector4(0.f, 0.f, 0.f, 1.f));
+
+	// Pipeline Set
+	m_postProcessPipeline.Set();
+	m_sampler.PSSet();
+
+	// Texture Set
+	m_lightingRenderTexture.PSSet(5);
 
 	// Mesh Set
 	m_vertexBuffer.IASet();

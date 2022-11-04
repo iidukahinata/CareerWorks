@@ -47,6 +47,8 @@ bool Engine::Initialize(HINSTANCE hInstance)
 	// renderingThread : task thread : any thread 用として初期化
 	AsyncJobSystem::Get().Initialize(3);
 
+	ThreadManager::Get().Initialize();
+
 	// 過去の設定データがあれば、データに沿ったシステムの登録を行う。
 	Config::RegisterSubsystemsToContainer();
 
@@ -67,20 +69,21 @@ bool Engine::Initialize(HINSTANCE hInstance)
 long Engine::MainLoop()
 {
 	auto& window = Window::Get();
-	auto timer = m_context->GetSubsystem<Timer>();
-	
+	auto timer = m_context->GetSubsystem<Timer>();	
+
 	while (window.Tick())
 	{
 		if (timer->ReachedNextFrame())
 		{
 			RenderingThread::BegineFrame();
 
-			ThreadManager::Get().Tick();
-
+			JobSystem::Get().Execute(timer->GetDeltaTime(), FunctionType::PreUpdate);
 			JobSystem::Get().Execute(timer->GetDeltaTime(), FunctionType::Update);
-			JobSystem::Get().Execute(timer->GetDeltaTime(), FunctionType::PostUpdate);
 
+			// Event 処理前に他スレッド操作を終了させる
 			RenderingThread::EndFrame();
+
+			JobSystem::Get().Execute(timer->GetDeltaTime(), FunctionType::PostUpdate);
 		}
 	}
 

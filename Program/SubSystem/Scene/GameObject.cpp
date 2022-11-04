@@ -78,11 +78,11 @@ void GameObject::RegisterAllComponents() noexcept
 	ASSERT(!m_registered);
 	m_registered = true;
 
-	for (const auto& component : m_components)
+	for (const auto& componentInfo : m_components)
 	{
-		if (!component.second->IsRegistered())
+		if (!componentInfo.second->IsRegistered())
 		{
-			component.second->OnRegister();
+			componentInfo.second->OnRegister();
 		}
 	}
 }
@@ -92,11 +92,11 @@ void GameObject::UnRegisterAllComponents() noexcept
 	ASSERT(m_registered);
 	m_registered = false;
 
-	for (const auto& component : m_components)
+	for (const auto& componentInfo : m_components)
 	{
-		if (component.second->IsRegistered())
+		if (componentInfo.second->IsRegistered())
 		{
-			component.second->OnUnRegister();
+			componentInfo.second->OnUnRegister();
 		}
 	}
 }
@@ -107,11 +107,11 @@ void GameObject::BeginPlay() noexcept
 	{
 		m_isPlaying = true;
 
-		for (const auto& component : m_components)
+		for (const auto& componentInfo : m_components)
 		{
-			if (!component.second->IsBeginPlay())
+			if (!componentInfo.second->IsBeginPlay())
 			{
-				component.second->OnStart();
+				componentInfo.second->OnStart();
 			}
 		}
 	}
@@ -123,14 +123,19 @@ void GameObject::EndPlay() noexcept
 	{
 		m_isPlaying = false;
 
-		for (const auto& component : m_components)
+		for (const auto& componentInfo : m_components)
 		{
-			if (component.second->IsBeginPlay())
+			if (componentInfo.second->IsBeginPlay())
 			{
-				component.second->OnStop();
+				componentInfo.second->OnStop();
 			}
 		}
 	}
+}
+
+void GameObject::Destroy() noexcept
+{
+	m_world->DestroyGameObject(this);
 }
 
 IComponent* GameObject::AddComponent(StringView name) noexcept
@@ -182,7 +187,10 @@ void GameObject::RemoveComponent(IComponent* component) noexcept
 	{
 		component->OnRemove();
 
-		m_components.erase(hash);
+		if (component->Erasable())
+		{
+			m_components.erase(hash);
+		}
 	}
 }
 
@@ -215,19 +223,19 @@ IComponent* GameObject::FindComponent(StringView name) const noexcept
 
 void GameObject::ClearComponets() noexcept
 {
-	for (const auto& component : m_components)
+	for (const auto& componentInfo : m_components)
 	{
-		component.second->OnRemove();
+		componentInfo.second->OnRemove();
 	}
 
-	m_components.clear();
+	std::erase_if(m_components, [](const auto& componentInfo) { return componentInfo.second->Erasable(); });
 }
 
 void GameObject::SetActive(bool active) noexcept
 {
-	for (const auto& component : m_components)
+	for (const auto& componentInfo : m_components)
 	{
-		component.second->SetActive(active);
+		componentInfo.second->SetActive(active);
 	}
 
 	m_active = active;
@@ -241,6 +249,25 @@ bool GameObject::GetActive() const noexcept
 uint32_t GameObject::GetID() const noexcept
 {
 	return m_id;
+}
+
+bool GameObject::RequestAutoDestroy() const noexcept
+{
+	if (m_components.size() == 0)
+	{
+		return false;
+	}
+
+	bool request = false;
+	for (const auto& componentInfo : m_components)
+	{
+		if (!componentInfo.second->Erasable())
+		{
+			request = true;
+		}
+	}
+
+	return request;
 }
 
 void GameObject::SetID(uint32_t id) noexcept

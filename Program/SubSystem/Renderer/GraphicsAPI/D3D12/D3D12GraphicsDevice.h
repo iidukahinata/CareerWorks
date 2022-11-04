@@ -72,7 +72,7 @@ private:
 
 private:
 
-	Microsoft::WRL::ComPtr <IDXGIFactory4>			m_factory;
+	Microsoft::WRL::ComPtr<IDXGIFactory4>			m_factory;
 
 	// * Direct3D objects
 	Microsoft::WRL::ComPtr<ID3D12Device>			m_device;

@@ -2,12 +2,13 @@
 * @file    World.h
 * @brief
 *
-* @date	   2022/10/27 2022年度初版
+* @date	   2022/11/04 2022年度初版
 */
 #pragma once
 
 
 #include "GameObject.h"
+#include "AutoDestroySystem.h"
 #include "SubSystem/Core/ISubsystem.h"
 
 enum class WorldType
@@ -67,6 +68,8 @@ public:
 	Scene* GetScene(StringView name) noexcept;
 	const Unordered_Map<String, Scene*>& GetSceneList() const noexcept;
 
+	AutoDestroySystem& GetAutoDestroySystem() noexcept;
+
 private:
 
 	/** Scene メソッド */
@@ -118,4 +121,6 @@ private:
 
 	// * Game Mode 実行時の時は常に WorldType::Game になる
 	WorldType m_worldType = WorldType::None;
+
+	AutoDestroySystem m_autoDestroySystem;
 };

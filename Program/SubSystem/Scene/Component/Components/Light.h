@@ -2,12 +2,13 @@
 * @file    Light.h
 * @brief
 *
-* @date	   2022/10/03 2022年度初版
+* @date	   2022/11/04 2022年度初版
 */
 #pragma once
 
 
 #include "../IComponent.h"
+#include "SubSystem/Thread/RenderingThread/RenderCommandFance.h"
 
 class Renderer;
 
@@ -31,6 +32,9 @@ public:
 	void OnInitialize() override;
 	void OnRegister() override;
 	void OnUnRegister() override;
+	void OnRemove() override;
+
+	bool Erasable() override;
 
 public:
 
@@ -59,6 +63,10 @@ private:
 private:
 
 	Renderer* m_renderer = nullptr;
+
+	bool m_isRegister = false;
+
+	RenderCommandFance m_renderCommandFance;
 
 	LightType m_lightType;
 

@@ -2,7 +2,7 @@
 * @file    World.cpp
 * @brief
 *
-* @date	   2022/10/27 2022年度初版
+* @date	   2022/11/04 2022年度初版
 */
 
 
@@ -23,6 +23,8 @@ bool World::Initialize()
 	// ロード完了チェックのため必要時まで登録は行わない
 	m_job.SetFunction([this](double) { Update(); }, FunctionType::Update);
 
+	m_autoDestroySystem.Initialize();
+
 	// SceneEvent 用リスナー関数の初期化
 	StartupListenerObjects();
 
@@ -37,6 +39,10 @@ bool World::Initialize()
 
 void World::Shutdown()
 {
+	m_job.UnRegisterFromJobSystem();
+
+	m_autoDestroySystem.Shutdown();
+
 	TickManager::Get().Exit();
 }
 
@@ -166,7 +172,10 @@ void World::SetCurrentScene(Scene* scene) noexcept
 		m_currentScene->RemoveFromWorld();
 
 #ifdef IS_EDITOR
-		UnloadScene(m_currentScene->GetAssetName());
+		if (!IsGameMode())
+		{
+			UnloadScene(m_currentScene->GetAssetName());
+		}
 #endif // IS_EDITER
 	}
 
@@ -217,6 +226,11 @@ void World::RemoveScene(StringView name) noexcept
 	String sceneName(name);
 	if (m_sceneList.contains(sceneName))
 	{
+		if (m_currentScene == m_sceneList[sceneName])
+		{
+			m_currentScene = nullptr;
+		}
+
 		m_sceneList.erase(sceneName);
 	}
 }
@@ -238,6 +252,11 @@ Scene* World::GetScene(StringView name) noexcept
 const Unordered_Map<String, Scene*>& World::GetSceneList() const noexcept
 {
 	return m_sceneList;
+}
+
+AutoDestroySystem& World::GetAutoDestroySystem() noexcept
+{
+	return m_autoDestroySystem;
 }
 
 bool World::IsGameMode() const noexcept
@@ -262,6 +281,12 @@ void World::StartupListenerObjects() noexcept
 	m_loadSceneCompleteListener.SetFunction([this](std::any data) {
 
 		auto name = std::any_cast<String>(data);
+
+		if (!m_resourceHandles.contains(name))
+		{
+			return;
+		}
+
 		auto scene = m_resourceHandles[name]->GetResource<Scene>();
 
 		AddScene(name, scene);

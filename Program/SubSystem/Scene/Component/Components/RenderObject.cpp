@@ -2,16 +2,18 @@
 * @file    RenderObject.cpp
 * @brief
 *
-* @date	   2022/10/25 2022年度初版
+* @date	   2022/11/04 2022年度初版
 */
 
 
 #include "RenderObject.h"
 #include "SubSystem/Renderer/Renderer.h"
+#include "SubSystem/Thread/RenderingThread/RenderingThread.h"
 
 void RenderObject::OnInitialize()
 {
 	m_renderer = GetContext()->GetSubsystem<Renderer>();
+	ASSERT(m_renderer);
 
 	m_constantBufferMatrix.Create(sizeof(ConstantBufferMatrix));
 }
@@ -20,24 +22,90 @@ void RenderObject::OnRegister()
 {
 	IComponent::OnRegister();
 
-	RegisterToRenderer();
+	if (GetActive())
+	{
+		RegisterToRenderer();
+	}
 }
 
 void RenderObject::OnUnRegister()
 {
 	IComponent::OnUnRegister();
 
-	UnRegisterFromRenderer();
+	if (GetActive())
+	{
+		UnRegisterFromRenderer();
+	}
+}
+
+void RenderObject::OnRemove()
+{
+	if (m_isRegister)
+	{
+		UnRegisterFromRenderer();
+
+		m_renderCommandFance.BegineFrame();
+	}
+}
+
+void RenderObject::SetActive(bool active)
+{
+	if (GetActive() == active)
+	{
+		return;
+	}
+
+	IComponent::SetActive(active);
+
+	if (active)
+	{
+		RegisterToRenderer();
+	}
+	else
+	{
+		UnRegisterFromRenderer();
+	}
+}
+
+bool RenderObject::Erasable()
+{
+	return m_renderCommandFance.IsSingle();
 }
 
 void RenderObject::RegisterToRenderer() noexcept
 {
-	ASSERT(m_renderer);
-	m_renderer->AddRenderObject(this);
+	if (m_isRegister)
+	{
+		return;
+	}
+
+	m_isRegister = true;
+
+	if (IsRenderingThread())
+	{
+		m_renderer->AddRenderObject(this);
+	}
+	else
+	{
+		RegisterRenderCommand([this] { m_renderer->AddRenderObject(this); });
+	}
 }
 
 void RenderObject::UnRegisterFromRenderer() noexcept
 {
-	ASSERT(m_renderer);
-	m_renderer->RemoveRenderObject(this);
+	if (!m_isRegister)
+	{
+		return;
+	}
+
+	m_isRegister = false;
+
+	if (IsRenderingThread())
+	{
+		m_renderer->RemoveRenderObject(this);
+	}
+	else
+	{
+		RegisterRenderCommand([this] { m_renderer->RemoveRenderObject(this); });
+	}
 }

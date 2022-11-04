@@ -2,29 +2,39 @@
 * @file    RenderObject.h
 * @brief
 *
-* @date	   2022/10/28 2022年度初版
+* @date	   2022/11/04 2022年度初版
 */
 #pragma once
 
 
 #include "../IComponent.h"
+#include "SubSystem/Thread/RenderingThread/RenderCommandFance.h"
 #include "SubSystem/Renderer/GraphicsAPI/D3D12/D3D12ConstantBuffer.h"
 
 class Renderer;
 class IResource;
 class Model;
+class Mesh;
+class Material;
 
 class RenderObject : public IComponent
 {
-	COMPLETED_DEVELOPMENT("別スレッドで使用されている可能性があるため消去タイミングをずれす方法を考えた方が良い")
-		SUB_CLASS(RenderObject)
+	COMPLETED_DEVELOPMENT()
+	SUB_CLASS(RenderObject)
 public:
+
+	virtual ~RenderObject() = default;
 
 	virtual void OnInitialize() override;
 	virtual void OnRegister() override;
 	virtual void OnUnRegister() override;
+	virtual void OnRemove() override;
 
-	/** PreZ Pass 用レンダリング関数*/
+	void SetActive(bool active) override;
+
+	bool Erasable() override;
+
+	/** Z PrePass 用レンダリング関数 */
 	virtual void PreRender() = 0;
 
 	/** 実際のモデル表示処理を記述。*/
@@ -38,6 +48,10 @@ private:
 protected:
 
 	Renderer* m_renderer = nullptr;
+
+	bool m_isRegister = false;
+
+	RenderCommandFance m_renderCommandFance;
 
 	struct ConstantBufferMatrix
 	{
@@ -75,4 +89,27 @@ public:
 private:
 
 	Model* m_model = nullptr;
+};
+
+class MeshRender : public RenderObject
+{
+	COMPLETED_DEVELOPMENT()
+	SUB_CLASS(MeshRender)
+public:
+
+	void Serialized(FileStream* file) const override;
+	void Deserialized(FileStream* file) override;
+
+	void PreRender() override;
+	void Render() override;
+
+public:
+
+	void SetMesh(IResource* resource) noexcept;
+	void SetMesh(Mesh* mesh) noexcept;
+	Mesh* GetMesh() const noexcept;
+
+private:
+
+	Mesh* m_mesh = nullptr;
 };

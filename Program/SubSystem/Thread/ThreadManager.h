@@ -26,6 +26,8 @@ public:
 		return instance;
 	}
 
+	void Initialize() noexcept;
+
 	void Tick() noexcept;
 
 	/** スレッドを作成し、他 Thread 上で Run関数を実行。*/
@@ -47,6 +49,8 @@ private:
 	void RemoveAsyncJob(const uint32_t hash) noexcept;
 
 private:
+
+	Job m_job;
 
 	Map<uint32_t, UniquePtr<IThread>> m_threads;
 	Map<uint32_t, AsyncJob> m_threadJob;

@@ -2,7 +2,7 @@
 * @file	   DeferredRenderer.h
 * @brief
 *
-* @date	   2022/09/17 2022年度初版
+* @date	   2022/11/03 2022年度初版
 */
 #pragma once
 
@@ -58,11 +58,17 @@ private:
 	/** PrePass で生成した情報から GBuffer の生成 */
 	void GBufferPass() noexcept;
 
+	/** Lighting 前処理 */
+	void PreLightingPass() noexcept;
+
 	/** 実際に Lighting を考慮した計算 */
 	void LightingPass() noexcept;
 
-	/** Blur : DOF などの Effect 処理 */
+	/** Bloom : DOF などの Effect 処理 */
 	void PostPass() noexcept;
+
+	/** 輝度テクスチャの生成 */
+	void LuminousPass() noexcept;
 
 private:
 
@@ -70,6 +76,7 @@ private:
 
 	// * renderTarget objects
 	D3D12RenderTexture m_lightingRenderTexture;
+	D3D12RenderTexture m_luminousRenderTexture;
 
 #if IS_EDITOR
 
@@ -87,6 +94,22 @@ private:
 	D3D12GraphicsPipelineState m_preZPipeline;
 	D3D12GraphicsPipelineState m_deferredPipeline;
 	D3D12GraphicsPipelineState m_postProcessPipeline;
+
+	struct ConstantBufferMatrix
+	{
+		DirectX::XMMATRIX world;
+		DirectX::XMMATRIX worldView;
+		DirectX::XMMATRIX worldViewProjection;
+		DirectX::XMMATRIX view;
+		DirectX::XMMATRIX viewProjection;
+		DirectX::XMMATRIX viewProjectionInverse;
+		DirectX::XMMATRIX projection;
+	};
+
+	// * 2D camera objects
+	Math::Matrix m_Camera2DView;
+	Math::Matrix m_Camera2DProj;
+	D3D12ConstantBuffer m_constantBuffer;
 
 	// * sprite mesh buffer
 	D3D12IndexBuffer m_indexBuffer;

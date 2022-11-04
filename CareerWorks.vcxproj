@@ -183,6 +183,7 @@
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\GameObjectDetails.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\LightDetails.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\MaterialDetails.cpp" />
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\MeshRenderDetails.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ModelRenderDetails.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\PostProcessEffectDetails.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ResourceDetails.cpp" />
@@ -272,10 +273,12 @@
     <ClCompile Include="Program\SubSystem\Resource\Resources\Audio\AudioClip.cpp" />
     <ClCompile Include="Program\SubSystem\Resource\Resources\IResource.cpp" />
     <ClCompile Include="Program\SubSystem\Resource\Resources\Scene\Scene.cpp" />
+    <ClCompile Include="Program\SubSystem\Scene\AutoDestroySystem.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\Components\AudioListener.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\Components\AudioSpeaker.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\Components\Camera.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\Components\Light.cpp" />
+    <ClCompile Include="Program\SubSystem\Scene\Component\Components\MeshRender.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\Components\ModelRender.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\Components\PostProcessEffect.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\Components\RenderObject.cpp" />
@@ -390,6 +393,7 @@
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\GameObjectDetails.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\LightDetails.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\MaterialDetails.h" />
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\MeshRenderDetails.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ModelRenderDetails.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\PostProcessEffectDetails.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ResourceDetails.h" />
@@ -488,6 +492,7 @@
     <ClInclude Include="Program\SubSystem\Resource\Resources\Audio\AudioClip.h" />
     <ClInclude Include="Program\SubSystem\Resource\Resources\IResource.h" />
     <ClInclude Include="Program\SubSystem\Resource\Resources\Scene\Scene.h" />
+    <ClInclude Include="Program\SubSystem\Scene\AutoDestroySystem.h" />
     <ClInclude Include="Program\SubSystem\Scene\Component\Components\AudioListener.h" />
     <ClInclude Include="Program\SubSystem\Scene\Component\Components\AudioSpeaker.h" />
     <ClInclude Include="Program\SubSystem\Scene\Component\Components\Camera.h" />

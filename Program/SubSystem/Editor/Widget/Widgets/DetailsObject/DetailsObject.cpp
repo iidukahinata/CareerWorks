@@ -120,8 +120,8 @@ ResourceData* DetailsObject::ShowSearchResourceHelper(uint32_t selectType) noexc
 		constexpr auto columns = 2;
 		ImGui::Columns(columns, nullptr, false);
 
-		const auto&  resourceManager = m_detailsWidget->GetResourceManager();
-		const auto&  resourceDataMap = resourceManager->GetResourceDataListByType(selectType);
+		const auto& resourceManager = m_detailsWidget->GetResourceManager();
+		const auto& resourceDataMap = resourceManager->GetResourceDataListByType(selectType);
 
 		if (!resourceDataMap.empty())
 		{
@@ -158,7 +158,7 @@ ResourceData* DetailsObject::ShowSearchResourceHelper(uint32_t selectType) noexc
 bool DetailsObject::OpenResourceHelper(StringView lavel) noexcept
 {
 	const auto buttonLavel = String("*##") + lavel.data();
-	m_searchResourceLavel  = String("SearchResourceHelper") + lavel.data();
+	m_searchResourceLavel = String("SearchResourceHelper") + lavel.data();
 
 	if (ImGui::Button(buttonLavel.c_str(), ImVec2(20, 20)))
 	{

@@ -2,7 +2,7 @@
 * @file    Light.cpp
 * @brief
 *
-* @date	   2022/10/03 2022年度初版
+* @date	   2022/11/04 2022年度初版
 */
 
 
@@ -48,14 +48,35 @@ void Light::OnRegister()
 {
 	IComponent::OnRegister();
 
-	RegisterToLightMap();
+	if (GetActive())
+	{
+		RegisterToLightMap();
+	}
 }
 
 void Light::OnUnRegister()
 {
 	IComponent::OnUnRegister();
 
-	UnRegisterFromLightMap();
+	if (GetActive())
+	{
+		UnRegisterFromLightMap();
+	}
+}
+
+void Light::OnRemove()
+{
+	if (m_isRegister)
+	{
+		UnRegisterFromLightMap();
+
+		m_renderCommandFance.BegineFrame();
+	}
+}
+
+bool Light::Erasable()
+{
+	return m_renderCommandFance.IsSingle();
 }
 
 void Light::SetLightType(LightType lightType) noexcept
@@ -145,12 +166,38 @@ float Light::GetAngle() const noexcept
 
 void Light::RegisterToLightMap() noexcept
 {
-	ASSERT(m_renderer);
-	m_renderer->AddLight(this);
+	if (m_isRegister)
+	{
+		return;
+	}
+
+	m_isRegister = true;
+
+	if (IsRenderingThread())
+	{
+		m_renderer->AddLight(this);
+	}
+	else
+	{
+		RegisterRenderCommand([this] { m_renderer->AddLight(this); });
+	}
 }
 
 void Light::UnRegisterFromLightMap() noexcept
 {
-	ASSERT(m_renderer);
-	m_renderer->RemoveLight(this);
+	if (!m_isRegister)
+	{
+		return;
+	}
+
+	m_isRegister = false;
+
+	if (IsRenderingThread())
+	{
+		m_renderer->RemoveLight(this);
+	}
+	else
+	{
+		RegisterRenderCommand([this] { m_renderer->RemoveLight(this); });
+	}
 }

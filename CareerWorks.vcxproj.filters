@@ -667,6 +667,15 @@
     <ClCompile Include="Program\SubSystem\Window\WindowEvents.cpp">
       <Filter>Subsytem\Window</Filter>
     </ClCompile>
+    <ClCompile Include="Program\SubSystem\Scene\Component\Components\MeshRender.cpp">
+      <Filter>Subsytem\Scene\Component\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\MeshRenderDetails.cpp">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Scene\AutoDestroySystem.cpp">
+      <Filter>Subsytem\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Program\ThirdParty\FMOD\include\fmod_dsp.h">
@@ -1241,6 +1250,12 @@
     </ClInclude>
     <ClInclude Include="Program\SubSystem\Window\WindowEvents.h">
       <Filter>Subsytem\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\MeshRenderDetails.h">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Scene\AutoDestroySystem.h">
+      <Filter>Subsytem\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

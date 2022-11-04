@@ -15,6 +15,7 @@ enum GBufferType
 	Specular,
 	Normal,
 	Depth,
+	Position,
 	Max,
 };
 
@@ -31,5 +32,5 @@ public:
 
 private:
 
-	Array<D3D12RenderTexture, GBufferType::Max> m_rendererTexture;
+	Array<D3D12RenderTexture, GBufferType::Max> m_rendererTextures;
 };

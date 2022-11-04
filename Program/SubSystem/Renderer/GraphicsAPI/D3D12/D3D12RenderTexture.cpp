@@ -9,12 +9,12 @@
 #include "D3D12RenderTexture.h"
 #include "D3D12GraphicsDevice.h"
 
-bool D3D12RenderTexture::Create(int width, int height, DXGI_FORMAT colorFormat, DXGI_FORMAT depthFormat) noexcept
+bool D3D12RenderTexture::Create(int width, int height, DXGI_FORMAT colorFormat, DXGI_FORMAT depthFormat, bool isMSAA) noexcept
 {
-	if (!CreateRenderTarget(width, height, colorFormat))
+	if (!CreateRenderTarget(width, height, colorFormat, isMSAA))
 		return false;
 
-	if (!CreateDepthStencil(width, height, depthFormat))
+	if (!CreateDepthStencil(width, height, depthFormat, isMSAA))
 		return false;
 
 	m_shaderResourceView.Create(m_renderTarget.Get(), m_renderTarget->GetDesc());
@@ -76,7 +76,7 @@ D3D12ShaderResourceView* D3D12RenderTexture::GetShaderResourceView() noexcept
 	return &m_shaderResourceView;
 }
 
-bool D3D12RenderTexture::CreateRenderTarget(int width, int height, DXGI_FORMAT colorFormat) noexcept
+bool D3D12RenderTexture::CreateRenderTarget(int width, int height, DXGI_FORMAT colorFormat, bool isMSAA) noexcept
 {
 	CD3DX12_RESOURCE_DESC renderTargetDesc(
 		D3D12_RESOURCE_DIMENSION_TEXTURE2D,
@@ -86,7 +86,7 @@ bool D3D12RenderTexture::CreateRenderTarget(int width, int height, DXGI_FORMAT c
 		1,
 		1,
 		colorFormat,
-		1,
+		isMSAA ? 4 : 1,
 		0,
 		D3D12_TEXTURE_LAYOUT_UNKNOWN,
 		D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
@@ -115,7 +115,7 @@ bool D3D12RenderTexture::CreateRenderTarget(int width, int height, DXGI_FORMAT c
 	return true;
 }
 
-bool D3D12RenderTexture::CreateDepthStencil(int width, int height, DXGI_FORMAT depthFormat) noexcept
+bool D3D12RenderTexture::CreateDepthStencil(int width, int height, DXGI_FORMAT depthFormat, bool isMSAA) noexcept
 {
 	CD3DX12_RESOURCE_DESC depthStencilDesc(
 		D3D12_RESOURCE_DIMENSION_TEXTURE2D,
@@ -125,7 +125,7 @@ bool D3D12RenderTexture::CreateDepthStencil(int width, int height, DXGI_FORMAT d
 		1,
 		1,
 		depthFormat,
-		1,
+		isMSAA ? 4 : 1,
 		0,
 		D3D12_TEXTURE_LAYOUT_UNKNOWN,
 		D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL | D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE);

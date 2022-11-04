@@ -90,6 +90,11 @@ void IComponent::Tick(double deltaTime)
 
 }
 
+bool IComponent::Erasable()
+{
+	return true;
+}
+
 void IComponent::SetActive(bool active)
 {
 	if (GetActive() == active)

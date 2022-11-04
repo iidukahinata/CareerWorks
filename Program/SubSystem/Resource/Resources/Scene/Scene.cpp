@@ -18,6 +18,11 @@ Scene::Scene()
     ASSERT(m_world);
 }
 
+Scene::~Scene()
+{
+    ClearGameObjects();
+}
+
 Scene* Scene::Create(StringView name) noexcept
 {
     auto&& path = ProprietarySceneData::ConvertProprietaryPath(name);
@@ -189,14 +194,26 @@ void Scene::RemoveGameObject(GameObject* gameObject) noexcept
     m_gameObjects[id].swap(m_gameObjects.back());
     m_gameObjects[id]->SetID(id);
 
+    // Á‹Ž‚ªŠ®—¹‚µ‚Ä‚¢‚È‚¢ê‡‚Í AutoDestroySystem ‚É“n‚·
+    if (gameObject->RequestAutoDestroy())
+    {
+        auto autoDestroyObject = m_gameObjects.back().release();
+        m_world->GetAutoDestroySystem().AddAutoDestroy(autoDestroyObject);
+    }
+
     m_gameObjects.pop_back();
 }
 
 void Scene::ClearGameObjects() noexcept
 {
-    for (const auto& gameObject : m_gameObjects)
+    for (auto& gameObject : m_gameObjects)
     {
         gameObject->ClearComponets();
+
+        if (gameObject->RequestAutoDestroy())
+        {
+            m_world->GetAutoDestroySystem().AddAutoDestroy(gameObject.release());
+        }
     }
 
     m_gameObjects.clear();

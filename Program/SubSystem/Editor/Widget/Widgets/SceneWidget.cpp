@@ -9,13 +9,20 @@
 #include "SceneWidget.h"
 #include "SubSystem/Scene/World.h"
 #include "SubSystem/Editor/DragDrop.h"
+#include "SubSystem/Resource/ResourceManager.h"
 #include "SubSystem/Resource/Resources/Scene/Scene.h"
+#include "SubSystem/Resource/Resources/3DModel/Model.h"
+#include "SubSystem/Resource/Resources/3DModel/Mesh.h"
 #include "SubSystem/Editor/Widget/Widgets/DetailsWidget.h"
+#include "SubSystem/Scene/Component/Components/RenderObject.h"
 
 void SceneWidget::PostInitialize()
 {
 	m_world = GetContext()->GetSubsystem<World>();
 	ASSERT(m_world);
+
+	m_resourceManager = GetContext()->GetSubsystem<ResourceManager>();
+	ASSERT(m_resourceManager);
 }
 
 void SceneWidget::Draw()
@@ -50,11 +57,18 @@ void SceneWidget::Draw()
 					m_gameObject = nullptr;
 				}
 
-				// 親子関係の解消のための処理
-				if (DragDrop::Get().HasGameObject())
+				// ゲームオブジェクトなら親子関係の解消のための処理
+				if (auto dragGameObject = CatchDragGameObject())
 				{
-					auto dragGameObject = CatchDragObject();
 					dragGameObject->GetTransform().SetParent(nullptr);
+				}
+
+				if (ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem | ImGuiHoveredFlags_RootAndChildWindows))
+				{
+					if (auto dragModel = CatchDragObject<Model>())
+					{
+						CreateGameObjectFromModel(dragModel);
+					}
 				}
 
 				m_selectGameObject = false;
@@ -106,7 +120,7 @@ void SceneWidget::AddGameObjectToTree(GameObject* gameObject) noexcept
 		// show select UI
 		if (m_gameObject == gameObject)
 		{
-			ShowDragDropHelper();
+			ShowSelectUI();
 		}
 
 		ChackClickedCommand(gameObject);
@@ -194,6 +208,20 @@ void SceneWidget::ShowCreateWindow() noexcept
 	}
 }
 
+void SceneWidget::ShowSelectUI() const noexcept
+{
+	ImDrawList* draw_list = ImGui::GetWindowDrawList();
+	auto min = ImGui::GetItemRectMin();
+	auto max = ImGui::GetItemRectMax();
+
+	// 少し大きめの枠にする
+	min.x -= 1; max.x = ImGui::GetWindowWidth() - 8;
+	min.y -= 1; max.y += 1;
+
+	// 細目の白いライン表示
+	draw_list->AddRect(min, max, IM_COL32(100, 100, 100, 180), 0, 0, 1);
+}
+
 void SceneWidget::ChackClickedCommand(GameObject* gameObject) noexcept
 {
 	// ドラッグアンドドロップ有効指定
@@ -215,10 +243,8 @@ void SceneWidget::ChackClickedCommand(GameObject* gameObject) noexcept
 
 	if (ImGui::IsMouseReleased(0))
 	{
-		if (DragDrop::Get().HasGameObject())
-		{			
-			auto dragGameObject = CatchDragObject();
-
+		if (auto dragGameObject = CatchDragGameObject())
+		{
 			// 違うオブジェクトにドラッグされたら親子関係を構築
 			if (dragGameObject == gameObject)
 			{
@@ -235,7 +261,22 @@ void SceneWidget::ChackClickedCommand(GameObject* gameObject) noexcept
 	}
 }
 
-GameObject* SceneWidget::CatchDragObject() const noexcept
+void SceneWidget::CreateGameObjectFromModel(Model* model) noexcept
+{
+	for (auto mesh : model->GetAllMeshes())
+	{
+		auto gameObject = m_world->CreateGameObject();
+		gameObject->SetName(mesh->GetAssetName());
+
+		if (auto component = gameObject->AddComponent("MeshRender"))
+		{
+			auto meshComponent = dynamic_cast<MeshRender*>(component);
+			meshComponent->SetMesh(mesh);
+		}
+	}
+}
+
+GameObject* SceneWidget::CatchDragGameObject() const noexcept
 {
 	if (DragDrop::Get().HasGameObject())
 	{
@@ -247,16 +288,35 @@ GameObject* SceneWidget::CatchDragObject() const noexcept
 	return nullptr;
 }
 
-void SceneWidget::ShowDragDropHelper() const noexcept
+ResourceData* SceneWidget::CatchDragResourceData() const noexcept
 {
-	ImDrawList* draw_list = ImGui::GetWindowDrawList();
-	auto min = ImGui::GetItemRectMin();
-	auto max = ImGui::GetItemRectMax();
+	if (DragDrop::Get().HasResource())
+	{
+		auto dragObject = DragDrop::Get().GetDragObject();
 
-	// 少し大きめの枠にする
-	min.x -= 1; max.x = ImGui::GetWindowWidth() - 8;
-	min.y -= 1; max.y += 1;
+		return std::any_cast<ResourceData*>(dragObject);
+	}
+	return nullptr;
+}
 
-	// 細目の白いライン表示
-	draw_list->AddRect(min, max, IM_COL32(100, 100, 100, 180), 0, 0, 1);
+IResource* SceneWidget::CatchDragResourceObject(uint32_t selectType) const noexcept
+{
+	if (!DragDrop::Get().HasResource())
+	{
+		return nullptr;
+	}
+
+	const auto resourceData = std::any_cast<ResourceData*>(DragDrop::Get().GetDragObject());
+	const auto type = resourceData->m_resourcePath.m_type;
+
+	if (type != selectType)
+	{
+		return nullptr;
+	}
+
+	// Load Resource
+	auto resourceHandle = m_resourceManager->Load(resourceData);
+	resourceHandle->WaitForLoadComplete();
+	
+	return resourceHandle->GetResource();
 }

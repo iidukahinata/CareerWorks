@@ -54,6 +54,12 @@ public:
 	/** 派生先で使用する場合は、TickFunction をシステム側に登録する必要があります。*/
 	virtual void Tick(double deltaTime);
 
+	/** 
+	* 別スレッドで操作されている時に Remove 申請があっても安全に機能するためのフラグ関数
+	* Remove 時に true の場合はその場で放棄され、 false の場合は AutoDestroyManager へ管理権を渡す。
+	*/
+	virtual bool Erasable();
+
 public:
 
 	/** true の場合、更新関係にも影響する。*/

@@ -342,6 +342,7 @@ bool Material::CreatePipeline() noexcept
 	desc.BlendMode		 = m_materialData.m_blendMode;
 	desc.RasterizerState = m_materialData.m_rasterizerState;
 	desc.PrimitiveType	 = PRIMITIVE_TYPE_TRIANGLELIST;
+	//desc.SampleDesc.Count = 4;
 
 	if (desc.PS)
 	{

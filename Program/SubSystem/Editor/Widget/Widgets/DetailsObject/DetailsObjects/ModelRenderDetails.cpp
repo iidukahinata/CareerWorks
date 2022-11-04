@@ -25,7 +25,8 @@ void ModelRenderDetails::Draw()
 	if (ShowComponentHeader(m_modelRender))
 	{
 		auto modelRenderer = m_modelRender;
-		auto modelPath = modelRenderer->GetModel() ? ConvertToJapanese(modelRenderer->GetModel()->GetFilePath()) : String();
+		auto model		   = modelRenderer->GetModel();
+		auto modelPath	   = model ? ConvertToJapanese(model->GetFilePath()) : "";
 
 		ImGui::Text("Model"); ImGui::SameLine(offsetPos);
 

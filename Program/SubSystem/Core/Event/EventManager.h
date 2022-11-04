@@ -28,6 +28,8 @@ public:
 	void Initialize() noexcept;
 	void Exit() noexcept;
 
+	void PreUpdate() noexcept;
+
 	/** 前フレームで発生したイベントの処理。*/
 	void Tick() noexcept;
 
@@ -48,8 +50,10 @@ public:
 
 private:
 
+	Stopwatch m_stopwatch;
+
 	/* Event Update の登録用 */
-	Job m_job;
+	Array<Job, 2> m_jobs;
 
 	std::mutex m_mutex;
 

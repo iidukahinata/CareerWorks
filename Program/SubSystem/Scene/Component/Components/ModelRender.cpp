@@ -40,10 +40,11 @@ void ModelRender::Deserialized(FileStream* file)
 
 	if (auto resourceManager = GetContext()->GetSubsystem<ResourceManager>())
 	{
-		auto resourceData = resourceManager->GetResourceData(modelPath);
-		auto resource = resourceManager->GetResource(resourceData);
-
-		SetModel(resource);
+		if (auto resourceData = resourceManager->GetResourceData(modelPath))
+		{
+			auto resource = resourceManager->GetResource(resourceData);
+			SetModel(resource);
+		}
 	}
 }
 

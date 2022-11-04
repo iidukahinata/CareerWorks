@@ -17,7 +17,8 @@ public:
 	bool Create(
 		int width, int height,
 		DXGI_FORMAT colorFormat = DXGI_FORMAT_R8G8B8A8_UNORM,
-		DXGI_FORMAT depthFormat = DXGI_FORMAT_D32_FLOAT) noexcept;
+		DXGI_FORMAT depthFormat = DXGI_FORMAT_D32_FLOAT,
+		bool isMSAA = false) noexcept;
 
 	/** SetRenderTarget ‚·‚é‘O‚ÉŠm”F‚·‚é‚½‚ß */
 	void WaitUntilToAvailable();
@@ -36,8 +37,8 @@ public:
 
 private:
 
-	bool CreateRenderTarget(int width, int height, DXGI_FORMAT colorFormat) noexcept;
-	bool CreateDepthStencil(int width, int height, DXGI_FORMAT depthFormat) noexcept;
+	bool CreateRenderTarget(int width, int height, DXGI_FORMAT colorFormat, bool isMSAA) noexcept;
+	bool CreateDepthStencil(int width, int height, DXGI_FORMAT depthFormat, bool isMSAA) noexcept;
 
 private:
 

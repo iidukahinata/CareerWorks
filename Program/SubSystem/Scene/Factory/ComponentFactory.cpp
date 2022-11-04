@@ -30,6 +30,7 @@ UniquePtr<IComponent> ComponentFactory::Create(GameObject* gameObject, StringVie
     {
     CASE_CREATE_COMPONENT(Light             , component);
     CASE_CREATE_COMPONENT(Camera            , component);
+    CASE_CREATE_COMPONENT(MeshRender        , component);
     CASE_CREATE_COMPONENT(ModelRender       , component);
     CASE_CREATE_COMPONENT(AudioListener     , component);
     CASE_CREATE_COMPONENT(AudioSpeaker      , component);

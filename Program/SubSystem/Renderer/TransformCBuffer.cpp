@@ -2,7 +2,7 @@
 * @file	   TransformCBuffer.cpp
 * @brief
 *
-* @date	   2022/10/28 2022年度初版
+* @date	   2022/11/02 2022年度初版
 */
 
 
@@ -11,8 +11,15 @@
 
 void TransformCBuffer::Update(Camera* mainCamera) noexcept
 {
-	m_view		 = mainCamera->GetViewMatrix().ToMatrixXM();
-	m_projection = mainCamera->GetProjectionMatrix().ToMatrixXM();
+	ASSERT(mainCamera);
+
+	Update(mainCamera->GetViewMatrix().ToMatrixXM(), mainCamera->GetProjectionMatrix().ToMatrixXM());
+}
+
+void TransformCBuffer::Update(DirectX::XMMATRIX view, DirectX::XMMATRIX projection) noexcept
+{
+	m_view		 = view;
+	m_projection = projection;
 
 	m_viewProjection		= m_view * m_projection;
 	m_viewProjectionInverse = DirectX::XMMatrixInverse(nullptr, m_viewProjection);
@@ -20,12 +27,10 @@ void TransformCBuffer::Update(Camera* mainCamera) noexcept
 
 void TransformCBuffer::Bind(void* matrixBuffer, const DirectX::XMMATRIX& world) noexcept
 {
-	m_world = world;
-
 	auto buffer					  = static_cast<ConstantBufferMatrix*>(matrixBuffer);
-	buffer->world				  = m_world;
-	buffer->worldView			  = m_world * m_view;
-	buffer->worldViewProjection	  = m_world * m_viewProjection;
+	buffer->world				  = world;
+	buffer->worldView			  = world * m_view;
+	buffer->worldViewProjection	  = world * m_viewProjection;
 	buffer->view				  = m_view;
 	buffer->viewProjection		  = m_viewProjection;
 	buffer->viewProjectionInverse = m_viewProjectionInverse;

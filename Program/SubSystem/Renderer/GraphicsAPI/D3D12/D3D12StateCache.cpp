@@ -201,7 +201,7 @@ void D3D12StateCache::SetRenderTargets(UINT numRenderTargets, D3D12RenderTargetV
 
 	m_state.m_depthStencil = depthStencil;
 	m_state.m_numRenderTargets = numRenderTargets;
-	memcpy_s(m_state.m_renderTargets.data(), maxSize, renderTargets, sizeof(D3D12RenderTargetView) * numRenderTargets);
+	memcpy_s(m_state.m_renderTargets.data(), maxSize, renderTargets, sizeof(D3D12RenderTargetView*) * numRenderTargets);
 
 	m_setRenderTargets = true;
 }
