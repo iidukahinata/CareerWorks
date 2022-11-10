@@ -11,10 +11,10 @@
 
 void TickManager::Initialize() noexcept
 {
-	m_hEvent = CreateEvent(nullptr, true, false, nullptr);
+	m_hEvent = CreateEvent(nullptr, false, false, "End Tick");
 	ASSERT(m_hEvent);
 
-	m_job.SetFunction([this](double deltaTime) { Tick(deltaTime); }, FunctionType::Update);
+	m_job.SetFunction([this](double deltaTime) { Tick(deltaTime); }, FunctionType::PrePhysics);
 
 #if !IS_EDITOR
 	m_job.RegisterToJobSystem();
@@ -152,7 +152,7 @@ void TickManager::RegisterToTaskList(TickFunction* function, double deltaTime, S
 	registeredList.insert(function);
 
 	// ‘O’ñğŒ‡‚Éˆ—‚ğ’Ç‰Á‚·‚é‚½‚ß DFS •û®‚ğg—p
-	for (const auto& prerequisites = function->GetPrerequisites(); const auto& prerequisite : prerequisites)
+	for (const auto& prerequisite : function->GetPrerequisites())
 	{
 		if (!registeredList.contains(prerequisite))
 		{

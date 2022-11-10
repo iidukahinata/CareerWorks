@@ -27,7 +27,7 @@ void AutoDestroySystem::RemoveAutoDestroy(GameObject* gameObject) noexcept
 
 void AutoDestroySystem::Initialize() noexcept
 {
-	m_job.SetFunction([this](double) { Tick(); }, FunctionType::Update);
+	m_job.SetFunction([this](double) { Tick(); }, FunctionType::PrePhysics);
 	m_job.RegisterToJobSystem();
 }
 

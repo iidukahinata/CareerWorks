@@ -15,9 +15,6 @@ class RenderCommandFance
 {
 public:
 
-	RenderCommandFance();
-	~RenderCommandFance();
-
 	/** Fance コマンドの発行 */
 	void BegineFrame() noexcept;
 
@@ -25,7 +22,7 @@ public:
 	* Fance コマンドが全て処理されるまで待機
 	* アプリケーションの終了処理など RenderingThread の終了合図が欲しい場面で使用
 	*/
-	void WaitForSingle() const noexcept;
+	void WaitForSingle() noexcept;
 
 	/**
 	* Fance コマンドが全て処理されたかを調べる
@@ -36,8 +33,8 @@ public:
 private:
 
 	// * 追加されている Fance カウント
-	std::atomic_uint32_t m_fanceValue;
+	std::atomic_uint32_t m_fanceValue = 0;
 
-	// * 待ちで使用される同期イベント
-	HANDLE m_hEvent;
+	// * 待ちで使用される同期フラグ
+	std::atomic_bool m_single = false;
 };

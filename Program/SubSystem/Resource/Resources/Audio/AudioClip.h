@@ -21,6 +21,7 @@ class AudioClip : public IResource
 	SUB_CLASS(AudioClip)
 public:
 
+	AudioClip();
 	~AudioClip();
 
 	bool Load(StringView path) override;

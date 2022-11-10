@@ -42,6 +42,7 @@ void Camera::Deserialized(FileStream* file)
 void Camera::OnInitialize()
 {
 	m_renderer = GetContext()->GetSubsystem<Renderer>();
+	ASSERT(m_renderer);
 
 	// init data
 	m_width  = Window::Get().GetWindowWidth();
@@ -84,6 +85,8 @@ void Camera::OnRemove()
 
 		m_renderCommandFance.BegineFrame();
 	}
+
+	IComponent::OnRemove();
 }
 
 bool Camera::Erasable()

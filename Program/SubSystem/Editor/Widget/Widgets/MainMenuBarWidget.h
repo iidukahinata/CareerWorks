@@ -12,6 +12,7 @@
 class World;
 class Renderer;
 class ResourceManager;
+class Material;
 
 class MainMenuBarWidget : public Widget
 {
@@ -43,7 +44,7 @@ private:
 
 private:
 
-	void ShowTexture(StringView label, Texture* texture, std::function<void(Texture*)> collBack) noexcept;
+	void ShowMaterial(StringView label, Material* material, std::function<void(Material*)> collBack) noexcept;
 
 private:
 

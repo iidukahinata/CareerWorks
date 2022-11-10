@@ -21,7 +21,7 @@ bool World::Initialize()
 	ASSERT(m_resourceManager);
 
 	// ロード完了チェックのため必要時まで登録は行わない
-	m_job.SetFunction([this](double) { Update(); }, FunctionType::Update);
+	m_job.SetFunction([this](double) { Update(); }, FunctionType::PrePhysics);
 
 	m_autoDestroySystem.Initialize();
 

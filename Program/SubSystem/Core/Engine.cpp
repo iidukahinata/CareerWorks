@@ -14,6 +14,7 @@
 #include "SubSystem/Audio/Audio.h"
 #include "SubSystem/Scene/World.h"
 #include "SubSystem/Window/Window.h"
+#include "SubSystem/Physics/Physics.h"
 #include "SubSystem/Renderer/Renderer.h"
 #include "SubSystem/Resource/ResourceManager.h"
 
@@ -78,7 +79,12 @@ long Engine::MainLoop()
 			RenderingThread::BegineFrame();
 
 			JobSystem::Get().Execute(timer->GetDeltaTime(), FunctionType::PreUpdate);
-			JobSystem::Get().Execute(timer->GetDeltaTime(), FunctionType::Update);
+			
+			JobSystem::Get().Execute(timer->GetDeltaTime(), FunctionType::PrePhysics);
+			
+			JobSystem::Get().Execute(timer->GetDeltaTime(), FunctionType::StartPhysics);
+			
+			JobSystem::Get().Execute(timer->GetDeltaTime(), FunctionType::EndPhysics);
 
 			// Event 処理前に他スレッド操作を終了させる
 			RenderingThread::EndFrame();
@@ -156,6 +162,12 @@ bool Engine::InitializeSubsystems() noexcept
 	if (!g_context->GetSubsystem<Audio>()->Initialize())
 	{
 		LOG_ERROR("Audio初期化に失敗");
+		return false;
+	}
+
+	if (!g_context->GetSubsystem<Physics>()->Initialize())
+	{
+		LOG_ERROR("Physics初期化に失敗");
 		return false;
 	}
 

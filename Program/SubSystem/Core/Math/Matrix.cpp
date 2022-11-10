@@ -25,12 +25,12 @@ namespace Math
 		m[3][0] = InW.x; m[3][1] = InW.y;  m[3][2] = InW.z;  m[3][3] = InW.w;
 	}
 
-	Matrix::Matrix(const Vector3& position, const Vector3& eulerAngles, const Vector3& scale) noexcept
+	Matrix::Matrix(const Vector3& position, const Vector3& angles, const Vector3& scale) noexcept
 	{
 		auto world = DirectX::XMMatrixScalingFromVector(DirectX::XMLoadFloat3(&scale)) *
-			DirectX::XMMatrixRotationZ(eulerAngles.z) *
-			DirectX::XMMatrixRotationX(eulerAngles.x) *
-			DirectX::XMMatrixRotationY(eulerAngles.y) *
+			DirectX::XMMatrixRotationZ(angles.z) *
+			DirectX::XMMatrixRotationX(angles.x) *
+			DirectX::XMMatrixRotationY(angles.y) *
 			DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat3(&position));
 
 		DirectX::XMStoreFloat4x4(this, world);
@@ -43,14 +43,15 @@ namespace Math
 		return translation;
 	}
 
-	Matrix Matrix::CreateRotation(const Vector3& eulerAngles) noexcept
+	Matrix Matrix::CreateRotation(const Vector3& angles) noexcept
 	{
 		Matrix rotation;
 		DirectX::XMStoreFloat4x4(
 			&rotation,
-			DirectX::XMMatrixRotationZ(eulerAngles.z) *
-			DirectX::XMMatrixRotationX(eulerAngles.x) *
-			DirectX::XMMatrixRotationY(eulerAngles.y));
+			DirectX::XMMatrixRotationZ(angles.z) *
+			DirectX::XMMatrixRotationX(angles.x) *
+			DirectX::XMMatrixRotationY(angles.y));
+
 		return rotation;
 	}
 

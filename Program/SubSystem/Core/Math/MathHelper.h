@@ -20,6 +20,7 @@ namespace Math
 	struct Vector2;
 	struct Vector3;
 	struct Vector4;
+	struct Quaternion;
 	struct Matrix;
 
 	constexpr float ToRadian(float degree) noexcept

@@ -17,3 +17,9 @@
 #pragma comment(lib, "assimp-vc141-mtd.lib")
 #pragma comment(lib, "fmodL_vc.lib")
 #pragma comment (lib,"dinput8.lib")
+
+#pragma comment (lib,"PhysX_64.lib")
+#pragma comment (lib,"PhysXCommon_64.lib")
+#pragma comment (lib,"PhysXCooking_64.lib")
+#pragma comment (lib,"PhysXFoundation_64.lib")
+#pragma comment (lib,"PhysXExtensions_static_64.lib")

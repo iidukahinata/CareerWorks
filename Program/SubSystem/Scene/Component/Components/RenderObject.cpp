@@ -46,6 +46,8 @@ void RenderObject::OnRemove()
 
 		m_renderCommandFance.BegineFrame();
 	}
+
+	IComponent::OnRemove();
 }
 
 void RenderObject::SetActive(bool active)

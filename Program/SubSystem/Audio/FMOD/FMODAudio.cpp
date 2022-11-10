@@ -12,7 +12,7 @@
 
 bool FMODAudio::Initialize()
 {
-	m_job.SetFunction([this](double) { Update(); }, FunctionType::Update);
+	m_job.SetFunction([this](double) { Update(); }, FunctionType::PrePhysics);
 	m_job.RegisterToJobSystem();
 
 	constexpr auto maxChannel = 64;

@@ -43,6 +43,7 @@ void PostProcessEffect::Deserialized(FileStream* file)
 void PostProcessEffect::OnInitialize()
 {
 	m_renderer = GetContext()->GetSubsystem<Renderer>();
+	ASSERT(m_renderer);
 }
 
 void PostProcessEffect::OnRegister()

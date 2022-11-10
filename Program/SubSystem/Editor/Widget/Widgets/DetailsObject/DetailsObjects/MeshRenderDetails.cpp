@@ -18,6 +18,14 @@ MeshRenderDetails::MeshRenderDetails(DetailsWidget* detailsWidget, IComponent* c
 	ASSERT(m_meshRender);
 }
 
+MeshRenderDetails::~MeshRenderDetails()
+{
+	if (auto mesh = m_meshRender->GetMesh())
+	{
+		mesh->Update();
+	}
+}
+
 void MeshRenderDetails::Draw()
 {
 	constexpr int offsetPos = 130;

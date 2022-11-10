@@ -18,6 +18,19 @@ ModelRenderDetails::ModelRenderDetails(DetailsWidget* detailsWidget, IComponent*
 	ASSERT(m_modelRender);
 }
 
+ModelRenderDetails::~ModelRenderDetails()
+{
+	if (auto model = m_modelRender->GetModel())
+	{
+		for (auto& mesh : model->GetAllMeshes())
+		{
+			mesh->Update();
+		}
+
+		model->Update();
+	}
+}
+
 void ModelRenderDetails::Draw()
 {
 	constexpr int offsetPos = 130;

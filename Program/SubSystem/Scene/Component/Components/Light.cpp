@@ -35,6 +35,7 @@ void Light::Deserialized(FileStream* file)
 void Light::OnInitialize()
 {
 	m_renderer = GetContext()->GetSubsystem<Renderer>();
+	ASSERT(m_renderer);
 
 	// init data
 	m_lightType = LightType::DirectionalLight;
@@ -72,6 +73,8 @@ void Light::OnRemove()
 
 		m_renderCommandFance.BegineFrame();
 	}
+
+	IComponent::OnRemove();
 }
 
 bool Light::Erasable()

@@ -2,7 +2,7 @@
 * @file    Config.cpp
 * @brief
 *
-* @date	   2022/10/27 2022年度初版
+* @date	   2022/11/09 2022年度初版
 */
 
 
@@ -12,6 +12,7 @@
 #include "SubSystem/Scene/World.h"
 #include "SubSystem/Timer/Timer.h"
 #include "SubSystem/Window/Window.h"
+#include "SubSystem/Physics/PhysX/PhysX.h"
 #include "SubSystem/Audio/FMOD/FMODAudio.h"
 #include "SubSystem/Input/Direct/DirectInput.h"
 #include "SubSystem/Resource/ResourceManager.h"
@@ -21,6 +22,7 @@
 RendererType Config::m_rendererSystem = RendererType::Forward;
 InputType	 Config::m_inputSystem	  = InputType::Direct;
 AudioType	 Config::m_audioSystem	  = AudioType::FMOD;
+PhysicsType	 Config::m_physicsSystem  = PhysicsType::PhysX;
 
 void Config::GenerateUseFile() noexcept
 {
@@ -65,6 +67,8 @@ void Config::RegisterSubsystemsToContainer() noexcept
 		file.Read((int*)&m_rendererSystem);
 		file.Read((int*)&m_inputSystem);
 		file.Read((int*)&m_audioSystem);
+		file.Read((int*)&m_physicsSystem);
+		file.Close();
 
 		// set up save settings
 		SetUpSubsystem();
@@ -117,6 +121,18 @@ void Config::RegisterAudioSystem(AudioType type, bool saveSettings /* = true */)
 	if (saveSettings) SaveCurrentConfig();
 }
 
+void Config::RegisterPhysicsSystem(PhysicsType type, bool saveSettings) noexcept
+{
+	switch (type)
+	{
+	case PhysicsType::PhysX: REGISTER_SUBSYSTEM(Physics, PhysX); break;
+	default: break;
+	}
+
+	m_physicsSystem = type;
+	if (saveSettings) SaveCurrentConfig();
+}
+
 void Config::SetUpSubsystem() noexcept
 {
 	g_context->RegisterSubsystem<Timer>(std::make_unique<Timer>());
@@ -124,6 +140,7 @@ void Config::SetUpSubsystem() noexcept
 	RegisterInputSystem(m_inputSystem, false);
 	RegisterAudioSystem(m_audioSystem, false);
 	RegisterRendererSystem(m_rendererSystem, false);
+	RegisterPhysicsSystem(m_physicsSystem, false);
 	g_context->RegisterSubsystem<World>(std::make_unique<World>());
 }
 
@@ -135,4 +152,5 @@ void Config::SaveCurrentConfig() noexcept
 	file.Write((int)m_rendererSystem);
 	file.Write((int)m_inputSystem);
 	file.Write((int)m_audioSystem);
+	file.Write((int)m_physicsSystem);
 }

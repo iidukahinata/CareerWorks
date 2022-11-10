@@ -37,6 +37,7 @@
 #include "SubSystem/Core/Math/Vector2T.h"
 #include "SubSystem/Core/Math/Vector3T.h"
 #include "SubSystem/Core/Math/Vector4T.h"
+#include "SubSystem/Core/Math/Quaternion.h"
 #include "SubSystem/Core/Math/Matrix.h"
 
 // File System
@@ -50,6 +51,7 @@
 #include "SubSystem/Input/InputEvents.h"
 #include "SubSystem/Scene/SceneEvents.h"
 #include "SubSystem/Window/WindowEvents.h"
+#include "SubSystem/Physics/PhysicsEvents.h"
 
 // Job System
 #include "SubSystem/JobSystem/Sync/Job.h"

@@ -25,7 +25,7 @@ bool D3D12Fence::Create() noexcept
 		return false;
 	}
 
-	m_fenceEvent = CreateEvent(nullptr, false, false, nullptr);
+	m_fenceEvent = CreateEvent(nullptr, false, false, "Direct12Fence");
 	if (!m_fenceEvent) {
 		LOG_ERROR("FenceEvent ÇÃê∂ê¨Ç…é∏îsÇµÇ‹ÇµÇΩÅB");
 		return false;

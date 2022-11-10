@@ -18,6 +18,8 @@ class ModelRenderDetails : public ComponentDetails
 public:
 
 	ModelRenderDetails(DetailsWidget* detailsWidget, IComponent* component);
+	~ModelRenderDetails();
+
 	void Draw() override;
 
 private:

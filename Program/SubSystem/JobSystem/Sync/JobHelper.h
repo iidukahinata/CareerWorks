@@ -12,14 +12,25 @@
 */
 enum FunctionType
 {
+	// フレーム開始時に実行。主に各 Thread の立ち上げを行う。
 	PreUpdate,
 
-	Update,
+	// 物理計算前に実行。World 更新を行う。
+	PrePhysics,
 
+	// 物理計算の開始時に実行。
+	StartPhysics,
+
+	// 物理計算後に実行。
+	EndPhysics,
+
+	// 全ての更新が終了した時に実行。
 	PostUpdate,
 
+	// 描画開始時に実行。
 	Render,
 
+	// 全ての描画処理が終了した時に実行中。Preset などを行う。
 	PostRender,
 
 	None,

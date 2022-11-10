@@ -10,6 +10,12 @@
 #include "SubSystem/Audio/FMOD/FMODAudio.h"
 #include "SubSystem/Audio/AudioHelper.h"
 
+AudioClip::AudioClip()
+{
+	m_audio = dynamic_cast<FMODAudio*>(GetContext()->GetSubsystem<Audio>());
+	ASSERT(m_audio);
+}
+
 AudioClip::~AudioClip()
 {
 	if (m_channel)
@@ -24,10 +30,6 @@ AudioClip::~AudioClip()
 
 bool AudioClip::Load(StringView path)
 {
-	m_audio = dynamic_cast<FMODAudio*>(GetContext()->GetSubsystem<Audio>());
-
-	ASSERT(m_audio);
-
 	auto result = m_audio->GetSystem()->createSound(path.data(), FMOD_3D | FMOD_LOOP_NORMAL, nullptr, &m_sound);
 
 	if (result != FMOD_OK)

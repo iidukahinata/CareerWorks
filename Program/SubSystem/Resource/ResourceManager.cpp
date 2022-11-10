@@ -220,10 +220,10 @@ ResourceData* ResourceManager::CreateResourceData(uint32_t type, StringView path
     auto assetName = FileSystem::GetFilePath(noExtPath);
 
     // 二つ同じデータが存在しないようにするための判定
-    if (GetResourceData(type, assetName))
+    if (auto resourceData = GetResourceData(type, assetName))
     {
         LOG_ERROR("既に同じ名前の ResourceData が存在しました。");
-        return nullptr;
+        return resourceData;
     }
 
     auto& resourceData = m_resourceTypeList[type][assetName];
@@ -567,6 +567,7 @@ bool ResourceManager::IsModelFilePath(StringView path) const noexcept
     CASE_EXT_RETURN("cob")
     CASE_EXT_RETURN("xsi")
     CASE_EXT_RETURN("fbx")
+    CASE_EXT_RETURN("FBX")
     CASE_EXT_RETURN("dae")
     CASE_EXT_RETURN("dxf")
     CASE_EXT_RETURN("vda")

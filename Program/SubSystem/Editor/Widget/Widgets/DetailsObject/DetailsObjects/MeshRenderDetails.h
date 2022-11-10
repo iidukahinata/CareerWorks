@@ -17,6 +17,8 @@ class MeshRenderDetails : public ComponentDetails
 public:
 
 	MeshRenderDetails(DetailsWidget* detailsWidget, IComponent* component);
+	~MeshRenderDetails();
+
 	void Draw() override;
 
 private:

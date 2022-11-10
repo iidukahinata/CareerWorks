@@ -9,35 +9,25 @@
 #include "RenderCommandFance.h"
 #include "RenderingThread.h"
 
-RenderCommandFance::RenderCommandFance()
-{
-	m_hEvent = CreateEvent(nullptr, true, false, nullptr);
-	ASSERT(m_hEvent);
-}
-
-RenderCommandFance::~RenderCommandFance()
-{
-	CloseHandle(m_hEvent);
-}
-
 void RenderCommandFance::BegineFrame() noexcept
 {
 	++m_fanceValue;
 
 	RegisterRenderCommand([this] {
-		SetEvent(m_hEvent);
+
 		--m_fanceValue;
+		m_single.store(true);
+		m_single.notify_one();
+
 	});
 }
 
-void RenderCommandFance::WaitForSingle() const noexcept
+void RenderCommandFance::WaitForSingle() noexcept
 {
 	while (!IsSingle())
 	{
-		if (WaitForSingleObject(m_hEvent, INFINITE) == WAIT_OBJECT_0)
-		{
-			ResetEvent(m_hEvent);
-		}
+		m_single.wait(false);
+		m_single = false;
 	}
 }
 

@@ -14,7 +14,7 @@
 #include "SubSystem/Renderer/Renderer.h"
 #include "SubSystem/Resource/ResourceManager.h"
 #include "SubSystem/Resource/Resources/Scene/Scene.h"
-#include "SubSystem/Resource/Resources/3DModel/Texture.h"
+#include "SubSystem/Resource/Resources/3DModel/Material.h"
 
 void MainMenuBarWidget::PostInitialize()
 {
@@ -129,9 +129,9 @@ void MainMenuBarWidget::Serialized(FileStream* file) const
     }
 
     const auto skybox = m_renderer->GetSkyBox();
-    if (auto texture = skybox->GetTexture())
+    if (auto material = skybox->GetMaterial())
     {
-        file->Write(texture->GetFilePath());
+        file->Write(material->GetFilePath());
     }
     else
     {
@@ -141,14 +141,14 @@ void MainMenuBarWidget::Serialized(FileStream* file) const
 
 void MainMenuBarWidget::Deserialized(FileStream* file)
 {
-    String texturePath;
-    file->Read(&texturePath);
+    String materialPath;
+    file->Read(&materialPath);
     
-    if (!texturePath.empty())
+    if (!materialPath.empty())
     {
-        if (auto resourceData = m_resourceManager->GetResourceData(texturePath))
+        if (auto resourceData = m_resourceManager->GetResourceData(materialPath))
         {
-            m_renderer->GetSkyBox()->SetTexture(LoadResource<Texture>(resourceData));
+            m_renderer->GetSkyBox()->SetMaterial(LoadResource<Material>(resourceData));
         }
     }
 }
@@ -172,10 +172,12 @@ void MainMenuBarWidget::ShowSettingsWindow() noexcept
         constexpr auto rendererTypeCombo = "Forward\0Deferred\0\0";
         constexpr auto inputTypeCombo    = "Dirext\0\0";
         constexpr auto audioTypeCombo    = "FMOD\0\0";
+        constexpr auto physicsTypeCombo  = "PhysX\0\0";
 
         auto rendererType = Config::GetRendererType();
         auto inputType    = Config::GetInputType();
         auto audioType    = Config::GetAudioType();
+        auto physicsType  = Config::GetPhysicsType();
 
         ImGui::Text("RendererType"); ImGui::SameLine(offsetPos);
         auto inputRenderer = ImGui::Combo("##RendererType", (int*)(&rendererType), rendererTypeCombo);
@@ -186,12 +188,16 @@ void MainMenuBarWidget::ShowSettingsWindow() noexcept
         ImGui::Text("AudioType"); ImGui::SameLine(offsetPos);
         auto inputAudio = ImGui::Combo("##AudioType", (int*)(&audioType), audioTypeCombo);
 
+        ImGui::Text("PhysicsType"); ImGui::SameLine(offsetPos);
+        auto inputPhysics = ImGui::Combo("##PhysicsType", (int*)(&physicsType), physicsTypeCombo);
+
         if (inputRenderer) Config::RegisterRendererSystem(rendererType);
         if (inputInput)    Config::RegisterInputSystem(inputType);
         if (inputAudio)    Config::RegisterAudioSystem(audioType);
+        if (inputPhysics)  Config::RegisterPhysicsSystem(physicsType);
 
         // change system
-        if (inputRenderer || inputInput || inputAudio)
+        if (inputRenderer || inputInput || inputAudio || inputPhysics)
         {
             ImGui::OpenPopup("Change System");
         }
@@ -202,8 +208,8 @@ void MainMenuBarWidget::ShowSettingsWindow() noexcept
     if (ImGui::CollapsingHeader("Renderer", ImGuiTreeNodeFlags_DefaultOpen))
     {
         auto skybox  = m_renderer->GetSkyBox();
-        auto texture = skybox->GetTexture();
-        ShowTexture("sky box", texture, [skybox](auto data) { skybox->SetTexture(data); });
+        auto material = skybox->GetMaterial();
+        ShowMaterial("sky box", material, [skybox](auto data) { skybox->SetMaterial(data); });
     }
 
     ImGui::End();
@@ -364,39 +370,39 @@ void MainMenuBarWidget::ShowWindowMenu() noexcept
     draw_list->AddRect(min, max, IM_COL32(100, 100, 100, 200), 0, 0, 2);
 }
 
-void MainMenuBarWidget::ShowTexture(StringView label, Texture* texture, std::function<void(Texture*)> collBack) noexcept
+void MainMenuBarWidget::ShowMaterial(StringView label, Material* material, std::function<void(Material*)> collBack) noexcept
 {
     constexpr auto offsetPos = 130;
-    auto texturePath = texture ? ConvertToJapanese(texture->GetFilePath().c_str()) : String();
+    auto materialPath = material ? ConvertToJapanese(material->GetFilePath().c_str()) : String();
 
     ImGui::Text(label.data()); ImGui::SameLine(offsetPos);
 
     constexpr auto itemWidth = 228;
     ImGui::PushItemWidth(itemWidth);
-    ImGui::InputText((String("##") + label.data()).c_str(), texturePath.data(), texturePath.size());
+    ImGui::InputText((String("##") + label.data()).c_str(), materialPath.data(), materialPath.size());
     ImGui::PopItemWidth();
 
     // ドラッグアンドドロップでの Texture 切り替え
     const auto hoverd = ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
     if (ImGui::IsMouseReleased(0) && hoverd)
     {
-        if (auto catchTexture = CatchDragObject<Texture>())
+        if (auto catchMaterial = CatchDragObject<Material>())
         {
-            collBack(catchTexture);
+            collBack(catchMaterial);
         }
     }
 
-    ShowDragDropHelper<Texture>(hoverd, 156, 0, 31);
+    ShowDragDropHelper<Material>(hoverd, 25, 255, 25);
 
     ImGui::SameLine(offsetPos + itemWidth + 5);
 
     // 検索での Texture 切り替え
     OpenResourceHelper(label.data());
-    if (auto resourceData = ShowSearchResourceHelper<Texture>())
+    if (auto resourceData = ShowSearchResourceHelper<Material>())
     {
-        if (auto catchTexture = LoadResource<Texture>(resourceData))
+        if (auto catchMaterial = LoadResource<Material>(resourceData))
         {
-            collBack(catchTexture);
+            collBack(catchMaterial);
         }
     }
 }

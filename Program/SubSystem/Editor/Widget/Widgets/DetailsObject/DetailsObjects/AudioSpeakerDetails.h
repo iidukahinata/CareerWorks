@@ -17,6 +17,8 @@ class AudioSpeakerDetails : public ComponentDetails
 public:
 
 	AudioSpeakerDetails(DetailsWidget* detailsWidget, IComponent* component);
+	~AudioSpeakerDetails();
+
 	void Draw() override;
 
 private:

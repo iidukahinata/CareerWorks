@@ -78,8 +78,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>.\Program\ThirdParty\assimp\include;.\Program\ThirdParty\directxtex\include;.\Program\ThirdParty\FMOD\include;.\Program\ThirdParty\bullet\include;$(IncludePath)</IncludePath>
-    <LibraryPath>.\Program\ThirdParty\assimp\lib;.\Program\ThirdParty\directxtex\lib\x64\debug;.\Program\ThirdParty\FMOD\lib\x64;.\Program\ThirdParty\bullet\lib\debug;$(LibraryPath)</LibraryPath>
+    <IncludePath>.\Program\ThirdParty\assimp\include;.\Program\ThirdParty\directxtex\include;.\Program\ThirdParty\FMOD\include;.\Program\ThirdParty\PhysX\include;$(IncludePath)</IncludePath>
+    <LibraryPath>.\Program\ThirdParty\assimp\lib;.\Program\ThirdParty\directxtex\lib\x64\debug;.\Program\ThirdParty\FMOD\lib\x64;.\Program\ThirdParty\PhysX\lib\debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -168,6 +168,7 @@
     <ClCompile Include="Program\SubSystem\Core\IO\FileSystem.cpp" />
     <ClCompile Include="Program\SubSystem\Core\ISubsystem.cpp" />
     <ClCompile Include="Program\SubSystem\Core\Math\Matrix.cpp" />
+    <ClCompile Include="Program\SubSystem\Core\Math\Quaternion.cpp" />
     <ClCompile Include="Program\SubSystem\Core\Math\Vector2.cpp" />
     <ClCompile Include="Program\SubSystem\Core\Math\Vector3.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\DragDrop.cpp" />
@@ -180,6 +181,7 @@
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\AudioListenerDetails.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\AudioSpeakerDetails.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\CameraDetails.cpp" />
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ColliderDetails.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\GameObjectDetails.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\LightDetails.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\MaterialDetails.cpp" />
@@ -187,6 +189,7 @@
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ModelRenderDetails.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\PostProcessEffectDetails.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ResourceDetails.cpp" />
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\RigidBodyDetails.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\TransformDetails.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsWidget.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\Factory\DetailsObjectFactory.cpp" />
@@ -205,6 +208,9 @@
     <ClCompile Include="Program\SubSystem\JobSystem\Sync\Job.cpp" />
     <ClCompile Include="Program\SubSystem\JobSystem\Sync\JobSystem.cpp" />
     <ClCompile Include="Program\SubSystem\Log\DebugLog.cpp" />
+    <ClCompile Include="Program\SubSystem\Physics\Physics.cpp" />
+    <ClCompile Include="Program\SubSystem\Physics\PhysicsEvents.cpp" />
+    <ClCompile Include="Program\SubSystem\Physics\PhysX\PhysX.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\Deferred\DeferredRenderer.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\Deferred\GBuffer.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\Factory\PostEffectFactory.cpp" />
@@ -277,11 +283,13 @@
     <ClCompile Include="Program\SubSystem\Scene\Component\Components\AudioListener.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\Components\AudioSpeaker.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\Components\Camera.cpp" />
+    <ClCompile Include="Program\SubSystem\Scene\Component\Components\Collider.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\Components\Light.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\Components\MeshRender.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\Components\ModelRender.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\Components\PostProcessEffect.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\Components\RenderObject.cpp" />
+    <ClCompile Include="Program\SubSystem\Scene\Component\Components\RigidBody.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\IComponent.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\Transform.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Factory\ComponentFactory.cpp" />
@@ -374,6 +382,7 @@
     <ClInclude Include="Program\SubSystem\Core\ISubsystem.h" />
     <ClInclude Include="Program\SubSystem\Core\Math\MathHelper.h" />
     <ClInclude Include="Program\SubSystem\Core\Math\Matrix.h" />
+    <ClInclude Include="Program\SubSystem\Core\Math\Quaternion.h" />
     <ClInclude Include="Program\SubSystem\Core\Math\Vector2.h" />
     <ClInclude Include="Program\SubSystem\Core\Math\Vector2T.h" />
     <ClInclude Include="Program\SubSystem\Core\Math\Vector3.h" />
@@ -390,6 +399,7 @@
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\AudioListenerDetails.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\AudioSpeakerDetails.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\CameraDetails.h" />
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ColliderDetails.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\GameObjectDetails.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\LightDetails.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\MaterialDetails.h" />
@@ -397,6 +407,7 @@
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ModelRenderDetails.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\PostProcessEffectDetails.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ResourceDetails.h" />
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\RigidBodyDetails.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\TransformDetails.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsWidget.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\Factory\DetailsObjectFactory.h" />
@@ -417,6 +428,9 @@
     <ClInclude Include="Program\SubSystem\JobSystem\Sync\JobHelper.h" />
     <ClInclude Include="Program\SubSystem\JobSystem\Sync\JobSystem.h" />
     <ClInclude Include="Program\SubSystem\Log\DebugLog.h" />
+    <ClInclude Include="Program\SubSystem\Physics\Physics.h" />
+    <ClInclude Include="Program\SubSystem\Physics\PhysicsEvents.h" />
+    <ClInclude Include="Program\SubSystem\Physics\PhysX\PhysX.h" />
     <ClInclude Include="Program\SubSystem\Renderer\Deferred\DeferredRenderer.h" />
     <ClInclude Include="Program\SubSystem\Renderer\Deferred\GBuffer.h" />
     <ClInclude Include="Program\SubSystem\Renderer\Factory\PostEffectFactory.h" />
@@ -496,9 +510,11 @@
     <ClInclude Include="Program\SubSystem\Scene\Component\Components\AudioListener.h" />
     <ClInclude Include="Program\SubSystem\Scene\Component\Components\AudioSpeaker.h" />
     <ClInclude Include="Program\SubSystem\Scene\Component\Components\Camera.h" />
+    <ClInclude Include="Program\SubSystem\Scene\Component\Components\Collider.h" />
     <ClInclude Include="Program\SubSystem\Scene\Component\Components\Light.h" />
     <ClInclude Include="Program\SubSystem\Scene\Component\Components\PostProcessEffect.h" />
     <ClInclude Include="Program\SubSystem\Scene\Component\Components\RenderObject.h" />
+    <ClInclude Include="Program\SubSystem\Scene\Component\Components\RigidBody.h" />
     <ClInclude Include="Program\SubSystem\Scene\Component\IComponent.h" />
     <ClInclude Include="Program\SubSystem\Scene\Component\Transform.h" />
     <ClInclude Include="Program\SubSystem\Scene\Factory\ComponentFactory.h" />

@@ -12,6 +12,7 @@
 void AudioListener::OnInitialize()
 {
 	m_audio = GetContext()->GetSubsystem<Audio>();
+	ASSERT(m_audio);
 }
 
 void AudioListener::OnRegister()

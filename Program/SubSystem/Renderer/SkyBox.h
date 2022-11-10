@@ -15,7 +15,7 @@
 #include "GraphicsAPI/D3D12/D3D12ConstantBuffer.h"
 
 class Camera;
-class Texture;
+class Material;
 
 class SkyBox
 {
@@ -25,25 +25,12 @@ public:
 
 	void Render(Camera* mainCamera) noexcept;
 
-	void SetTexture(Texture* texture) noexcept;
-	Texture* GetTexture() const noexcept;
+	void SetMaterial(Material* material) noexcept;
+	Material* GetMaterial() const noexcept;
 
 private:
 
-	bool CreateRootSinature() noexcept;
-	bool CreatePipeline() noexcept;
-
-private:
-
-	Texture* m_texture = nullptr;
-
-	// * pipeline objects
-	D3D12Sampler			   m_sampler;
-	D3D12RootSignature		   m_rootSignature;
-	D3D12GraphicsPipelineState m_pipeline;
-
-	D3D12Shader m_vertexShader;
-	D3D12Shader m_pixelShader;
+	Material* m_material = nullptr;
 
 	// * mesh objects
 	D3D12IndexBuffer  m_indexBuffer;

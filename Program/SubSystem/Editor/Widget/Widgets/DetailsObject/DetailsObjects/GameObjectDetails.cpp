@@ -14,9 +14,11 @@
 #include "SubSystem/Scene/Component/Components/Camera.h"
 #include "SubSystem/Scene/Component/Components/Light.h"
 #include "SubSystem/Scene/Component/Components/RenderObject.h"
+#include "SubSystem/Scene/Component/Components/PostProcessEffect.h"
 #include "SubSystem/Scene/Component/Components/AudioSpeaker.h"
 #include "SubSystem/Scene/Component/Components/AudioListener.h"
-#include "SubSystem/Scene/Component/Components/PostProcessEffect.h"
+#include "SubSystem/Scene/Component/Components/Collider.h"
+#include "SubSystem/Scene/Component/Components/RigidBody.h"
 
 GameObjectDetails::GameObjectDetails(DetailsWidget* detailsWidget, GameObject* gameObject) :
 	DetailsObject(detailsWidget), m_gameObject(gameObject)
@@ -26,9 +28,11 @@ GameObjectDetails::GameObjectDetails(DetailsWidget* detailsWidget, GameObject* g
 	RegisterComponent<Camera>();
 	RegisterComponent<MeshRender>();
 	RegisterComponent<ModelRender>();
+	RegisterComponent<PostProcessEffect>();
 	RegisterComponent<AudioSpeaker>();
 	RegisterComponent<AudioListener>();
-	RegisterComponent<PostProcessEffect>();
+	RegisterComponent<Collider>();
+	RegisterComponent<RigidBody>();
 }
 
 void GameObjectDetails::Draw()

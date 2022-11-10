@@ -2,7 +2,7 @@
 * @file    Config.h
 * @brief
 *
-* @date	   2022/10/27 2022年度初版
+* @date	   2022/11/09 2022年度初版
 */
 #pragma once
 
@@ -22,6 +22,11 @@ enum class InputType
 enum class AudioType
 {
 	FMOD,
+};
+
+enum class PhysicsType
+{
+	PhysX,
 };
 
 /**
@@ -46,9 +51,13 @@ public:
 	/** 指定 AudioSystem に切り替え */
 	static void RegisterAudioSystem(AudioType type, bool saveSettings = true) noexcept;
 
+	/** 指定 PhysicsSystem に切り替え */
+	static void RegisterPhysicsSystem(PhysicsType type, bool saveSettings = true) noexcept;
+
 	static RendererType GetRendererType() noexcept { return m_rendererSystem; }
 	static InputType	GetInputType()	  noexcept { return m_inputSystem; }
 	static AudioType	GetAudioType()	  noexcept { return m_audioSystem; }
+	static PhysicsType	GetPhysicsType()  noexcept { return m_physicsSystem; }
 
 private:
 
@@ -65,4 +74,6 @@ private:
 	static InputType m_inputSystem;
 
 	static AudioType m_audioSystem;
+
+	static PhysicsType m_physicsSystem;
 };

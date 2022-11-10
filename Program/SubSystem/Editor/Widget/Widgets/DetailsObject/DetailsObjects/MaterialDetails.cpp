@@ -27,7 +27,10 @@ MaterialDetails::MaterialDetails(DetailsWidget* detailsWidget, ResourceData* res
 
 MaterialDetails::~MaterialDetails()
 {
-	ASSERT(m_material);
+	if (!m_material)
+	{
+		return;
+	}
 
 	m_material->Update();
 
