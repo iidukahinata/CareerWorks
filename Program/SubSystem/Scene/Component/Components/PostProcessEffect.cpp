@@ -9,6 +9,7 @@
 #include "SubSystem/Renderer/Renderer.h"
 #include "SubSystem/Renderer/PostEffect/PostEffect.h"
 #include "SubSystem/Renderer/Factory/PostEffectFactory.h"
+#include "SubSystem/Renderer/GraphicsAPI/D3D12/D3D12RenderTexture.h"
 
 void PostProcessEffect::Serialized(FileStream* file) const
 {
@@ -117,6 +118,11 @@ const Map<uint32_t, UniquePtr<PostEffect>>& PostProcessEffect::GetAllPostEffect(
 	return m_postEffects;
 }
 
+bool PostProcessEffect::HasPostEffect() const noexcept
+{
+	return !m_postEffects.empty();
+}
+
 PostEffect* PostProcessEffect::FindPostEffect(StringView name) const noexcept
 {
 	const auto type = PostEffectType(name);
@@ -129,6 +135,11 @@ PostEffect* PostProcessEffect::FindPostEffect(StringView name) const noexcept
 	return nullptr;
 }
 
+Renderer* PostProcessEffect::GetRenderer() const noexcept
+{
+	return m_renderer;
+}
+
 void PostProcessEffect::Render() noexcept
 {
 	for (const auto& postEffectInfo : m_postEffects)
@@ -136,6 +147,12 @@ void PostProcessEffect::Render() noexcept
 		const auto& postEffect = postEffectInfo.second;
 
 		postEffect->Render();
+	}
+
+	if (!m_postEffects.empty())
+	{
+		auto back = --m_postEffects.end();
+		back->second->GetTexture().PSSet(0);
 	}
 }
 

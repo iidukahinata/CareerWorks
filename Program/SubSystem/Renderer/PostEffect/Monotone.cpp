@@ -27,3 +27,8 @@ void Monotone::Render()
 {
 
 }
+
+D3D12RenderTexture& Monotone::GetTexture()
+{
+    return m_renderTexture;
+}

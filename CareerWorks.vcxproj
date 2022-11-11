@@ -78,8 +78,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>.\Program\ThirdParty\assimp\include;.\Program\ThirdParty\directxtex\include;.\Program\ThirdParty\FMOD\include;.\Program\ThirdParty\PhysX\include;$(IncludePath)</IncludePath>
-    <LibraryPath>.\Program\ThirdParty\assimp\lib;.\Program\ThirdParty\directxtex\lib\x64\debug;.\Program\ThirdParty\FMOD\lib\x64;.\Program\ThirdParty\PhysX\lib\debug;$(LibraryPath)</LibraryPath>
+    <IncludePath>.\Program\ThirdParty\assimp\include;.\Program\ThirdParty\directxtex\include;.\Program\ThirdParty\FMOD\include;.\Program\ThirdParty\PhysX\include;.\Program\ThirdParty\lua\include;$(IncludePath)</IncludePath>
+    <LibraryPath>.\Program\ThirdParty\assimp\lib;.\Program\ThirdParty\directxtex\lib\x64\debug;.\Program\ThirdParty\FMOD\lib\x64;.\Program\ThirdParty\PhysX\lib\debug;.\Program\ThirdParty\lua;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -253,6 +253,7 @@
     <ClCompile Include="Program\SubSystem\Renderer\PostEffect\Blur.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\PostEffect\DepthOfField.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\PostEffect\Monotone.cpp" />
+    <ClCompile Include="Program\SubSystem\Renderer\PostEffect\PostEffect.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\Renderer.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\SkyBox.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\TransformCBuffer.cpp" />

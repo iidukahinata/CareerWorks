@@ -179,7 +179,7 @@ const Math::Matrix& Camera::GetOrthographicMatrix() const noexcept
 
 void Camera::CreateProjectionMatrix() noexcept
 {
-	if (IsRenderingThread())
+	if (IsInRenderingThread())
 	{
 		m_projection = Math::Matrix::CreatePerspectiveFovLH(m_fov, m_aspect, m_near, m_far);
 	}
@@ -193,7 +193,7 @@ void Camera::CreateProjectionMatrix() noexcept
 
 void Camera::CreateOrthographicMatrix() noexcept
 {
-	if (IsRenderingThread())
+	if (IsInRenderingThread())
 	{
 		m_orthographic = Math::Matrix::CreateOrthographicLH(m_width, m_height, m_near, m_far);
 	}
@@ -214,7 +214,7 @@ void Camera::RegisterToRenderer() noexcept
 
 	m_isRegister = true;
 
-	if (IsRenderingThread())
+	if (IsInRenderingThread())
 	{
 		m_renderer->AddCamera(this);
 	}
@@ -233,7 +233,7 @@ void Camera::UnRegisterFromRenderer() noexcept
 
 	m_isRegister = false;
 
-	if (IsRenderingThread())
+	if (IsInRenderingThread())
 	{
 		m_renderer->RemoveCamera(this);
 	}

@@ -93,6 +93,7 @@ private:
 	// * pipeline objects
 	D3D12GraphicsPipelineState m_preZPipeline;
 	D3D12GraphicsPipelineState m_deferredPipeline;
+	D3D12GraphicsPipelineState m_luminousPipeline;
 	D3D12GraphicsPipelineState m_postProcessPipeline;
 
 	struct ConstantBufferMatrix

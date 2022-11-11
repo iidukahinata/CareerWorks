@@ -103,4 +103,4 @@ private:
 	static RenderCommandFance m_renderCommandFance;
 };
 
-bool IsRenderingThread() noexcept;
+bool IsInRenderingThread() noexcept;

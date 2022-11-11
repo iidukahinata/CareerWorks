@@ -31,7 +31,7 @@ private:
 	/** 使用中シェーダー一覧表示 */
 	void ShowShaderList(Material* material) noexcept;
 
-	/** 使用中テクスチャ一覧表示 */
+	/** 使用中テクスチャ一覧表示と追加 */
 	void ShowTextureList(Material* material) noexcept;
 
 	/** テクスチャのドラッグアンドドロップ対応 */

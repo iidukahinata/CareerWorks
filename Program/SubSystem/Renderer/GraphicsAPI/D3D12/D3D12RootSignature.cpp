@@ -37,7 +37,11 @@ bool D3D12RootSignature::Create(
 {
 	CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSignatureDesc;
 	rootSignatureDesc.Init_1_1(parameterCount, rootParameters, sampleCount, samplerDesc, rootSignatureFlags);
+	return Create(rootSignatureDesc);
+}
 
+bool D3D12RootSignature::Create(const D3D12_VERSIONED_ROOT_SIGNATURE_DESC& rootSignatureDesc) noexcept
+{
 	// シリアル化
 	Microsoft::WRL::ComPtr<ID3DBlob> rootSignature;
 	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob;
@@ -57,6 +61,8 @@ bool D3D12RootSignature::Create(
 		return false;
 	}
 
+	auto parameterCount = rootSignatureDesc.Desc_1_1.NumParameters;
+	auto rootParameters = rootSignatureDesc.Desc_1_1.pParameters;
 	InitBindSlotIndices(parameterCount, rootParameters);
 
 	return true;
@@ -114,6 +120,78 @@ UINT8 D3D12RootSignature::GetSamplerRootPramIndex(ShaderType type) const noexcep
 	}
 }
 
+const D3D12_VERSIONED_ROOT_SIGNATURE_DESC& D3D12RootSignature::GetGrapihcsRootDesc() noexcept
+{
+	struct InitRootData
+	{
+		D3D12_SHADER_VISIBILITY visibility;
+		D3D12_DESCRIPTOR_RANGE_TYPE rangeType;
+		uint32_t numDescriptors;
+		uint32_t baseShaderRegister;
+		D3D12_DESCRIPTOR_RANGE_FLAGS flags;
+	};
+
+	constexpr UINT numDescriptorTable = 9U;
+	static InitRootData initData[numDescriptorTable] = {
+
+		{ D3D12_SHADER_VISIBILITY_VERTEX, D3D12_DESCRIPTOR_RANGE_TYPE_CBV, MAX_CONSTANT_BUFFER_VIEW, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC },
+		{ D3D12_SHADER_VISIBILITY_VERTEX, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, MAX_SHADER_RESOURCE_VIEW, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC },
+		{ D3D12_SHADER_VISIBILITY_VERTEX, D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER, MAX_SAMPLER, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC },
+
+		{ D3D12_SHADER_VISIBILITY_GEOMETRY, D3D12_DESCRIPTOR_RANGE_TYPE_CBV, MAX_CONSTANT_BUFFER_VIEW, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC },
+		{ D3D12_SHADER_VISIBILITY_GEOMETRY, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, MAX_SHADER_RESOURCE_VIEW, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC },
+		{ D3D12_SHADER_VISIBILITY_GEOMETRY, D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER, MAX_SAMPLER, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC },
+
+		{ D3D12_SHADER_VISIBILITY_PIXEL, D3D12_DESCRIPTOR_RANGE_TYPE_CBV, MAX_CONSTANT_BUFFER_VIEW, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC },
+		{ D3D12_SHADER_VISIBILITY_PIXEL, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, MAX_SHADER_RESOURCE_VIEW, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC },
+		{ D3D12_SHADER_VISIBILITY_PIXEL, D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER, MAX_SAMPLER, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC },
+	};
+
+	static Array<CD3DX12_DESCRIPTOR_RANGE1, numDescriptorTable> descTblRanges = {};
+	static Array<CD3DX12_ROOT_PARAMETER1, numDescriptorTable> rootParams = {};
+
+	for (int i = 0; i < numDescriptorTable; ++i)
+	{
+		descTblRanges[i].Init(initData[i].rangeType, initData[i].numDescriptors, initData[i].baseShaderRegister, 0U, initData[i].flags);
+		rootParams[i].InitAsDescriptorTable(1, &descTblRanges[i], initData[i].visibility);
+	}
+
+	auto flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT | D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS | D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS;
+
+	static CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSignatureDesc(numDescriptorTable, rootParams.data(), 0, nullptr, flags);
+	return rootSignatureDesc;
+}
+
+const D3D12_VERSIONED_ROOT_SIGNATURE_DESC& D3D12RootSignature::GetComputeRootDesc() noexcept
+{
+	constexpr UINT numDescriptorTable = 3U;
+	static Array<CD3DX12_DESCRIPTOR_RANGE1, numDescriptorTable> descTblRanges = {};
+	static Array<CD3DX12_ROOT_PARAMETER1, numDescriptorTable> rootParams = {};
+
+	//===定数バッファ用設定=====================================
+	descTblRanges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, MAX_CONSTANT_BUFFER_VIEW, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC);
+	rootParams[0].InitAsDescriptorTable(1, &descTblRanges[0], D3D12_SHADER_VISIBILITY_ALL);
+	//==========================================================
+
+	//===テクスチャ用設定=======================================
+	descTblRanges[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, MAX_SHADER_RESOURCE_VIEW, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC);
+	rootParams[1].InitAsDescriptorTable(1, &descTblRanges[1], D3D12_SHADER_VISIBILITY_ALL);
+	//==========================================================
+
+	//===Sampler用設定==========================================
+	descTblRanges[2].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER, MAX_SAMPLER, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC);
+	rootParams[2].InitAsDescriptorTable(1, &descTblRanges[2], D3D12_SHADER_VISIBILITY_ALL);
+	//==========================================================
+
+	//===UAV用設定==============================================
+	descTblRanges[2].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, MAX_UNORDERED_ACCESS_VIEW, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC);
+	rootParams[2].InitAsDescriptorTable(1, &descTblRanges[2], D3D12_SHADER_VISIBILITY_ALL);
+	//==========================================================
+
+	static CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSignatureDesc(numDescriptorTable, rootParams.data(), 0, nullptr);
+	return rootSignatureDesc;
+}
+
 void D3D12RootSignature::SetCBVRootPramIndex(ShaderType type, UINT8 index) noexcept
 {
 	switch (type)
@@ -166,7 +244,7 @@ void D3D12RootSignature::SetSamplerRootPramIndex(ShaderType type, UINT8 index) n
 	}
 }
 
-void D3D12RootSignature::InitBindSlotIndices(UINT parameterCount, CD3DX12_ROOT_PARAMETER1* rootParameters) noexcept
+void D3D12RootSignature::InitBindSlotIndices(UINT parameterCount, const D3D12_ROOT_PARAMETER1* rootParameters) noexcept
 {
 	for (int i = 0; i < parameterCount; ++i)
 	{
@@ -206,7 +284,8 @@ void D3D12RootSignature::InitBindSlotIndices(UINT parameterCount, CD3DX12_ROOT_P
 		}
 		
 		// パラメーターインデックスに登録
-		switch (param.DescriptorTable.pDescriptorRanges->RangeType)
+		auto rangeType = param.DescriptorTable.pDescriptorRanges->RangeType;
+		switch (rangeType)
 		{
 		case D3D12_DESCRIPTOR_RANGE_TYPE_SRV:
 			SetSRVRootPramIndex(currentShaderType, i);

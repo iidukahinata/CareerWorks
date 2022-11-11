@@ -52,6 +52,7 @@ public:
 	bool SetShader(ShaderType type, StringView path, bool createPipeline = true) noexcept;
 	const Array<String, ShaderType::NumAllType>& GetShaderPaths() const noexcept;
 	void SetTexture(StringView pramName, Texture* texture, bool isDefineToShader = false) noexcept;
+	void AddTexturePram(StringView pramName, uint32_t bindPoint) noexcept;
 	const Unordered_Map<String, TexturePramInfo>& GetTextures() const noexcept;
 	void SetAlbedo(const Math::Vector3& albedo) noexcept;
 	const Math::Vector3& GetAlbedo() const noexcept;

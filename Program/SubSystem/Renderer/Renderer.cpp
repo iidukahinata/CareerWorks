@@ -10,6 +10,7 @@
 #include "LightMap.h"
 #include "SubSystem/Window/Window.h"
 #include "GraphicsAPI/D3D12/D3D12GraphicsDevice.h"
+#include "SubSystem/Scene/Component/Components/PostProcessEffect.h"
 
 bool Renderer::Initialize()
 {
@@ -95,5 +96,5 @@ PostProcessEffect* Renderer::GetPostProcess() noexcept
 
 bool Renderer::HasPostProcessSetting() noexcept
 {
-	return !!m_postProcessEffect;
+	return !!m_postProcessEffect && m_postProcessEffect->GetActive() && m_postProcessEffect->HasPostEffect();
 }

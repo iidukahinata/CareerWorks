@@ -706,3 +706,15 @@ FodyWeavers.xsd
 /Program/ThirdParty/PhysX/include/characterkinematic/PxController.h
 /Program/ThirdParty/PhysX/include/characterkinematic/PxCapsuleController.h
 /Program/ThirdParty/PhysX/include/characterkinematic/PxBoxController.h
+/Data/asset/Standard/Model/sphere.asset
+/Data/asset/Standard/Mesh/Sphere.asset
+/Data/asset/Standard/Material/DefalutMaterial.asset
+/Data/asset/Shader/Texture2D.asset
+/Data/Resource/Material/DefalutMaterial.material
+/lua54.dll
+/Program/ThirdParty/lua/liblua54.a
+/Program/ThirdParty/lua/include/lualib.h
+/Program/ThirdParty/lua/include/luaconf.h
+/Program/ThirdParty/lua/include/lua.hpp
+/Program/ThirdParty/lua/include/lua.h
+/Program/ThirdParty/lua/include/lauxlib.h

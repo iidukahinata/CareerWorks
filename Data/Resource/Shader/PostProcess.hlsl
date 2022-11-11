@@ -1,43 +1,25 @@
-#include "Core.hlsli"
-
-Texture2D<float4> g_albedoTex	: register(t0);
-Texture2D<float4> g_specularTex : register(t1);
-Texture2D<float4> g_normalTex	: register(t2);
-Texture2D<float4> g_depthTex	: register(t3);
-Texture2D<float4> g_PositionTex : register(t4);
-Texture2D<float4> g_lightingTex : register(t5);
-sampler g_sampler;
-
-struct VS_IN
-{
-	float4 pos : POSITION;
-	float2 tex : TEXCOORD;
-};
-
-struct PS_IN 
-{
-	float4 pos : SV_POSITION;
-	float2 tex : TEXCOORD;
-};
-
-PS_IN vs_main(VS_IN input)
-{
-	PS_IN output;
-
-	output.pos = mul(worldViewProjection, input.pos);
-	output.tex = input.tex;
-
-	return output;
+#define DEFINE_ENTRY_POINT(VS_PASS, PS_PASS)\
+PS_IN vs_main(VS_IN input)					\
+{											\
+	return VS_PASS(input);					\
+}											\
+											\
+float4 ps_main(PS_IN input) : SV_TARGET		\
+{											\
+	return PS_PASS(input);					\
 }
+
+#if (XBlur || YBlur)
+#include "Blur.hlsli"
+DEFINE_ENTRY_POINT(VS_BlurPass, PS_BlurPass)
+#endif
 
 #if Luma
-float4 ps_main(PS_IN input) : SV_TARGET
-{
-	float4 finalColor = g_lightingTex.Sample(g_sampler, input.tex);
+#include "Luminous.hlsli"
+DEFINE_ENTRY_POINT(VS_LuminousPass, PS_LuminousPass)
+#endif
 
-	float t = dot(finalColor.xyz, float3(0.2125f, 0.7154f, 0.0721f));
-	
-	clip(t - 1.f);
-	return finalColor;
-}
+#if Bloom
+#include "Bloom.hlsli"
+DEFINE_ENTRY_POINT(VS_BloomPass, PS_BloomPass)
 #endif

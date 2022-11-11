@@ -83,7 +83,7 @@ void RenderObject::RegisterToRenderer() noexcept
 
 	m_isRegister = true;
 
-	if (IsRenderingThread())
+	if (IsInRenderingThread())
 	{
 		m_renderer->AddRenderObject(this);
 	}
@@ -102,7 +102,7 @@ void RenderObject::UnRegisterFromRenderer() noexcept
 
 	m_isRegister = false;
 
-	if (IsRenderingThread())
+	if (IsInRenderingThread())
 	{
 		m_renderer->RemoveRenderObject(this);
 	}

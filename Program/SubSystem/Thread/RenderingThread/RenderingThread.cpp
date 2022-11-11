@@ -91,7 +91,7 @@ void RenderingThread::Run()
 	m_renderCommandList.CommandProcess();
 }
 
-bool IsRenderingThread() noexcept
+bool IsInRenderingThread() noexcept
 {
 	return m_renderingThreadID == std::this_thread::get_id();
 }

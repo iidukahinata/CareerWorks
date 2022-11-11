@@ -22,11 +22,18 @@ public:
 
 private:
 
+	/** 使用中 PostEffect の表示 */
+	void ShowAllPostEffect() noexcept;
+
 	/** ポストエフェクト追加用 window の表示を行う。*/
 	void ShowAddPostEffectWindow() noexcept;
 
 	template<class T>
 	void RegisterPostEffect();
+
+private:
+
+	void ShowBloom(PostEffect* postEffect) noexcept;
 
 private:
 

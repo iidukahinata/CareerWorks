@@ -61,8 +61,10 @@ void MeshRenderDetails::Draw()
 		OpenResourceHelper("MeshRender");
 		if (auto resourceData = ShowSearchResourceHelper<Mesh>())
 		{
-			auto catchMesh = LoadResource<Mesh>(resourceData);
-			RegisterEditorCommand([meshRenderer](auto data) { meshRenderer->SetMesh(data); }, catchMesh, meshRenderer->GetMesh());
+			if (auto catchMesh = LoadResource<Mesh>(resourceData))
+			{
+				RegisterEditorCommand([meshRenderer](auto data) { meshRenderer->SetMesh(data); }, catchMesh, meshRenderer->GetMesh());
+			}
 		}
 
 		ImGui::Text("");
@@ -97,7 +99,7 @@ void MeshRenderDetails::Draw()
 			OpenResourceHelper(materialPath);
 			if (auto resourceData = ShowSearchResourceHelper<Material>())
 			{
-				if (auto catchMaterial = CatchDragObject<Material>())
+				if (auto catchMaterial = LoadResource<Material>(resourceData))
 				{
 					RegisterEditorCommand([mesh](auto data) { mesh->SetMaterial(data); }, catchMaterial, material);
 				}

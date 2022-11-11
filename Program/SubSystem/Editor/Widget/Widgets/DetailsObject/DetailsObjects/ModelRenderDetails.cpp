@@ -142,7 +142,7 @@ void ModelRenderDetails::ShowUseMaterial(Model* model) noexcept
 			OpenResourceHelper(materialId);
 			if (auto resourceData = ShowSearchResourceHelper<Material>())
 			{
-				if (auto catchMaterial = CatchDragObject<Material>())
+				if (auto catchMaterial = LoadResource<Material>(resourceData))
 				{
 					RegisterEditorCommand([mesh](auto data) { mesh->SetMaterial(data); }, catchMaterial, material);
 				}

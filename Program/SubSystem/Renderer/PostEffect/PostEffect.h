@@ -7,7 +7,9 @@
 #pragma once
 
 
+class Renderer;
 class PostProcessEffect;
+class D3D12RenderTexture;
 
 using PostEffectType = ClassTypeData;
 
@@ -28,7 +30,11 @@ public:
 
 	virtual void Render() = 0;
 
-private:
+	virtual D3D12RenderTexture& GetTexture() = 0;
+
+	Renderer* GetRenderer() const noexcept;
+
+protected:
 
 	PostProcessEffect* m_postProcessEffect = nullptr;
 };

@@ -18,3 +18,8 @@ void DepthOfField::Render()
 {
 
 }
+
+D3D12RenderTexture& DepthOfField::GetTexture()
+{
+    return m_renderTexture;
+}

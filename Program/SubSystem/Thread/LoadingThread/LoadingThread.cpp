@@ -78,7 +78,7 @@ bool LoadingThread::IsRealTimeThread() const
 	return true;
 }
 
-bool IsLoadingThread() noexcept
+bool IsInLoadingThread() noexcept
 {
 	return m_lodingThreadID == std::this_thread::get_id();
 }

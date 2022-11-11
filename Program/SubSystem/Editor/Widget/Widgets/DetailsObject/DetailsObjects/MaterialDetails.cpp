@@ -172,8 +172,9 @@ void MaterialDetails::ShowTextureList(Material* material) noexcept
 	UINT texIndex = 0;
 	for (const auto& textureInfo : material->GetTextures())
 	{
-		const auto& pramName = textureInfo.first;
-		const auto& texture  = textureInfo.second.m_texture;
+		const auto& pramName  = textureInfo.first;
+		const auto& texture   = textureInfo.second.m_texture;
+		const auto& bindPoint = textureInfo.second.m_bindPoint;
 
 		auto texturePath = texture ? ConvertToJapanese(texture->GetFilePath().c_str()) : String();
 
@@ -205,14 +206,33 @@ void MaterialDetails::ShowTextureList(Material* material) noexcept
 
 		ImGui::Text("");
 
-		if(!texture)
+		if(texture)
 		{
-			continue;
+			EditorHelper::Get().AddImage(texture->GetData(), ImVec2(100, 100));
+			DragDropTexture(material, texture, pramName);
+			ImGui::Text("");
 		}
+	}
 
-		EditorHelper::Get().AddImage(texture->GetData(), ImVec2(100, 100));
-		DragDropTexture(material, texture, pramName);
-		ImGui::Text("");
+	// Add TexturePram
+	{
+		ImGui::Text(""); ImGui::SameLine(ImGui::GetWindowWidth() - 250);
+
+		static char buf[128] = {};
+		static int bindPoint = material->GetTextures().size();
+
+		ImGui::PushItemWidth(100);
+		ImGui::InputText("##PramName", buf, 128); ImGui::SameLine();
+		ImGui::PopItemWidth();
+		ImGui::PushItemWidth(20);
+		ImGui::DragInt("##BindPoint", &bindPoint); ImGui::SameLine();
+		ImGui::PopItemWidth();
+
+		if (ImGui::Button("Add TexturePram"))
+		{
+			m_material->AddTexturePram(buf, bindPoint);
+			bindPoint = material->GetTextures().size();
+		}
 	}
 
 	ImGui::TreePop();

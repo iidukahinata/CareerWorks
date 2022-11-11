@@ -8,8 +8,8 @@
 
 #include "Material.h"
 #include "SubSystem/Resource/ResourceManager.h"
-#include "SubSystem/Resource/ResourceData/ProprietaryShaderData.h"
 #include "SubSystem/Thread/RenderingThread/RenderingThread.h"
+#include "SubSystem/Resource/ResourceData/ProprietaryShaderData.h"
 
 Material* Material::Create(StringView name, const ProprietaryMaterialData& data /* = ProprietaryMaterialData() */) noexcept
 {
@@ -35,12 +35,13 @@ bool Material::Load(StringView path)
 	}
 
 	// Set Texture Settings
-	for (auto& texturePath : m_materialData.m_texturePaths)
+	for (auto& textureInfo : m_materialData.m_textureInfos)
 	{
-		auto resourceData = m_resourceManager->GetResourceData(texturePath.second);
+		auto resourceData = m_resourceManager->GetResourceData(textureInfo.second.texturePath);
 		auto texture = m_resourceManager->GetResource(resourceData);
 
-		m_textureInfos[texturePath.first].m_texture = dynamic_cast<Texture*>(texture);
+		m_textureInfos[textureInfo.first].m_texture	  = dynamic_cast<Texture*>(texture);
+		m_textureInfos[textureInfo.first].m_bindPoint = textureInfo.second.bindPoint;
 	}
 
 	if (!CreateConstantBuffer())
@@ -191,6 +192,19 @@ void Material::SetTexture(StringView pramName, Texture* texture, bool isDefineTo
 	}
 }
 
+void Material::AddTexturePram(StringView pramName, uint32_t bindPoint) noexcept
+{
+	String pram(pramName);
+	if (m_textureInfos.contains(pram))
+	{
+		return;
+	}
+
+	auto& textureInfo = m_textureInfos[pram];
+	textureInfo.m_texture = nullptr;
+	textureInfo.m_bindPoint = bindPoint;
+}
+
 const Unordered_Map<String, TexturePramInfo>& Material::GetTextures() const noexcept
 {
 	return m_textureInfos;
@@ -312,25 +326,7 @@ void Material::ParametricAnalysis(bool isClear /* = true */) noexcept
 
 bool Material::CreateRootSinature() noexcept
 {
-	Array<CD3DX12_DESCRIPTOR_RANGE1, 3> descTblRanges = {};
-	Array<CD3DX12_ROOT_PARAMETER1, 3> rootParams = {};
-
-	//===定数バッファ用設定=====================================
-	descTblRanges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 8, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC);
-	rootParams[0].InitAsDescriptorTable(1, &descTblRanges[0]);
-	//==========================================================
-
-	//===テクスチャ用設定=======================================
-	descTblRanges[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 16, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC);
-	rootParams[1].InitAsDescriptorTable(1, &descTblRanges[1], D3D12_SHADER_VISIBILITY_PIXEL);
-	//==========================================================
-
-	//===Sampler用設定==========================================
-	descTblRanges[2].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER, 8, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC);
-	rootParams[2].InitAsDescriptorTable(1, &descTblRanges[2], D3D12_SHADER_VISIBILITY_PIXEL);
-	//==========================================================
-
-	return m_rootSignature.Create(rootParams.size(), rootParams.data(), 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+	return m_rootSignature.Create(m_rootSignature.GetGrapihcsRootDesc());
 }
 
 bool Material::CreatePipeline() noexcept
@@ -427,7 +423,7 @@ bool Material::CompileShader() noexcept
 
 void Material::UpdateConstantBufferData() noexcept
 {
-	if (IsRenderingThread())
+	if (IsInRenderingThread())
 	{
 		auto buffer = static_cast<ConstantBufferMaterial*>(m_constantBufferMaterial.GetCPUData());
 
@@ -453,10 +449,10 @@ void Material::UpdateConstantBufferData() noexcept
 
 void Material::UpdateProprietaryDataFile() noexcept
 {
-	auto& texturePaths = m_materialData.m_texturePaths;
+	auto& textureInfos = m_materialData.m_textureInfos;
 	auto& shaderPaths = m_materialData.m_shaderPaths;
 
-	texturePaths.clear();
+	textureInfos.clear();
 
 	// 初期化時は保持していないため
 	if (m_shader.HasShader())
@@ -470,7 +466,8 @@ void Material::UpdateProprietaryDataFile() noexcept
 	{
 		if (const auto texture = textureInfo.second.m_texture)
 		{
-			texturePaths[textureInfo.first] = texture->GetFilePath();
+			textureInfos[textureInfo.first].texturePath = texture->GetFilePath();
+			textureInfos[textureInfo.first].bindPoint	= textureInfo.second.m_bindPoint;
 		}
 	}
 

@@ -37,6 +37,12 @@ void D3D12RenderTexture::WaitUntilToAvailable()
 	GetCommandContext()->GetCommandList()->ResourceBarrier(1, &transition);
 }
 
+void D3D12RenderTexture::WaitUntilFinishDrawing()
+{
+	auto transition = CD3DX12_RESOURCE_BARRIER::Transition(m_renderTarget.Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+	GetCommandContext()->GetCommandList()->ResourceBarrier(1, &transition);
+}
+
 void D3D12RenderTexture::SetRenderTarget() noexcept
 {
 	WaitUntilToAvailable();

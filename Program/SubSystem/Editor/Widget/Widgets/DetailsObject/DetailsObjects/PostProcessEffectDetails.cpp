@@ -20,10 +20,10 @@ PostProcessEffectDetails::PostProcessEffectDetails(DetailsWidget* detailsWidget,
 	ASSERT(m_postProcessEffect);
 
 	// Add PostEffect éûÇÃåüçıÇ…égóp
-	RegisterPostEffect<Blur>();
+	//RegisterPostEffect<Blur>();
 	RegisterPostEffect<Bloom>();
-	RegisterPostEffect<Monotone>();
-	RegisterPostEffect<DepthOfField>();
+	//RegisterPostEffect<Monotone>();
+	//RegisterPostEffect<DepthOfField>();
 }
 
 void PostProcessEffectDetails::Draw()
@@ -33,6 +33,8 @@ void PostProcessEffectDetails::Draw()
 		constexpr int offsetPos = 130;
 		auto width = ImGui::GetWindowWidth() - offsetPos;
 
+		ShowAllPostEffect();
+
 		ImGui::Text(""); ImGui::SameLine(65);
 		if (ImGui::Button("Add PostEffect", ImVec2(width, 20)))
 		{
@@ -40,6 +42,28 @@ void PostProcessEffectDetails::Draw()
 		}
 
 		ShowAddPostEffectWindow();
+	}
+}
+
+void PostProcessEffectDetails::ShowAllPostEffect() noexcept
+{
+	for (auto& postEffect : m_postProcessEffect->GetAllPostEffect())
+	{
+		auto effectHash = postEffect.second->GetTypeData().Hash;
+		auto effectName = postEffect.second->GetTypeData().Name;
+
+		const ImGuiTreeNodeFlags treeNodeFlags =
+			ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed |
+			ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding;
+
+		if (ImGui::CollapsingHeader(effectName.data(), treeNodeFlags))
+		{
+			switch (effectHash)
+			{
+			case GET_HASH(Bloom): ShowBloom(postEffect.second.get());
+			default: break;
+			}
+		}
 	}
 }
 
@@ -71,4 +95,43 @@ void PostProcessEffectDetails::ShowAddPostEffectWindow() noexcept
 		ImGui::EndChild();
 		ImGui::EndPopup();
 	}
+}
+
+void PostProcessEffectDetails::ShowBloom(PostEffect* postEffect) noexcept
+{
+	constexpr auto offsetPos = 130;
+
+	auto bloom = dynamic_cast<Bloom*>(postEffect);
+	ASSERT(bloom);
+
+	auto color = bloom->GetColor();
+	auto clamp	   = bloom->GetClamp();
+	auto diffusion = bloom->GetDiffusion();
+	auto threshold = bloom->GetThreshold();
+	auto intensity = bloom->GetIntensity();
+
+	ImGui::Text("Intensity"); ImGui::SameLine(offsetPos);
+	auto inputIntensity = ImGui::DragFloat("##Intensity", &intensity, 0.01f);
+
+	ImGui::Text("Threshold"); ImGui::SameLine(offsetPos);
+	auto inputThreshold = ImGui::DragFloat("##Threshold", &threshold, 0.01f);
+
+	ImGui::Text("Diffusion"); ImGui::SameLine(offsetPos);
+	auto inputDiffusion = ImGui::DragFloat("##Diffusion", &diffusion, 0.01f);
+
+	ImGui::Text("Clamp"); ImGui::SameLine(offsetPos);
+	auto inputClamp = ImGui::DragFloat("##Clamp", &clamp, 0.01f);
+
+	ImGui::Text("Color"); ImGui::SameLine(offsetPos);
+	auto inputColor = ImGui::ColorEdit4("##Color", &color.x);
+
+	intensity = max(intensity, 0.f);
+	threshold = max(threshold, 0.f);
+	diffusion = std::clamp(diffusion, 1.f, 10.f);
+
+	if (inputIntensity) RegisterEditorCommand([bloom](auto data) { bloom->SetIntensity(data); }, intensity, bloom->GetIntensity());
+	if (inputThreshold) RegisterEditorCommand([bloom](auto data) { bloom->SetThreshold(data); }, threshold, bloom->GetThreshold());
+	if (inputDiffusion) RegisterEditorCommand([bloom](auto data) { bloom->SetDiffusion(data); }, diffusion, bloom->GetDiffusion());
+	if (inputClamp)		RegisterEditorCommand([bloom](auto data) { bloom->SetClamp(data);	  }, clamp	  , bloom->GetClamp());
+	if (inputColor)		RegisterEditorCommand([bloom](auto data) { bloom->SetColor(data);	  }, color	  , bloom->GetColor());
 }

@@ -84,7 +84,7 @@ bool Light::Erasable()
 
 void Light::SetLightType(LightType lightType) noexcept
 {
-	if (IsRenderingThread())
+	if (IsInRenderingThread())
 	{
 		m_lightType = lightType;
 	}
@@ -101,7 +101,7 @@ LightType Light::GetLightType() const noexcept
 
 void Light::SetColor(const Math::Vector4& color) noexcept
 {
-	if (IsRenderingThread())
+	if (IsInRenderingThread())
 	{
 		m_color = color;
 	}
@@ -118,7 +118,7 @@ const Math::Vector4& Light::GetColor() const noexcept
 
 void Light::SetIntensity(float intensity) noexcept
 {
-	if (IsRenderingThread())
+	if (IsInRenderingThread())
 	{
 		m_intensity = intensity;
 	}
@@ -135,7 +135,7 @@ float Light::GetIntensity() const noexcept
 
 void Light::SetInfluenceRange(float influenceRange) noexcept
 {
-	if (IsRenderingThread())
+	if (IsInRenderingThread())
 	{
 		m_influenceRange = influenceRange;
 	}
@@ -152,7 +152,7 @@ float Light::GetInfluenceRange() const noexcept
 
 void Light::SetAngle(float angle) noexcept
 {
-	if (IsRenderingThread())
+	if (IsInRenderingThread())
 	{
 		m_angle = angle;
 	}
@@ -176,7 +176,7 @@ void Light::RegisterToLightMap() noexcept
 
 	m_isRegister = true;
 
-	if (IsRenderingThread())
+	if (IsInRenderingThread())
 	{
 		m_renderer->AddLight(this);
 	}
@@ -195,7 +195,7 @@ void Light::UnRegisterFromLightMap() noexcept
 
 	m_isRegister = false;
 
-	if (IsRenderingThread())
+	if (IsInRenderingThread())
 	{
 		m_renderer->RemoveLight(this);
 	}

@@ -8,6 +8,12 @@
 
 
 #include "PostEffect.h"
+#include "../GraphicsAPI/D3D12/D3D12Sampler.h"
+#include "../GraphicsAPI/D3D12/D3D12IndexBuffer.h"
+#include "../GraphicsAPI/D3D12/D3D12VertexBuffer.h"
+#include "../GraphicsAPI/D3D12/D3D12PipelineState.h"
+#include "../GraphicsAPI/D3D12/D3D12RenderTexture.h"
+#include "../GraphicsAPI/D3D12/D3D12ConstantBuffer.h"
 
 class Monotone : public PostEffect
 {
@@ -22,5 +28,9 @@ public:
 
 	void Render() override;
 
+	D3D12RenderTexture& GetTexture() override;
+
 private:
+
+	D3D12RenderTexture m_renderTexture;
 };

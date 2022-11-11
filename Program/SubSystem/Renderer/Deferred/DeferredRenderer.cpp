@@ -132,22 +132,12 @@ bool DeferredRenderer::SetUpPrePassObjects() noexcept
 {
 	// Create RootSignature
 	{
-		Array<CD3DX12_DESCRIPTOR_RANGE1, 3> descTblRanges = {};
-		Array<CD3DX12_ROOT_PARAMETER1, 3> rootParams = {};
+		Array<CD3DX12_DESCRIPTOR_RANGE1, 1> descTblRanges = {};
+		Array<CD3DX12_ROOT_PARAMETER1, 1> rootParams = {};
 
 		//===定数バッファ用設定=====================================
 		descTblRanges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 8, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC);
 		rootParams[0].InitAsDescriptorTable(1, &descTblRanges[0]);
-		//==========================================================
-
-		//===テクスチャ用設定=======================================
-		descTblRanges[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 16, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC);
-		rootParams[1].InitAsDescriptorTable(1, &descTblRanges[1], D3D12_SHADER_VISIBILITY_PIXEL);
-		//==========================================================
-
-		//===Sampler用設定==========================================
-		descTblRanges[2].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER, 8, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC);
-		rootParams[2].InitAsDescriptorTable(1, &descTblRanges[2], D3D12_SHADER_VISIBILITY_PIXEL);
 		//==========================================================
 
 		auto flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |	D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
@@ -190,7 +180,7 @@ bool DeferredRenderer::SetUpRenderingObjects(UINT width, UINT height) noexcept
 	m_constantBuffer.Create(sizeof(ConstantBufferMatrix));
 
 	// Create Sampler
-	m_sampler.Create();
+	m_sampler.Create(D3D12_FILTER_MIN_MAG_MIP_LINEAR);
 
 	// Create Mesh Buffer
 	{
@@ -208,32 +198,9 @@ bool DeferredRenderer::SetUpRenderingObjects(UINT width, UINT height) noexcept
 	}
 
 	// Create RootSignature
+	if (!m_rootSignature.Create(m_rootSignature.GetGrapihcsRootDesc()))
 	{
-		Array<CD3DX12_DESCRIPTOR_RANGE1, 3> descTblRanges = {};
-		Array<CD3DX12_ROOT_PARAMETER1, 3> rootParams = {};
-
-		//===定数バッファ用設定=====================================
-		descTblRanges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 8, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC);
-		rootParams[0].InitAsDescriptorTable(1, &descTblRanges[0]);
-		//==========================================================
-
-		//===テクスチャ用設定=======================================
-		descTblRanges[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 16, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC);
-		rootParams[1].InitAsDescriptorTable(1, &descTblRanges[1], D3D12_SHADER_VISIBILITY_PIXEL);
-		//==========================================================
-
-		//===Sampler用設定==========================================
-		descTblRanges[2].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER, 8, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC);
-		rootParams[2].InitAsDescriptorTable(1, &descTblRanges[2], D3D12_SHADER_VISIBILITY_PIXEL);
-		//==========================================================
-
-		auto flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT | D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
-			D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS | D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
-
-		if (!m_rootSignature.Create(rootParams.size(), rootParams.data(), 0, nullptr, flags))
-		{
-			return false;
-		}
+		return false;
 	}
 
 	return true;
@@ -266,27 +233,54 @@ bool DeferredRenderer::SetUpLightingObjects(UINT width, UINT height) noexcept
 
 bool DeferredRenderer::SetUpPostProcessObjects(UINT width, UINT height) noexcept
 {
-	auto postProcessShaderPath = FileSystem::FindFilePath(SHADER_DIRECTORY, "PostProcess.hlsl");
-
-	Vector<D3D_SHADER_MACRO> defines;
-	defines.emplace_back("Luma", "1");
-	defines.emplace_back(D3D_SHADER_MACRO(NULL, NULL));
-
-	Array<D3D12Shader, 2> postProcessShaders;
-	postProcessShaders[VertexShader].Compile(postProcessShaderPath, VertexShader, defines.data());
-	postProcessShaders[PixelShader ].Compile(postProcessShaderPath, PixelShader , defines.data());
-
-	GraphicsPipelineStateDesc desc = {};
-	desc.VS				  = &postProcessShaders[VertexShader];
-	desc.PS				  = &postProcessShaders[PixelShader ];
-	desc.BlendMode		  = BLEND_MODE_NO_ALPHA;
-	desc.RasterizerState  = NO_CULL;
-	desc.PrimitiveType    = PRIMITIVE_TYPE_TRIANGLELIST;
-	desc.NumRenderTargets = 1;
-
-	if (!m_postProcessPipeline.Create(desc, &m_rootSignature))
+	// Create Luminous Pipeline
 	{
-		return false;
+		auto luminousShaderPath = FileSystem::FindFilePath(SHADER_DIRECTORY, "PostProcess.hlsl");
+
+		Vector<D3D_SHADER_MACRO> defines;
+		defines.emplace_back("Luma", "1");
+		defines.emplace_back(D3D_SHADER_MACRO(NULL, NULL));
+
+		Array<D3D12Shader, 2> luminousShaders;
+		luminousShaders[VertexShader].Compile(luminousShaderPath, VertexShader, defines.data());
+		luminousShaders[PixelShader].Compile(luminousShaderPath, PixelShader, defines.data());
+
+		GraphicsPipelineStateDesc desc = {};
+		desc.VS = &luminousShaders[VertexShader];
+		desc.PS = &luminousShaders[PixelShader];
+		desc.BlendMode = BLEND_MODE_ALPHA;
+		desc.RasterizerState = NO_CULL;
+		desc.PrimitiveType = PRIMITIVE_TYPE_TRIANGLELIST;
+		desc.NumRenderTargets = 1;
+		desc.RTVForamt[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+
+		if (!m_luminousPipeline.Create(desc, &m_rootSignature))
+		{
+			return false;
+		}
+	}
+
+	// Create PostProcess Pipeline
+	{
+		auto postProcessShaderPath = FileSystem::FindFilePath(SHADER_DIRECTORY, "Texture2D.hlsl");
+
+		Array<D3D12Shader, 2> postProcessShaders;
+		postProcessShaders[VertexShader].Compile(postProcessShaderPath, VertexShader);
+		postProcessShaders[PixelShader].Compile(postProcessShaderPath, PixelShader);
+
+		GraphicsPipelineStateDesc desc = {};
+		desc.VS = &postProcessShaders[VertexShader];
+		desc.PS = &postProcessShaders[PixelShader];
+		desc.BlendMode = BLEND_MODE_ALPHA;
+		desc.RasterizerState = NO_CULL;
+		desc.PrimitiveType = PRIMITIVE_TYPE_TRIANGLELIST;
+		desc.NumRenderTargets = 1;
+		desc.RTVForamt[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+
+		if (!m_postProcessPipeline.Create(desc, &m_rootSignature))
+		{
+			return false;
+		}
 	}
 
 	if (!m_luminousRenderTexture.Create(width, height, DXGI_FORMAT_R32G32B32A32_FLOAT))
@@ -356,7 +350,7 @@ void DeferredRenderer::LightingPass() noexcept
 		m_lightingRenderTexture.SetRenderTarget();
 		m_lightingRenderTexture.Clear(Math::Vector4(0.f, 0.f, 0.f, 1.f));
 	}
-	//else
+	else
 	{
 #if IS_EDITOR
 		m_renderTexture.SetRenderTarget();
@@ -394,7 +388,22 @@ void DeferredRenderer::PostPass() noexcept
 
 	LuminousPass();
 
-	// RenderTarget Set
+	// PostEffectPass
+	{
+		m_luminousRenderTexture.WaitUntilFinishDrawing();
+
+		// Texture Set
+		m_gbuffer->GetRenderTexture(GBufferType::Albedo	 ).PSSet(0);
+		m_gbuffer->GetRenderTexture(GBufferType::Specular).PSSet(1);
+		m_gbuffer->GetRenderTexture(GBufferType::Normal	 ).PSSet(2);
+		m_gbuffer->GetRenderTexture(GBufferType::Depth	 ).PSSet(3);
+		m_gbuffer->GetRenderTexture(GBufferType::Position).PSSet(4);
+		m_lightingRenderTexture.PSSet(5);
+		m_luminousRenderTexture.PSSet(6);
+		m_lightingRenderTexture.PSSet(7);
+
+		m_postProcessEffect->Render();
+	}
 
 #if IS_EDITOR
 	m_renderTexture.SetRenderTarget();
@@ -403,26 +412,31 @@ void DeferredRenderer::PostPass() noexcept
 	D3D12GraphicsDevice::Get().SetRenderTarget();
 #endif // IS_EDITOR
 
-	// Texture Set
-	m_gbuffer->GetRenderTexture(GBufferType::Albedo	 ).PSSet(0);
-	m_gbuffer->GetRenderTexture(GBufferType::Specular).PSSet(1);
-	m_gbuffer->GetRenderTexture(GBufferType::Normal	 ).PSSet(2);
-	m_gbuffer->GetRenderTexture(GBufferType::Depth	 ).PSSet(3);
-	m_gbuffer->GetRenderTexture(GBufferType::Position).PSSet(4);
-	m_lightingRenderTexture.PSSet(5);
-	m_luminousRenderTexture.PSSet(6);
+	// Pipeline Set
+	m_postProcessPipeline.Set();
+	m_sampler.PSSet();
 
-	m_postProcessEffect->Render();
+	// Matrix Set
+	m_constantBuffer.VSSet(0);
+
+	// Mesh Set
+	m_vertexBuffer.IASet();
+	m_indexBuffer.IASet();
+
+	// Draw
+	D3D12GraphicsDevice::Get().GetCommandContext().DrawIndexedInstanced(6, 1, 0, 0, 0);
 }
 
 void DeferredRenderer::LuminousPass() noexcept
 {
+	m_lightingRenderTexture.WaitUntilFinishDrawing();
+
 	// RenderTarget Set
 	m_luminousRenderTexture.SetRenderTarget();
 	m_luminousRenderTexture.Clear(Math::Vector4(0.f, 0.f, 0.f, 1.f));
 
 	// Pipeline Set
-	m_postProcessPipeline.Set();
+	m_luminousPipeline.Set();
 	m_sampler.PSSet();
 
 	// Texture Set

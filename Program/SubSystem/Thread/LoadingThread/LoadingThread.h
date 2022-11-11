@@ -87,4 +87,4 @@ private:
 	LoadingCommandList m_commandList;
 };
 
-bool IsLoadingThread() noexcept;
+bool IsInLoadingThread() noexcept;

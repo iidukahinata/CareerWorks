@@ -39,11 +39,12 @@ void ProprietaryMaterialData::Serialized(FileStream* file) const
 		file->Write(m_shaderPaths[i]);
 	}
 
-	file->Write(m_texturePaths.size());
-	for (auto& texture : m_texturePaths)
+	file->Write(m_textureInfos.size());
+	for (auto& texture : m_textureInfos)
 	{
 		file->Write(texture.first);
-		file->Write(texture.second);
+		file->Write(texture.second.texturePath);
+		file->Write(texture.second.bindPoint);
 	}
 }
 
@@ -72,7 +73,11 @@ void ProprietaryMaterialData::Deserialized(FileStream* file)
 		String path;
 		file->Read(&path);
 
-		m_texturePaths[pram] = path;
+		uint32_t bindPoint;
+		file->Read(&bindPoint);
+
+		m_textureInfos[pram].texturePath = path;
+		m_textureInfos[pram].bindPoint = bindPoint;
 	}
 }
 

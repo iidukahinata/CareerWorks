@@ -196,6 +196,9 @@
     <Filter Include="Subsytem\Physics\PhysX">
       <UniqueIdentifier>{582e657b-40f4-49c5-8ae1-32621632dcd2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Subsytem\Script">
+      <UniqueIdentifier>{b66be15f-22c9-43a2-84e7-2167cb7b945b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Program\WinMain.cpp" />
@@ -705,6 +708,9 @@
     </ClCompile>
     <ClCompile Include="Program\SubSystem\Physics\PhysicsEvents.cpp">
       <Filter>Subsytem\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\PostEffect\PostEffect.cpp">
+      <Filter>Subsytem\Renderer\PostEffect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

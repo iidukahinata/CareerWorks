@@ -55,12 +55,17 @@ public:
 		D3D12_STATIC_SAMPLER_DESC* samplerDesc,
 		D3D12_ROOT_SIGNATURE_FLAGS rootSignatureFlags) noexcept;
 
+	bool Create(const D3D12_VERSIONED_ROOT_SIGNATURE_DESC& desc) noexcept;
+
 	/** アクセス */
 	ID3D12RootSignature* Get() const noexcept { return m_rootsignature.Get(); }
 	UINT8 GetCBVRootPramIndex(ShaderType type) const noexcept;
 	UINT8 GetUAVRootPramIndex(ShaderType type) const noexcept;
 	UINT8 GetSRVRootPramIndex(ShaderType type) const noexcept;
 	UINT8 GetSamplerRootPramIndex(ShaderType type) const noexcept;
+
+	const D3D12_VERSIONED_ROOT_SIGNATURE_DESC& GetGrapihcsRootDesc() noexcept;
+	const D3D12_VERSIONED_ROOT_SIGNATURE_DESC& GetComputeRootDesc() noexcept;
 
 private:
 
@@ -69,7 +74,7 @@ private:
 	void SetSRVRootPramIndex(ShaderType type, UINT8 index) noexcept;
 	void SetSamplerRootPramIndex(ShaderType type, UINT8 index) noexcept;
 
-	void InitBindSlotIndices(UINT parameterCount, class CD3DX12_ROOT_PARAMETER1* rootParameters) noexcept;
+	void InitBindSlotIndices(UINT parameterCount, const D3D12_ROOT_PARAMETER1* rootParameters) noexcept;
 
 private:
 

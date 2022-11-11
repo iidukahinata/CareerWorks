@@ -263,15 +263,32 @@ void SceneWidget::ChackClickedCommand(GameObject* gameObject) noexcept
 
 void SceneWidget::CreateGameObjectFromModel(Model* model) noexcept
 {
-	for (auto mesh : model->GetAllMeshes())
-	{
-		auto gameObject = m_world->CreateGameObject();
-		gameObject->SetName(mesh->GetAssetName());
+	auto rootGameObject = m_world->CreateGameObject();
+	auto& rootTransform = rootGameObject->GetTransform();
+	rootGameObject->SetName(model->GetAssetName());
 
-		if (auto component = gameObject->AddComponent("MeshRender"))
+	auto meshes = model->GetAllMeshes();
+	if (meshes.size() == 1)
+	{
+		if (auto component = rootGameObject->AddComponent("MeshRender"))
 		{
 			auto meshComponent = dynamic_cast<MeshRender*>(component);
-			meshComponent->SetMesh(mesh);
+			meshComponent->SetMesh(meshes.front());
+		}
+	}
+	else
+	{
+		for (auto mesh : model->GetAllMeshes())
+		{
+			auto gameObject = m_world->CreateGameObject();
+			gameObject->SetName(mesh->GetAssetName());
+			gameObject->GetTransform().SetParent(&rootTransform);
+
+			if (auto component = gameObject->AddComponent("MeshRender"))
+			{
+				auto meshComponent = dynamic_cast<MeshRender*>(component);
+				meshComponent->SetMesh(mesh);
+			}
 		}
 	}
 }

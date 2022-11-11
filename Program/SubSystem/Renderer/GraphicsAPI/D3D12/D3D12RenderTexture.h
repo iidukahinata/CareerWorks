@@ -23,6 +23,9 @@ public:
 	/** SetRenderTarget する前に確認するため */
 	void WaitUntilToAvailable();
 
+	/** PSSetする前に確認するため */
+	void WaitUntilFinishDrawing();
+
 	/** デバイス設定するための関数です。*/
 	void SetRenderTarget() noexcept;
 	void PSSet(UINT slot) noexcept;

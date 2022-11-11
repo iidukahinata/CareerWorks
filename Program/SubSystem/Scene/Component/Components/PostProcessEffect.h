@@ -43,9 +43,13 @@ public:
 	T* GetPostEffect();
 	void GetAllPostEffect(Vector<PostEffect*>& postEffects) const noexcept;
 	const Map<uint32_t, UniquePtr<PostEffect>>& GetAllPostEffect() noexcept;
+	bool HasPostEffect() const noexcept;
 
 	/** 指定名エフェクトを保持する場合、そのアドレスを返す。*/
 	PostEffect* FindPostEffect(StringView name) const noexcept;
+
+	/** アクセス */
+	Renderer* GetRenderer() const noexcept;
 
 private:
 

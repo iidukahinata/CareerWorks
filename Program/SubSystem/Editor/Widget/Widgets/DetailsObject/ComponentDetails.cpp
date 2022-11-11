@@ -27,6 +27,7 @@ bool ComponentDetails::ShowComponentHeader(IComponent* component) noexcept
 	auto name		   = component->GetTypeData().Name;
 	auto gameObject	   = component->GetOwner();
 	auto isActive	   = component->GetActive();
+	auto buttonActive  = String("##Active") + name.data();
 	auto buttonLavel   = String("=##") + name.data();
 	auto settginsLavel = String("Component Settings##") + name.data();
 
@@ -47,7 +48,7 @@ bool ComponentDetails::ShowComponentHeader(IComponent* component) noexcept
 	}
 
 	ImGui::SameLine(contentRegionAvailable.x - lineHeight * 1.7f);
-	auto inputActive = ImGui::Checkbox("##Active", &isActive);
+	auto inputActive = ImGui::Checkbox(buttonActive.c_str(), &isActive);
 
 	auto inputRemove = false;
 	if (ImGui::BeginPopup(settginsLavel.c_str()))
