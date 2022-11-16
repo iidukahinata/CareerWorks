@@ -19,6 +19,11 @@ IComponent::IComponent()
 	m_tickFunction.m_component = this;
 }
 
+IComponent::~IComponent()
+{
+
+}
+
 void IComponent::Serialized(FileStream* file) const
 {
 	file->Write(GetActive());
@@ -109,6 +114,11 @@ void IComponent::SetActive(bool active)
 bool IComponent::GetActive() const noexcept
 {
 	return m_active;
+}
+
+void IComponent::SetTickThreadSafe(bool isThreadSafe) noexcept
+{
+	m_tickFunction.SetThreadSafe(isThreadSafe);
 }
 
 void IComponent::SetTickEnable(bool enable) noexcept

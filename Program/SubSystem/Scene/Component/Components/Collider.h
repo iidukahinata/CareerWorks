@@ -52,7 +52,7 @@ public:
 	void SetShapeType(ShapeType type) noexcept;
 	const ShapeType& GetShapeType() const noexcept;
 	void SetTrigger(bool trigger) noexcept;
-	bool IsTrigger() const noexcept;
+	bool GetTrigger() const noexcept;
 
 	/** scale */
 	void SetScale(const Math::Vector3& scale) noexcept;

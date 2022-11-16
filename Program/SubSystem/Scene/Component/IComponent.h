@@ -27,6 +27,7 @@ class IComponent
 public:
 
 	IComponent();
+	virtual ~IComponent();
 
 	virtual void Serialized(FileStream* file) const;
 	virtual void Deserialized(FileStream* file);
@@ -65,6 +66,9 @@ public:
 	/** true の場合、更新関係にも影響する。*/
 	virtual void SetActive(bool active);
 	bool GetActive() const noexcept;
+
+	/** true の場合、更新処理が別スレッドで実行されます。*/
+	void SetTickThreadSafe(bool isThreadSafe) noexcept;
 
 	/** true の場合、更新処理が有効になります。*/
 	void SetTickEnable(bool enable) noexcept;

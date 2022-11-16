@@ -28,6 +28,8 @@ public:
 	void PreRender() noexcept;
 	void Render() noexcept;
 
+public:
+
 	/** パラメーター */
 	void SetMaterial(Material* material) noexcept;
 	Material* GetMaterial() const noexcept;

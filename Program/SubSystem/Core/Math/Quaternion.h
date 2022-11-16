@@ -15,6 +15,7 @@ namespace Math
 	{
 		COMPLETED_DEVELOPMENT()
 	public:
+
 		float x;
 
 		float y;
@@ -33,15 +34,18 @@ namespace Math
 		Quaternion() noexcept : x(0.f), y(0.f), z(0.f), w(0.f)
 		{}
 
+		Quaternion(const Quaternion& Q) noexcept : x(Q.x), y(Q.y), z(Q.z), w(Q.w)
+		{}
+
 		Quaternion(float x, float y, float z, float w) noexcept : x(x), y(y), z(z), w(w)
 		{}
 
-		Quaternion(float angle, const Math::Vector3& axis)
+		Quaternion(float angle, const Vector3& axis)
 		{
 			const float half = angle * 0.5f;
 			const float s = sin(half);
 			const float c = cos(half);
-
+			
 			w = c;
 			x = axis.x * s;
 			y = axis.y * s;
@@ -80,10 +84,10 @@ namespace Math
 		Vector3 operator*(const Vector3& V) const noexcept
 		{
 			const Vector3 Q(x, y, z);
-			const Vector3 T = Vector3::Cross(Q, V) * 2.0f;
+			const Vector3 T = Q.Cross(V) * 2.0f;
 
 			// Vのvector3::Cross(Q, T)は逆行列
-			return (V + (T * w) + Vector3::Cross(Q, T));
+			return (V + (T * w) + Q.Cross(T));
 		}
 
 		Quaternion operator+=(const Quaternion& Q) noexcept
@@ -235,13 +239,8 @@ namespace Math
 
 		bool Equals(const Quaternion& Q, float tolerance = MINUTE_VALUE) const noexcept
 		{
-			return Equals(*this, Q, tolerance);
-		}
-
-		static bool Equals(const Quaternion& A, const Quaternion& B, float tolerance = MINUTE_VALUE) noexcept
-		{
-			auto dis = A - B;
-			auto add = A + B;
+			auto dis = *this - Q;
+			auto add = *this + Q;
 
 			// 値が反対の行列の場合、も等価のため＋ー二つの判定をとる
 			return (fabs(dis.x) <= tolerance && fabs(dis.y) <= tolerance && fabs(dis.z) <= tolerance && fabs(dis.w) <= tolerance)

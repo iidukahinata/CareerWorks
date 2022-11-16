@@ -14,9 +14,13 @@ class IResource
 {
 	IN_DEVELOPMENT("Resourceの消去時の処理")
 	SUPER_CLASS(IResource)
+	COPY_PROHIBITED(IResource)
 
 	friend struct ResourceFactory;
 public:
+
+	IResource() = default;
+	virtual ~IResource() = default;
 
 	/** asset ファイルと独自データの作成を行う */
 	template<class T>
@@ -26,16 +30,16 @@ public:
 public:
 
 	/** 主に独自データの読み込みを行う */
-	virtual bool Load(StringView path) = 0;
+	virtual bool Load(StringView path);
 
 	/** リソースデータファイル更新処理用 */
-	virtual void Update() = 0;
+	virtual void Update();
 
 public:
 
 	/** ResourceData */
 	uint32_t GetType() const noexcept;
-	String GetAssetName() const noexcept;
+	const String& GetAssetName() const noexcept;
 	const String& GetFilePath() const noexcept;
 
 	/** アクセス */

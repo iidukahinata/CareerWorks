@@ -12,12 +12,11 @@
 
 class Renderer;
 
-enum class LightType
+enum LightType
 {
 	DirectionalLight,
 	PointLight,
 	SpotLight,
-	Max,
 };
 
 class Light : public IComponent

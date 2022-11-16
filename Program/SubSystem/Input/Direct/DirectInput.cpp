@@ -162,7 +162,7 @@ void DirectInput::ConvertMyInputData() noexcept
 	m_previousKeyState[Button::Mbutton] = m_mouseState.rgbButtons[2] & 0x80;
 
 	// KEY BOARD
-	m_previousKeyState[Button::Escape] = m_keybuffer[DIK_ESCAPE] & 0x80;
+	m_previousKeyState[Button::Esc] = m_keybuffer[DIK_ESCAPE] & 0x80;
 	m_previousKeyState[Button::Back] = m_keybuffer[DIK_BACK] & 0x80;
 	m_previousKeyState[Button::Tab] = m_keybuffer[DIK_TAB] & 0x80;
 	m_previousKeyState[Button::A] = m_keybuffer[DIK_A] & 0x80;

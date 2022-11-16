@@ -43,16 +43,8 @@ void ModelRender::Deserialized(FileStream* file)
 		if (auto resourceData = resourceManager->GetResourceData(modelPath))
 		{
 			auto resource = resourceManager->GetResource(resourceData);
-			SetModel(resource);
+			SetModel(dynamic_cast<Model*>(resource));
 		}
-	}
-}
-
-void ModelRender::SetModel(IResource* resource) noexcept
-{
-	if (auto model = dynamic_cast<Model*>(resource))
-	{
-		SetModel(model);
 	}
 }
 

@@ -16,9 +16,13 @@ class ResourceManager;
 class ResourceHandle
 {
 	COMPLETED_DEVELOPMENT()
+	COPY_PROHIBITED(ResourceHandle)
 
 	friend class ResourceManager;
 public:
+
+	/** ResourceManager のみがアクセス出来るようにしている */
+	ResourceHandle() = default;
 
 	/**
 	* ハンドルの有効性を確認する。
@@ -42,8 +46,6 @@ public:
 
 private:
 
-	/** ResourceManager のみがアクセス出来るようにしている */
-	ResourceHandle() = default;
 	void NotifyCompleteLoad() noexcept;
 
 private:

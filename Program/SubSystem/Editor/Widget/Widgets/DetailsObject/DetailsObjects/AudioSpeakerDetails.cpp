@@ -16,14 +16,6 @@ AudioSpeakerDetails::AudioSpeakerDetails(DetailsWidget* detailsWidget, IComponen
 	ASSERT(m_audioSpeaker);
 }
 
-AudioSpeakerDetails::~AudioSpeakerDetails()
-{
-	if (auto audioClip = m_audioSpeaker->GetAudioClip())
-	{
-		audioClip->Update();
-	}
-}
-
 void AudioSpeakerDetails::Draw()
 {
 	constexpr int offsetPos = 130;

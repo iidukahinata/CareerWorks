@@ -253,7 +253,7 @@ void Material::SetEmission(const Math::Vector3& emissive) noexcept
 	UpdateConstantBufferData();
 }
 
-const Math::Vector3 Material::GetEmission() const noexcept
+const Math::Vector3& Material::GetEmission() const noexcept
 {
 	return m_materialData.m_emission;
 }

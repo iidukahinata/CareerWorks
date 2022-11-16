@@ -15,6 +15,7 @@ class Transform
 	CLASS_DATA(Transform)
 public:
 
+	Transform() = default;
 	Transform(GameObject* gameObject);
 	~Transform();
 

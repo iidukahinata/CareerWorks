@@ -25,7 +25,7 @@ void ColliderDetails::Draw()
 	{
 		auto collider		 = m_collider;
 		auto shapeType		 = collider->GetShapeType();
-		auto isTrigger		 = collider->IsTrigger();
+		auto isTrigger		 = collider->GetTrigger();
 		auto scale			 = collider->GetScale();
 		auto contactOffset	 = collider->GetContactOffset();
 		auto resetOffset	 = collider->GetRestOffset();
@@ -78,7 +78,7 @@ void ColliderDetails::Draw()
 		auto inputRestitution = ImGui::DragFloat("##Restitution", &restitution, 0.1f);
 
 		if (inputShapeType)		  RegisterEditorCommand([collider](auto data) { collider->SetShapeType(data);	    }, shapeType	  , collider->GetShapeType());
-		if (inputIsTrigger)		  RegisterEditorCommand([collider](auto data) { collider->SetTrigger(data);			}, isTrigger	  , collider->IsTrigger());
+		if (inputIsTrigger)		  RegisterEditorCommand([collider](auto data) { collider->SetTrigger(data);			}, isTrigger	  , collider->GetTrigger());
 		if (inputScale)			  RegisterEditorCommand([collider](auto data) { collider->SetScale(data);			}, scale		  , collider->GetScale());
 		if (inputResetOffset)	  RegisterEditorCommand([collider](auto data) { collider->SetRestOffset(data);	    }, resetOffset	  , collider->GetRestOffset());
 		if (inputContactOffset)   RegisterEditorCommand([collider](auto data) { collider->SetContactOffset(data);	}, contactOffset  , collider->GetContactOffset());

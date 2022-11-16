@@ -33,7 +33,7 @@ public:
 	void Play() noexcept;
 
 	/** SE などの同じ設定で複数の音源を再生される時などに使用。*/
-	void PlayOneShot(AudioClip* clip, float volume = 1.f) const noexcept;
+	void PlayOneShot(AudioClip* audioClip, float volume = 1.f) const noexcept;
 
 	/** 登録音源が再生されている場合のみ処理を行う。*/
 	void Pause() const noexcept;
@@ -46,9 +46,8 @@ public:
 
 public:
 
-	/** play = true の時登録と同時に音源を再生します。*/
-	void SetAudioClip(IResource* resource, bool playOnAwake = false) noexcept;
-	void SetAudioClip(AudioClip* clip, bool playOnAwake = false) noexcept;
+	/** playOnAwake = true の時登録と同時に音源を再生します。*/
+	void SetAudioClip(AudioClip* audioClip) noexcept;
 	AudioClip* GetAudioClip() const noexcept;
 
 	void SetPlayOnAwake(bool playOnAwake) noexcept;
@@ -85,15 +84,13 @@ public:
 	float GetMaxDistance() const noexcept;
 
 	/* スピーカーの音を個別で調整する関数です。*/
-	void SetOutPutMatrix(float* matrix, int size) noexcept;
 	void SetOutPutMatrix(const Array<float, 8>& matrix) noexcept;
-	void SetOutPutMatrix(float frontleft, float frontright, float center, float lfe, float surroundleft, float surroundright, float backleft, float backright) noexcept;
 	const Array<float, 8>& GetOutPutMatrix() const noexcept;
 
 private:
 
 	/** 再生された AudioClip にスピーカー設定の反映を行う。*/
-	void MakeAudioSettingsTheSame(AudioClip* clip) const noexcept;
+	void MakeAudioSettingsTheSame(AudioClip* audioClip) const noexcept;
 
 	/** 登録された設定から音声 Mode を作成。*/
 	uint32_t GetModeFromSettings() const noexcept;

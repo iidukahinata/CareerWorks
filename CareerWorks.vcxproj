@@ -46,11 +46,11 @@
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -78,11 +78,15 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>.\Program\ThirdParty\assimp\include;.\Program\ThirdParty\directxtex\include;.\Program\ThirdParty\FMOD\include;.\Program\ThirdParty\PhysX\include;.\Program\ThirdParty\lua\include;$(IncludePath)</IncludePath>
-    <LibraryPath>.\Program\ThirdParty\assimp\lib;.\Program\ThirdParty\directxtex\lib\x64\debug;.\Program\ThirdParty\FMOD\lib\x64;.\Program\ThirdParty\PhysX\lib\debug;.\Program\ThirdParty\lua;$(LibraryPath)</LibraryPath>
+    <IncludePath>.\Program\ThirdParty\assimp\include;.\Program\ThirdParty\directxtex\include;.\Program\ThirdParty\FMOD\include;.\Program\ThirdParty\PhysX\include;.\Program\ThirdParty\boost\include;.\Program\ThirdParty\Python3\include;$(IncludePath)</IncludePath>
+    <LibraryPath>.\Program\ThirdParty\assimp\lib;.\Program\ThirdParty\directxtex\lib\x64\debug;.\Program\ThirdParty\FMOD\lib\x64;.\Program\ThirdParty\PhysX\lib\debug;.\Program\ThirdParty\boost\lib\debug;.\Program\ThirdParty\Python3\lib;$(LibraryPath)</LibraryPath>
+    <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>.\Program\ThirdParty\assimp\include;.\Program\ThirdParty\directxtex\include;.\Program\ThirdParty\FMOD\include;.\Program\ThirdParty\PhysX\include;.\Program\ThirdParty\boost\include;.\Program\ThirdParty\Python3\include;$(IncludePath)</IncludePath>
+    <LibraryPath>.\Program\ThirdParty\assimp\lib;.\Program\ThirdParty\directxtex\lib\x64\release;.\Program\ThirdParty\FMOD\lib\x64;.\Program\ThirdParty\PhysX\lib\release;.\Program\ThirdParty\boost\lib\release;.\Program\ThirdParty\Python3\lib;$(LibraryPath)</LibraryPath>
+    <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -140,6 +144,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>.\Program;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Program/Subsystem/Core/Common/pch.h</PrecompiledHeaderFile>
+      <ForcedIncludeFiles>Program/Subsystem/Core/Common/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -156,6 +167,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Program/Subsystem/Core/Common/pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\Program;.\</AdditionalIncludeDirectories>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Program\SubSystem\Core\Common\Tools\String.cpp" />
     <ClCompile Include="Program\SubSystem\Core\Config.cpp" />
@@ -291,6 +303,7 @@
     <ClCompile Include="Program\SubSystem\Scene\Component\Components\PostProcessEffect.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\Components\RenderObject.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\Components\RigidBody.cpp" />
+    <ClCompile Include="Program\SubSystem\Scene\Component\Components\Script.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\IComponent.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\Transform.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Factory\ComponentFactory.cpp" />
@@ -300,6 +313,35 @@
     <ClCompile Include="Program\SubSystem\Scene\TickFunction.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\TickManager.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\World.cpp" />
+    <ClCompile Include="Program\SubSystem\Script\Module\ComponentModule.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Script\Module\CoreModule.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Script\Module\InputModule.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Script\Module\MathModule.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Script\Module\ModuleGenerator.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Script\Module\ResourceModule.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Script\Module\SceneModule.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Script\ScriptEngine.cpp" />
     <ClCompile Include="Program\SubSystem\Thread\LoadingThread\LoadingThread.cpp" />
     <ClCompile Include="Program\SubSystem\Thread\RenderingThread\RenderCommandFance.cpp" />
     <ClCompile Include="Program\SubSystem\Thread\RenderingThread\RenderingThread.cpp" />
@@ -362,7 +404,6 @@
     <ClInclude Include="Program\SubSystem\Core\Command\Command.h" />
     <ClInclude Include="Program\SubSystem\Core\Command\CommandList.h" />
     <ClInclude Include="Program\SubSystem\Core\Common\Common.h" />
-    <ClInclude Include="Program\SubSystem\Core\Common\GlobalValues.h" />
     <ClInclude Include="Program\SubSystem\Core\Common\Macro.h" />
     <ClInclude Include="Program\SubSystem\Core\Common\pch.h" />
     <ClInclude Include="Program\SubSystem\Core\Common\ProjectSetting.h" />
@@ -516,6 +557,7 @@
     <ClInclude Include="Program\SubSystem\Scene\Component\Components\PostProcessEffect.h" />
     <ClInclude Include="Program\SubSystem\Scene\Component\Components\RenderObject.h" />
     <ClInclude Include="Program\SubSystem\Scene\Component\Components\RigidBody.h" />
+    <ClInclude Include="Program\SubSystem\Scene\Component\Components\Script.h" />
     <ClInclude Include="Program\SubSystem\Scene\Component\IComponent.h" />
     <ClInclude Include="Program\SubSystem\Scene\Component\Transform.h" />
     <ClInclude Include="Program\SubSystem\Scene\Factory\ComponentFactory.h" />
@@ -525,6 +567,11 @@
     <ClInclude Include="Program\SubSystem\Scene\TickFunction.h" />
     <ClInclude Include="Program\SubSystem\Scene\TickManager.h" />
     <ClInclude Include="Program\SubSystem\Scene\World.h" />
+    <ClInclude Include="Program\SubSystem\Script\Module\ModuleHelper.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Script\ScriptEngine.h" />
     <ClInclude Include="Program\SubSystem\Thread\LoadingThread\LoadingThread.h" />
     <ClInclude Include="Program\SubSystem\Thread\RenderingThread\RenderCommandFance.h" />
     <ClInclude Include="Program\SubSystem\Thread\RenderingThread\RenderingThread.h" />

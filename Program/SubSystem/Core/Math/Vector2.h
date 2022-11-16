@@ -169,26 +169,16 @@ namespace Math
 
 		float Cross(const Vector2& V) const noexcept
 		{
-			return Cross(*this, V);
-		}
-
-		static float Cross(const Vector2& A, const Vector2& B) noexcept
-		{
 			float result;
-			auto v = DirectX::XMVector2Cross(DirectX::XMLoadFloat2(&A), DirectX::XMLoadFloat2(&B));
+			auto v = DirectX::XMVector2Cross(DirectX::XMLoadFloat2(this), DirectX::XMLoadFloat2(&V));
 			DirectX::XMStoreFloat(&result, std::move(v));
 			return result;
 		}
 
 		float Dot(const Vector2& V) const noexcept
 		{
-			return Dot(*this, V);
-		}
-
-		static float Dot(const Vector2& A, const Vector2& B) noexcept
-		{
 			float result;
-			auto v = DirectX::XMVector2Dot(DirectX::XMLoadFloat2(&A), DirectX::XMLoadFloat2(&B));
+			auto v = DirectX::XMVector2Dot(DirectX::XMLoadFloat2(this), DirectX::XMLoadFloat2(&V));
 			DirectX::XMStoreFloat(&result, std::move(v));
 			return result;
 		}
@@ -212,22 +202,12 @@ namespace Math
 
 		float Distance(const Vector2& V) const noexcept
 		{
-			return Distance(*this - V);
-		}
-
-		static float Distance(const Vector2& A, const Vector2& B) noexcept
-		{
-			return (B - A).GetLenght();
+			return (*this - V).GetLenght();
 		}
 
 		float DistanceSquared(const Vector2& V) const noexcept
 		{
-			return DistanceSquared(*this - V);
-		}
-
-		static float DistanceSquared(const Vector2& A, const Vector2& B) noexcept
-		{
-			return (B - A).GetSquaredLength();
+			return (*this - V).GetSquaredLength();
 		}
 
 		bool operator==(const Vector2& V) const noexcept
@@ -242,12 +222,7 @@ namespace Math
 
 		bool Equals(const Vector2& V, float tolerance = MINUTE_VALUE) const noexcept
 		{
-			return Equals(*this, V, tolerance);
-		}
-
-		static bool Equals(const Vector2& A, const Vector2& B, float tolerance = MINUTE_VALUE) noexcept
-		{
-			auto dis = A - B;
+			auto dis = *this - V;
 			return fabs(dis.x) <= tolerance && fabs(dis.y) <= tolerance;
 		}
 

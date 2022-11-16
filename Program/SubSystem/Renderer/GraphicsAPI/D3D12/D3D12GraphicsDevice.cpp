@@ -185,7 +185,7 @@ bool D3D12GraphicsDevice::InitDevice()
 #ifdef _DEBUG
 	auto hr = CreateDXGIFactory2(DXGI_CREATE_FACTORY_DEBUG, IID_PPV_ARGS(m_factory.ReleaseAndGetAddressOf()));
 #else
-	auto hr = CreateDXGIFactory1(IID_PPV_ARGS(factory.ReleaseAndGetAddressOf()));
+	auto hr = CreateDXGIFactory1(IID_PPV_ARGS(m_factory.ReleaseAndGetAddressOf()));
 #endif // _DEBUG
 	if (FAILED(hr)) {
 		return false;

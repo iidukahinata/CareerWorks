@@ -169,13 +169,8 @@ namespace Math
 
 		float Dot(const Vector4& V) const noexcept
 		{
-			return Dot(*this, V);
-		}
-
-		static float Dot(const Vector4& A, const Vector4& B) noexcept
-		{
 			float result;
-			auto v = DirectX::XMVector4Dot(DirectX::XMLoadFloat4(&A), DirectX::XMLoadFloat4(&B));
+			auto v = DirectX::XMVector4Dot(DirectX::XMLoadFloat4(this), DirectX::XMLoadFloat4(&V));
 			DirectX::XMStoreFloat(&result, std::move(v));
 			return result;
 		}
@@ -199,22 +194,12 @@ namespace Math
 
 		float Distance(const Vector4& V) const noexcept
 		{
-			return Distance(*this, V);
-		}
-
-		static float Distance(const Vector4& A, const Vector4& B) noexcept
-		{
-			return (B - A).GetLenght();
+			return (*this - V).GetLenght();
 		}
 
 		float DistanceSquared(const Vector3& V) const noexcept
 		{
-			return DistanceSquared(Vector3(*this), V);
-		}
-
-		static float DistanceSquared(const Vector3& A, const Vector3& B) noexcept
-		{
-			return (B - A).GetSquaredLength();
+			return (Vector3(*this) - V).GetSquaredLength();
 		}
 
 		bool operator==(const Vector4& V) const noexcept
@@ -229,12 +214,7 @@ namespace Math
 
 		bool Equals(const Vector4& V, float tolerance = MINUTE_VALUE) const noexcept
 		{
-			return Equals(*this, V, tolerance);
-		}
-
-		static bool Equals(const Vector4& A, const Vector4& B, float tolerance = MINUTE_VALUE) noexcept
-		{
-			auto dis = A - B;
+			auto dis = *this - V;
 			return fabs(dis.x) <= tolerance && fabs(dis.y) <= tolerance
 				&& fabs(dis.z) <= tolerance && fabs(dis.w) <= tolerance;
 		}

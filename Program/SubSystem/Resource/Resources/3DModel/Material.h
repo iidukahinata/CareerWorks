@@ -43,6 +43,8 @@ public:
 
 	void Render() noexcept;
 
+public:
+
 	/** パラメーター */
 	void SetBlendMode(BLEND_MODE mode) noexcept;
 	BLEND_MODE GetBlendMode() const noexcept;
@@ -61,7 +63,7 @@ public:
 	void SetSmooth(float smooth) noexcept;
 	float GetSmooth() noexcept;
 	void SetEmission(const Math::Vector3& emissive) noexcept;
-	const Math::Vector3 GetEmission() const noexcept;
+	const Math::Vector3& GetEmission() const noexcept;
 
 private:
 

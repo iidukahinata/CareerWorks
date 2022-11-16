@@ -199,6 +199,9 @@
     <Filter Include="Subsytem\Script">
       <UniqueIdentifier>{b66be15f-22c9-43a2-84e7-2167cb7b945b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Subsytem\Script\Module">
+      <UniqueIdentifier>{af7c6f59-7a2b-42f8-8802-079cb1d2bfee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Program\WinMain.cpp" />
@@ -712,6 +715,33 @@
     <ClCompile Include="Program\SubSystem\Renderer\PostEffect\PostEffect.cpp">
       <Filter>Subsytem\Renderer\PostEffect</Filter>
     </ClCompile>
+    <ClCompile Include="Program\SubSystem\Script\ScriptEngine.cpp">
+      <Filter>Subsytem\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Script\Module\MathModule.cpp">
+      <Filter>Subsytem\Script\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Script\Module\ResourceModule.cpp">
+      <Filter>Subsytem\Script\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Script\Module\ComponentModule.cpp">
+      <Filter>Subsytem\Script\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Script\Module\SceneModule.cpp">
+      <Filter>Subsytem\Script\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Script\Module\ModuleGenerator.cpp">
+      <Filter>Subsytem\Script\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Scene\Component\Components\Script.cpp">
+      <Filter>Subsytem\Scene\Component\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Script\Module\CoreModule.cpp">
+      <Filter>Subsytem\Script\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\SubSystem\Script\Module\InputModule.cpp">
+      <Filter>Subsytem\Script\Module</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Program\ThirdParty\FMOD\include\fmod_dsp.h">
@@ -1158,9 +1188,6 @@
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\ComponentDetails.h">
       <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject</Filter>
     </ClInclude>
-    <ClInclude Include="Program\SubSystem\Core\Common\GlobalValues.h">
-      <Filter>Subsytem\Core\Common</Filter>
-    </ClInclude>
     <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D11\D3D11IndexBuffer.h">
       <Filter>Subsytem\Renderer\GraphicsAPI\D3D11</Filter>
     </ClInclude>
@@ -1316,6 +1343,15 @@
     </ClInclude>
     <ClInclude Include="Program\SubSystem\Physics\PhysicsEvents.h">
       <Filter>Subsytem\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Script\ScriptEngine.h">
+      <Filter>Subsytem\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Script\Module\ModuleHelper.h">
+      <Filter>Subsytem\Script\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Scene\Component\Components\Script.h">
+      <Filter>Subsytem\Scene\Component\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

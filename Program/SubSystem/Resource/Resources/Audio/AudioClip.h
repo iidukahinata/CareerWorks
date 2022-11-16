@@ -26,6 +26,8 @@ public:
 
 	bool Load(StringView path) override;
 
+public:
+
 	void Play(FMOD::ChannelGroup* channelgroup = nullptr) noexcept;
 	void Pause() const noexcept;
 	void UnPause() const noexcept;

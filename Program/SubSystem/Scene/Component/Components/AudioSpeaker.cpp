@@ -65,7 +65,7 @@ void AudioSpeaker::Deserialized(FileStream* file)
 		auto resourceData = resourceManager->GetResourceData(audioPath);
 		auto resource = resourceManager->GetResource(resourceData);
 
-		SetAudioClip(resource);
+		SetAudioClip(dynamic_cast<AudioClip*>(resource));
 	}
 }
 
@@ -122,22 +122,22 @@ void AudioSpeaker::Play() noexcept
 	m_isPlaying = true;
 }
 
-void AudioSpeaker::PlayOneShot(AudioClip* clip, float volume /* = 1.f */) const noexcept
+void AudioSpeaker::PlayOneShot(AudioClip* audioClip, float volume /* = 1.f */) const noexcept
 {
-	ASSERT(clip);
+	ASSERT(audioClip);
 
-	clip->Play();
+	audioClip->Play();
 
 	// thisの設定をaudioDateに渡す
-	MakeAudioSettingsTheSame(clip);
+	MakeAudioSettingsTheSame(audioClip);
 
-	clip->SetVolume(volume);
+	audioClip->SetVolume(volume);
 
 	// 3D 時、初期値として再生位置をセット。
 	if (m_is2DMode == false)
 	{
 		auto worldPos = GetTransform().GetWoldPosition();
-		clip->SetAttributes(worldPos, m_velocity);
+		audioClip->SetAttributes(worldPos, m_velocity);
 	}
 }
 
@@ -166,19 +166,16 @@ void AudioSpeaker::Stop() noexcept
 	}
 }
 
-void AudioSpeaker::SetAudioClip(IResource* resource, bool playOnAwake) noexcept
+void AudioSpeaker::SetAudioClip(AudioClip* audioClip) noexcept
 {
-	if (auto clip = dynamic_cast<AudioClip*>(resource))
+	if (!audioClip)
 	{
-		SetAudioClip(clip, playOnAwake);
+		return;
 	}
-}
 
-void AudioSpeaker::SetAudioClip(AudioClip* pAudioClip, bool playOnAwake /* = false */) noexcept
-{
-	m_audioClip = pAudioClip;
+	m_audioClip = audioClip;
 
-	if (playOnAwake)
+	if (m_playOnAwake)
 	{
 		Play();
 	}
@@ -279,32 +276,9 @@ float AudioSpeaker::GetMaxDistance() const noexcept
 	return m_maxDistance;
 }
 
-void AudioSpeaker::SetOutPutMatrix(float* matrix, int size) noexcept
-{
-	ASSERT(size < m_levelMatrix.size());
-
-	size = min(size, 8);
-	for (int i = 0; i < size; ++i)
-	{
-		m_levelMatrix[i] = std::clamp(matrix[i], 0.f, 1.f);
-	}
-}
-
 void AudioSpeaker::SetOutPutMatrix(const Array<float, 8>& matrix) noexcept
 {
 	m_levelMatrix = matrix;
-}
-
-void AudioSpeaker::SetOutPutMatrix(float frontleft, float frontright, float center, float lfe, float surroundleft, float surroundright, float backleft, float backright) noexcept
-{
-	m_levelMatrix[0] = std::clamp(frontleft	   , 0.f, 1.f);
-	m_levelMatrix[1] = std::clamp(frontright   , 0.f, 1.f);
-	m_levelMatrix[2] = std::clamp(center	   , 0.f, 1.f);
-	m_levelMatrix[3] = std::clamp(lfe		   , 0.f, 1.f);
-	m_levelMatrix[4] = std::clamp(surroundleft , 0.f, 1.f);
-	m_levelMatrix[5] = std::clamp(surroundright, 0.f, 1.f);
-	m_levelMatrix[6] = std::clamp(backleft	   , 0.f, 1.f);
-	m_levelMatrix[7] = std::clamp(backright	   , 0.f, 1.f);
 }
 
 const Array<float, 8>& AudioSpeaker::GetOutPutMatrix() const noexcept
@@ -312,21 +286,21 @@ const Array<float, 8>& AudioSpeaker::GetOutPutMatrix() const noexcept
 	return m_levelMatrix;
 }
 
-void AudioSpeaker::MakeAudioSettingsTheSame(AudioClip* clip) const noexcept
+void AudioSpeaker::MakeAudioSettingsTheSame(AudioClip* audioClip) const noexcept
 {
-	clip->SetMixOutput(
+	audioClip->SetMixOutput(
 		m_levelMatrix[0], m_levelMatrix[1], m_levelMatrix[2], m_levelMatrix[3],
 		m_levelMatrix[4], m_levelMatrix[5], m_levelMatrix[6], m_levelMatrix[7]
 	);
 	
-	clip->SetMute(m_mute);
-	clip->SetPriority(m_priority);
-	clip->SetVolume(m_volume);
-	clip->SetPitch(m_pitch);
-	clip->SetPan(m_pan);
-	clip->SetMinMaxDistance(1.f, m_maxDistance);
+	audioClip->SetMute(m_mute);
+	audioClip->SetPriority(m_priority);
+	audioClip->SetVolume(m_volume);
+	audioClip->SetPitch(m_pitch);
+	audioClip->SetPan(m_pan);
+	audioClip->SetMinMaxDistance(1.f, m_maxDistance);
 	
-	clip->SetMode(GetModeFromSettings());
+	audioClip->SetMode(GetModeFromSettings());
 }
 
 uint32_t AudioSpeaker::GetModeFromSettings() const noexcept

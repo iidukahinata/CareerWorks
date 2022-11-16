@@ -74,7 +74,7 @@ ProprietaryMeshData ProprietaryMeshData::ConvertProprietaryData(aiMesh* mesh) no
 		{
 			const auto V1 = cp[1][i] - cp[0][i];
 			const auto V2 = cp[2][i] - cp[1][i];
-			const auto ABC = Math::Vector3::Cross(std::move(V1), std::move(V2));
+			const auto ABC = V1.Cross(V2);
 
 			if (ABC.x == 0.f)
 			{
@@ -147,7 +147,7 @@ ProprietaryMeshData ProprietaryMeshData::ConvertProprietaryData(PMDMesh* mesh) n
 		{
 			const auto V1 = cp[1][i] - cp[0][i];
 			const auto V2 = cp[2][i] - cp[1][i];
-			const auto ABC = Math::Vector3::Cross(std::move(V1), std::move(V2));
+			const auto ABC = V1.Cross(V2);
 
 			if (ABC.x == 0.f)
 			{

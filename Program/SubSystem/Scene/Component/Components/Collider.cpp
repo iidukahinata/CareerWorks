@@ -143,7 +143,7 @@ void Collider::SetTrigger(bool trigger) noexcept
 	}
 }
 
-bool Collider::IsTrigger() const noexcept
+bool Collider::GetTrigger() const noexcept
 {
 	return m_isTrigger;
 }

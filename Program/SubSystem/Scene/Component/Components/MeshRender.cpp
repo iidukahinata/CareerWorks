@@ -42,16 +42,8 @@ void MeshRender::Deserialized(FileStream* file)
 		if (auto resourceData = resourceManager->GetResourceData(meshPath))
 		{
 			auto resource = resourceManager->GetResource(resourceData);
-			SetMesh(resource);
+			SetMesh(dynamic_cast<Mesh*>(resource));
 		}
-	}
-}
-
-void MeshRender::SetMesh(IResource* resource) noexcept
-{
-	if (auto mesh = dynamic_cast<Mesh*>(resource))
-	{
-		SetMesh(mesh);
 	}
 }
 

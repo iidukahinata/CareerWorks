@@ -17,7 +17,7 @@ namespace Button
 		Mbutton,
 
 		// Keyboard
-		Back, Tab, Return, Pause, Escape, Space,
+		Back, Tab, Return, Pause, Esc, Space,
 		Left, Up, Right, Down,
 		Select, Delete, Help,
 

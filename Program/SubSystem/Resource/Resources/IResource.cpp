@@ -21,12 +21,23 @@ IResource* IResource::CreateResource(uint32_t type, StringView path) noexcept
     return resourceManager->CreateResource(type, path);
 }
 
+bool IResource::Load(StringView path)
+{
+    ASSERT(0);
+    return false;
+}
+
+void IResource::Update()
+{
+    ASSERT(0);
+};
+
 uint32_t IResource::GetType() const noexcept
 {
     return m_type;
 }
 
-String IResource::GetAssetName() const noexcept
+const String& IResource::GetAssetName() const noexcept
 {
     return GetResourceData()->m_assetName;
 }

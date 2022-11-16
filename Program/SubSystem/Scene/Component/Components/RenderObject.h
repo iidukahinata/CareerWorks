@@ -82,7 +82,6 @@ public:
 
 public:
 
-	void SetModel(IResource* resource) noexcept;
 	void SetModel(Model* model) noexcept;
 	Model* GetModel() const noexcept;
 
@@ -105,7 +104,6 @@ public:
 
 public:
 
-	void SetMesh(IResource* resource) noexcept;
 	void SetMesh(Mesh* mesh) noexcept;
 	Mesh* GetMesh() const noexcept;
 
