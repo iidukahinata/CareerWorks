@@ -19,6 +19,7 @@
 #include "SubSystem/Scene/Component/Components/AudioListener.h"
 #include "SubSystem/Scene/Component/Components/Collider.h"
 #include "SubSystem/Scene/Component/Components/RigidBody.h"
+#include "SubSystem/Scene/Component/Components/Script.h"
 
 GameObjectDetails::GameObjectDetails(DetailsWidget* detailsWidget, GameObject* gameObject) :
 	DetailsObject(detailsWidget), m_gameObject(gameObject)
@@ -33,6 +34,7 @@ GameObjectDetails::GameObjectDetails(DetailsWidget* detailsWidget, GameObject* g
 	RegisterComponent<AudioListener>();
 	RegisterComponent<Collider>();
 	RegisterComponent<RigidBody>();
+	RegisterComponent<Script>();
 }
 
 void GameObjectDetails::Draw()

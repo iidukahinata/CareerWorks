@@ -24,6 +24,7 @@
 #include "../DetailsObject/DetailsObjects/AudioListenerDetails.h"
 #include "../DetailsObject/DetailsObjects/ColliderDetails.h"
 #include "../DetailsObject/DetailsObjects/RigidBodyDetails.h"
+#include "../DetailsObject/DetailsObjects/ScriptDetails.h"
 
 #define CREATE_DETAILS_OBJECT(CLASS, ...) detailsObjects.emplace_back(std::make_unique<CLASS>(detailsWidget, __VA_ARGS__));
 
@@ -48,6 +49,7 @@ Vector<UniquePtr<DetailsObject>> DetailsObjectFactory::Create(DetailsWidget* det
 		case GET_HASH(AudioListener)	: CREATE_DETAILS_OBJECT(AudioListenerDetails	, component.second.get()); break;
 		case GET_HASH(Collider)			: CREATE_DETAILS_OBJECT(ColliderDetails			, component.second.get()); break;
 		case GET_HASH(RigidBody)		: CREATE_DETAILS_OBJECT(RigidBodyDetails		, component.second.get()); break;
+		case GET_HASH(Script)			: CREATE_DETAILS_OBJECT(ScriptDetails			, component.second.get()); break;
 		default: break;
 		}
 	}

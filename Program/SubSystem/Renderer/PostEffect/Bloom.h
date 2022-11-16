@@ -70,7 +70,6 @@ private:
 	D3D12RenderTexture m_luminousRenderTexture;
 
 	// * rendering objects
-	D3D12Sampler m_sampler;
 	D3D12RootSignature m_rootSignature;
 
 	// * sprite mesh buffer

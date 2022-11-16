@@ -20,7 +20,6 @@ PostProcessEffectDetails::PostProcessEffectDetails(DetailsWidget* detailsWidget,
 	ASSERT(m_postProcessEffect);
 
 	// Add PostEffect éûÇÃåüçıÇ…égóp
-	//RegisterPostEffect<Blur>();
 	RegisterPostEffect<Bloom>();
 	//RegisterPostEffect<Monotone>();
 	//RegisterPostEffect<DepthOfField>();
@@ -111,7 +110,7 @@ void PostProcessEffectDetails::ShowBloom(PostEffect* postEffect) noexcept
 	auto intensity = bloom->GetIntensity();
 
 	ImGui::Text("Intensity"); ImGui::SameLine(offsetPos);
-	auto inputIntensity = ImGui::DragFloat("##Intensity", &intensity, 0.01f);
+	auto inputIntensity = ImGui::DragFloat("##BloomIntensity", &intensity, 0.01f);
 
 	ImGui::Text("Threshold"); ImGui::SameLine(offsetPos);
 	auto inputThreshold = ImGui::DragFloat("##Threshold", &threshold, 0.01f);

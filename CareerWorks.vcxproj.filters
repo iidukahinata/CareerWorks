@@ -742,6 +742,9 @@
     <ClCompile Include="Program\SubSystem\Script\Module\InputModule.cpp">
       <Filter>Subsytem\Script\Module</Filter>
     </ClCompile>
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ScriptDetails.cpp">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Program\ThirdParty\FMOD\include\fmod_dsp.h">
@@ -1352,6 +1355,9 @@
     </ClInclude>
     <ClInclude Include="Program\SubSystem\Scene\Component\Components\Script.h">
       <Filter>Subsytem\Scene\Component\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ScriptDetails.h">
+      <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

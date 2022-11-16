@@ -44,9 +44,22 @@ void Blur::Initialize(PostProcessEffect* postProcessEffect, bool useluma) noexce
 	auto width = Window::Get().GetWindowWidth();
 	auto height = Window::Get().GetWindowHeight();
 
-	CreateRenderTextures(width, height);
-	CreateRenderingObjects(width, height);
-	CreatePipelineStates(useluma);
+	if (IsInRenderingThread())
+	{
+		CreateRenderTextures(width, height);
+		CreateRenderingObjects(width, height);
+		CreatePipelineStates(useluma);
+	}
+	else
+	{
+		RegisterRenderCommand([this, width, height, useluma] {
+
+			CreateRenderTextures(width, height);
+			CreateRenderingObjects(width, height);
+			CreatePipelineStates(useluma);
+
+		});
+	}
 }
 
 void Blur::Render()

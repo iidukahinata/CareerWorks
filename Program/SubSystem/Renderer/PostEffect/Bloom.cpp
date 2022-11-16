@@ -40,17 +40,30 @@ void Bloom::Deserialized(FileStream* file)
 
 void Bloom::Initialize()
 {
-	auto width  = Window::Get().GetWindowWidth();
-	auto height = Window::Get().GetWindowHeight();
-
 	m_blurs[0].Initialize(m_postProcessEffect);
 	m_blurs[1].Initialize(m_postProcessEffect);
 	m_blurs[2].Initialize(m_postProcessEffect);
 	m_blurs[3].Initialize(m_postProcessEffect);
 
-	CreateRenderTextures(width, height);
-	CreateRenderingObjects(width, height);
-	CreatePipelineStates();
+	const auto width = Window::Get().GetWindowWidth();
+	const auto height = Window::Get().GetWindowHeight();
+
+	if (IsInRenderingThread())
+	{
+		CreateRenderTextures(width, height);
+		CreateRenderingObjects(width, height);
+		CreatePipelineStates();
+	}
+	else
+	{
+		RegisterRenderCommand([this, width, height] {
+
+			CreateRenderTextures(width, height);
+			CreateRenderingObjects(width, height);
+			CreatePipelineStates();
+
+		});
+	}
 }
 
 void Bloom::Render()
@@ -140,7 +153,7 @@ void Bloom::LuminousPass() noexcept
 
 	// Pipeline Set
 	m_luminousPipeline.Set();
-	m_sampler.PSSet();
+	//m_sampler.PSSet();
 
 	// CRV Set
 	m_lumaConstantBuffer.PSSet(1);
@@ -172,7 +185,6 @@ void Bloom::BloomPass() noexcept
 	m_renderTexture.Clear(Math::Vector4(0.0f, 0.0f, 0.0f, 1.0f));
 
 	m_bloomPipeline.Set();
-	m_sampler.PSSet();
 
 	m_matrixConstantBuffer.VSSet(0);
 	m_bloomConstantBuffer.PSSet(1);
@@ -228,9 +240,6 @@ bool Bloom::CreateRenderingObjects(int width, int height) noexcept
 			GetRenderer()->GetTransformCBuffer()->Bind(m_matrixConstantBuffer.GetCPUData(), Math::Matrix::Identity.ToMatrixXM());
 		}
 	}
-
-	// Create Sampler
-	m_sampler.Create();
 
 	// Create Mesh Buffer
 	{
