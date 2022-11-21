@@ -18,6 +18,7 @@
 #include "SubSystem/Resource/ResourceManager.h"
 #include "SubSystem/Renderer/Forward/ForwardRenderer.h"
 #include "SubSystem/Renderer/Deferred/DeferredRenderer.h"
+#include "SubSystem/Script/ScriptEngine.h"
 
 RendererType Config::m_rendererSystem = RendererType::Forward;
 InputType	 Config::m_inputSystem	  = InputType::Direct;
@@ -44,6 +45,7 @@ void Config::GenerateUseFile() noexcept
 	GenerateFile(ORIGINAL_TEXTURE_DIRECTORY);
 	GenerateFile(ORIGINAL_SHADER_DIRECTORY);
 	GenerateFile(ORIGINAL_AUDIO_DIRECTORY);
+	GenerateFile(ORIGINAL_SCRIPT_DIRECTORY);
 	GenerateFile(RESOURCE_DIRECTORY);
 	GenerateFile(MODEL_DIRECTORY);
 	GenerateFile(MESH_DIRECTORY);
@@ -52,6 +54,7 @@ void Config::GenerateUseFile() noexcept
 	GenerateFile(SHADER_DIRECTORY);
 	GenerateFile(AUDIO_DIRECTORY);
 	GenerateFile(SCENE_DIRECTORY);
+	GenerateFile(SCRIPT_DIRECTORY);
 	GenerateFile(PROJECT_SETTINGS_DIRECTORY);
 }
 
@@ -141,6 +144,7 @@ void Config::SetUpSubsystem() noexcept
 	RegisterAudioSystem(m_audioSystem, false);
 	RegisterRendererSystem(m_rendererSystem, false);
 	RegisterPhysicsSystem(m_physicsSystem, false);
+	g_context->RegisterSubsystem<ScriptEngine>(std::make_unique<ScriptEngine>());
 	g_context->RegisterSubsystem<World>(std::make_unique<World>());
 }
 

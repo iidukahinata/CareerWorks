@@ -23,6 +23,7 @@ enum IconType
 	Icon_Texture,
 	Icon_Shader,
 	Icon_Audio,
+	Icon_Script,
 	Icon_None,
 };
 

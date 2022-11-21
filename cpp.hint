@@ -9,3 +9,4 @@
 #define WAIT_FOR_DEVELOPMENT
 #define IN_DEVELOPMENT()
 #define CASE_EXT_RETURN(EXT) case GetHashFromCRC(EXT): return true;
+#define BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(generator_name, fname, min_args, max_args) BOOST_PYTHON_GEN_MEM_FUNCTION_STUB( fname, generator_name, max_args, BOOST_PP_SUB_D(1, max_args, min_args))

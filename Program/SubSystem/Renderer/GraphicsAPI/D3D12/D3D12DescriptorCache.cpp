@@ -75,12 +75,13 @@ void D3D12DescriptorCache::SetConstantBufferView(ShaderType type, ConstantBuffer
 	auto views = cache.views[type];
 	auto indexMask = cache.indexMasks[type];
 
-	Array<D3D12_CPU_DESCRIPTOR_HANDLE, MAX_CONSTANT_BUFFER_VIEW> constantBufferViews;
-
-	UINT size = GetMsb(indexMask);
-	if (size == 0) {
+	if (indexMask == 0) {
 		return;
 	}
+
+	UINT size = GetMsb(indexMask);
+
+	Array<D3D12_CPU_DESCRIPTOR_HANDLE, MAX_CONSTANT_BUFFER_VIEW> constantBufferViews;
 
 	for (int i = 0; i < size; ++i)
 	{
@@ -116,12 +117,13 @@ void D3D12DescriptorCache::SetShaderResourceView(ShaderType type, ShaderResource
 	auto views = cache.views[type];
 	auto indexMask = cache.indexMasks[type];
 
-	Array<D3D12_CPU_DESCRIPTOR_HANDLE, MAX_SHADER_RESOURCE_VIEW> shaderResourceViews;
-
-	UINT size = GetMsb(indexMask);
-	if (size == 0) {
+	if (indexMask == 0) {
 		return;
 	}
+
+	UINT size = GetMsb(indexMask);
+
+	Array<D3D12_CPU_DESCRIPTOR_HANDLE, MAX_SHADER_RESOURCE_VIEW> shaderResourceViews;
 
 	for (int i = 0; i < size; ++i)
 	{
@@ -157,12 +159,13 @@ void D3D12DescriptorCache::SetUnorderedAccessView(ShaderType type, UnorderedAcce
 	auto views = cache.views[type];
 	auto indexMask = cache.indexMasks[type];
 
-	Array<D3D12_CPU_DESCRIPTOR_HANDLE, MAX_CONSTANT_BUFFER_VIEW> unorderedAccessViews;
-
-	UINT size = GetMsb(indexMask);
-	if (size == 0) {
+	if (indexMask == 0) {
 		return;
 	}
+
+	UINT size = GetMsb(indexMask);
+
+	Array<D3D12_CPU_DESCRIPTOR_HANDLE, MAX_CONSTANT_BUFFER_VIEW> unorderedAccessViews;
 
 	for (int i = 0; i < size; ++i)
 	{
@@ -198,10 +201,11 @@ void D3D12DescriptorCache::SetSampler(ShaderType type, SamplerCache& cache, D3D1
 	auto views = cache.views[type];
 	auto indexMask = cache.indexMasks[type];
 
-	UINT size = GetMsb(indexMask);
-	if (size == 0) {
+	if (indexMask == 0) {
 		return;
 	}
+
+	UINT size = GetMsb(indexMask);
 
 	// Žg‚¢‰ñ‚µ‚Ì‚½‚ß‚É sampler ‚Ì\¬‚ðŽæ“¾
 	SamplerArrayDesc desc = {};

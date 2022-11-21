@@ -15,6 +15,7 @@
 #include "SubSystem/Resource/Resources/3DModel/Material.h"
 #include "SubSystem/Resource/Resources/3DModel/Texture.h"
 #include "SubSystem/Resource/Resources/Audio/AudioClip.h"
+#include "SubSystem/Resource/Resources/Script/ScriptInstance.h"
 #include "SubSystem/Renderer/GraphicsAPI/D3D12/D3D12GraphicsDevice.h"
 #include "SubSystem/Renderer/GraphicsAPI/D3D12/D3D12DescriptorHeap.h"
 
@@ -108,14 +109,15 @@ IconType EditorHelper::GetIconTypeFromResourceType(uint32_t type) const noexcept
 {
 	switch (type)
 	{
-	case GET_HASH(Scene)	: return Icon_Scene;
-	case GET_HASH(Model)	: return Icon_Model;
-	case GET_HASH(Mesh)		: return Icon_Mesh;
-	case GET_HASH(Material)	: return Icon_Material;
-	case GET_HASH(Texture)	: return Icon_Texture;
-	case GET_HASH(Shader)	: return Icon_Shader;
-	case GET_HASH(AudioClip): return Icon_Audio;
-	default					: return Icon_None;
+	case GET_HASH(Scene)		 : return Icon_Scene;
+	case GET_HASH(Model)		 : return Icon_Model;
+	case GET_HASH(Mesh)			 : return Icon_Mesh;
+	case GET_HASH(Material)		 : return Icon_Material;
+	case GET_HASH(Texture)		 : return Icon_Texture;
+	case GET_HASH(Shader)		 : return Icon_Shader;
+	case GET_HASH(AudioClip)	 : return Icon_Audio;
+	case GET_HASH(ScriptInstance): return Icon_Script;
+	default						 : return Icon_None;
 	}
 }
 
@@ -130,6 +132,7 @@ uint32_t EditorHelper::GetResourceTypeByIconType(IconType type) const noexcept
 	case Icon_Texture  : return Texture::TypeData.Hash;
 	case Icon_Shader   : return Shader::TypeData.Hash;
 	case Icon_Audio    : return AudioClip::TypeData.Hash;
+	case Icon_Script   : return ScriptInstance::TypeData.Hash;
 	default			   : return uint32_t(100);
 	}
 }
@@ -172,4 +175,5 @@ void EditorHelper::RegisterIconTexture() noexcept
 	m_iconTextures.emplace_back(iconTextureLoad("texture_icon"));
 	m_iconTextures.emplace_back(iconTextureLoad("shader_icon"));
 	m_iconTextures.emplace_back(iconTextureLoad("audio_icon"));
+	m_iconTextures.emplace_back(iconTextureLoad("script_icon"));
 }

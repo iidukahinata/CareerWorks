@@ -6,8 +6,13 @@
 */
 #pragma once
 
-class ScriptEngine
+
+#include "SubSystem/Core/ISubsystem.h"
+
+class ScriptEngine : public ISubsystem
 {
+	COMPLETED_DEVELOPMENT()
+	SUB_CLASS(ScriptEngine)
 public:
 
 	bool Initialize();

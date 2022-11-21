@@ -31,7 +31,7 @@ void EngineLog::Clear() noexcept
 
 void ConsoleWidget::PostInitialize()
 {
-	DebugLog::Get().SetLogInfo(&m_logInfo);
+	DebugLog::SetLogInfo(&m_logInfo);
 
 	m_logColor[LogType_Info] = ImVec4(0.9f, 0.9f, 0.9f, 1.0f);
 	m_logColor[LogType_Error] = ImVec4(1.0f, 0.0f, 0.0f, 1.0f);

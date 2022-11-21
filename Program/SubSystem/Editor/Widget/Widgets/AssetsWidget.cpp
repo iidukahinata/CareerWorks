@@ -17,6 +17,7 @@
 #include "SubSystem/Resource/Resources/3DModel/Shader.h"
 #include "SubSystem/Resource/Resources/3DModel/Material.h"
 #include "SubSystem/Resource/Resources/Audio/AudioClip.h"
+#include "SubSystem/Resource/Resources/Script/ScriptInstance.h"
 
 void AssetsWidget::PostInitialize()
 {
@@ -67,6 +68,7 @@ ImGui::NextColumn();
 		CREATE_RADIO_BUTTON_FROM_TYPE(Shader);
 		CREATE_RADIO_BUTTON_FROM_TYPE(Texture);
 		CREATE_RADIO_BUTTON_FROM_TYPE(AudioClip);
+		CREATE_RADIO_BUTTON_FROM_TYPE(ScriptInstance);
 
 		ImGui::TreePop();
 		ImGui::Columns(1);
@@ -105,7 +107,7 @@ ImGui::NextColumn();
 		ImGui::Text(m_directoryTree[i].c_str()); ImGui::SameLine();
 	}
 
-	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && ImGui::IsKeyReleased(ImGuiKey_Backspace))
+	if (!m_isOpenPopupWindow && ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && ImGui::IsKeyReleased(ImGuiKey_Backspace))
 	{
 		CurrentDirectoryToParent();
 	}
@@ -244,6 +246,12 @@ void AssetsWidget::ShowResourceHelper() noexcept
 		{
 			OpenCreateResource = true;
 			m_resourceCreateFunc = [](StringView name) { return Material::Create(name); };
+			ImGui::CloseCurrentPopup();
+		}
+		if (ImGui::Button("Create Script", buttonSize))
+		{
+			OpenCreateResource = true;
+			m_resourceCreateFunc = [](StringView name) { return ScriptInstance::Create(name); };
 			ImGui::CloseCurrentPopup();
 		}
 		if (isSlectObject && ImGui::Button("Delete Object", buttonSize))
@@ -498,7 +506,7 @@ void AssetsWidget::DoubleClickResource(IconType type, StringView name) noexcept
 
 			m_world->ChangeScene(name);
 		}
-		else if (resourceType == Shader::TypeData.Hash)
+		else if (resourceType == Shader::TypeData.Hash || resourceType == ScriptInstance::TypeData.Hash)
 		{
 			auto resourceData = m_resourceManager->GetResourceData(resourceType, name);
 			auto resourcePath = resourceData->m_resourcePath.m_path;

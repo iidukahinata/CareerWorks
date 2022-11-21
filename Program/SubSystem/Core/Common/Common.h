@@ -23,8 +23,8 @@
 #define ALIGN(N) __declspec(align(N))
 
 #ifdef _DEBUG
-#define LOG(text)		DebugLog::Get().Log(text)
-#define LOG_ERROR(text)	DebugLog::Get().Error(text, __FILE__, __LINE__)
+#define LOG(text)		DebugLog::Log(text)
+#define LOG_ERROR(text)	DebugLog::Error(text, __FILE__, __LINE__)
 
 #define ASSERT(expr) \
 	if (expr) {}		 \

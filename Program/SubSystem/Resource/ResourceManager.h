@@ -15,6 +15,7 @@
 #include "ResourceImporter/TextureImporter/TextureImporter.h"
 #include "ResourceImporter/AudioImporter/AudioImporter.h"
 #include "ResourceImporter/ShaderImporter/ShaderImporter.h"
+#include "ResourceImporter/ScriptImporter/ScriptImporter.h"
 
 enum PrioritySetting
 {
@@ -134,6 +135,7 @@ private:
 	bool IsAudioFilePath(StringView path) const noexcept;
 	bool IsShaderFilePath(StringView path) const noexcept;
 	bool IsProprietaryFilePath(StringView path) const noexcept;
+	bool IsScriptFilePath(StringView path) const noexcept;
 
 	String GetAssetPath(StringView assetName) const noexcept;
 	String ToAssetDirectory(StringView resourcePath) const noexcept;
@@ -145,6 +147,7 @@ private:
 	UniquePtr<TextureImporter> m_textureImporter;
 	UniquePtr<AudioImporter> m_audioImporter;
 	UniquePtr<ShaderImporter> m_shaderImporter;
+	UniquePtr<ScriptImporter> m_scriptImporter;
 
 	// * Type -> < ClassTypeID : < アセット名 : Resource情報 >>
 	Map<uint32_t, Unordered_Map<String, ResourceData>> m_resourceTypeList;

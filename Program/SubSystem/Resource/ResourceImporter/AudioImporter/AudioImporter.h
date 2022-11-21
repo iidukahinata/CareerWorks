@@ -20,7 +20,7 @@ public:
 	/**
 	* 指定音楽ファイルの asset ファイルの作成及び移動させる。
 	*/
-	bool CreateShaderData(StringView filePath) noexcept;
+	bool CreateAudioData(StringView filePath) noexcept;
 
 private:
 

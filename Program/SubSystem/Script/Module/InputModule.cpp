@@ -15,7 +15,7 @@ void ShowMouse(bool isShow)
 	ShowCursor(isShow);
 }
 
-const Math::Vector2& GetMousePosition()
+Math::Vector2 GetMousePosition()
 {
 	POINT mousePos = {};
 	GetCursorPos(&mousePos);
@@ -39,8 +39,8 @@ void SetUpInputModule()
 		PY_VALUE(F1) PY_VALUE(F2) PY_VALUE(F3) PY_VALUE(F4) PY_VALUE(F5) PY_VALUE(F6)
 		PY_VALUE(F7) PY_VALUE(F8) PY_VALUE(F9) PY_VALUE(F10) PY_VALUE(F11) PY_VALUE(F12)
 		PY_VALUE(Lshift) PY_VALUE(Rshift) PY_VALUE(Lcontrol) PY_VALUE(Rcontrol) PY_VALUE(Lmenu)
-		PY_VALUE(Home) PY_VALUE(End);
+		PY_VALUE(Home) PY_VALUE(End).export_values();
 
 	PY_DEF(ShowMouse);
-	PY_DEF_POLICIE(GetMousePosition, PY_COPY_CONST_REF);
+	PY_DEF_POLICIE(GetMousePosition, PY_BY_VALUE);
 }

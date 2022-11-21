@@ -14,7 +14,7 @@
 Material* Material::Create(StringView name, const ProprietaryMaterialData& data /* = ProprietaryMaterialData() */) noexcept
 {
 	// データ保存先パスを生成
-	auto path = ProprietaryMaterialData::ConvertProprietaryPath(name);
+	auto&& path = ProprietaryMaterialData::ConvertProprietaryPath(name);
 
 	// 各データの作成
 	if (const auto material = CreateResource<Material>(path))
@@ -361,7 +361,7 @@ bool Material::CreatePipeline() noexcept
 		ASSERT(m_pipeline.Create(desc, &m_rootSignature));
 	});
 #else
-	if (IsRenderingThread())
+	if (IsInRenderingThread())
 	{
 		ASSERT(m_pipeline.Create(desc, &m_rootSignature));
 	}

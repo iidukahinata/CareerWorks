@@ -46,7 +46,7 @@
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -282,6 +282,7 @@
     <ClCompile Include="Program\SubSystem\Resource\ResourceHandle.cpp" />
     <ClCompile Include="Program\SubSystem\Resource\ResourceImporter\AudioImporter\AudioImporter.cpp" />
     <ClCompile Include="Program\SubSystem\Resource\ResourceImporter\ModelImporter\ModelImporter.cpp" />
+    <ClCompile Include="Program\SubSystem\Resource\ResourceImporter\ScriptImporter\ScriptImporter.cpp" />
     <ClCompile Include="Program\SubSystem\Resource\ResourceImporter\ShaderImporter\ShaderImporter.cpp" />
     <ClCompile Include="Program\SubSystem\Resource\ResourceImporter\TextureImporter\TextureImporter.cpp" />
     <ClCompile Include="Program\SubSystem\Resource\ResourceManager.cpp" />
@@ -293,6 +294,7 @@
     <ClCompile Include="Program\SubSystem\Resource\Resources\Audio\AudioClip.cpp" />
     <ClCompile Include="Program\SubSystem\Resource\Resources\IResource.cpp" />
     <ClCompile Include="Program\SubSystem\Resource\Resources\Scene\Scene.cpp" />
+    <ClCompile Include="Program\SubSystem\Resource\Resources\Script\ScriptInstance.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\AutoDestroySystem.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\Components\AudioListener.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\Components\AudioSpeaker.cpp" />
@@ -316,31 +318,31 @@
     <ClCompile Include="Program\SubSystem\Scene\World.cpp" />
     <ClCompile Include="Program\SubSystem\Script\Module\ComponentModule.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Program\SubSystem\Script\Module\CoreModule.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Program\SubSystem\Script\Module\InputModule.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Program\SubSystem\Script\Module\MathModule.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Program\SubSystem\Script\Module\ModuleGenerator.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Program\SubSystem\Script\Module\ResourceModule.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Program\SubSystem\Script\Module\SceneModule.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Program\SubSystem\Script\ScriptEngine.cpp" />
     <ClCompile Include="Program\SubSystem\Thread\LoadingThread\LoadingThread.cpp" />
@@ -539,6 +541,7 @@
     <ClInclude Include="Program\SubSystem\Resource\ResourceImporter\AudioImporter\AudioImporter.h" />
     <ClInclude Include="Program\SubSystem\Resource\ResourceImporter\ModelImporter\ModelImporter.h" />
     <ClInclude Include="Program\SubSystem\Resource\ResourceImporter\ModelImporter\PMDHelper.h" />
+    <ClInclude Include="Program\SubSystem\Resource\ResourceImporter\ScriptImporter\ScriptImporter.h" />
     <ClInclude Include="Program\SubSystem\Resource\ResourceImporter\ShaderImporter\ShaderImporter.h" />
     <ClInclude Include="Program\SubSystem\Resource\ResourceImporter\TextureImporter\TextureImporter.h" />
     <ClInclude Include="Program\SubSystem\Resource\ResourceManager.h" />
@@ -550,6 +553,7 @@
     <ClInclude Include="Program\SubSystem\Resource\Resources\Audio\AudioClip.h" />
     <ClInclude Include="Program\SubSystem\Resource\Resources\IResource.h" />
     <ClInclude Include="Program\SubSystem\Resource\Resources\Scene\Scene.h" />
+    <ClInclude Include="Program\SubSystem\Resource\Resources\Script\ScriptInstance.h" />
     <ClInclude Include="Program\SubSystem\Scene\AutoDestroySystem.h" />
     <ClInclude Include="Program\SubSystem\Scene\Component\Components\AudioListener.h" />
     <ClInclude Include="Program\SubSystem\Scene\Component\Components\AudioSpeaker.h" />
@@ -571,7 +575,7 @@
     <ClInclude Include="Program\SubSystem\Scene\World.h" />
     <ClInclude Include="Program\SubSystem\Script\Module\ModuleHelper.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Program\SubSystem\Script\ScriptEngine.h" />
     <ClInclude Include="Program\SubSystem\Thread\LoadingThread\LoadingThread.h" />

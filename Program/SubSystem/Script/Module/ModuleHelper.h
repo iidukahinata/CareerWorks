@@ -22,6 +22,7 @@ namespace py = boost::python;
 #define PY_CLASS_INIT(CLASS, ARGS)		  py::class_<CLASS>(#CLASS, py::init<ARGS>())
 #define PY_CLASS_NO_INIT(CLASS)			  py::class_<CLASS>(#CLASS, py::no_init)
 #define PY_CLASS_NOCOPY(CLASS)			  py::class_<CLASS, boost::noncopyable>(#CLASS)
+#define PY_CLASS_NOCOPY_NO_INIT(CLASS)	  py::class_<CLASS, boost::noncopyable>(#CLASS, py::no_init)
 #define PY_BASE_CLASS(CLASS, BASE)		  py::class_<CLASS, py::bases<BASE>>(#CLASS)
 #define PY_BASE_CLASS_NOCOPY(CLASS, BASE) py::class_<CLASS, py::bases<BASE>, boost::noncopyable>(#CLASS)
 
@@ -43,6 +44,7 @@ namespace py = boost::python;
 #define PY_BY_VALUE       py::return_value_policy<py::return_by_value>()
 #define PY_COPY_CONST_REF py::return_value_policy<py::copy_const_reference>()
 #define PY_NOT_CONST_REF  py::return_value_policy<py::copy_non_const_reference>()
+#define PY_RET_REF		  py::return_internal_reference<>()
 
 
 void SetUpCoreModule();
@@ -51,3 +53,5 @@ void SetUpInputModule();
 void SetUpResourceModule();
 void SetUpSceneModule();
 void SetUpComponentModule();
+
+void InitModule();

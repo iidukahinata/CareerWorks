@@ -2,19 +2,19 @@
 * @file    CoreModule.cpp
 * @brief
 *
-* @date	   2022/11/15 2022年度初版
+* @date	   2022/11/22 2022年度初版
 */
 
 
 #include "ModuleHelper.h"
 #include "Subsystem/Window/Window.h"
 
-void DebugLog(StringView text)
+void DebugLog(String text)
 {
 	LOG(text);
 };
 
-void DebugLogError(StringView text)
+void DebugLogError(String text)
 {
 	LOG_ERROR(text);
 };

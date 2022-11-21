@@ -16,6 +16,7 @@
 #include "SubSystem/Window/Window.h"
 #include "SubSystem/Physics/Physics.h"
 #include "SubSystem/Renderer/Renderer.h"
+#include "SubSystem/Script/ScriptEngine.h"
 #include "SubSystem/Resource/ResourceManager.h"
 
 // system
@@ -168,6 +169,12 @@ bool Engine::InitializeSubsystems() noexcept
 	if (!g_context->GetSubsystem<Physics>()->Initialize())
 	{
 		LOG_ERROR("Physics‰Šú‰»‚É¸”s");
+		return false;
+	}
+
+	if (!g_context->GetSubsystem<ScriptEngine>()->Initialize())
+	{
+		LOG_ERROR("ScriptEngine‰Šú‰»‚É¸”s");
 		return false;
 	}
 

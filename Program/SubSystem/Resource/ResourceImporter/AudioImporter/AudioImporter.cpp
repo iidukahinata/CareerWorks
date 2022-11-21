@@ -14,16 +14,15 @@ AudioImporter::AudioImporter(ResourceManager* resourceManager) :
 {
 }
 
-bool AudioImporter::CreateShaderData(StringView filePath) noexcept
+bool AudioImporter::CreateAudioData(StringView filePath) noexcept
 {
 	auto audioPath = ConvertProprietaryPath(filePath);
-	FileSystem::Rename(filePath, audioPath);
-	m_resourceManager->CreateResourceData("Audio", audioPath);
+	FileSystem::Copy(filePath, audioPath);
 
-	return true;
+	return m_resourceManager->CreateResourceData("AudioClip", audioPath);
 }
 
 String AudioImporter::ConvertProprietaryPath(StringView filePath) noexcept
 {
-	return String(filePath);
+	return (AUDIO_DIRECTORY + FileSystem::GetFilePath(filePath));
 }

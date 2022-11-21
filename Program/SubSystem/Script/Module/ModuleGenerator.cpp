@@ -18,6 +18,11 @@ BOOST_PYTHON_MODULE(Engine)
 	SetUpComponentModule();
 }
 
+void InitModule()
+{
+	PyImport_AppendInittab("Engine", &PyInit_Engine);
+}
+
 /**
 BOOST_PYTHON_MODULE(Core)
 {

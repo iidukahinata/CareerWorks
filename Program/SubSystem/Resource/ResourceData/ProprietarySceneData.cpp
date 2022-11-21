@@ -7,7 +7,6 @@
 
 
 #include "ProprietarySceneData.h"
-#include "SubSystem/Scene/GameObject.h"
 
 String ProprietarySceneData::ConvertProprietaryPath(StringView filePath) noexcept
 {

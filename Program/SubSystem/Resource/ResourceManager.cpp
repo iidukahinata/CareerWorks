@@ -18,6 +18,7 @@ bool ResourceManager::Initialize()
     m_textureImporter = std::make_unique<TextureImporter>(this);
     m_shaderImporter  = std::make_unique<ShaderImporter>(this);
     m_audioImporter   = std::make_unique<AudioImporter>(this);
+    m_scriptImporter  = std::make_unique<ScriptImporter>(this);
 
     ImportAssets();
 
@@ -356,13 +357,18 @@ void ResourceManager::ImportAssets(const Vector<String>& filePaths) noexcept
         }
         else if (IsAudioFilePath(path))
         {
-            ret = m_audioImporter->CreateShaderData(path);
+            ret = m_audioImporter->CreateAudioData(path);
             directory = ORIGINAL_AUDIO_DIRECTORY;
         }
         else if (IsShaderFilePath(path))
         {
             ret = m_shaderImporter->CreateShaderData(path);
             directory = ORIGINAL_SHADER_DIRECTORY;
+        }
+        else if (IsScriptFilePath(path))
+        {
+            ret = m_scriptImporter->CreateScriptData(path);
+            directory = ORIGINAL_SCRIPT_DIRECTORY;
         }
 
         // 上書きしないようオリジナルデータとして保存
@@ -668,6 +674,16 @@ bool ResourceManager::IsProprietaryFilePath(StringView path) const noexcept
     CASE_EXT_RETURN("material")
     CASE_EXT_RETURN("texture")
     CASE_EXT_RETURN("asset")
+    default: return false;
+    }
+}
+
+bool ResourceManager::IsScriptFilePath(StringView path) const noexcept
+{
+    switch (GetHashFromCRC(GetExt(path)))
+    {
+    CASE_EXT_RETURN("py")
+    CASE_EXT_RETURN("pyd")
     default: return false;
     }
 }
