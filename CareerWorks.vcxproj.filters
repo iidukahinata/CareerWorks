@@ -757,6 +757,18 @@
     <ClCompile Include="Program\SubSystem\Resource\Resources\Script\ScriptInstance.cpp">
       <Filter>Subsytem\Resource\Resources\Script</Filter>
     </ClCompile>
+    <ClCompile Include="Program\ThirdParty\imgui\implot_demo.cpp">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\ThirdParty\imgui\implot_items.cpp">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\ThirdParty\imgui\implot.cpp">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Program\ThirdParty\imgui\imgui_time_line.cpp">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Program\ThirdParty\FMOD\include\fmod_dsp.h">
@@ -1376,6 +1388,15 @@
     </ClInclude>
     <ClInclude Include="Program\SubSystem\Resource\Resources\Script\ScriptInstance.h">
       <Filter>Subsytem\Resource\Resources\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\ThirdParty\imgui\implot_internal.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\ThirdParty\imgui\implot.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\ThirdParty\imgui\imgui_time_line.h">
+      <Filter>ThirdParty\imgui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

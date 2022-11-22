@@ -48,6 +48,12 @@ void World::Shutdown()
 
 void World::Update() noexcept
 {
+#ifdef IS_EDITOR
+	if (ImTimeLine::ShowTimeLine()) {
+		TIME_LINE_WATCH_START(TaskThread, "Component Update");
+	}
+#endif // IS_EDITOR
+
 	for (auto resourceHandle : m_resourceHandles)
 	{
 		if (resourceHandle.second->IsValid())
@@ -55,6 +61,12 @@ void World::Update() noexcept
 			NotifyEvent<LoadSceneCompleteEvent>(resourceHandle.first);
 		}
 	}
+
+#ifdef IS_EDITOR
+	if (ImTimeLine::ShowTimeLine()) {
+		TIME_LINE_WATCH_END(TaskThread);
+	}
+#endif // IS_EDITOR
 }
 
 void World::LoadScene(StringView name) noexcept

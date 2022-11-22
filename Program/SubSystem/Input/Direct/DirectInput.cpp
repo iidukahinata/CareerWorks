@@ -95,6 +95,12 @@ void DirectInput::Shutdown()
 
 void DirectInput::Update() noexcept
 {
+#ifdef IS_EDITOR
+	if (ImTimeLine::ShowTimeLine()) {
+		TIME_LINE_WATCH_START(MainThread, "Input Update");
+	}
+#endif // IS_EDITOR
+
 	const auto oldKeybuffer = m_keybuffer;
 
 	// key èÓïÒÇÃéÊìæÅB
@@ -120,6 +126,12 @@ void DirectInput::Update() noexcept
 			NotifyReleaseKey(static_cast<Button::KeyAndMouse>(i));
 		}
 	}
+
+#ifdef IS_EDITOR
+	if (ImTimeLine::ShowTimeLine()) {
+		TIME_LINE_WATCH_END(MainThread);
+	}
+#endif // IS_EDITOR
 }
 
 bool DirectInput::GetKeyBuffer() noexcept

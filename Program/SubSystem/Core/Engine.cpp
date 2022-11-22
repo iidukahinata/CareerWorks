@@ -79,6 +79,12 @@ long Engine::MainLoop()
 		{
 			RenderingThread::BegineFrame();
 
+#ifdef IS_EDITOR
+			if (ImTimeLine::ShowTimeLine()) {
+				TIME_LINE_WATCH_START(MainThread, "Update");
+			}
+#endif // IS_EDITOR
+
 			JobSystem::Get().Execute(timer->GetDeltaTime(), FunctionType::PreUpdate);
 			
 			JobSystem::Get().Execute(timer->GetDeltaTime(), FunctionType::PrePhysics);
@@ -87,10 +93,16 @@ long Engine::MainLoop()
 			
 			JobSystem::Get().Execute(timer->GetDeltaTime(), FunctionType::EndPhysics);
 
-			// Event 処理前に他スレッド操作を終了させる
-			RenderingThread::EndFrame();
-
 			JobSystem::Get().Execute(timer->GetDeltaTime(), FunctionType::PostUpdate);
+
+#ifdef IS_EDITOR
+			if (ImTimeLine::ShowTimeLine()) {
+				TIME_LINE_WATCH_END(MainThread);
+			}
+#endif // IS_EDITOR
+
+			// vsync
+			RenderingThread::EndFrame();
 		}
 	}
 

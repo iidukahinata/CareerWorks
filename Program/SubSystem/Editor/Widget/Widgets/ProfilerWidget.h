@@ -15,4 +15,8 @@ class ProfilerWidget : public Widget
 public:
 
 	void Draw() override;
+
+private:
+
+	void ShowTimeLine() noexcept;
 };

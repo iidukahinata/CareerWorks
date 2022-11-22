@@ -57,6 +57,12 @@ void ForwardRenderer::Shutdown()
 
 void ForwardRenderer::Update() noexcept
 {
+#ifdef IS_EDITOR
+	if (ImTimeLine::ShowTimeLine()) {
+		TIME_LINE_WATCH_START(RenderingThread, "Drawing");
+	}
+#endif // IS_EDITOR
+
 	// ëSëÃÇÃï`âÊèÄîı
 	D3D12GraphicsDevice::Get().BegineFrame();
 
@@ -73,11 +79,30 @@ void ForwardRenderer::Update() noexcept
 
 		LightingPass();
 	}
+
+#ifdef IS_EDITOR
+	if (ImTimeLine::ShowTimeLine()) {
+		TIME_LINE_WATCH_END(RenderingThread);
+	}
+#endif // IS_EDITOR
 }
 
 void ForwardRenderer::Present() noexcept
 {
+#ifdef IS_EDITOR
+	if (ImTimeLine::ShowTimeLine()) {
+		TIME_LINE_WATCH_START(RenderingThread, "Wait For");
+	}
+#endif // IS_EDITOR
+
 	D3D12GraphicsDevice::Get().EndFrame();
+
+#ifdef IS_EDITOR
+	if (ImTimeLine::ShowTimeLine()) {
+		TIME_LINE_WATCH_END(RenderingThread);
+	}
+#endif // IS_EDITOR
+
 	D3D12GraphicsDevice::Get().Present();
 }
 

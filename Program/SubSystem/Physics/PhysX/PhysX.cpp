@@ -117,9 +117,21 @@ void PhysX::CreateScene() noexcept
 
 void PhysX::Simulate(double deltaTime) noexcept
 {
+#ifdef IS_EDITOR
+    if (ImTimeLine::ShowTimeLine()) {
+        TIME_LINE_WATCH_START(MainThread, "Physics Simulate");
+    }
+#endif // IS_EDITOR
+
     m_scene->simulate(deltaTime);
 
     m_scene->fetchResults();
+
+#ifdef IS_EDITOR
+    if (ImTimeLine::ShowTimeLine()) {
+        TIME_LINE_WATCH_END(MainThread);
+    }
+#endif // IS_EDITOR
 }
 
 void PhysX::ReflectUpdate() noexcept

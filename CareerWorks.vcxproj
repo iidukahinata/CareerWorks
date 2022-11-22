@@ -398,6 +398,10 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="Program\ThirdParty\imgui\imgui_time_line.cpp" />
+    <ClCompile Include="Program\ThirdParty\imgui\implot.cpp" />
+    <ClCompile Include="Program\ThirdParty\imgui\implot_demo.cpp" />
+    <ClCompile Include="Program\ThirdParty\imgui\implot_items.cpp" />
     <ClCompile Include="Program\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -607,6 +611,9 @@
     <ClInclude Include="Program\ThirdParty\imgui\imgui_impl_dx12.h" />
     <ClInclude Include="Program\ThirdParty\imgui\imgui_impl_win32.h" />
     <ClInclude Include="Program\ThirdParty\imgui\imgui_internal.h" />
+    <ClInclude Include="Program\ThirdParty\imgui\imgui_time_line.h" />
+    <ClInclude Include="Program\ThirdParty\imgui\implot.h" />
+    <ClInclude Include="Program\ThirdParty\imgui\implot_internal.h" />
     <ClInclude Include="Program\ThirdParty\imgui\imstb_rectpack.h" />
     <ClInclude Include="Program\ThirdParty\imgui\imstb_textedit.h" />
     <ClInclude Include="Program\ThirdParty\imgui\imstb_truetype.h" />

@@ -16,6 +16,7 @@ void EngineLog::AddLog(StringView log, uint32_t errorLevel) noexcept
 	LogInfo info;
 	info.str = log;
 	info.errorLevel = errorLevel;
+
 	m_logList.emplace_back(info);
 }
 
@@ -56,8 +57,15 @@ void ConsoleWidget::Draw()
 	const auto childHeight = ImGui::GetWindowHeight() - 60;
 	ImGui::BeginChild(ImGui::GetID((void*)0), ImVec2(childWidth, childHeight), true);
 
-	for (const auto& logList = m_logInfo.GetList(); const auto& log : logList)
+	constexpr auto max_draw = 120;
+	const auto& logs	= m_logInfo.GetList();
+	const int   numDraw = logs.size();
+	const int   offset	= max(0, numDraw - max_draw);
+
+	for (int i = offset; i < numDraw; ++i)
 	{
+		const auto& log = logs[i];
+
 		if (!m_logFilter.PassFilter(log.str.c_str()))
 			continue;
 

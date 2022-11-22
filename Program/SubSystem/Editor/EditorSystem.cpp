@@ -17,6 +17,7 @@
 #include "Widget/Widgets/ViewPortWidget.h"
 #include "Widget/Widgets/MainMenuBarWidget.h"
 #include "SubSystem/Renderer/GraphicsAPI/D3D12/D3D12GraphicsDevice.h"
+#include "ThirdParty/imgui/implot.h"
 #include "ThirdParty/ImGuizmo/ImGuizmo.h"
 
 bool EditorSystem::Initialize() noexcept
@@ -87,6 +88,7 @@ void EditorSystem::Shutdown() noexcept
 
 	m_descriptHeap.Release();
 	ImGui_ImplDX12_Shutdown();
+	ImPlot::DestroyContext();
 	ImGui::DestroyContext();
 }
 
@@ -129,6 +131,10 @@ bool EditorSystem::SetUpImGuiObjects(void* finalFrameSRV) noexcept
 	EditorHelper::Get().Initialize(&m_descriptHeap, finalFrameSRV);
 
 	if (!ImGui::CreateContext()) {
+		return false;
+	}
+	
+	if (!ImPlot::CreateContext()) {
 		return false;
 	}
 

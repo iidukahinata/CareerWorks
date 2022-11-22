@@ -57,6 +57,12 @@ void RenderingThread::Stop() noexcept
 
 void RenderingThread::BegineFrame() noexcept
 {
+#ifdef IS_EDITOR
+	if (ImTimeLine::ShowTimeLine()) {
+		TIME_LINE_NEW_FRAME();
+	}
+#endif // IS_EDITOR
+
 	// 描画コマンド発行
 	RegisterRenderCommand([] {
 
@@ -73,6 +79,12 @@ void RenderingThread::EndFrame() noexcept
 {
 	// 描画終了まで待機
 	m_renderCommandFance.WaitForSingle();
+
+#ifdef IS_EDITOR
+	if (ImTimeLine::ShowTimeLine()) {
+		TIME_LINE_END_FRAME();
+	}
+#endif // IS_EDITOR
 }
 
 void RenderingThread::WiatForRenderCommand() noexcept
@@ -84,11 +96,24 @@ void RenderingThread::WiatForRenderCommand() noexcept
 
 void RenderingThread::Run()
 {
+#ifdef IS_EDITOR
+	auto showTimeLine = ImTimeLine::ShowTimeLine();
+	if (ImTimeLine::ShowTimeLine()) {
+		TIME_LINE_WATCH_START(RenderingThread, "Command Process");
+	}
+#endif // IS_EDITOR
+
 	m_renderingThreadID = std::this_thread::get_id();
 
 	m_renderCommandList.SwapCommand();
 
 	m_renderCommandList.CommandProcess();
+
+#ifdef IS_EDITOR
+	if (showTimeLine) {
+		TIME_LINE_WATCH_END(RenderingThread);
+	}
+#endif // IS_EDITOR
 }
 
 bool IsInRenderingThread() noexcept

@@ -23,12 +23,24 @@ void TickManager::Initialize() noexcept
 	// オーバーヘッド時間の減少のため Task 統一化
 	m_anyThreadTask.SetFunction([this]()
 	{
+#ifdef IS_EDITOR
+			if (ImTimeLine::ShowTimeLine()) {
+				TIME_LINE_WATCH_START(TaskThread, "Component Update");
+			}
+#endif // IS_EDITOR
+
 		for (const auto& task : m_anyThreadTaskList)
 		{
 			task->Tick(task->GetDeletaTime());
 		}
 
 		SetEvent(m_hEvent);
+
+#ifdef IS_EDITOR
+		if (ImTimeLine::ShowTimeLine()) {
+			TIME_LINE_WATCH_END(TaskThread);
+		}
+#endif // IS_EDITOR
 	});
 }
 
@@ -51,6 +63,12 @@ void TickManager::Stop() noexcept
 
 void TickManager::Tick(double deltaTime) noexcept
 {
+#ifdef IS_EDITOR
+	if (ImTimeLine::ShowTimeLine()) {
+		TIME_LINE_WATCH_START(MainThread, "Component Update");
+	}
+#endif // IS_EDITOR
+
 	CreateTaskList(deltaTime);
 
 	ResetEvent(m_hEvent);
@@ -66,6 +84,12 @@ void TickManager::Tick(double deltaTime) noexcept
 	}
 
 	WaitForTask();
+
+#ifdef IS_EDITOR
+	if (ImTimeLine::ShowTimeLine()) {
+		TIME_LINE_WATCH_END(MainThread);
+	}
+#endif // IS_EDITOR
 }
 
 void TickManager::RegisterTickFunction(TickFunction* function) noexcept
