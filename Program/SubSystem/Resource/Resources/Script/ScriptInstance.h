@@ -52,6 +52,8 @@ public:
 
 	bool HasTickFunction() const noexcept;
 
+	const String& GetScriptName() const noexcept;
+
 private:
 
 	/** コンパイルが失敗した場合は null オブジェクトを返す。*/

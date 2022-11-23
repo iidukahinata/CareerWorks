@@ -2,7 +2,7 @@
 * @file    ScriptEngine.h
 * @brief
 *
-* @date	   2022/11/13 2022年度初版
+* @date	   2022/11/23 2022年度初版
 */
 #pragma once
 
@@ -16,4 +16,10 @@ class ScriptEngine : public ISubsystem
 public:
 
 	bool Initialize();
+
+	void RebuildAllScript() noexcept;
+
+private:
+
+	ResourceManager* m_resourceManager = nullptr;
 };

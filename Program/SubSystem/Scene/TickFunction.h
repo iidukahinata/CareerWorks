@@ -14,6 +14,7 @@ class TickFunction
 public:
 
 	TickFunction() = default;
+	virtual ~TickFunction() = default;
 
 	virtual void Tick(double deltaTime) = 0;
 

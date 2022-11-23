@@ -70,7 +70,7 @@ namespace ImTimeLine
         uint32_t m_oldMaxDepth = 0;
         uint32_t m_currentDepth = 0;
 
-        Stack<Log*> m_currentLogs;
+        Stack<Log> m_currentLogs;
         Array<TimeLineObject, MAX_TIMELINE_LOG> m_timelineObjects;
     };
 
@@ -97,14 +97,10 @@ namespace ImTimeLine
 
     void TimeLineState::BeginTimeLine(StringView label) noexcept
     {
-        // add timeLine log
-        auto& timelineObjects = m_timelineObjects[g_currentTimeLinePos];
-        timelineObjects.logs.emplace_back(Log());
-        m_currentLogs.push(&timelineObjects.logs.back());
-
-        m_currentLogs.top()->label = label;
-        m_currentLogs.top()->depth = m_currentDepth;
-        m_currentLogs.top()->startTime = m_stopwatch.GetRap(Milli);
+        m_currentLogs.push(Log());
+        m_currentLogs.top().label = label;
+        m_currentLogs.top().depth = m_currentDepth;
+        m_currentLogs.top().startTime = m_stopwatch.GetRap(Milli);
 
         ++m_currentDepth;
         m_maxDepth = max(m_currentDepth, m_maxDepth);
@@ -113,7 +109,11 @@ namespace ImTimeLine
     void TimeLineState::EndTimeLine() noexcept
     {
         ASSERT(m_currentLogs.size());
-        m_currentLogs.top()->endTime = m_stopwatch.GetRap(Milli);
+        m_currentLogs.top().endTime = m_stopwatch.GetRap(Milli);
+
+        // add timeLine log
+        auto& timelineObjects = m_timelineObjects[g_currentTimeLinePos];
+        timelineObjects.logs.emplace_back(m_currentLogs.top());
 
         --m_currentDepth;
         m_currentLogs.pop();

@@ -8,6 +8,7 @@
 
 #include "Window.h"
 #include "Subsystem/Timer/Timer.h"
+#include "SubSystem/Script/ScriptEngine.h"
 
 /** この前方宣言がないと imgui の入力を使用出来ない */
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -54,6 +55,12 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpar
 			{
 				timer->ResetMeasurement();
 			}
+#ifdef IS_EDITOR
+			if (auto script = g_context->GetSubsystem<ScriptEngine>())
+			{
+				script->RebuildAllScript();
+			}
+#endif // IS_EDITOR
 		}
 		break;
 	}

@@ -28,6 +28,8 @@ class Renderer : public ISubsystem
 	SUB_CLASS(Renderer)
 public:
 
+	virtual ~Renderer() = default;
+
 	virtual bool Initialize() override;
 
 public:

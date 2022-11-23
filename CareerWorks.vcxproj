@@ -169,6 +169,7 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\Program;.\</AdditionalIncludeDirectories>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Program\SubSystem\Core\Common\Tools\Memory\Allocator.cpp" />
     <ClCompile Include="Program\SubSystem\Core\Common\Tools\String.cpp" />
     <ClCompile Include="Program\SubSystem\Core\Config.cpp" />
     <ClCompile Include="Program\SubSystem\Core\Context.cpp" />
@@ -416,6 +417,7 @@
     <ClInclude Include="Program\SubSystem\Core\Common\ProjectSetting.h" />
     <ClInclude Include="Program\SubSystem\Core\Common\Tools\Array.h" />
     <ClInclude Include="Program\SubSystem\Core\Common\Tools\Hash.h" />
+    <ClInclude Include="Program\SubSystem\Core\Common\Tools\Memory\Allocator.h" />
     <ClInclude Include="Program\SubSystem\Core\Common\Tools\Memory\Memory.h" />
     <ClInclude Include="Program\SubSystem\Core\Common\Tools\String.h" />
     <ClInclude Include="Program\SubSystem\Core\Common\Tools\Tools.h" />

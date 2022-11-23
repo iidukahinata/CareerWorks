@@ -769,6 +769,9 @@
     <ClCompile Include="Program\ThirdParty\imgui\imgui_time_line.cpp">
       <Filter>ThirdParty\imgui</Filter>
     </ClCompile>
+    <ClCompile Include="Program\SubSystem\Core\Common\Tools\Memory\Allocator.cpp">
+      <Filter>Subsytem\Core\Common\Tools\Memory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Program\ThirdParty\FMOD\include\fmod_dsp.h">
@@ -1397,6 +1400,9 @@
     </ClInclude>
     <ClInclude Include="Program\ThirdParty\imgui\imgui_time_line.h">
       <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Core\Common\Tools\Memory\Allocator.h">
+      <Filter>Subsytem\Core\Common\Tools\Memory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

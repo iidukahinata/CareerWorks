@@ -21,6 +21,8 @@ class Input : public ISubsystem
 	SUB_CLASS(Input)
 public:
 
+	virtual ~Input() = default;
+
 	/** マウス位置をスクリーン座標で返します */
 	virtual const Math::Vector2& GetMousePosition() const noexcept;
 

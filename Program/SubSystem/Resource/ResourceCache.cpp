@@ -74,7 +74,9 @@ Vector<IResource*> ResourceCache::GetResourcesByType(uint32_t type) const noexce
 	const auto& resourceList = m_resources.at(type);
 	uint32_t size = resourceList.size();
 
-	Vector<IResource*> result(size);
+	Vector<IResource*> result;
+	result.reserve(size);
+
 	for (const auto& resource : resourceList)
 	{
 		result.push_back(resource.second.get());

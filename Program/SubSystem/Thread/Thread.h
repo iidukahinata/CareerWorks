@@ -15,7 +15,7 @@ class IThread
 public:
 
 	IThread() = default;
-	~IThread() {};
+	virtual ~IThread() {}
 
 	virtual void Run() = 0;
 

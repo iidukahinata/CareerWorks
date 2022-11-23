@@ -16,7 +16,7 @@ class D3D12View : public D3D12DeviceChild
 	COMPLETED_DEVELOPMENT()
 public:
 
-	~D3D12View();
+	virtual ~D3D12View();
 
 	/** アクセス */
 	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle() noexcept;

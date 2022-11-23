@@ -80,7 +80,8 @@ long Engine::MainLoop()
 			RenderingThread::BegineFrame();
 
 #ifdef IS_EDITOR
-			if (ImTimeLine::ShowTimeLine()) {
+			auto showTimeLine = ImTimeLine::ShowTimeLine();
+			if (showTimeLine) {
 				TIME_LINE_WATCH_START(MainThread, "Update");
 			}
 #endif // IS_EDITOR
@@ -96,7 +97,7 @@ long Engine::MainLoop()
 			JobSystem::Get().Execute(timer->GetDeltaTime(), FunctionType::PostUpdate);
 
 #ifdef IS_EDITOR
-			if (ImTimeLine::ShowTimeLine()) {
+			if (showTimeLine) {
 				TIME_LINE_WATCH_END(MainThread);
 			}
 #endif // IS_EDITOR

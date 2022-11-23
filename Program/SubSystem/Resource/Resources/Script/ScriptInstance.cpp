@@ -85,6 +85,11 @@ bool ScriptInstance::HasTickFunction() const noexcept
 	return m_hasFunctionList[ScriptFuncType::Update];
 }
 
+const String& ScriptInstance::GetScriptName() const noexcept
+{
+	return m_scriptName;
+}
+
 boost::python::object ScriptInstance::CompileScript(StringView name) noexcept
 {
 	try
