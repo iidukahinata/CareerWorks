@@ -8,9 +8,15 @@
 
 #include "Shader.h"
 
-void Shader::ReCompile(ShaderType type, D3D_SHADER_MACRO* defines /* = nullptr */) noexcept
+bool Shader::ReCompile(ShaderType type, D3D_SHADER_MACRO* defines /* = nullptr */) noexcept
 {
-	SetShader(type, m_shaderPaths[type], defines);
+	if (!m_shaders[type].ReCompile(m_shaderPaths[type], type, defines))
+	{
+		m_shaderPaths[type] = "";
+		m_shaders.erase(type);
+	}
+
+	return true;
 }
 
 bool Shader::SetShader(ShaderType type, StringView path, D3D_SHADER_MACRO* defines /* = nullptr */) noexcept

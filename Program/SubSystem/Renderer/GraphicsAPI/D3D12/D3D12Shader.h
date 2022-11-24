@@ -20,8 +20,11 @@ public:
 	bool Compile(StringView filePath, ShaderType type, D3D_SHADER_MACRO* defines = nullptr) noexcept;
 	bool Compile(StringView filePath, StringView entryPoint, StringView traget, D3D_SHADER_MACRO* defines = nullptr) noexcept;
 
+	bool ReCompile(StringView filePath, ShaderType type, D3D_SHADER_MACRO* defines = nullptr) noexcept;
+	bool ReCompile(StringView filePath, StringView entryPoint, StringView traget, D3D_SHADER_MACRO* defines = nullptr) noexcept;
+
 	/** アクセス */
-	ID3DBlob* GetBlob() const noexcept { return m_blob.Get(); }
+	ID3DBlob* GetBlob() const noexcept { return m_blob; }
 
 	Vector<D3D12_INPUT_ELEMENT_DESC>	 GetInputLayout()		noexcept;
 	Vector<D3D12_SHADER_INPUT_BIND_DESC> GetSRVBindDesc()		noexcept;
@@ -31,6 +34,13 @@ public:
 
 private:
 
-	Microsoft::WRL::ComPtr<ID3DBlob> m_blob;
+	String GetEntryPointFromShaderType(ShaderType type);
+	String GetTargetFromShaderType(ShaderType type);
+
+	void ErrorHandle(HRESULT hr, ID3DBlob* errorBlob) const noexcept;
+
+private:
+
+	ID3DBlob* m_blob;
 	Microsoft::WRL::ComPtr<ID3D12ShaderReflection> m_reflection;
 };

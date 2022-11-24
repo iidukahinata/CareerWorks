@@ -84,7 +84,6 @@ namespace ImTimeLine
 
         m_maxDepth = 0;
         m_currentDepth = 0;
-        ASSERT(!m_currentLogs.size());
 
         m_timelineObjects[g_currentTimeLinePos].startTime = 0.0f;
         m_stopwatch.Start();

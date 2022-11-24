@@ -55,6 +55,7 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpar
 			{
 				timer->ResetMeasurement();
 			}
+
 #ifdef IS_EDITOR
 			if (auto script = g_context->GetSubsystem<ScriptEngine>())
 			{

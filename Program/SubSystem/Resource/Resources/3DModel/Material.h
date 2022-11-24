@@ -52,6 +52,7 @@ public:
 	void SetRasterizerState(RASTERIZER_STATE mode) noexcept;
 	RASTERIZER_STATE GetRasterizerState() const noexcept;
 	bool SetShader(ShaderType type, StringView path, bool createPipeline = true) noexcept;
+	void RefreshShader() noexcept;
 	const Array<String, ShaderType::NumAllType>& GetShaderPaths() const noexcept;
 	void SetTexture(StringView pramName, Texture* texture, bool isDefineToShader = false) noexcept;
 	void AddTexturePram(StringView pramName, uint32_t bindPoint) noexcept;
@@ -68,7 +69,7 @@ public:
 private:
 
 	/** マテリアル設定の Define をシェーダーに定義 */
-	bool DefineSettingToPixelShader(StringView path = StringView()) noexcept;
+	bool DefineSettingToPixelShader(StringView path = StringView(), bool recompile = false) noexcept;
 
 	/** セットされたシェーダファイルから各パラメーター取得 */
 	void ParametricAnalysis(bool isClear = true) noexcept;

@@ -72,6 +72,20 @@ private:
 };
 
 /**
+* ゲームオブジェクト更新オブジェクト
+*/
+class TickGameObjectFunction : public TickFunction
+{
+public:
+
+	class GameObject* m_gameObject;
+
+public:
+
+	void Tick(double deltaTime);
+};
+
+/**
 * コンポーネント更新オブジェクト
 */
 class TickComponentFunction : public TickFunction

@@ -21,7 +21,6 @@ PostProcessEffectDetails::PostProcessEffectDetails(DetailsWidget* detailsWidget,
 
 	// Add PostEffect ‚ÌŒŸõ‚Ég—p
 	RegisterPostEffect<Bloom>();
-	//RegisterPostEffect<Monotone>();
 	//RegisterPostEffect<DepthOfField>();
 }
 

@@ -204,6 +204,7 @@
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ResourceDetails.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\RigidBodyDetails.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ScriptDetails.cpp" />
+    <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ShaderDetails.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\TransformDetails.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsWidget.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\Factory\DetailsObjectFactory.cpp" />
@@ -460,6 +461,7 @@
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ResourceDetails.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\RigidBodyDetails.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ScriptDetails.h" />
+    <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ShaderDetails.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\TransformDetails.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsWidget.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\Factory\DetailsObjectFactory.h" />

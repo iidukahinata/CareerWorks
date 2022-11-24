@@ -6,6 +6,7 @@
 */
 
 #include "ModelRenderDetails.h"
+#include "SubSystem/Scene/GameObject.h"
 #include "SubSystem/Resource/Resources/3DModel/Mesh.h"
 #include "SubSystem/Resource/Resources/3DModel/Material.h"
 #include "SubSystem/Resource/Resources/3DModel/Model.h"
@@ -16,19 +17,8 @@ ModelRenderDetails::ModelRenderDetails(DetailsWidget* detailsWidget, IComponent*
 {
 	m_modelRender = dynamic_cast<ModelRender*>(component);
 	ASSERT(m_modelRender);
-}
 
-ModelRenderDetails::~ModelRenderDetails()
-{
-	if (auto model = m_modelRender->GetModel())
-	{
-		for (auto& mesh : model->GetAllMeshes())
-		{
-			mesh->Update();
-		}
-
-		model->Update();
-	}
+	m_gameObject = m_modelRender->GetOwner();
 }
 
 void ModelRenderDetails::Draw()
@@ -111,6 +101,8 @@ void ModelRenderDetails::ShowUseMaterial(Model* model) noexcept
 		auto meshes = model->GetAllMeshes();
 		for (int i = 0; i < meshes.size(); ++i)
 		{
+			auto isUpdateMesh = false;
+
 			auto mesh = meshes[i];
 			auto material = mesh->GetMaterial();
 
@@ -130,6 +122,7 @@ void ModelRenderDetails::ShowUseMaterial(Model* model) noexcept
 			{
 				if (auto catchMaterial = CatchDragObject<Material>())
 				{
+					isUpdateMesh = true;
 					RegisterEditorCommand([mesh](auto data) { mesh->SetMaterial(data); }, catchMaterial, material);
 				}
 			}
@@ -144,8 +137,14 @@ void ModelRenderDetails::ShowUseMaterial(Model* model) noexcept
 			{
 				if (auto catchMaterial = LoadResource<Material>(resourceData))
 				{
+					isUpdateMesh = true;
 					RegisterEditorCommand([mesh](auto data) { mesh->SetMaterial(data); }, catchMaterial, material);
 				}
+			}
+
+			if (isUpdateMesh)
+			{
+				mesh->Update();
 			}
 
 			// â¸çsóp

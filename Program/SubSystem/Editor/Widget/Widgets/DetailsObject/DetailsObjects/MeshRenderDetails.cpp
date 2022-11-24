@@ -7,6 +7,7 @@
 
 
 #include "MeshRenderDetails.h"
+#include "SubSystem/Scene/GameObject.h"
 #include "SubSystem/Resource/Resources/3DModel/Mesh.h"
 #include "SubSystem/Resource/Resources/3DModel/Material.h"
 #include "SubSystem/Scene/Component/Components/RenderObject.h"
@@ -16,14 +17,8 @@ MeshRenderDetails::MeshRenderDetails(DetailsWidget* detailsWidget, IComponent* c
 {
 	m_meshRender = dynamic_cast<MeshRender*>(component);
 	ASSERT(m_meshRender);
-}
 
-MeshRenderDetails::~MeshRenderDetails()
-{
-	if (auto mesh = m_meshRender->GetMesh())
-	{
-		mesh->Update();
-	}
+	m_gameObject = m_meshRender->GetOwner();
 }
 
 void MeshRenderDetails::Draw()
@@ -71,6 +66,8 @@ void MeshRenderDetails::Draw()
 
 		if (mesh)
 		{
+			auto isUpdateMesh = false;
+
 			auto material = mesh->GetMaterial();
 			auto materialPath = ConvertToJapanese(material->GetFilePath());
 
@@ -88,6 +85,7 @@ void MeshRenderDetails::Draw()
 				if (auto catchMaterial = CatchDragObject<Material>())
 				{
 					RegisterEditorCommand([mesh](auto data) { mesh->SetMaterial(data); }, catchMaterial, material);
+					isUpdateMesh = true;
 				}
 			}
 
@@ -102,7 +100,13 @@ void MeshRenderDetails::Draw()
 				if (auto catchMaterial = LoadResource<Material>(resourceData))
 				{
 					RegisterEditorCommand([mesh](auto data) { mesh->SetMaterial(data); }, catchMaterial, material);
+					isUpdateMesh = true;
 				}
+			}
+
+			if (isUpdateMesh)
+			{
+				mesh->Update();
 			}
 		}
 	}

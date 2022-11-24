@@ -25,6 +25,7 @@
 #include "../DetailsObject/DetailsObjects/ColliderDetails.h"
 #include "../DetailsObject/DetailsObjects/RigidBodyDetails.h"
 #include "../DetailsObject/DetailsObjects/ScriptDetails.h"
+#include "../DetailsObject/DetailsObjects/ShaderDetails.h"
 
 #define CREATE_DETAILS_OBJECT(CLASS, ...) detailsObjects.emplace_back(std::make_unique<CLASS>(detailsWidget, __VA_ARGS__));
 
@@ -38,6 +39,11 @@ Vector<UniquePtr<DetailsObject>> DetailsObjectFactory::Create(DetailsWidget* det
 	// 所持コンポーネント表示用ループ
 	for (const auto& component : gameObject->GetAllComponent())
 	{
+		if (component.second->RequestRemove())
+		{
+			continue;
+		}
+
 		switch (component.first)
 		{
 		case GET_HASH(Light)			: CREATE_DETAILS_OBJECT(LightDetails			, component.second.get()); break;
@@ -66,6 +72,7 @@ Vector<UniquePtr<DetailsObject>> DetailsObjectFactory::Create(DetailsWidget* det
 	switch (type)
 	{
 	case GET_HASH(Material): CREATE_DETAILS_OBJECT(MaterialDetails, resourceData); break;
+	case GET_HASH(Shader)  : CREATE_DETAILS_OBJECT(ShaderDetails  , resourceData); break;
 	default				   : CREATE_DETAILS_OBJECT(ResourceDetails, resourceData); break;
 	}
 

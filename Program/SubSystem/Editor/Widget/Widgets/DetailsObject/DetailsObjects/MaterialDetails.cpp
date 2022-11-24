@@ -27,13 +27,6 @@ MaterialDetails::MaterialDetails(DetailsWidget* detailsWidget, ResourceData* res
 
 MaterialDetails::~MaterialDetails()
 {
-	if (!m_material)
-	{
-		return;
-	}
-
-	m_material->Update();
-
 	if (!IsCurrentSceneResource())
 	{
 		auto resourceManager = m_detailsWidget->GetResourceManager();
@@ -152,6 +145,8 @@ void MaterialDetails::ShowShaderList(Material* material) noexcept
 			}
 			, nextShaderPath, shaderPath
 		);
+
+		material->Update();
 	}
 
 	ImGui::Text("");
@@ -254,6 +249,11 @@ bool MaterialDetails::DragDropTexture(Material* material, Texture* texture, Stri
 	}
 
 	ShowDragDropHelper<Texture>(hoverd, 156, 0, 31);
+
+	if (result)
+	{
+		material->Update();
+	}
 
 	return result;
 }

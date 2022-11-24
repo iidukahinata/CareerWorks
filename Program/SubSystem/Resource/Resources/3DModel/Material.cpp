@@ -165,6 +165,41 @@ bool Material::SetShader(ShaderType type, StringView path, bool createPipeline /
 	return true;
 }
 
+void Material::RefreshShader() noexcept
+{
+	// recompile shaders
+	const auto& paths = m_shader.GetShaderPaths();
+	for (int i = 0; i < paths.size(); ++i)
+	{
+		if (paths[i].empty())
+		{
+			continue;
+		}
+
+		if (i == PixelShader)
+		{
+			DefineSettingToPixelShader(String(), true);
+		}
+		else
+		{
+			m_shader.ReCompile(static_cast<ShaderType>(i));
+		}
+	}
+
+	CreatePipeline();
+
+	// setup textures
+	if (const auto psShader = m_shader.GetShader(PixelShader))
+	{
+		auto&& srvPrams = psShader->GetSRVBindDesc();
+		for (const auto& pram : srvPrams)
+		{
+			auto& info = m_textureInfos[pram.Name];
+			info.m_bindPoint = pram.BindPoint;
+		}
+	}
+}
+
 const Array<String, ShaderType::NumAllType>& Material::GetShaderPaths() const noexcept
 {
 	return m_shader.GetShaderPaths();
@@ -258,7 +293,7 @@ const Math::Vector3& Material::GetEmission() const noexcept
 	return m_materialData.m_emission;
 }
 
-bool Material::DefineSettingToPixelShader(StringView path /* = StringView() */) noexcept
+bool Material::DefineSettingToPixelShader(StringView path /* = StringView() */, bool recompile /* = false */) noexcept
 {
 	if (path.empty())
 	{
@@ -296,7 +331,14 @@ bool Material::DefineSettingToPixelShader(StringView path /* = StringView() */) 
 	// I’[’è‹`
 	defines.push_back(D3D_SHADER_MACRO(NULL, NULL));
 
-	return m_shader.SetShader(PixelShader, path, defines.data());
+	if (recompile)
+	{
+		m_shader.ReCompile(PixelShader, defines.data());
+	}
+	else
+	{
+		return m_shader.SetShader(PixelShader, path, defines.data());
+	}
 }
 
 void Material::ParametricAnalysis(bool isClear /* = true */) noexcept
@@ -308,14 +350,14 @@ void Material::ParametricAnalysis(bool isClear /* = true */) noexcept
 
 	if (const auto psShader = m_shader.GetShader(PixelShader))
 	{
-		auto srvPrams = psShader->GetSRVBindDesc();
+		auto&& srvPrams = psShader->GetSRVBindDesc();
 		for (const auto& pram : srvPrams)
 		{
 			auto& info = m_textureInfos[pram.Name];
 			info.m_bindPoint = pram.BindPoint;
 		}
 
-		auto samplerPrams = psShader->GetSamplerBindDesc();
+		auto&& samplerPrams = psShader->GetSamplerBindDesc();
 		for (const auto& pram : samplerPrams)
 		{
 			auto& sampler = m_samplers[pram.BindPoint];

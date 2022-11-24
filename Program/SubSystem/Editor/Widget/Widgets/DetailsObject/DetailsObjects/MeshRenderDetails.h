@@ -17,11 +17,12 @@ class MeshRenderDetails : public ComponentDetails
 public:
 
 	MeshRenderDetails(DetailsWidget* detailsWidget, IComponent* component);
-	~MeshRenderDetails();
 
 	void Draw() override;
 
 private:
+
+	GameObject* m_gameObject = nullptr;
 
 	MeshRender* m_meshRender = nullptr;
 };

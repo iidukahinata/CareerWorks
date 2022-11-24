@@ -38,6 +38,9 @@ public:
 	/** ゲームオブジェクトの終了時に呼び出される。*/
 	void EndPlay() noexcept;
 
+	/** ゲームオブジェクトの更新 */
+	void Tick(double deltaTime) noexcept;
+
 	/** 自身の消去を行う。*/
 	void Destroy() noexcept;
 
@@ -82,6 +85,11 @@ public:
 	Scene* GetOwner() const noexcept;
 	World* GetWorld() const noexcept;
 	Context* GetContext() const noexcept;
+
+protected:
+
+	// * ゲームオブジェクトの更新処理を管理
+	TickGameObjectFunction m_tickFunction;
 
 private:
 

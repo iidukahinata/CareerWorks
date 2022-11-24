@@ -170,12 +170,13 @@ const Vector<UniquePtr<GameObject>>& Scene::GetAllGameObjects() const noexcept
 
 void Scene::GetAllRootGameObjects(Vector<GameObject*>& gameObjects) const noexcept
 {
-    for (const auto& gameObject : m_gameObjects)
+    const auto numObject = m_gameObjects.size();
+    for (int i = 0; i < numObject; ++i)
     {
-        if (gameObject->GetTransform().HasParent())
+        if (m_gameObjects[i]->GetTransform().HasParent())
             continue;
 
-        gameObjects.emplace_back(gameObject.get());
+        gameObjects.emplace_back(m_gameObjects[i].get());
     }
 }
 

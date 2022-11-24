@@ -8,12 +8,18 @@
 
 #include "GameObject.h"
 #include "World.h"
+#include "TickFunction.h"
 #include "Factory/ComponentFactory.h"
 #include "SubSystem/Resource/Resources/Scene/Scene.h"
 
+void TickGameObjectFunction::Tick(double deltaTime)
+{
+	m_gameObject->Tick(deltaTime);
+}
+
 GameObject::GameObject() : m_transform(this)
 {
-
+	m_tickFunction.m_gameObject = this;
 }
 
 void GameObject::Serialized(FileStream* file) const noexcept
@@ -98,6 +104,8 @@ void GameObject::UnRegisterAllComponents() noexcept
 		{
 			componentInfo.second->OnUnRegister();
 		}
+
+		m_tickFunction.RegisterToTickManager();
 	}
 }
 
@@ -130,6 +138,35 @@ void GameObject::EndPlay() noexcept
 				componentInfo.second->OnStop();
 			}
 		}
+
+		m_tickFunction.UnRegisterFromTickManager();
+	}
+}
+
+void GameObject::Tick(double deltaTime) noexcept
+{
+	bool finishTick = true;
+
+	std::erase_if(m_components, [&finishTick](auto& component) {
+
+		if (component.second->RequestRemove())
+		{
+			if (component.second->Erasable())
+			{
+				return true;
+			}
+			else
+			{
+				finishTick = false;
+			}
+		}
+
+		return false;
+	});
+
+	if (finishTick)
+	{
+		m_tickFunction.SetEnable(false);
 	}
 }
 
@@ -190,6 +227,10 @@ void GameObject::RemoveComponent(IComponent* component) noexcept
 		if (component->Erasable())
 		{
 			m_components.erase(hash);
+		}
+		else
+		{
+			m_tickFunction.SetEnable(true);
 		}
 	}
 }

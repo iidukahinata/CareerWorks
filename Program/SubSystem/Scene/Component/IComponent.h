@@ -63,6 +63,9 @@ public:
 
 public:
 
+	/** true & Erasable の結果から外部から消去を行うため */
+	bool RequestRemove() const noexcept;
+
 	/** true の場合、更新関係にも影響する。*/
 	virtual void SetActive(bool active);
 	bool GetActive() const noexcept;
@@ -113,6 +116,9 @@ private:
 
 	// * コンポーネントが再生中かどうかを保持
 	bool m_beginPlay = false;
+
+	// * コンポーネントの消去申請後かを保持
+	bool m_requestRemove = false;
 };
 
 template<class T>

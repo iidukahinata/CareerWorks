@@ -18,7 +18,6 @@ class ModelRenderDetails : public ComponentDetails
 public:
 
 	ModelRenderDetails(DetailsWidget* detailsWidget, IComponent* component);
-	~ModelRenderDetails();
 
 	void Draw() override;
 
@@ -31,6 +30,8 @@ private:
 	void ShowUseMaterial(Model* model) noexcept;
 
 private:
+
+	GameObject* m_gameObject = nullptr;
 
 	ModelRender* m_modelRender = nullptr;
 };

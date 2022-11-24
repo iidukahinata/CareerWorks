@@ -15,7 +15,7 @@ class ResourceData;
 
 class MaterialDetails : public DetailsObject
 {
-	WAIT_FOR_DEVELOPMENT("Scene内でPBR用シェーダーに変更した際に ImGUi Descriptor エラーが発生する")
+	COMPLETED_DEVELOPMENT()
 public:
 
 	MaterialDetails(DetailsWidget* detailsWidget, ResourceData* resourceData);

@@ -88,16 +88,23 @@ void IComponent::OnRemove()
 	{
 		OnUnRegister();
 	}
+
+	m_requestRemove = true;
 }
 
 void IComponent::Tick(double deltaTime)
 {
-
+	ASSERT(0);
 }
 
 bool IComponent::Erasable()
 {
 	return true;
+}
+
+bool IComponent::RequestRemove() const noexcept
+{
+	return m_requestRemove;
 }
 
 void IComponent::SetActive(bool active)
@@ -113,7 +120,7 @@ void IComponent::SetActive(bool active)
 
 bool IComponent::GetActive() const noexcept
 {
-	return m_active;
+	return m_active && !RequestRemove();
 }
 
 void IComponent::SetTickThreadSafe(bool isThreadSafe) noexcept

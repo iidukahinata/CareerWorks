@@ -47,7 +47,7 @@ void DetailsWidget::Draw()
 	}
 
 	// details •`‰æ’†‚Å‚Ì•ÏX‚ªs‚¦‚È‚¢‚½‚ßˆÀ‘S‚ÈŠÔ‚ğì¬
-	if (m_requestUpdate) 
+	if (m_requestUpdate)
 	{
 		if (m_selectGameObject)	  SelectGameObject(m_selectGameObject);
 		if (m_selectResourceData) SelectResource(m_selectResourceData);
