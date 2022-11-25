@@ -91,6 +91,8 @@ void GameObject::RegisterAllComponents() noexcept
 			componentInfo.second->OnRegister();
 		}
 	}
+
+	m_tickFunction.RegisterToTickManager();
 }
 
 void GameObject::UnRegisterAllComponents() noexcept
@@ -104,9 +106,9 @@ void GameObject::UnRegisterAllComponents() noexcept
 		{
 			componentInfo.second->OnUnRegister();
 		}
-
-		m_tickFunction.RegisterToTickManager();
 	}
+
+	m_tickFunction.UnRegisterFromTickManager();
 }
 
 void GameObject::BeginPlay() noexcept
@@ -138,8 +140,6 @@ void GameObject::EndPlay() noexcept
 				componentInfo.second->OnStop();
 			}
 		}
-
-		m_tickFunction.UnRegisterFromTickManager();
 	}
 }
 
@@ -264,6 +264,11 @@ IComponent* GameObject::FindComponent(StringView name) const noexcept
 
 void GameObject::ClearComponets() noexcept
 {
+	if (m_registered)
+	{
+		m_tickFunction.UnRegisterFromTickManager();
+	}
+
 	for (const auto& componentInfo : m_components)
 	{
 		componentInfo.second->OnRemove();

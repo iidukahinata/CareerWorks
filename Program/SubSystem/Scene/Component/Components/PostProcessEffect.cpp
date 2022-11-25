@@ -9,6 +9,7 @@
 #include "SubSystem/Renderer/Renderer.h"
 #include "SubSystem/Renderer/PostEffect/PostEffect.h"
 #include "SubSystem/Renderer/Factory/PostEffectFactory.h"
+#include "SubSystem/Thread/RenderingThread/RenderingThread.h"
 #include "SubSystem/Renderer/GraphicsAPI/D3D12/D3D12RenderTexture.h"
 
 void PostProcessEffect::Serialized(FileStream* file) const
@@ -59,6 +60,18 @@ void PostProcessEffect::OnUnRegister()
 	IComponent::OnUnRegister();
 
 	UnRegisterFromRenderer();
+}
+
+void PostProcessEffect::OnRemove()
+{
+	m_renderCommandFance.BegineFrame();
+
+	IComponent::OnRemove();
+}
+
+bool PostProcessEffect::Erasable()
+{
+	return m_renderCommandFance.IsSingle();;
 }
 
 PostEffect* PostProcessEffect::AddPostEffect(StringView name) noexcept

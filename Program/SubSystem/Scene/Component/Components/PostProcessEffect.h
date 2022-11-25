@@ -9,6 +9,7 @@
 
 #include "../IComponent.h"
 #include "SubSystem/Renderer/PostEffect/PostEffect.h"
+#include "SubSystem/Thread/RenderingThread/RenderCommandFance.h"
 
 class Renderer;
 
@@ -24,6 +25,9 @@ public:
 	void OnInitialize() override;
 	void OnRegister() override;
 	void OnUnRegister() override;
+	void OnRemove() override;
+
+	bool Erasable() override;
 
 public:
 
@@ -62,6 +66,8 @@ private:
 
 	// * -> ハッシュ値 : 各エフェクトオブジェクト
 	Map<uint32_t, UniquePtr<PostEffect>> m_postEffects;
+
+	RenderCommandFance m_renderCommandFance;
 };
 
 template<class T>

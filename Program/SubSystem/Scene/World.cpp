@@ -181,13 +181,15 @@ void World::SetCurrentScene(Scene* scene) noexcept
 	// Œ»ÝƒV[ƒ“‚Ì‰ð•ú
 	if (m_currentScene)
 	{
-		m_currentScene->RemoveFromWorld();
-
 #ifdef IS_EDITOR
+		m_currentScene->ClearGameObjects();
+
 		if (!IsGameMode())
 		{
 			UnloadScene(m_currentScene->GetAssetName());
 		}
+#else
+		m_currentScene->RemoveFromWorld();
 #endif // IS_EDITER
 	}
 

@@ -15,10 +15,7 @@ void TickManager::Initialize() noexcept
 	ASSERT(m_hEvent);
 
 	m_job.SetFunction([this](double deltaTime) { Tick(deltaTime); }, FunctionType::PrePhysics);
-
-#if !IS_EDITOR
 	m_job.RegisterToJobSystem();
-#endif // IS_EDITOR
 
 	// オーバーヘッド時間の減少のため Task 統一化
 	m_anyThreadTask.SetFunction([this]()
@@ -71,19 +68,31 @@ void TickManager::Tick(double deltaTime) noexcept
 
 	CreateTaskList(deltaTime);
 
-	ResetEvent(m_hEvent);
+	const auto hasAnyThreadTask = m_anyThreadTaskList.size() > 0;
 
 	// execution task
+	if (hasAnyThreadTask)
 	{
+		ResetEvent(m_hEvent);
+
 		m_anyThreadTask.RegisterToJobSystem();
 
 		for (const auto& task : m_gameThreadTaskList)
 		{
 			task->Tick(task->GetDeletaTime());
 		}
-	}
 
-	WaitForTask();
+		WaitForTask();
+	}
+	else
+	{
+		for (const auto& task : m_gameThreadTaskList)
+		{
+			task->Tick(task->GetDeletaTime());
+		}
+
+		m_gameThreadTaskList.clear();
+	}
 
 #ifdef IS_EDITOR
 	if (ImTimeLine::ShowTimeLine()) {
