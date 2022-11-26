@@ -31,7 +31,7 @@ bool ScriptInstance::Load(StringView path)
     path = path.substr(0, path.find("."));
     m_scriptName = FileSystem::GetFilePath(path);
 
-	SetUpFunctionList();
+	PostInit();
 
 	if (!m_scripts.empty())
 	{
@@ -64,6 +64,8 @@ void ScriptInstance::RegisterScript(Script* script) noexcept
 {
 	m_scripts.emplace_back(script);
 
+	CreateClassInstance(script);
+
 	// 関数の設定し直す必要がある
 	SetUpEventFunctionLisyt();
 }
@@ -78,12 +80,17 @@ void ScriptInstance::UnRegisterScript(Script* script) noexcept
 
 void ScriptInstance::CallFunction(Script* script, ScriptFuncType type) noexcept
 {
+	if (!m_hasFunctionList[type])
+	{
+		return;
+	}
+
 	try
 	{
-		if (m_hasFunctionList[type])
-		{
-			m_functionList[type](boost::python::ptr(script));
-		}
+		auto& instance = m_classInstanceDataMap[script];
+		auto& function = instance.m_functionMap[type];
+
+		function();
 	}
 	catch (const boost::python::error_already_set&)
 	{
@@ -93,10 +100,14 @@ void ScriptInstance::CallFunction(Script* script, ScriptFuncType type) noexcept
 
 void ScriptInstance::CallTickFunction(Script* script, double deltaTime) noexcept
 {
+	ASSERT(m_hasFunctionList[ScriptFuncType::Update]);
+
 	try
 	{
-		ASSERT(m_hasFunctionList[ScriptFuncType::Update]);
-		m_functionList[ScriptFuncType::Update](boost::python::ptr(script), deltaTime);
+		auto& instance = m_classInstanceDataMap[script];
+		auto& function = instance.m_functionMap[ScriptFuncType::Update];
+
+		function(deltaTime);
 	}
 	catch (const boost::python::error_already_set&)
 	{
@@ -118,50 +129,109 @@ boost::python::object ScriptInstance::CompileScript(StringView name) noexcept
 {
 	try
 	{
-		return boost::python::import(name.data()).attr("__dict__");
+		auto&& scriptmodule = boost::python::import(name.data());
+		if (scriptmodule.is_none())
+		{
+			LOG_ERROR("スクリプトモジュールのインポートに失敗");
+		}
+
+		auto&& classModule  = scriptmodule.attr(name.data());
+		if (scriptmodule.is_none())
+		{
+			LOG_ERROR("スクリプトクラス取得に失敗");
+		}
+
+		return classModule;
 	}
 	catch (const boost::python::error_already_set&)
 	{
+
 		ErrorHandle();
+
 		return boost::python::object();
 	}
 }
 
-void ScriptInstance::SetUpFunctionList() noexcept
+void ScriptInstance::PostInit() noexcept
 {
-	m_scriptFile = CompileScript(m_scriptName);
-	if (m_scriptFile.is_none())
+	m_scriptClass = CompileScript(m_scriptName);
+	if (m_scriptClass.is_none())
 	{
 		return;
 	}
 
+	auto classInfo = m_scriptClass.attr("__dict__");
+
 	// clear old data
-	{
-		m_eventFuncList.clear();
-		m_eventListenerList.clear();
-		m_hasFunctionList.fill(false);
-		m_functionList.fill(boost::python::object());
-	}
+	m_hasFunctionList.fill(false);
+	m_hasEventFunctionList.fill(false);
 
 	// setup function
-	SetFunction("Init"		, ScriptFuncType::Init		  , m_scriptFile);
-	SetFunction("Register"	, ScriptFuncType::Register    , m_scriptFile);
-	SetFunction("UnRegister", ScriptFuncType::UnRegister  , m_scriptFile);
-	SetFunction("Start"		, ScriptFuncType::Start		  , m_scriptFile);
-	SetFunction("Stop"		, ScriptFuncType::Stop		  , m_scriptFile);
-	SetFunction("Remove"	, ScriptFuncType::Remove	  , m_scriptFile);
-	SetFunction("Update"	, ScriptFuncType::Update	  , m_scriptFile);
+	InitFunction("Init"		 , ScriptFuncType::Init		 , classInfo);
+	InitFunction("Register"	 , ScriptFuncType::Register  , classInfo);
+	InitFunction("UnRegister", ScriptFuncType::UnRegister, classInfo);
+	InitFunction("Start"	 , ScriptFuncType::Start	 , classInfo);
+	InitFunction("Stop"		 , ScriptFuncType::Stop		 , classInfo);
+	InitFunction("Remove"	 , ScriptFuncType::Remove	 , classInfo);
+	InitFunction("Update"	 , ScriptFuncType::Update	 , classInfo);
 
 	// setup event function
-	SetEventFunction("OnKeyPressed"	   , ScriptEventFuncType::OnKeyPressed	  , m_scriptFile);
-	SetEventFunction("OnKeyReleased"   , ScriptEventFuncType::OnKeyReleased	  , m_scriptFile);
-	SetEventFunction("OnCollisionEnter", ScriptEventFuncType::OnCollisionEnter, m_scriptFile);
-	SetEventFunction("OnCollisionStay" , ScriptEventFuncType::OnCollisionStay , m_scriptFile);
-	SetEventFunction("OnCollisionExit" , ScriptEventFuncType::OnCollisionExit , m_scriptFile);
-	SetEventFunction("OnTriggerEnter"  , ScriptEventFuncType::OnTriggerEnter  , m_scriptFile);
-	SetEventFunction("OnTriggerStay"   , ScriptEventFuncType::OnTriggerStay	  , m_scriptFile);
-	SetEventFunction("OnTriggerExit"   , ScriptEventFuncType::OnTriggerExit   , m_scriptFile);
-	SetEventFunction("OnChangeScene"   , ScriptEventFuncType::OnChangeScene	  , m_scriptFile);
+	InitEventFunction("OnKeyPressed"	, ScriptEventFuncType::OnKeyPressed	   , classInfo);
+	InitEventFunction("OnKeyReleased"   , ScriptEventFuncType::OnKeyReleased   , classInfo);
+	InitEventFunction("OnCollisionEnter", ScriptEventFuncType::OnCollisionEnter, classInfo);
+	InitEventFunction("OnCollisionStay" , ScriptEventFuncType::OnCollisionStay , classInfo);
+	InitEventFunction("OnCollisionExit" , ScriptEventFuncType::OnCollisionExit , classInfo);
+	InitEventFunction("OnTriggerEnter"  , ScriptEventFuncType::OnTriggerEnter  , classInfo);
+	InitEventFunction("OnTriggerStay"   , ScriptEventFuncType::OnTriggerStay   , classInfo);
+	InitEventFunction("OnTriggerExit"   , ScriptEventFuncType::OnTriggerExit   , classInfo);
+	InitEventFunction("OnChangeScene"   , ScriptEventFuncType::OnChangeScene   , classInfo);
+}
+
+void ScriptInstance::CreateClassInstance(Script* script) noexcept
+{
+	try
+	{
+		// create new object
+		auto newInstance = m_scriptClass();
+
+		if (!newInstance.is_none())
+		{
+			// setup monoBehaviour
+			newInstance.attr("_MonoBehaviour__Init")(boost::python::ptr(script));
+		}
+
+		m_classInstanceDataMap[script].m_instance = newInstance;
+
+		// register functions
+		for (int i = 0; i < ScriptFuncType::MaxFunc; ++i)
+		{
+			if (!m_hasFunctionList[i])
+			{
+				continue;
+			}
+
+			auto funcName = m_functionNameList[i].c_str();
+			m_classInstanceDataMap[script].m_functionMap[i] = newInstance.attr(funcName);
+		}
+
+		// register event functions
+		for (int i = 0; i < ScriptEventFuncType::MaxEventFunc; ++i)
+		{
+			if (!m_hasEventFunctionList[i])
+			{
+				continue;
+			}
+
+			auto funcName = m_eventFunctionNameList[i].c_str();
+			m_classInstanceDataMap[script].m_eventFunctionMap[i] = newInstance.attr(funcName);
+		}
+	}
+	catch (const std::exception&)
+	{
+		ErrorHandle();
+
+		return;
+	}
 }
 
 void ScriptInstance::SetUpEventFunctionLisyt() noexcept

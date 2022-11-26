@@ -27,7 +27,7 @@ enum ScriptFuncType
 
 	Update,
 
-	Max,
+	MaxFunc,
 };
 
 enum ScriptEventFuncType
@@ -41,7 +41,7 @@ enum ScriptEventFuncType
 	OnLoadSceneComplete,
 
 	OnCollisionEnter,
-	
+
 	OnCollisionStay,
 
 	OnCollisionExit,
@@ -51,6 +51,23 @@ enum ScriptEventFuncType
 	OnTriggerStay,
 
 	OnTriggerExit,
+
+	MaxEventFunc,
+};
+
+enum ScriptParamType
+{
+	Int,
+
+	Float,
+
+	Complex,
+
+	Str,
+
+	Boolean,
+
+	Object,
 };
 
 class Script;
@@ -72,7 +89,7 @@ public:
 	void RegisterScript(Script* script) noexcept;
 	void UnRegisterScript(Script* script) noexcept;
 
-	/** 指定関数が登録されている場合実行する。*/
+	/** 指定関数が登録されている場合のみ実行する。*/
 	void CallFunction(Script* script, ScriptFuncType type) noexcept;
 	void CallTickFunction(Script* script, double deltaTime) noexcept;
 
@@ -82,102 +99,110 @@ public:
 
 private:
 
-	/** コンパイルが失敗した場合は null オブジェクトを返す。*/
 	boost::python::object CompileScript(StringView name) noexcept;
 
-	/** スクリプトのコンパイル及び、関数の設定を行う。*/
-	void SetUpFunctionList() noexcept;
-
-	/** スクリプトイベント関数の設定を行う。*/
-	void SetUpEventFunctionLisyt() noexcept;
-
-	/**
-	* ScriptFile から指定関数の取得を行う。
-	* @param name [入力] boost python の仕様により const char* など型はエラーが発生。エラーを回避するためには char[5] などの型指定を行う必要がある。
-	*/
-	template<typename T>
-	bool SetFunction(const T& name, ScriptFuncType type, const boost::python::object& scriptFile) noexcept;
-
-	/**
-	* ScriptFile から指定関数の取得を行う。
-	* @param name [入力] boost python の仕様により const char* など型はエラーが発生。エラーを回避するためには char[5] などの型指定を行う必要がある。
-	*/
-	template<typename T>
-	bool SetEventFunction(const T& name, ScriptEventFuncType type, const boost::python::object& scriptFile) noexcept;
-
-	template<typename Func, typename Type>
-	void SetUpEventFunction(ScriptEventFuncType type);
-
-	/** Script エラー処理を出力する。*/
 	void ErrorHandle() noexcept;
 
 private:
 
-	// * スクリプトを実行する各スクリプトコンポーネント
-	Vector<Script*> m_scripts;
+	/**
+	* @param name	   [入力] boost python の仕様により const char* などの型はエラーが発生。エラーを回避するためには char[5] などの型指定を行う必要がある。
+	* @param classInfo [入力] クラスモジュールの __dict__ から生成した object_attribute を指定する必要あある。
+	*/
+	template<typename T>
+	void InitFunction(const T& name, ScriptFuncType type, const boost::python::object& classInfo) noexcept;
 
+	/**
+	* @param name	   [入力] boost python の仕様により const char* などの型はエラーが発生。エラーを回避するためには char[5] などの型指定を行う必要がある。
+	* @param classInfo [入力] クラスモジュールの __dict__ から生成した object_attribute を指定する必要あある。
+	*/
+	template<typename T>
+	void InitEventFunction(const T& name, ScriptEventFuncType type, const boost::python::object& classInfo) noexcept;
+
+private:
+
+	/** スクリプトのコンパイル及び、関数の設定を行う。*/
+	void PostInit() noexcept;
+
+	void CreateClassInstance(Script* script) noexcept;
+
+	/** スクリプトイベント関数の設定を行う。*/
+	void SetUpEventFunctionLisyt() noexcept;
+
+	template<typename Func, typename Type>
+	void SetUpEventFunction(ScriptEventFuncType type);
+
+private:
+
+	// * スクリプト名はとクラス名は同等である必要がある。
 	String m_scriptName;
 
-	boost::python::object m_scriptFile;
+	// * スクリプトクラスモジュールを保持
+	boost::python::object m_scriptClass;
 
-	// * 関数の設定の有無を保持
-	Array<bool, ScriptFuncType::Max> m_hasFunctionList;
+	// * 関数設定を保持
+	Array<bool, ScriptFuncType::MaxFunc> m_hasFunctionList;
+	Array<String, ScriptFuncType::MaxFunc> m_functionNameList;
 
-	// * 関数オブジェクトリスト
-	Array<boost::python::object, ScriptFuncType::Max> m_functionList;
+	// * イベント関数設定を保持
+	Array<bool, ScriptEventFuncType::MaxEventFunc> m_hasEventFunctionList;
+	Array<String, ScriptEventFuncType::MaxEventFunc> m_eventFunctionNameList;
 
-	// * スクリプトイベント関数を設定したリスナーオブジェクト
-	Map<ScriptEventFuncType, EventListener> m_eventListenerList;
+private:
 
-	// * イベント関数オブジェクトリスト
-	Map<ScriptEventFuncType, boost::python::object> m_eventFuncList;
+	Vector<Script*> m_scripts;
+
+	Map<ScriptEventFuncType, EventListener> m_eventListenerMap;
+
+	struct InstanceData
+	{
+		boost::python::object m_instance;
+
+		Map<uint32_t, boost::python::api::object> m_functionMap;
+
+		Map<uint32_t, boost::python::api::object> m_eventFunctionMap;
+	};
+
+	// * 使用されているスクリプトクラスのインスタンスを保持
+	Map<Script*, InstanceData> m_classInstanceDataMap;
 };
 
 template<typename T>
-FORCEINLINE bool ScriptInstance::SetFunction(const T& name, ScriptFuncType type, const boost::python::object& scriptFile) noexcept
+FORCEINLINE void ScriptInstance::InitFunction(const T& name, ScriptFuncType type, const boost::python::object& classInfo) noexcept
 {
-	if (!scriptFile.contains(name))
+	if (classInfo.contains(name))
 	{
-		return false;
+		m_hasFunctionList[type] = true;
+		m_functionNameList[type] = name;
 	}
-
-	m_hasFunctionList[type] = true;
-	m_functionList[type] = scriptFile[name];
-
-	return true;
 }
 
 template<typename T>
-FORCEINLINE bool ScriptInstance::SetEventFunction(const T& name, ScriptEventFuncType type, const boost::python::object& scriptFile) noexcept
+FORCEINLINE void ScriptInstance::InitEventFunction(const T& name, ScriptEventFuncType type, const boost::python::object& classInfo) noexcept
 {
-	if (!scriptFile.contains(name))
+	if (classInfo.contains(name))
 	{
-		return false;
+		m_hasEventFunctionList[type] = true;
+		m_eventFunctionNameList[type] = name;
 	}
-
-	m_eventFuncList[type] = scriptFile[name];
-	m_eventListenerList[type] = EventListener();
-
-	return true;
 }
 
 template<typename Func, typename Type>
 FORCEINLINE void ScriptInstance::SetUpEventFunction(ScriptEventFuncType type)
 {
-	if (m_eventFuncList.contains(type))
+	if (!m_hasEventFunctionList[type])
 	{
-		auto& eventFunc		  = m_eventFuncList[type];
-		auto& m_eventListener = m_eventListenerList[type];
-
-		m_eventListener.SetFunction([this, type](std::any data) {
-
-			for (auto script : m_scripts)
-			{
-				m_eventFuncList[type](boost::python::ptr(script), std::any_cast<Type>(data));
-			}
-
-		});
-
-		m_eventListener.RegisterToEventManager<Func>();
+		return;
 	}
+
+	m_eventListenerMap[type].SetFunction([this, type](std::any data) {
+
+		for (auto& instanceData : m_classInstanceDataMap)
+		{
+			instanceData.second.m_eventFunctionMap[type](std::any_cast<Type>(data));
+		}
+
+	});
+
+	m_eventListenerMap[type].RegisterToEventManager<Func>();
 }

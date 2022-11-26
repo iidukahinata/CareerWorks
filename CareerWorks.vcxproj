@@ -298,6 +298,7 @@
     <ClCompile Include="Program\SubSystem\Resource\Resources\Scene\Scene.cpp" />
     <ClCompile Include="Program\SubSystem\Resource\Resources\Script\ScriptInstance.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\AutoDestroySystem.cpp" />
+    <ClCompile Include="Program\SubSystem\Scene\Component\ComponentCollection.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\Components\AudioListener.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\Components\AudioSpeaker.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\Components\Camera.cpp" />
@@ -563,6 +564,7 @@
     <ClInclude Include="Program\SubSystem\Resource\Resources\Scene\Scene.h" />
     <ClInclude Include="Program\SubSystem\Resource\Resources\Script\ScriptInstance.h" />
     <ClInclude Include="Program\SubSystem\Scene\AutoDestroySystem.h" />
+    <ClInclude Include="Program\SubSystem\Scene\Component\ComponentCollection.h" />
     <ClInclude Include="Program\SubSystem\Scene\Component\Components\AudioListener.h" />
     <ClInclude Include="Program\SubSystem\Scene\Component\Components\AudioSpeaker.h" />
     <ClInclude Include="Program\SubSystem\Scene\Component\Components\Camera.h" />

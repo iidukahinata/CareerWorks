@@ -10,6 +10,10 @@
 #include "LightMap.h"
 #include "SubSystem/Window/Window.h"
 #include "GraphicsAPI/D3D12/D3D12GraphicsDevice.h"
+#include "SubSystem/Scene/Component/ComponentCollection.h"
+#include "SubSystem/Scene/Component/Components/Camera.h"
+#include "SubSystem/Scene/Component/Components/Light.h"
+#include "SubSystem/Scene/Component/Components/RenderObject.h"
 #include "SubSystem/Scene/Component/Components/PostProcessEffect.h"
 
 bool Renderer::Initialize()
@@ -20,6 +24,13 @@ bool Renderer::Initialize()
 
 	// デバイス初期化
 	D3D12GraphicsDevice::Get().Init(handle, width, height, Window::Get().IsFullscreen());
+
+	// register component
+	ComponentCollection::Register<Camera, Camera>();
+	ComponentCollection::Register<Light, Light>();
+	ComponentCollection::Register<MeshRender, MeshRender>();
+	ComponentCollection::Register<ModelRender, ModelRender>();
+	ComponentCollection::Register<PostProcessEffect, PostProcessEffect>();
 
 	return true;
 }

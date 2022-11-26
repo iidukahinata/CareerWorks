@@ -8,6 +8,8 @@
 
 #include "FMODAudio.h"
 #include "../AudioHelper.h"
+#include "SubSystem/Scene/Component/ComponentCollection.h"
+#include "SubSystem/Scene/Component/Components/AudioSpeaker.h"
 #include "Subsystem/Scene/Component/Components/AudioListener.h"
 
 bool FMODAudio::Initialize()
@@ -18,6 +20,10 @@ bool FMODAudio::Initialize()
 	constexpr auto maxChannel = 64;
 	AUDIO_EORROR_CHECK(FMOD::System_Create(&m_system));
 	AUDIO_EORROR_CHECK(m_system->init(maxChannel, FMOD_INIT_NORMAL, nullptr));
+
+	// register component
+	ComponentCollection::Register<AudioSpeaker, AudioSpeaker>();
+	ComponentCollection::Register<AudioListener, AudioListener>();
 
 	return true;
 }

@@ -10,6 +10,8 @@
 #include "Module/ModuleHelper.h"
 #include "SubSystem/Resource/ResourceManager.h"
 #include "SubSystem/Resource/Resources/Script/ScriptInstance.h"
+#include "SubSystem/Scene/Component/ComponentCollection.h"
+#include "SubSystem/Scene/Component/Components/Script.h"
 
 #define BOOST_PYTHON_STATIC_LIB
 #include <boost/python.hpp>
@@ -21,6 +23,10 @@ bool ScriptEngine::Initialize()
 
 	InitModule();
 	Py_Initialize();
+
+	// register component
+	ComponentCollection::Register<Script, Script>();
+
 	return true;
 }
 

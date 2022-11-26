@@ -7,6 +7,8 @@
 
 
 #include "PhysX.h"
+#include "SubSystem/Scene/Component/ComponentCollection.h"
+#include "SubSystem/Scene/Component/Components/Collider.h"
 #include "SubSystem/Scene/Component/Components/RigidBody.h"
 
 physx::PxFilterFlags FilterShader(
@@ -68,6 +70,10 @@ bool PhysX::Initialize()
     ASSERT(m_cudaContextManager);
 
     CreateScene();
+
+    // register component
+    ComponentCollection::Register<Collider, Collider>();
+    ComponentCollection::Register<RigidBody, RigidBody>();
 
     return true;
 }

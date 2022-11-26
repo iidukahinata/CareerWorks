@@ -2,51 +2,16 @@
 * @file    ComponentFactory.cpp
 * @brief
 *
-* @date	   2022/08/02 2022年度初版
+* @date	   2022/11/27 2022年度初版
 */
 
 
 #include "ComponentFactory.h"
-
-// Rendering
-#include "../Component/Components/Camera.h"
-#include "../Component/Components/Light.h"
-#include "../Component/Components/RenderObject.h"
-#include "../Component/Components/PostProcessEffect.h"
-
-// Audio
-#include "../Component/Components/AudioListener.h"
-#include "../Component/Components/AudioSpeaker.h"
-
-// Physics
-#include "../Component/Components/Collider.h"
-#include "../Component/Components/RigidBody.h"
-
-// Script
-#include "../Component/Components/Script.h"
-
-#define CASE_CREATE_COMPONENT(CLASS, COMPONENT)           case GET_HASH(CLASS): COMPONENT = std::make_unique<CLASS>(); break;
-#define CASE_CREATE_ISA_COMPONENT(CLASS, NAME, COMPONENT) case GetHashFromCRC(NAME): COMPONENT = std::make_unique<CLASS>(); break;
+#include "../Component/ComponentCollection.h"
 
 UniquePtr<IComponent> ComponentFactory::Create(GameObject* gameObject, StringView name) noexcept
 {
-    UniquePtr<IComponent> component;
-    const ComponentType type(name);
-
-    switch (type.Hash)
-    {
-    CASE_CREATE_COMPONENT(Light             , component);
-    CASE_CREATE_COMPONENT(Camera            , component);
-    CASE_CREATE_COMPONENT(MeshRender        , component);
-    CASE_CREATE_COMPONENT(ModelRender       , component);
-    CASE_CREATE_COMPONENT(PostProcessEffect , component);
-    CASE_CREATE_COMPONENT(AudioListener     , component);
-    CASE_CREATE_COMPONENT(AudioSpeaker      , component);
-    CASE_CREATE_COMPONENT(RigidBody         , component);
-    CASE_CREATE_COMPONENT(Collider          , component);
-    CASE_CREATE_COMPONENT(Script            , component);
-    default: break;
-    }
+    UniquePtr<IComponent> component = ComponentCollection::CreateComponent(name);
 
     if (component)
     {

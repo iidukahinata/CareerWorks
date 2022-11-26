@@ -17,24 +17,7 @@ class ScriptInstance;
 class Script : public IComponent
 {
 	COMPLETED_DEVELOPMENT()
-		SUB_CLASS(Script)
-private:
-
-	enum ParamType
-	{
-		Int,
-
-		Float,
-
-		Complex,
-
-		Str,
-
-		Boolean,
-
-		Object,
-	};
-
+	SUB_CLASS(Script)
 public:
 
 	void Serialized(FileStream* file) const override;
@@ -58,10 +41,4 @@ public:
 private:
 
 	ScriptInstance* m_scriptInstance = nullptr;
-
-	// * 使用されているスクリプトクラスを保持
-	boost::python::object m_classInstance;
-
-	// * クラスパラメーターを保持
-	Unordered_Map<String, boost::python::api::object_item> m_items;
 };
