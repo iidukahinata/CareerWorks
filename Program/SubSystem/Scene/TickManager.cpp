@@ -21,9 +21,7 @@ void TickManager::Initialize() noexcept
 	m_anyThreadTask.SetFunction([this]()
 	{
 #ifdef IS_EDITOR
-			if (ImTimeLine::ShowTimeLine()) {
-				TIME_LINE_WATCH_START(TaskThread, "Component Update");
-			}
+		TIME_LINE_WATCH_START(TaskThread, "Component Update");
 #endif // IS_EDITOR
 
 		for (const auto& task : m_anyThreadTaskList)
@@ -34,9 +32,7 @@ void TickManager::Initialize() noexcept
 		SetEvent(m_hEvent);
 
 #ifdef IS_EDITOR
-		if (ImTimeLine::ShowTimeLine()) {
-			TIME_LINE_WATCH_END(TaskThread);
-		}
+		TIME_LINE_WATCH_END(TaskThread);
 #endif // IS_EDITOR
 	});
 }
@@ -61,9 +57,7 @@ void TickManager::Stop() noexcept
 void TickManager::Tick(double deltaTime) noexcept
 {
 #ifdef IS_EDITOR
-	if (ImTimeLine::ShowTimeLine()) {
-		TIME_LINE_WATCH_START(MainThread, "Component Update");
-	}
+	TIME_LINE_WATCH_START(MainThread, "Component Update");
 #endif // IS_EDITOR
 
 	CreateTaskList(deltaTime);
@@ -95,9 +89,7 @@ void TickManager::Tick(double deltaTime) noexcept
 	}
 
 #ifdef IS_EDITOR
-	if (ImTimeLine::ShowTimeLine()) {
-		TIME_LINE_WATCH_END(MainThread);
-	}
+	TIME_LINE_WATCH_END(MainThread);
 #endif // IS_EDITOR
 }
 

@@ -36,9 +36,7 @@ void FMODAudio::Shutdown()
 void FMODAudio::Update() const noexcept
 {
 #ifdef IS_EDITOR
-	if (ImTimeLine::ShowTimeLine()) {
-		TIME_LINE_WATCH_START(MainThread, "Audio Update");
-	}
+	TIME_LINE_WATCH_START(MainThread, "Audio Update");
 #endif // IS_EDITOR
 
 	ASSERT(m_system);
@@ -59,9 +57,7 @@ void FMODAudio::Update() const noexcept
 	AUDIO_EORROR_CHECK(m_system->update());
 
 #ifdef IS_EDITOR
-	if (ImTimeLine::ShowTimeLine()) {
-		TIME_LINE_WATCH_END(MainThread);
-	}
+	TIME_LINE_WATCH_END(MainThread);
 #endif // IS_EDITOR
 }
 

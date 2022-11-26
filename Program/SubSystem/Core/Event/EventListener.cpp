@@ -31,6 +31,11 @@ void EventListener::SetFunction(Func&& func) noexcept
 
 void EventListener::RegisterToEventManager(const EventType& type) noexcept
 {
+	if (m_eventName == type.Name)
+	{
+		return;
+	}
+
 	m_eventName = type.Name;
 	EventManager::Get().AddEventLisener(this, type);
 }

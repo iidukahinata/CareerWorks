@@ -96,9 +96,7 @@ void DirectInput::Shutdown()
 void DirectInput::Update() noexcept
 {
 #ifdef IS_EDITOR
-	if (ImTimeLine::ShowTimeLine()) {
-		TIME_LINE_WATCH_START(MainThread, "Input Update");
-	}
+	TIME_LINE_WATCH_START(MainThread, "Input Update");
 #endif // IS_EDITOR
 
 	const auto oldKeybuffer = m_keybuffer;
@@ -115,7 +113,7 @@ void DirectInput::Update() noexcept
 	for (int i = 0; i < m_previousKeyState.max_size(); ++i)
 	{
 		// press
-		if (m_previousKeyState[i] && !oldpreviousKeyState[i])
+		if (m_previousKeyState[i])
 		{
 			NotifyPressKey(static_cast<Button::KeyAndMouse>(i));
 		}
@@ -128,9 +126,7 @@ void DirectInput::Update() noexcept
 	}
 
 #ifdef IS_EDITOR
-	if (ImTimeLine::ShowTimeLine()) {
-		TIME_LINE_WATCH_END(MainThread);
-	}
+	TIME_LINE_WATCH_END(MainThread);
 #endif // IS_EDITOR
 }
 

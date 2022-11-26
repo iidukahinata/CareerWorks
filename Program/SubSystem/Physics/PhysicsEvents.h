@@ -54,7 +54,7 @@ private:
 class CollisionExitEvent : public IEvent
 {
 	COMPLETED_DEVELOPMENT()
-		SUB_CLASS(CollisionExitEvent)
+	SUB_CLASS(CollisionExitEvent)
 public:
 
 	CollisionExitEvent(RigidBody* rigidBodyA, RigidBody* rigidBodyB);

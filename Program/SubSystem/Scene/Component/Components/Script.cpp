@@ -73,6 +73,12 @@ void Script::OnStart()
 	if (m_scriptInstance)
 	{
 		m_scriptInstance->CallFunction(this, ScriptFuncType::Start);
+		m_scriptInstance->RegisterScript(this);
+
+		if (m_scriptInstance->HasTickFunction())
+		{
+			m_tickFunction.RegisterToTickManager();
+		}
 	}
 }
 
@@ -83,6 +89,7 @@ void Script::OnStop()
 	if (m_scriptInstance)
 	{
 		m_scriptInstance->CallFunction(this, ScriptFuncType::Stop);
+		m_scriptInstance->UnRegisterScript(this);
 
 		if (m_scriptInstance->HasTickFunction())
 		{
@@ -109,34 +116,48 @@ void Script::Tick(double deltaTime)
 
 void Script::SetScript(ScriptInstance* scriptInstance) noexcept
 {
-	m_scriptInstance = scriptInstance;
-	if (!m_scriptInstance)
+	if (m_scriptInstance == scriptInstance)
 	{
 		return;
 	}
 
-	if (m_scriptInstance->HasTickFunction())
+	if (m_scriptInstance && IsBeginPlay())
 	{
-		m_tickFunction.RegisterToTickManager();
+		m_scriptInstance->UnRegisterScript(this);
+	}
+
+	m_scriptInstance = scriptInstance;
+
+	if (m_scriptInstance && IsBeginPlay())
+	{
+		m_scriptInstance->RegisterScript(this);
+
+		if (m_scriptInstance->HasTickFunction())
+		{
+			m_tickFunction.RegisterToTickManager();
+		}
 	}
 
 	// call functions from component state
-	{
-		m_scriptInstance->CallFunction(this, ScriptFuncType::Init);
-
-		if (IsRegistered())
-		{
-			m_scriptInstance->CallFunction(this, ScriptFuncType::Register);
-		}
-
-		if (IsBeginPlay())
-		{
-			m_scriptInstance->CallFunction(this, ScriptFuncType::Start);
-		}
-	}
+	CallInitFunctions();
 }
 
 ScriptInstance* Script::GetScript() const noexcept
 {
 	return m_scriptInstance;
+}
+
+void Script::CallInitFunctions()
+{
+	m_scriptInstance->CallFunction(this, ScriptFuncType::Init);
+
+	if (IsRegistered())
+	{
+		m_scriptInstance->CallFunction(this, ScriptFuncType::Register);
+	}
+
+	if (IsBeginPlay())
+	{
+		m_scriptInstance->CallFunction(this, ScriptFuncType::Start);
+	}
 }

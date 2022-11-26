@@ -237,10 +237,15 @@ void GameObject::RemoveComponent(IComponent* component) noexcept
 
 void GameObject::GetAllComponent(Vector<IComponent*>& components) const noexcept
 {
-	components.resize(m_components.size());
+	components.reserve(m_components.size());
 
 	for (const auto& componentInfo : m_components)
 	{
+		if (componentInfo.second->RequestRemove())
+		{
+			continue;
+		}
+
 		components.push_back(componentInfo.second.get());
 	}
 }
@@ -305,9 +310,9 @@ bool GameObject::RequestAutoDestroy() const noexcept
 	}
 
 	bool request = false;
-	for (const auto& componentInfo : m_components)
+	for (const auto& component : m_components)
 	{
-		if (!componentInfo.second->Erasable())
+		if (!component.second->Erasable())
 		{
 			request = true;
 		}

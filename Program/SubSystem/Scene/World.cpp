@@ -49,9 +49,7 @@ void World::Shutdown()
 void World::Update() noexcept
 {
 #ifdef IS_EDITOR
-	if (ImTimeLine::ShowTimeLine()) {
-		TIME_LINE_WATCH_START(TaskThread, "Component Update");
-	}
+	TIME_LINE_WATCH_START(TaskThread, "Component Update");
 #endif // IS_EDITOR
 
 	for (auto resourceHandle : m_resourceHandles)
@@ -63,9 +61,7 @@ void World::Update() noexcept
 	}
 
 #ifdef IS_EDITOR
-	if (ImTimeLine::ShowTimeLine()) {
-		TIME_LINE_WATCH_END(TaskThread);
-	}
+	TIME_LINE_WATCH_END(TaskThread);
 #endif // IS_EDITOR
 }
 
@@ -326,13 +322,11 @@ void World::StartupListenerObjects() noexcept
 		case EditorState::Run:
 			m_currentScene->Save(tempScenePath);
 			ChangeWorldType(WorldType::PlayEditor);
-			TickManager::Get().Start();
 			break;
 
 		case EditorState::Stop:
 			ChangeWorldType(WorldType::Editor);
 			m_currentScene->Load(tempScenePath);
-			TickManager::Get().Stop();
 			break;
 
 		case EditorState::Pause:

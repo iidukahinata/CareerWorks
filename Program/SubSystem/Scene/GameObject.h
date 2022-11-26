@@ -78,6 +78,7 @@ public:
 	void SetID(uint32_t id) noexcept;
 	uint32_t GetID() const noexcept;
 
+	/** true 時は AutoDestroySystem への受託の申請要請 */
 	bool RequestAutoDestroy() const noexcept;
 
 	/** アクセス */
