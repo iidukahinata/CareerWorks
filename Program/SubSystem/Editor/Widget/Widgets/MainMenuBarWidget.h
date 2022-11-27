@@ -10,6 +10,7 @@
 #include "../Widget.h"
 
 class World;
+class IPhysics;
 class IRenderer;
 class ResourceManager;
 class Material;
@@ -27,8 +28,7 @@ public:
 
 private:
 
-	/** 各設定を行える Window の表示を行う。*/
-	void ShowSettingsWindow() noexcept;
+	void ShowMainMenuBar() noexcept;
 
 	/** 新しい Scene の生成と名前指定 */
 	void ShowNewSceneModal() noexcept;
@@ -36,11 +36,17 @@ private:
 	/** セーブ先 Scene 名の取得を行う。*/
 	void ShowSaveAsModal() noexcept;
 
-	/** プログラムの再起動確認 Window */
-	void ShowRestartSystemModal() noexcept;
-
 	/** フルスクリーン時に ImGui で WindowMenu を表示 */
 	void ShowWindowMenu() noexcept;
+
+	/** 各設定を行える Window の表示を行う。*/
+	void ShowSettingsWindow() noexcept;
+	void ShowSubsystemSettings() noexcept;
+	void ShowPhysicsSettings() noexcept;
+	void ShowRendererSettings() noexcept;
+
+	/** プログラムの再起動確認 Window */
+	void ShowRestartSystemModal() noexcept;
 
 private:
 
@@ -71,6 +77,8 @@ private:
 private:
 
 	World* m_world = nullptr;
+
+	IPhysics* m_physics = nullptr;
 
 	IRenderer* m_renderer = nullptr;
 

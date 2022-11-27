@@ -43,6 +43,9 @@ public:
 
 private:
 
+	void LoadEditorSettings();
+	void SaveEditorSettings();
+
 	/** imgui で使用される各データの初期化 */
 	bool SetUpImGuiObjects(void* finalFrameSRV) noexcept;
 	void SetUpGuiStyle() noexcept;

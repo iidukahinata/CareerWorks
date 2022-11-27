@@ -85,7 +85,9 @@ namespace ImTimeLine
         m_maxDepth = 0;
         m_currentDepth = 0;
 
+        m_timelineObjects[g_currentTimeLinePos] = TimeLineObject();
         m_timelineObjects[g_currentTimeLinePos].startTime = 0.0f;
+
         m_stopwatch.Start();
     }
 
@@ -109,6 +111,11 @@ namespace ImTimeLine
     {
         ASSERT(m_currentLogs.size());
         m_currentLogs.top().endTime = m_stopwatch.GetRap(Milli);
+
+        if (m_currentLogs.top().label == "Update")
+        {
+            int i = 0;
+        }
 
         // add timeLine log
         auto& timelineObjects = m_timelineObjects[g_currentTimeLinePos];

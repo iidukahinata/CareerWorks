@@ -74,18 +74,13 @@ long Engine::MainLoop()
 		if (m_timer->ReachedNextFrame())
 		{
 #ifdef IS_EDITOR
-			auto showTimeLine = ImTimeLine::ShowTimeLine();
-			if (showTimeLine) {
-				TIME_LINE_WATCH_START(MainThread, "Update");
-			}
+			TIME_LINE_NEW_FRAME();
 #endif // IS_EDITOR
 
 			Tick();
 
 #ifdef IS_EDITOR
-			if (showTimeLine) {
-				TIME_LINE_WATCH_END(MainThread);
-			}
+			TIME_LINE_END_FRAME();
 #endif // IS_EDITOR
 		}
 	}
@@ -211,6 +206,13 @@ void Engine::Tick() const noexcept
 {
 	RenderingThread::BegineFrame();
 
+#ifdef IS_EDITOR
+	auto showTimeLine = ImTimeLine::ShowTimeLine();
+	if (showTimeLine) {
+		TIME_LINE_WATCH_START(MainThread, "Update");
+	}
+#endif // IS_EDITOR
+
 	JobSystem::Get().Execute(m_timer->GetDeltaTime(), FunctionType::PreUpdate);
 
 	JobSystem::Get().Execute(m_timer->GetDeltaTime(), FunctionType::PrePhysics);
@@ -220,6 +222,12 @@ void Engine::Tick() const noexcept
 	JobSystem::Get().Execute(m_timer->GetDeltaTime(), FunctionType::EndPhysics);
 
 	JobSystem::Get().Execute(m_timer->GetDeltaTime(), FunctionType::PostUpdate);
+
+#ifdef IS_EDITOR
+	if (showTimeLine) {
+		TIME_LINE_WATCH_END(MainThread);
+	}
+#endif // IS_EDITOR
 
 	// vsync
 	RenderingThread::EndFrame();

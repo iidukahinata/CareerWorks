@@ -45,7 +45,7 @@ void ProfilerWidget::ShowTimeLine() noexcept
 	if (size.y > 100) { size.y -= 70; size.y /= 3.f; }
 	else { size.y = 0.0f; mainThread = taskThread = renderingThread = ""; }
 
-	ImTimeLine::DrawTimeLine(ImTimeLine::MainThread, mainThread, nullptr, 0, 0.f, 20.0f, size);
-	ImTimeLine::DrawTimeLine(ImTimeLine::TaskThread, taskThread, nullptr, 0, 0.f, 20.0f, size);
-	ImTimeLine::DrawTimeLine(ImTimeLine::RenderingThread, renderingThread, nullptr, 0, 0.f, 20.0f, size);
+	ImTimeLine::DrawTimeLine(ImTimeLine::MainThread		, mainThread	 , nullptr, 0, 0, 20, size);
+	ImTimeLine::DrawTimeLine(ImTimeLine::TaskThread		, taskThread	 , nullptr, 0, 0, 20, size);
+	ImTimeLine::DrawTimeLine(ImTimeLine::RenderingThread, renderingThread, nullptr, 0, 0, 20, size);
 }

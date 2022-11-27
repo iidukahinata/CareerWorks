@@ -57,10 +57,6 @@ void RenderingThread::Stop() noexcept
 
 void RenderingThread::BegineFrame() noexcept
 {
-#ifdef IS_EDITOR
-	TIME_LINE_NEW_FRAME();
-#endif // IS_EDITOR
-
 	// 描画コマンド発行
 	RegisterRenderCommand([] {
 
@@ -77,10 +73,6 @@ void RenderingThread::EndFrame() noexcept
 {
 	// 描画終了まで待機
 	m_renderCommandFance.WaitForSingle();
-
-#ifdef IS_EDITOR
-	TIME_LINE_END_FRAME();
-#endif // IS_EDITOR
 }
 
 void RenderingThread::WiatForRenderCommand() noexcept

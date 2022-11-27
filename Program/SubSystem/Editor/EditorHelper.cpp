@@ -41,6 +41,10 @@ void EditorHelper::BegineRenderer() noexcept
 void EditorHelper::Shutdown() noexcept
 {
 	const auto resourceManager = g_context->GetSubsystem<ResourceManager>();
+	if (!resourceManager)
+	{
+		return;
+	}
 
 	for (const auto& resource : m_iconTextures)
 	{

@@ -11,6 +11,7 @@
 #include "SubSystem/Scene/World.h"
 #include "SubSystem/Window/Window.h"
 #include "SubSystem/Editor/DragDrop.h"
+#include "SubSystem/Physics/IPhysics.h"
 #include "SubSystem/Renderer/IRenderer.h"
 #include "SubSystem/Resource/ResourceManager.h"
 #include "SubSystem/Resource/Resources/Scene/Scene.h"
@@ -21,6 +22,9 @@ void MainMenuBarWidget::PostInitialize()
     m_world = GetContext()->GetSubsystem<World>();
     ASSERT(m_world);
 
+    m_physics = GetContext()->GetSubsystem<IPhysics>();
+    ASSERT(m_physics);
+
     m_renderer = GetContext()->GetSubsystem<IRenderer>();
     ASSERT(m_renderer);
 
@@ -30,31 +34,73 @@ void MainMenuBarWidget::PostInitialize()
 
 void MainMenuBarWidget::Draw()
 {
+    ShowMainMenuBar();
+
+    ShowNewSceneModal();
+    ShowSaveAsModal();
+
+    ShowSettingsWindow();
+}
+
+void MainMenuBarWidget::Serialized(FileStream* file) const
+{
+    if (!m_renderer)
+    {
+        return;
+    }
+
+    const auto skybox = m_renderer->GetSkyBox();
+    if (auto material = skybox->GetMaterial())
+    {
+        file->Write(material->GetFilePath());
+    }
+    else
+    {
+        file->Write(String(""));
+    }
+}
+
+void MainMenuBarWidget::Deserialized(FileStream* file)
+{
+    String materialPath;
+    file->Read(&materialPath);
+    
+    if (!materialPath.empty())
+    {
+        if (auto resourceData = m_resourceManager->GetResourceData(materialPath))
+        {
+            m_renderer->GetSkyBox()->SetMaterial(LoadResource<Material>(resourceData));
+        }
+    }
+}
+
+void MainMenuBarWidget::ShowMainMenuBar() noexcept
+{
     auto saveScene = false;
     auto saveAsScene = false;
     auto newScene = false;
 
     // Input Handle
-    newScene    |= ImGui::IsKeyDown(ImGuiKey_ModCtrl) &&  ImGui::IsKeyReleased(ImGuiKey_N);
-    saveScene   |= ImGui::IsKeyDown(ImGuiKey_ModCtrl) && !ImGui::IsKeyDown(ImGuiKey_ModShift) && ImGui::IsKeyReleased(ImGuiKey_S);
-    saveAsScene |= ImGui::IsKeyDown(ImGuiKey_ModCtrl) &&  ImGui::IsKeyDown(ImGuiKey_ModShift) && ImGui::IsKeyReleased(ImGuiKey_S);
+    newScene |= ImGui::IsKeyDown(ImGuiKey_ModCtrl) && ImGui::IsKeyReleased(ImGuiKey_N);
+    saveScene |= ImGui::IsKeyDown(ImGuiKey_ModCtrl) && !ImGui::IsKeyDown(ImGuiKey_ModShift) && ImGui::IsKeyReleased(ImGuiKey_S);
+    saveAsScene |= ImGui::IsKeyDown(ImGuiKey_ModCtrl) && ImGui::IsKeyDown(ImGuiKey_ModShift) && ImGui::IsKeyReleased(ImGuiKey_S);
 
     ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.30f, 0.30f, 0.30f, 1.00f));
     ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.20f, 0.20f, 0.20f, 0.10f));
 
-	if (ImGui::BeginMainMenuBar())
-	{
+    if (ImGui::BeginMainMenuBar())
+    {
         if (ImGui::BeginMenu("File"))
         {
-            if (ImGui::MenuItem("New", "Ctrl+N")) 
+            if (ImGui::MenuItem("New", "Ctrl+N"))
             {
                 newScene = true;
             }
-            if (ImGui::MenuItem("Save", "Ctrl+S")) 
+            if (ImGui::MenuItem("Save", "Ctrl+S"))
             {
                 saveScene = true;
             }
-            if (ImGui::MenuItem("Save As..", "Ctrl+Shift+S")) 
+            if (ImGui::MenuItem("Save As..", "Ctrl+Shift+S"))
             {
                 saveAsScene = true;
             }
@@ -95,7 +141,7 @@ void MainMenuBarWidget::Draw()
         }
 
         ImGui::EndMainMenuBar();
-	}
+    }
 
     ImGui::PopStyleColor();
     ImGui::PopStyleColor();
@@ -114,105 +160,6 @@ void MainMenuBarWidget::Draw()
     {
         ImGui::OpenPopup("Save as");
     }
-
-    ShowNewSceneModal();
-    ShowSaveAsModal();
-
-    ShowSettingsWindow();
-}
-
-void MainMenuBarWidget::Serialized(FileStream* file) const
-{
-    if (!m_renderer)
-    {
-        return;
-    }
-
-    const auto skybox = m_renderer->GetSkyBox();
-    if (auto material = skybox->GetMaterial())
-    {
-        file->Write(material->GetFilePath());
-    }
-    else
-    {
-        file->Write(String(""));
-    }
-}
-
-void MainMenuBarWidget::Deserialized(FileStream* file)
-{
-    String materialPath;
-    file->Read(&materialPath);
-    
-    if (!materialPath.empty())
-    {
-        if (auto resourceData = m_resourceManager->GetResourceData(materialPath))
-        {
-            m_renderer->GetSkyBox()->SetMaterial(LoadResource<Material>(resourceData));
-        }
-    }
-}
-
-void MainMenuBarWidget::ShowSettingsWindow() noexcept
-{
-    constexpr auto offsetPos = 130;
-
-    if (!m_openSettginsWindow)
-    {
-        return;
-    }
-
-    ImGui::SetNextWindowPos(ImVec2(500, 250), ImGuiCond_FirstUseEver);
-    ImGui::SetNextWindowSize(ImVec2(390, 480), ImGuiCond_FirstUseEver);
-
-    ImGui::Begin("Settings", &m_openSettginsWindow, ImGuiWindowFlags_NoCollapse);
-
-    if (ImGui::CollapsingHeader("SubSystem", ImGuiTreeNodeFlags_DefaultOpen))
-    {
-        constexpr auto rendererTypeCombo = "Forward\0Deferred\0\0";
-        constexpr auto inputTypeCombo    = "Dirext\0\0";
-        constexpr auto audioTypeCombo    = "FMOD\0\0";
-        constexpr auto physicsTypeCombo  = "PhysX\0\0";
-
-        auto rendererType = Config::GetRendererType();
-        auto inputType    = Config::GetInputType();
-        auto audioType    = Config::GetAudioType();
-        auto physicsType  = Config::GetPhysicsType();
-
-        ImGui::Text("RendererType"); ImGui::SameLine(offsetPos);
-        auto inputRenderer = ImGui::Combo("##RendererType", (int*)(&rendererType), rendererTypeCombo);
-
-        ImGui::Text("InputType"); ImGui::SameLine(offsetPos);
-        auto inputInput = ImGui::Combo("##InputType", (int*)(&inputType), inputTypeCombo);
-
-        ImGui::Text("AudioType"); ImGui::SameLine(offsetPos);
-        auto inputAudio = ImGui::Combo("##AudioType", (int*)(&audioType), audioTypeCombo);
-
-        ImGui::Text("PhysicsType"); ImGui::SameLine(offsetPos);
-        auto inputPhysics = ImGui::Combo("##PhysicsType", (int*)(&physicsType), physicsTypeCombo);
-
-        if (inputRenderer) Config::RegisterRendererSystem(rendererType);
-        if (inputInput)    Config::RegisterInputSystem(inputType);
-        if (inputAudio)    Config::RegisterAudioSystem(audioType);
-        if (inputPhysics)  Config::RegisterPhysicsSystem(physicsType);
-
-        // change system
-        if (inputRenderer || inputInput || inputAudio || inputPhysics)
-        {
-            ImGui::OpenPopup("Change System");
-        }
-
-        ShowRestartSystemModal();
-    }
-
-    if (ImGui::CollapsingHeader("Renderer", ImGuiTreeNodeFlags_DefaultOpen))
-    {
-        auto skybox  = m_renderer->GetSkyBox();
-        auto material = skybox->GetMaterial();
-        ShowMaterial("sky box", material, [skybox](auto data) { skybox->SetMaterial(data); });
-    }
-
-    ImGui::End();
 }
 
 void MainMenuBarWidget::ShowNewSceneModal() noexcept
@@ -300,46 +247,6 @@ void MainMenuBarWidget::ShowSaveAsModal() noexcept
     }
 }
 
-void MainMenuBarWidget::ShowRestartSystemModal() noexcept
-{
-    const auto center = ImGui::GetMainViewport()->GetCenter();
-    ImGui::SetNextWindowPos(ImVec2(center.x - 150, center.y), ImGuiCond_Once);
-    ImGui::SetNextWindowSize(ImVec2(470, 115), ImGuiCond_Once);
-
-    if (ImGui::BeginPopupModal("Change System"))
-    {
-        auto text1 = ConvertToJapanese("System を変更するためにプログラムを再起動しますか？");
-        auto text2 = ConvertToJapanese("シーンを変更している場合、保存することをおすすめします。");
-
-        ImGui::Text(text1.c_str());
-        ImGui::Text(text2.c_str());
-
-        ImGui::Text("");
-        auto isRestart        = ImGui::Button("Restart"); ImGui::SameLine();
-        auto isRestartAndSave = ImGui::Button("Restart And Save"); ImGui::SameLine();
-        auto isCancel         = ImGui::Button("Cancel");
-
-        if (isRestart || isRestartAndSave)
-        {
-            if (auto scene = m_world->GetCurrentScene())
-            {
-                if (isRestartAndSave)
-                    scene->Update();
-            }
-
-            NotifyEvent<DestroyWindowEvent>();
-            system("start CareerWorks.exe");
-        }
-
-        if (isRestart || isRestartAndSave || isCancel)
-        {
-            ImGui::CloseCurrentPopup();
-        }
-
-        ImGui::EndPopup();
-    }
-}
-
 void MainMenuBarWidget::ShowWindowMenu() noexcept
 {
     auto width = ImGui::GetWindowWidth();
@@ -368,6 +275,142 @@ void MainMenuBarWidget::ShowWindowMenu() noexcept
     min = ImGui::GetItemRectMin();
     max = ImGui::GetItemRectMax();
     draw_list->AddRect(min, max, IM_COL32(100, 100, 100, 200), 0, 0, 2);
+}
+
+void MainMenuBarWidget::ShowSettingsWindow() noexcept
+{
+    constexpr auto offsetPos = 130;
+
+    if (!m_openSettginsWindow)
+    {
+        return;
+    }
+
+    ImGui::SetNextWindowPos(ImVec2(500, 250), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(390, 480), ImGuiCond_FirstUseEver);
+
+    ImGui::Begin("Settings", &m_openSettginsWindow, ImGuiWindowFlags_NoCollapse);
+
+    ShowSubsystemSettings();
+    ShowRendererSettings();
+    ShowPhysicsSettings();
+
+    ImGui::End();
+}
+
+void MainMenuBarWidget::ShowSubsystemSettings() noexcept
+{
+    constexpr auto offsetPos = 130;
+
+    if (ImGui::CollapsingHeader("SubSystem", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        constexpr auto rendererTypeCombo = "Forward\0Deferred\0\0";
+        constexpr auto inputTypeCombo = "Dirext\0\0";
+        constexpr auto audioTypeCombo = "FMOD\0\0";
+        constexpr auto physicsTypeCombo = "PhysX\0\0";
+
+        auto rendererType = Config::GetRendererType();
+        auto inputType = Config::GetInputType();
+        auto audioType = Config::GetAudioType();
+        auto physicsType = Config::GetPhysicsType();
+
+        ImGui::Text("RendererType"); ImGui::SameLine(offsetPos);
+        auto inputRenderer = ImGui::Combo("##RendererType", (int*)(&rendererType), rendererTypeCombo);
+
+        ImGui::Text("InputType"); ImGui::SameLine(offsetPos);
+        auto inputInput = ImGui::Combo("##InputType", (int*)(&inputType), inputTypeCombo);
+
+        ImGui::Text("AudioType"); ImGui::SameLine(offsetPos);
+        auto inputAudio = ImGui::Combo("##AudioType", (int*)(&audioType), audioTypeCombo);
+
+        ImGui::Text("PhysicsType"); ImGui::SameLine(offsetPos);
+        auto inputPhysics = ImGui::Combo("##PhysicsType", (int*)(&physicsType), physicsTypeCombo);
+
+        if (inputRenderer) Config::RegisterRendererSystem(rendererType);
+        if (inputInput)    Config::RegisterInputSystem(inputType);
+        if (inputAudio)    Config::RegisterAudioSystem(audioType);
+        if (inputPhysics)  Config::RegisterPhysicsSystem(physicsType);
+
+        // change system
+        if (inputRenderer || inputInput || inputAudio || inputPhysics)
+        {
+            ImGui::OpenPopup("Change System");
+        }
+
+        ShowRestartSystemModal();
+    }
+
+    ImGui::Separator();
+}
+
+void MainMenuBarWidget::ShowPhysicsSettings() noexcept
+{
+    constexpr auto offsetPos = 130;
+
+    if (ImGui::CollapsingHeader("Physics", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        auto gravity = m_physics->GetGravity();
+
+        ImGui::Text("gravity"); ImGui::SameLine(offsetPos);
+        if (ImGui::InputFloat3("##gravity", &gravity.x))
+        {
+            m_physics->SetGravity(gravity);
+        }
+    }
+
+    ImGui::Separator();
+}
+
+void MainMenuBarWidget::ShowRendererSettings() noexcept
+{
+    if (ImGui::CollapsingHeader("Renderer", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        auto skybox = m_renderer->GetSkyBox();
+        auto material = skybox->GetMaterial();
+        ShowMaterial("sky box", material, [skybox](auto data) { skybox->SetMaterial(data); });
+    }
+
+    ImGui::Separator();
+}
+
+void MainMenuBarWidget::ShowRestartSystemModal() noexcept
+{
+    const auto center = ImGui::GetMainViewport()->GetCenter();
+    ImGui::SetNextWindowPos(ImVec2(center.x - 150, center.y), ImGuiCond_Once);
+    ImGui::SetNextWindowSize(ImVec2(470, 115), ImGuiCond_Once);
+
+    if (ImGui::BeginPopupModal("Change System"))
+    {
+        auto text1 = ConvertToJapanese("System を変更するためにプログラムを再起動しますか？");
+        auto text2 = ConvertToJapanese("シーンを変更している場合、保存することをおすすめします。");
+
+        ImGui::Text(text1.c_str());
+        ImGui::Text(text2.c_str());
+
+        ImGui::Text("");
+        auto isRestart = ImGui::Button("Restart"); ImGui::SameLine();
+        auto isRestartAndSave = ImGui::Button("Restart And Save"); ImGui::SameLine();
+        auto isCancel = ImGui::Button("Cancel");
+
+        if (isRestart || isRestartAndSave)
+        {
+            if (auto scene = m_world->GetCurrentScene())
+            {
+                if (isRestartAndSave)
+                    scene->Update();
+            }
+
+            NotifyEvent<DestroyWindowEvent>();
+            system("start CareerWorks.exe");
+        }
+
+        if (isRestart || isRestartAndSave || isCancel)
+        {
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::EndPopup();
+    }
 }
 
 void MainMenuBarWidget::ShowMaterial(StringView label, Material* material, std::function<void(Material*)> collBack) noexcept

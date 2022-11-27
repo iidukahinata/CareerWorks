@@ -45,18 +45,7 @@ bool EditorSystem::PostInitialize(void* shaderResourceView) noexcept
 		widget->PostInitialize();
 	}
 
-	// load editor setting
-	if (FileSystem::Exists(EDITOR_SETTINGS_PATH))
-	{
-		FileStream file(EDITOR_SETTINGS_PATH, OpenMode::Read_Mode);
-		ASSERT(file.IsOpen());
-
-		// 過去設定データから Editor 情報を更新
-		for (const auto& widget : m_widgets)
-		{
-			widget->Deserialized(&file);
-		}
-	}
+	LoadEditorSettings();
 
 	return true;
 }
@@ -70,16 +59,7 @@ void EditorSystem::Shutdown() noexcept
 		return;
 	}
 
-	// save editor setting
-	{
-		FileStream file(EDITOR_SETTINGS_PATH, OpenMode::Write_Mode);
-		ASSERT(file.IsOpen());
-
-		for (const auto& widget : m_widgets)
-		{
-			widget->Serialized(&file);
-		}
-	}
+	SaveEditorSettings();
 
 	EditorHelper::Get().Shutdown();
 
@@ -118,6 +98,33 @@ void EditorSystem::Render() noexcept
 	EditorHelper::Get().BegineRenderer();
 	ImGui::Render();
 	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), D3D12GraphicsDevice::Get().GetCommandContext().GetCommandList());
+}
+
+void EditorSystem::LoadEditorSettings()
+{
+	if (!FileSystem::Exists(EDITOR_SETTINGS_PATH))
+	{
+		return;
+	}
+
+	FileStream file(EDITOR_SETTINGS_PATH, OpenMode::Read_Mode);
+	ASSERT(file.IsOpen());
+
+	for (const auto& widget : m_widgets)
+	{
+		widget->Deserialized(&file);
+	}
+}
+
+void EditorSystem::SaveEditorSettings()
+{
+	FileStream file(EDITOR_SETTINGS_PATH, OpenMode::Write_Mode);
+	ASSERT(file.IsOpen());
+
+	for (const auto& widget : m_widgets)
+	{
+		widget->Serialized(&file);
+	}
 }
 
 bool EditorSystem::SetUpImGuiObjects(void* finalFrameSRV) noexcept
@@ -204,12 +211,12 @@ void EditorSystem::AddFonts() noexcept
 
 void EditorSystem::RegisterWidgetsToContainer() noexcept
 {
+	m_widgets.emplace_back(std::make_unique<ProfilerWidget>());
 	m_widgets.emplace_back(std::make_unique<DetailsWidget>());
 	m_widgets.emplace_back(std::make_unique<ConsoleWidget>());
 	m_widgets.emplace_back(std::make_unique<AssetsWidget>());
 	m_widgets.emplace_back(std::make_unique<SceneWidget>());
 	m_widgets.emplace_back(std::make_unique<ViewPortWidget>());
-	m_widgets.emplace_back(std::make_unique<ProfilerWidget>());
 	m_widgets.emplace_back(std::make_unique<MainMenuBarWidget>());
 }
 
@@ -239,12 +246,13 @@ void EditorSystem::ShowDockingWindow() const noexcept
 	if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
 		window_flags |= ImGuiWindowFlags_NoBackground;
 
-	if (!opt_padding)
+	if (!opt_padding) 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-	ImGui::Begin("DockSpace Demo", 0, window_flags);
-	if (!opt_padding)
-		ImGui::PopStyleVar();
 
+	ImGui::Begin("DockSpace Demo", 0, window_flags);
+
+	if (!opt_padding) 
+		ImGui::PopStyleVar();
 	if (opt_fullscreen)
 		ImGui::PopStyleVar(2);
 
