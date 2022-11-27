@@ -7,7 +7,7 @@
 
 
 #include "Blur.h"
-#include "../Renderer.h"
+#include "../IRenderer.h"
 #include "../Geometry/Quad.h"
 #include "../Geometry/Vertex.h"
 #include "SubSystem/Window/Window.h"

@@ -39,7 +39,7 @@ void RigidBody::Deserialized(FileStream* file)
 
 void RigidBody::OnInitialize()
 {
-	m_physics = dynamic_cast<PhysX*>(GetContext()->GetSubsystem<Physics>());
+	m_physics = dynamic_cast<PhysX*>(GetContext()->GetSubsystem<IPhysics>());
 	ASSERT(m_physics);
 
 #if IS_EDITOR

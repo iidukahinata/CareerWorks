@@ -9,7 +9,7 @@
 
 #include "../IComponent.h"
 
-class Audio;
+class IAudio;
 
 class AudioListener : public IComponent
 {
@@ -36,5 +36,5 @@ private:
 
 	Math::Vector3 m_velocity;
 
-	Audio* m_audio = nullptr;
+	IAudio* m_audio = nullptr;
 };

@@ -7,7 +7,7 @@
 
 
 #include "RenderObject.h"
-#include "SubSystem/Renderer/Renderer.h"
+#include "SubSystem/Renderer/IRenderer.h"
 #include "SubSystem/Resource/ResourceManager.h"
 #include "SubSystem/Resource/Resources/3DModel/Mesh.h"
 #include "SubSystem/Resource/Resources/3DModel/Model.h"

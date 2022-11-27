@@ -7,12 +7,12 @@
 #pragma once
 
 
-#include "../LightMap.h"
+#include "../ILightMap.h"
 #include "SubSystem/Renderer/GraphicsAPI/D3D12/D3D12ConstantBuffer.h"
 
 #define MAX_LIGHT_COUNT 256
 
-class DefaultLightMap : public LightMap
+class DefaultLightMap : public ILightMap
 {
 	SUB_CLASS(DefaultLightMap)
 public:

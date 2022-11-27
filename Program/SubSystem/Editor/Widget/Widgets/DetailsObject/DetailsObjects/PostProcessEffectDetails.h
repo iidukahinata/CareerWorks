@@ -8,7 +8,7 @@
 
 
 #include "../ComponentDetails.h"
-#include "SubSystem/Renderer/PostEffect/PostEffect.h"
+#include "SubSystem/Renderer/PostEffect/IPostEffect.h"
 
 class PostProcessEffect;
 
@@ -33,12 +33,12 @@ private:
 
 private:
 
-	void ShowBloom(PostEffect* postEffect) noexcept;
+	void ShowBloom(IPostEffect* postEffect) noexcept;
 
 private:
 
 	// * AddPostEffect に表示するポストエフェクト一覧
-	Vector<UniquePtr<PostEffect>> m_postEffects;
+	Vector<UniquePtr<IPostEffect>> m_postEffects;
 
 	// * AddPostEffect 用フィルター
 	ImGuiTextFilter m_filter;

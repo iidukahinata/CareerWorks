@@ -12,7 +12,7 @@
 
 AudioClip::AudioClip()
 {
-	m_audio = dynamic_cast<FMODAudio*>(GetContext()->GetSubsystem<Audio>());
+	m_audio = dynamic_cast<FMODAudio*>(GetContext()->GetSubsystem<IAudio>());
 	ASSERT(m_audio);
 }
 

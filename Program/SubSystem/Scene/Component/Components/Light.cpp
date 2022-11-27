@@ -7,7 +7,7 @@
 
 
 #include "Light.h"
-#include "SubSystem/Renderer/Renderer.h"
+#include "SubSystem/Renderer/IRenderer.h"
 #include "SubSystem/Thread/RenderingThread/RenderingThread.h"
 
 void Light::Serialized(FileStream* file) const
@@ -34,7 +34,7 @@ void Light::Deserialized(FileStream* file)
 
 void Light::OnInitialize()
 {
-	m_renderer = GetContext()->GetSubsystem<Renderer>();
+	m_renderer = GetContext()->GetSubsystem<IRenderer>();
 	ASSERT(m_renderer);
 
 	// init data

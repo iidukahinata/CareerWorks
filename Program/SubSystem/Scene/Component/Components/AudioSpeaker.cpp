@@ -8,7 +8,7 @@
 
 #include <fmod.hpp>
 #include "AudioSpeaker.h"
-#include "SubSystem/Audio/Audio.h"
+#include "SubSystem/Audio/IAudio.h"
 #include "SubSystem/Resource/ResourceManager.h"
 #include "SubSystem/Resource/Resources/Audio/AudioClip.h"
 

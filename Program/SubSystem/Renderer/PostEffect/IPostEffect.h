@@ -7,21 +7,21 @@
 #pragma once
 
 
-class Renderer;
+class IRenderer;
 class PostProcessEffect;
 class D3D12RenderTexture;
 
 using PostEffectType = ClassTypeData;
 
-class PostEffect
+class IPostEffect
 {
 	IN_DEVELOPMENT()
-	SUPER_CLASS(PostEffect)
+	SUPER_CLASS(IPostEffect)
 
 	friend class PostEffectFactory;
 public:
 
-	virtual ~PostEffect() = default;
+	virtual ~IPostEffect() = default;
 
 	virtual void Serialized(FileStream* file) const = 0;
 	virtual void Deserialized(FileStream* file) = 0;
@@ -32,7 +32,9 @@ public:
 
 	virtual D3D12RenderTexture& GetTexture() = 0;
 
-	Renderer* GetRenderer() const noexcept;
+public:
+
+	IRenderer* GetRenderer() const noexcept;
 
 protected:
 

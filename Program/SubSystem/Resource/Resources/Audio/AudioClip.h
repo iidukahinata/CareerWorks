@@ -33,6 +33,8 @@ public:
 	void UnPause() const noexcept;
 	void Stop() noexcept;
 
+public:
+
 	/** Audio Channel ê›íË */
 	void SetMute(bool mute) const noexcept;
 	void SetVolume(float volume) const noexcept;

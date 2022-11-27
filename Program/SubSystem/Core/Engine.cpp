@@ -2,7 +2,7 @@
 * @file    Engine.cpp
 * @brief
 *
-* @date	   2022/10/27 2022年度初版
+* @date	   2022/11/27 2022年度初版
 */
 
 
@@ -10,12 +10,12 @@
 
 // Subsystem
 #include "SubSystem/Timer/Timer.h"
-#include "SubSystem/Input/Input.h"
-#include "SubSystem/Audio/Audio.h"
+#include "SubSystem/Input/IInput.h"
+#include "SubSystem/Audio/IAudio.h"
 #include "SubSystem/Scene/World.h"
 #include "SubSystem/Window/Window.h"
-#include "SubSystem/Physics/Physics.h"
-#include "SubSystem/Renderer/Renderer.h"
+#include "SubSystem/Physics/IPhysics.h"
+#include "SubSystem/Renderer/IRenderer.h"
 #include "SubSystem/Script/ScriptEngine.h"
 #include "SubSystem/Resource/ResourceManager.h"
 
@@ -36,49 +36,43 @@ bool Engine::Initialize(HINSTANCE hInstance)
 	// 全て生成済みの場合は何も起きない。
 	Config::GenerateUseFile();
 
-	// system コンテナク作成
+	// system コンテナクラス作成
 	m_context = std::make_unique<Context>();
 	g_context = m_context.get();
 
-	auto ret = StartUpScreen(hInstance);
+	auto ret = StartupScreen(hInstance);
 	if (!ret) {
-		LOG_ERROR("StartUpScreenに失敗");
+		LOG_ERROR("error screen startup");
 		return false;
 	}
 
-	// renderingThread : task thread : any thread 用として初期化
-	AsyncJobSystem::Get().Initialize(3);
-
-	ThreadManager::Get().Initialize();
+	ret = StartupThread();
+	if (!ret) {
+		LOG_ERROR("error thread startup");
+		return false;
+	}
 
 	// 過去の設定データがあれば、データに沿ったシステムの登録を行う。
 	Config::RegisterSubsystemsToContainer();
 
-	RenderingThread::Start();
-	LoadingThread::Start();
-
 	ret = InitializeSubsystems();
 	if (!ret) {
-		LOG_ERROR("Subsystemの初期化に失敗");
+		LOG_ERROR("error init subsystems");
 		return false;
 	}
 
 	m_hInstance = hInstance;
+	m_timer = m_context->GetSubsystem<Timer>();
 
 	return true;
 }
 
 long Engine::MainLoop()
 {
-	auto& window = Window::Get();
-	auto timer = m_context->GetSubsystem<Timer>();	
-
-	while (window.Tick())
+	while (Window::Get().Tick())
 	{
-		if (timer->ReachedNextFrame())
+		if (m_timer->ReachedNextFrame())
 		{
-			RenderingThread::BegineFrame();
-
 #ifdef IS_EDITOR
 			auto showTimeLine = ImTimeLine::ShowTimeLine();
 			if (showTimeLine) {
@@ -86,32 +80,22 @@ long Engine::MainLoop()
 			}
 #endif // IS_EDITOR
 
-			JobSystem::Get().Execute(timer->GetDeltaTime(), FunctionType::PreUpdate);
-			
-			JobSystem::Get().Execute(timer->GetDeltaTime(), FunctionType::PrePhysics);
-			
-			JobSystem::Get().Execute(timer->GetDeltaTime(), FunctionType::StartPhysics);
-			
-			JobSystem::Get().Execute(timer->GetDeltaTime(), FunctionType::EndPhysics);
-
-			JobSystem::Get().Execute(timer->GetDeltaTime(), FunctionType::PostUpdate);
+			Tick();
 
 #ifdef IS_EDITOR
 			if (showTimeLine) {
 				TIME_LINE_WATCH_END(MainThread);
 			}
 #endif // IS_EDITOR
-
-			// vsync
-			RenderingThread::EndFrame();
 		}
 	}
 
-	return window.GetMessage();
+	return Window::Get().GetMessage();
 }
 
 void Engine::Shutdown()
 {
+	// stop all thread
 	RenderingThread::Stop();
 	LoadingThread::Stop();
 
@@ -120,13 +104,15 @@ void Engine::Shutdown()
 #ifdef IS_EDITOR
 	EditorSystem::Get().Shutdown();
 #endif // IS_EDITOR
+
 	Window::Get().Shutdown();
 
 	// release subsystem
 	m_context->Release();
+	g_context = nullptr;
 }
 
-bool Engine::StartUpScreen(HINSTANCE hInstance) const noexcept
+bool Engine::StartupScreen(HINSTANCE hInstance) const noexcept
 {
 	const auto width  = GetSystemMetrics(SM_CXSCREEN);
 	const auto height = GetSystemMetrics(SM_CYSCREEN);
@@ -150,58 +136,91 @@ bool Engine::StartUpScreen(HINSTANCE hInstance) const noexcept
 	return true;
 }
 
-bool Engine::InitializeSubsystems() noexcept
+bool Engine::StartupThread()
 {
-	// system 初期化時に使用される可能性があるため
-	EventManager::Get().Initialize();
-
-	if (!g_context->GetSubsystem<Timer>()->Initialize())
+	// renderingThread : task thread : LoadingThread : any thread として初期化
+	if (!AsyncJobSystem::Get().Initialize(ThreadType::MaxUseThread))
 	{
-		LOG_ERROR("Timer初期化に失敗");
 		return false;
 	}
 
-	if (!g_context->GetSubsystem<ResourceManager>()->Initialize())
-	{
-		LOG_ERROR("ResourceManager初期化に失敗");
-		return false;
-	}
-	
-	if (!g_context->GetSubsystem<Input>()->Initialize())
-	{
-		LOG_ERROR("Input初期化に失敗");
-		return false;
-	}
-	
-	if (!g_context->GetSubsystem<Audio>()->Initialize())
-	{
-		LOG_ERROR("Audio初期化に失敗");
-		return false;
-	}
+	ThreadManager::Get().Initialize();
 
-	if (!g_context->GetSubsystem<Physics>()->Initialize())
-	{
-		LOG_ERROR("Physics初期化に失敗");
-		return false;
-	}
-
-	if (!g_context->GetSubsystem<ScriptEngine>()->Initialize())
-	{
-		LOG_ERROR("ScriptEngine初期化に失敗");
-		return false;
-	}
-
-	if (!g_context->GetSubsystem<World>()->Initialize())
-	{
-		LOG_ERROR("World初期化に失敗");
-		return false;
-	}
-	
-	if (!g_context->GetSubsystem<Renderer>()->Initialize())
-	{
-		LOG_ERROR("Renderer初期化に失敗");
-		return false;
-	}
+	RenderingThread::Start();
+	LoadingThread::Start();
 
 	return true;
+}
+
+bool Engine::InitializeSubsystems() noexcept
+{
+	if (!m_context->GetSubsystem<Timer>()->Initialize())
+	{
+		LOG_ERROR("error init timer system");
+		return false;
+	}
+
+	if (!m_context->GetSubsystem<IPhysics>()->Initialize())
+	{
+		LOG_ERROR("error init physics system");
+		return false;
+	}
+
+	if (!m_context->GetSubsystem<ResourceManager>()->Initialize())
+	{
+		LOG_ERROR("error init resource manager");
+		return false;
+	}
+
+	if (!m_context->GetSubsystem<World>()->Initialize())
+	{
+		LOG_ERROR("error init world system");
+		return false;
+	}
+
+	if (!m_context->GetSubsystem<ScriptEngine>()->Initialize())
+	{
+		LOG_ERROR("error init script engine");
+		return false;
+	}
+	
+	if (!m_context->GetSubsystem<IInput>()->Initialize())
+	{
+		LOG_ERROR("error init input system");
+		return false;
+	}
+	
+	if (!m_context->GetSubsystem<IAudio>()->Initialize())
+	{
+		LOG_ERROR("error init audio system");
+		return false;
+	}
+	
+	if (!m_context->GetSubsystem<IRenderer>()->Initialize())
+	{
+		LOG_ERROR("error init renderer system");
+		return false;
+	}
+
+	EventManager::Get().Initialize();
+
+	return true;
+}
+
+void Engine::Tick() const noexcept
+{
+	RenderingThread::BegineFrame();
+
+	JobSystem::Get().Execute(m_timer->GetDeltaTime(), FunctionType::PreUpdate);
+
+	JobSystem::Get().Execute(m_timer->GetDeltaTime(), FunctionType::PrePhysics);
+
+	JobSystem::Get().Execute(m_timer->GetDeltaTime(), FunctionType::StartPhysics);
+
+	JobSystem::Get().Execute(m_timer->GetDeltaTime(), FunctionType::EndPhysics);
+
+	JobSystem::Get().Execute(m_timer->GetDeltaTime(), FunctionType::PostUpdate);
+
+	// vsync
+	RenderingThread::EndFrame();
 }

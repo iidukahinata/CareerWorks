@@ -27,7 +27,7 @@ public:
 
 private:
 
-	bool AllComponentsForDestructible(GameObject* gameObject) const noexcept;
+	bool AllComponentsCanErase(GameObject* gameObject) const noexcept;
 
 private:
 

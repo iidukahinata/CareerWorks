@@ -250,7 +250,7 @@
     <ClCompile Include="Program\SubSystem\Core\Engine.cpp">
       <Filter>Subsytem\Core</Filter>
     </ClCompile>
-    <ClCompile Include="Program\SubSystem\Renderer\Renderer.cpp">
+    <ClCompile Include="Program\SubSystem\Renderer\IRenderer.cpp">
       <Filter>Subsytem\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12Buffer.cpp">
@@ -334,7 +334,7 @@
     <ClCompile Include="Program\SubSystem\Core\Math\Vector3.cpp">
       <Filter>Subsytem\Core\Math</Filter>
     </ClCompile>
-    <ClCompile Include="Program\SubSystem\Audio\Audio.cpp">
+    <ClCompile Include="Program\SubSystem\Audio\IAudio.cpp">
       <Filter>Subsytem\Audio</Filter>
     </ClCompile>
     <ClCompile Include="Program\SubSystem\Audio\FMOD\FMODAudio.cpp">
@@ -358,7 +358,7 @@
     <ClCompile Include="Program\SubSystem\Input\Direct\DirectInput.cpp">
       <Filter>Subsytem\Input\Direct</Filter>
     </ClCompile>
-    <ClCompile Include="Program\SubSystem\Input\Input.cpp">
+    <ClCompile Include="Program\SubSystem\Input\IInput.cpp">
       <Filter>Subsytem\Input</Filter>
     </ClCompile>
     <ClCompile Include="Program\SubSystem\Input\InputEvents.cpp">
@@ -373,7 +373,7 @@
     <ClCompile Include="Program\SubSystem\Renderer\Forward\ForwardRenderer.cpp">
       <Filter>Subsytem\Renderer\Forward</Filter>
     </ClCompile>
-    <ClCompile Include="Program\SubSystem\Renderer\LightMap.cpp">
+    <ClCompile Include="Program\SubSystem\Renderer\ILightMap.cpp">
       <Filter>Subsytem\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="Program\SubSystem\Renderer\TransformCBuffer.cpp">
@@ -616,9 +616,6 @@
     <ClCompile Include="Program\SubSystem\Renderer\PostEffect\DepthOfField.cpp">
       <Filter>Subsytem\Renderer\PostEffect\PostEffects</Filter>
     </ClCompile>
-    <ClCompile Include="Program\SubSystem\Renderer\PostEffect\Monotone.cpp">
-      <Filter>Subsytem\Renderer\PostEffect\PostEffects</Filter>
-    </ClCompile>
     <ClCompile Include="Program\SubSystem\Renderer\Factory\PostEffectFactory.cpp">
       <Filter>Subsytem\Renderer\Factory</Filter>
     </ClCompile>
@@ -694,7 +691,7 @@
     <ClCompile Include="Program\SubSystem\Scene\AutoDestroySystem.cpp">
       <Filter>Subsytem\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Program\SubSystem\Physics\Physics.cpp">
+    <ClCompile Include="Program\SubSystem\Physics\IPhysics.cpp">
       <Filter>Subsytem\Physics</Filter>
     </ClCompile>
     <ClCompile Include="Program\SubSystem\Scene\Component\Components\RigidBody.cpp">
@@ -718,7 +715,7 @@
     <ClCompile Include="Program\SubSystem\Physics\PhysicsEvents.cpp">
       <Filter>Subsytem\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="Program\SubSystem\Renderer\PostEffect\PostEffect.cpp">
+    <ClCompile Include="Program\SubSystem\Renderer\PostEffect\IPostEffect.cpp">
       <Filter>Subsytem\Renderer\PostEffect</Filter>
     </ClCompile>
     <ClCompile Include="Program\SubSystem\Script\ScriptEngine.cpp">
@@ -774,9 +771,6 @@
     </ClCompile>
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ShaderDetails.cpp">
       <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="Program\SubSystem\Scene\Component\ComponentCollection.cpp">
-      <Filter>Subsytem\Scene\Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -837,7 +831,7 @@
     <ClInclude Include="Program\SubSystem\Core\Engine.h">
       <Filter>Subsytem\Core</Filter>
     </ClInclude>
-    <ClInclude Include="Program\SubSystem\Renderer\Renderer.h">
+    <ClInclude Include="Program\SubSystem\Renderer\IRenderer.h">
       <Filter>Subsytem\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12Buffer.h">
@@ -954,7 +948,7 @@
     <ClInclude Include="Program\SubSystem\Core\Math\Vector2T.h">
       <Filter>Subsytem\Core\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Program\SubSystem\Audio\Audio.h">
+    <ClInclude Include="Program\SubSystem\Audio\IAudio.h">
       <Filter>Subsytem\Audio</Filter>
     </ClInclude>
     <ClInclude Include="Program\SubSystem\Audio\AudioHelper.h">
@@ -984,7 +978,7 @@
     <ClInclude Include="Program\SubSystem\Input\Direct\DirectInput.h">
       <Filter>Subsytem\Input\Direct</Filter>
     </ClInclude>
-    <ClInclude Include="Program\SubSystem\Input\Input.h">
+    <ClInclude Include="Program\SubSystem\Input\IInput.h">
       <Filter>Subsytem\Input</Filter>
     </ClInclude>
     <ClInclude Include="Program\SubSystem\Input\InputEvents.h">
@@ -1014,7 +1008,7 @@
     <ClInclude Include="Program\SubSystem\Renderer\Forward\ForwardRenderer.h">
       <Filter>Subsytem\Renderer\Forward</Filter>
     </ClInclude>
-    <ClInclude Include="Program\SubSystem\Renderer\LightMap.h">
+    <ClInclude Include="Program\SubSystem\Renderer\ILightMap.h">
       <Filter>Subsytem\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Program\SubSystem\Renderer\TransformCBuffer.h">
@@ -1266,7 +1260,7 @@
     <ClInclude Include="Program\SubSystem\Scene\Component\Components\PostProcessEffect.h">
       <Filter>Subsytem\Scene\Component\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Program\SubSystem\Renderer\PostEffect\PostEffect.h">
+    <ClInclude Include="Program\SubSystem\Renderer\PostEffect\IPostEffect.h">
       <Filter>Subsytem\Renderer\PostEffect</Filter>
     </ClInclude>
     <ClInclude Include="Program\SubSystem\Renderer\PostEffect\Bloom.h">
@@ -1276,9 +1270,6 @@
       <Filter>Subsytem\Renderer\PostEffect\PostEffects</Filter>
     </ClInclude>
     <ClInclude Include="Program\SubSystem\Renderer\PostEffect\DepthOfField.h">
-      <Filter>Subsytem\Renderer\PostEffect\PostEffects</Filter>
-    </ClInclude>
-    <ClInclude Include="Program\SubSystem\Renderer\PostEffect\Monotone.h">
       <Filter>Subsytem\Renderer\PostEffect\PostEffects</Filter>
     </ClInclude>
     <ClInclude Include="Program\SubSystem\Renderer\Factory\PostEffectFactory.h">
@@ -1356,7 +1347,7 @@
     <ClInclude Include="Program\SubSystem\Scene\AutoDestroySystem.h">
       <Filter>Subsytem\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Program\SubSystem\Physics\Physics.h">
+    <ClInclude Include="Program\SubSystem\Physics\IPhysics.h">
       <Filter>Subsytem\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Program\SubSystem\Scene\Component\Components\RigidBody.h">
@@ -1412,9 +1403,6 @@
     </ClInclude>
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ShaderDetails.h">
       <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Program\SubSystem\Scene\Component\ComponentCollection.h">
-      <Filter>Subsytem\Scene\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

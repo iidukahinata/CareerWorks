@@ -2,7 +2,7 @@
  * @file	Context.cpp
  * @brief	Subsystem コンテナクラス
  *
- * @date	2022/08/02 2022年度初版
+ * @date	2022/11/27 2022年度初版
  */
 
 
@@ -24,6 +24,15 @@ void Context::RegisterSubsystem(uint32_t hash, ISubsystem* subsystem) noexcept
 	if (!m_subsystems.contains(hash))
 	{
 		m_subsystems[hash].reset(subsystem);
+	}
+}
+
+void Context::UnRegisterSubsystem(uint32_t hash) noexcept
+{
+	if (m_subsystems.contains(hash))
+	{
+		m_subsystems[hash]->Shutdown();
+		m_subsystems.erase(hash);
 	}
 }
 

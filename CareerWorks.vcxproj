@@ -160,7 +160,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Program\SubSystem\Audio\Audio.cpp" />
+    <ClCompile Include="Program\SubSystem\Audio\IAudio.cpp" />
     <ClCompile Include="Program\SubSystem\Audio\FMOD\FMODAudio.cpp" />
     <ClCompile Include="Program\SubSystem\Core\Command\CommandList.cpp" />
     <ClCompile Include="Program\SubSystem\Core\Common\pch.cpp">
@@ -215,7 +215,7 @@
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\SceneWidget.cpp" />
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\ViewPortWidget.cpp" />
     <ClCompile Include="Program\SubSystem\Input\Direct\DirectInput.cpp" />
-    <ClCompile Include="Program\SubSystem\Input\Input.cpp" />
+    <ClCompile Include="Program\SubSystem\Input\IInput.cpp" />
     <ClCompile Include="Program\SubSystem\Input\InputEvents.cpp" />
     <ClCompile Include="Program\SubSystem\JobSystem\Async\AsyncJob.cpp" />
     <ClCompile Include="Program\SubSystem\JobSystem\Async\AsyncJobSystem.cpp" />
@@ -223,7 +223,7 @@
     <ClCompile Include="Program\SubSystem\JobSystem\Sync\Job.cpp" />
     <ClCompile Include="Program\SubSystem\JobSystem\Sync\JobSystem.cpp" />
     <ClCompile Include="Program\SubSystem\Log\DebugLog.cpp" />
-    <ClCompile Include="Program\SubSystem\Physics\Physics.cpp" />
+    <ClCompile Include="Program\SubSystem\Physics\IPhysics.cpp" />
     <ClCompile Include="Program\SubSystem\Physics\PhysicsEvents.cpp" />
     <ClCompile Include="Program\SubSystem\Physics\PhysX\PhysX.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\Deferred\DeferredRenderer.cpp" />
@@ -262,14 +262,13 @@
     <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12UnorderedAccessBuffer.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12VertexBuffer.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12View.cpp" />
-    <ClCompile Include="Program\SubSystem\Renderer\LightMap.cpp" />
+    <ClCompile Include="Program\SubSystem\Renderer\ILightMap.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\LightMap\DefaultLightMap.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\PostEffect\Bloom.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\PostEffect\Blur.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\PostEffect\DepthOfField.cpp" />
-    <ClCompile Include="Program\SubSystem\Renderer\PostEffect\Monotone.cpp" />
-    <ClCompile Include="Program\SubSystem\Renderer\PostEffect\PostEffect.cpp" />
-    <ClCompile Include="Program\SubSystem\Renderer\Renderer.cpp" />
+    <ClCompile Include="Program\SubSystem\Renderer\PostEffect\IPostEffect.cpp" />
+    <ClCompile Include="Program\SubSystem\Renderer\IRenderer.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\SkyBox.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\TransformCBuffer.cpp" />
     <ClCompile Include="Program\SubSystem\Resource\Factory\ResourceFactory.cpp" />
@@ -298,7 +297,6 @@
     <ClCompile Include="Program\SubSystem\Resource\Resources\Scene\Scene.cpp" />
     <ClCompile Include="Program\SubSystem\Resource\Resources\Script\ScriptInstance.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\AutoDestroySystem.cpp" />
-    <ClCompile Include="Program\SubSystem\Scene\Component\ComponentCollection.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\Components\AudioListener.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\Components\AudioSpeaker.cpp" />
     <ClCompile Include="Program\SubSystem\Scene\Component\Components\Camera.cpp" />
@@ -408,7 +406,7 @@
     <ClCompile Include="Program\WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Program\SubSystem\Audio\Audio.h" />
+    <ClInclude Include="Program\SubSystem\Audio\IAudio.h" />
     <ClInclude Include="Program\SubSystem\Audio\AudioHelper.h" />
     <ClInclude Include="Program\SubSystem\Audio\FMOD\FMODAudio.h" />
     <ClInclude Include="Program\SubSystem\Core\Command\Command.h" />
@@ -473,7 +471,7 @@
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\SceneWidget.h" />
     <ClInclude Include="Program\SubSystem\Editor\Widget\Widgets\ViewPortWidget.h" />
     <ClInclude Include="Program\SubSystem\Input\Direct\DirectInput.h" />
-    <ClInclude Include="Program\SubSystem\Input\Input.h" />
+    <ClInclude Include="Program\SubSystem\Input\IInput.h" />
     <ClInclude Include="Program\SubSystem\Input\InputEvents.h" />
     <ClInclude Include="Program\SubSystem\Input\InputHelper.h" />
     <ClInclude Include="Program\SubSystem\JobSystem\Async\AsyncJob.h" />
@@ -483,7 +481,7 @@
     <ClInclude Include="Program\SubSystem\JobSystem\Sync\JobHelper.h" />
     <ClInclude Include="Program\SubSystem\JobSystem\Sync\JobSystem.h" />
     <ClInclude Include="Program\SubSystem\Log\DebugLog.h" />
-    <ClInclude Include="Program\SubSystem\Physics\Physics.h" />
+    <ClInclude Include="Program\SubSystem\Physics\IPhysics.h" />
     <ClInclude Include="Program\SubSystem\Physics\PhysicsEvents.h" />
     <ClInclude Include="Program\SubSystem\Physics\PhysX\PhysX.h" />
     <ClInclude Include="Program\SubSystem\Renderer\Deferred\DeferredRenderer.h" />
@@ -526,14 +524,13 @@
     <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12UnorderedAccessBuffer.h" />
     <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12VertexBuffer.h" />
     <ClInclude Include="Program\SubSystem\Renderer\GraphicsAPI\D3D12\D3D12View.h" />
-    <ClInclude Include="Program\SubSystem\Renderer\LightMap.h" />
+    <ClInclude Include="Program\SubSystem\Renderer\ILightMap.h" />
     <ClInclude Include="Program\SubSystem\Renderer\LightMap\DefaultLightMap.h" />
     <ClInclude Include="Program\SubSystem\Renderer\PostEffect\Bloom.h" />
     <ClInclude Include="Program\SubSystem\Renderer\PostEffect\Blur.h" />
     <ClInclude Include="Program\SubSystem\Renderer\PostEffect\DepthOfField.h" />
-    <ClInclude Include="Program\SubSystem\Renderer\PostEffect\Monotone.h" />
-    <ClInclude Include="Program\SubSystem\Renderer\PostEffect\PostEffect.h" />
-    <ClInclude Include="Program\SubSystem\Renderer\Renderer.h" />
+    <ClInclude Include="Program\SubSystem\Renderer\PostEffect\IPostEffect.h" />
+    <ClInclude Include="Program\SubSystem\Renderer\IRenderer.h" />
     <ClInclude Include="Program\SubSystem\Renderer\SkyBox.h" />
     <ClInclude Include="Program\SubSystem\Renderer\TransformCBuffer.h" />
     <ClInclude Include="Program\SubSystem\Resource\Factory\ResourceFactory.h" />
@@ -564,7 +561,6 @@
     <ClInclude Include="Program\SubSystem\Resource\Resources\Scene\Scene.h" />
     <ClInclude Include="Program\SubSystem\Resource\Resources\Script\ScriptInstance.h" />
     <ClInclude Include="Program\SubSystem\Scene\AutoDestroySystem.h" />
-    <ClInclude Include="Program\SubSystem\Scene\Component\ComponentCollection.h" />
     <ClInclude Include="Program\SubSystem\Scene\Component\Components\AudioListener.h" />
     <ClInclude Include="Program\SubSystem\Scene\Component\Components\AudioSpeaker.h" />
     <ClInclude Include="Program\SubSystem\Scene\Component\Components\Camera.h" />

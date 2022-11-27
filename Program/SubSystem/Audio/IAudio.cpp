@@ -6,9 +6,9 @@
 */
 
 
-#include "Audio.h"
+#include "IAudio.h"
 
-void Audio::SetAudioListener(AudioListener* listener) noexcept
+void IAudio::SetAudioListener(AudioListener* listener) noexcept
 {
 	m_lisrener = listener;
 }

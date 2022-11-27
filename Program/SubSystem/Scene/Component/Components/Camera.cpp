@@ -8,7 +8,7 @@
 
 #include "Camera.h"
 #include "SubSystem/Window/Window.h"
-#include "SubSystem/Renderer/Renderer.h"
+#include "SubSystem/Renderer/IRenderer.h"
 #include "SubSystem/Thread/RenderingThread/RenderingThread.h"
 
 void Camera::Serialized(FileStream* file) const
@@ -41,7 +41,7 @@ void Camera::Deserialized(FileStream* file)
 
 void Camera::OnInitialize()
 {
-	m_renderer = GetContext()->GetSubsystem<Renderer>();
+	m_renderer = GetContext()->GetSubsystem<IRenderer>();
 	ASSERT(m_renderer);
 
 	// init data

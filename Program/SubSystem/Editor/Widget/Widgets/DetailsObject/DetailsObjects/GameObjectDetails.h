@@ -25,22 +25,10 @@ private:
 	/** コンポーネント追加用 window の表示を行う。*/
 	void ShowAddComponentWindow() noexcept;
 
-	template<class T>
-	void RegisterComponent();
-
 private:
-
-	// * AddComponent に表示するコンポーネント一覧
-	Vector<UniquePtr<IComponent>> m_components;
 
 	// * AddComponent 用フィルター
 	ImGuiTextFilter m_filter;
 
 	GameObject* m_gameObject = nullptr;
 };
-
-template<class T>
-FORCEINLINE void GameObjectDetails::RegisterComponent()
-{
-	m_components.emplace_back(std::make_unique<T>());
-}

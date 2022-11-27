@@ -8,6 +8,16 @@
 
 #include "ProprietarySceneData.h"
 
+void ProprietarySceneData::Serialized(FileStream* file) const
+{
+
+}
+
+void ProprietarySceneData::Deserialized(FileStream* file)
+{
+
+}
+
 String ProprietarySceneData::ConvertProprietaryPath(StringView filePath) noexcept
 {
     // ファイル拡張子を独自ファイル用に変更するため消去

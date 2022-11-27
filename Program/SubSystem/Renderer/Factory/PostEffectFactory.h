@@ -7,7 +7,7 @@
 #pragma once
 
 
-#include "../PostEffect/PostEffect.h"
+#include "../PostEffect/IPostEffect.h"
 
 /**
 * ポストエフェクトの生成をシステムから分離させるために作成。
@@ -15,5 +15,5 @@
 */
 struct PostEffectFactory
 {
-	static UniquePtr<PostEffect> Create(PostProcessEffect* postProcessEffect, StringView name) noexcept;
+	static UniquePtr<IPostEffect> Create(PostProcessEffect* postProcessEffect, StringView name) noexcept;
 };

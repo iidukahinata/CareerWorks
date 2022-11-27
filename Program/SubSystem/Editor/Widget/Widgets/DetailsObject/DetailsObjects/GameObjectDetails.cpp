@@ -7,34 +7,13 @@
 
 
 #include "GameObjectDetails.h"
-#include "SubSystem/Scene/World.h"
-#include "SubSystem/Editor/DragDrop.h"
-#include "SubSystem/Resource/ResourceManager.h"
-
-#include "SubSystem/Scene/Component/Components/Camera.h"
-#include "SubSystem/Scene/Component/Components/Light.h"
-#include "SubSystem/Scene/Component/Components/RenderObject.h"
-#include "SubSystem/Scene/Component/Components/PostProcessEffect.h"
-#include "SubSystem/Scene/Component/Components/AudioSpeaker.h"
-#include "SubSystem/Scene/Component/Components/AudioListener.h"
-#include "SubSystem/Scene/Component/Components/Collider.h"
-#include "SubSystem/Scene/Component/Components/RigidBody.h"
-#include "SubSystem/Scene/Component/Components/Script.h"
+#include "SubSystem/Scene/GameObject.h"
+#include "SubSystem/Scene/Factory/ComponentFactory.h"
 
 GameObjectDetails::GameObjectDetails(DetailsWidget* detailsWidget, GameObject* gameObject) :
 	DetailsObject(detailsWidget), m_gameObject(gameObject)
 {
-	// Add Component éûÇÃåüçıÇ…égóp
-	RegisterComponent<Light>();
-	RegisterComponent<Camera>();
-	RegisterComponent<MeshRender>();
-	RegisterComponent<ModelRender>();
-	RegisterComponent<PostProcessEffect>();
-	RegisterComponent<AudioSpeaker>();
-	RegisterComponent<AudioListener>();
-	RegisterComponent<Collider>();
-	RegisterComponent<RigidBody>();
-	RegisterComponent<Script>();
+
 }
 
 void GameObjectDetails::Draw()
@@ -76,19 +55,18 @@ void GameObjectDetails::ShowAddComponentWindow() noexcept
 
 		ImGui::BeginChild("##Components", ImVec2(180, 500));
 
-		for (const auto& component : m_components)
+		auto typeList = ComponentFactory::GetAllComponentType();
+		for (auto type : typeList)
 		{
-			auto name = component->GetTypeData().Name;
-
-			if (!m_filter.PassFilter(name.data()))
+			if (!m_filter.PassFilter(type.data()))
 				continue;
 
-			if (m_gameObject->FindComponent(name))
+			if (m_gameObject->FindComponent(type))
 				continue;
 
-			if (ImGui::Button(name.data(), ImVec2(180, 20)))
+			if (ImGui::Button(type.data(), ImVec2(180, 20)))
 			{
-				m_gameObject->AddComponent(name);
+				m_gameObject->AddComponent(type);
 				m_detailsWidget->RequestUpdate();
 			}
 		}

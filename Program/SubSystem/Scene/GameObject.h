@@ -48,7 +48,13 @@ public:
 
 	/** 指定名コンポーネントの追加。指定名が存在しない等の場合、null を返す。*/
 	IComponent* AddComponent(StringView name) noexcept;
+
+private:
+
 	void AddComponent(IComponent* component) noexcept;
+	void PostAddComponent(IComponent* component);
+
+public:
 
 	/** 保持するコンポーネントを消去するため、そのアドレスを引数とする。*/
 	void RemoveComponent(IComponent* component) noexcept;

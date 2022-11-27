@@ -121,7 +121,7 @@ void SetUpComponentModule()
         PY_CLASS_GETSET("influenceRange", Light, GetInfluenceRange, SetInfluenceRange)
         PY_CLASS_GETSET("angle", Light, GetAngle, SetAngle);
 
-    PostEffect* (PostProcessEffect::*addPostEffect)(StringView) = &PostProcessEffect::AddPostEffect;
+    IPostEffect* (PostProcessEffect::*addPostEffect)(StringView) = &PostProcessEffect::AddPostEffect;
 
     PY_BASE_CLASS_NOCOPY(PostProcessEffect, IComponent)
         .def("AddPostEffect", addPostEffect, PY_RET_REF)

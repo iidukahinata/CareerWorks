@@ -7,14 +7,14 @@
 #pragma once
 
 
-#include "../Audio.h"
+#include "../IAudio.h"
 
 namespace FMOD
 {
 	class System;
 }
 
-class FMODAudio : public Audio
+class FMODAudio : public IAudio
 {
 	COMPLETED_DEVELOPMENT()
 	SUB_CLASS(FMODAudio)
@@ -22,6 +22,8 @@ public:
 
 	bool Initialize() override;
 	void Shutdown() override;
+
+public:
 
 	void Update() const noexcept;
 

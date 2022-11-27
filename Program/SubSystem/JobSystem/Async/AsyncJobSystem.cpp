@@ -17,8 +17,7 @@ AsyncJobSystem::~AsyncJobSystem()
 
 bool AsyncJobSystem::Initialize(int threadCount) noexcept
 {
-	ASSERT(threadCount > 0);
-	ASSERT(threadCount <= GetMaxThreadCount());
+	threadCount = std::clamp(threadCount, 0, GetMaxThreadCount());
 
 	if (m_isRunning)
 		return true;

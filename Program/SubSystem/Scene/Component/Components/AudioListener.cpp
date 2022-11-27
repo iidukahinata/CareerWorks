@@ -7,11 +7,11 @@
 
 
 #include "AudioListener.h"
-#include "SubSystem/Audio/Audio.h"
+#include "SubSystem/Audio/IAudio.h"
 
 void AudioListener::OnInitialize()
 {
-	m_audio = GetContext()->GetSubsystem<Audio>();
+	m_audio = GetContext()->GetSubsystem<IAudio>();
 	ASSERT(m_audio);
 }
 

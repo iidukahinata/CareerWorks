@@ -45,3 +45,16 @@ if(ptr)					 \
 	delete ptr;			 \
 	ptr = nullptr;		 \
 }
+
+enum ThreadType
+{
+	MainThread,
+
+	RenderingThread,
+
+	TaskThread,
+
+	LodingThread,
+
+	MaxUseThread,
+};

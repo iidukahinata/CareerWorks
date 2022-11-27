@@ -16,13 +16,13 @@ class AudioListener;
 * このクラスではインターフェースのみを実装。
 * 派生クラスで初期化等の関数を実装する。
 */
-class Audio : public ISubsystem
+class IAudio : public ISubsystem
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(Audio)
+	SUB_CLASS(IAudio)
 public:
 
-	virtual ~Audio() {}
+	virtual ~IAudio() {}
 
 	/** 3D サウンドを使用する場合は必ず値をセットする必要があります。*/
 	void SetAudioListener(AudioListener* listener) noexcept;

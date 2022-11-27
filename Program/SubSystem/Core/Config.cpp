@@ -85,14 +85,14 @@ void Config::RegisterSubsystemsToContainer() noexcept
 	}
 }
 
-#define REGISTER_SUBSYSTEM(KEY, CLASS) g_context->RegisterSubsystem<KEY>(std::make_unique<CLASS>());
+#define REGISTER_SUBSYSTEM(KEY, CLASS) g_context->RegisterSubsystem<KEY, CLASS>();
 
 void Config::RegisterRendererSystem(RendererType type, bool saveSettings /* = true */) noexcept
 {
 	switch (type)
 	{
-	case RendererType::Forward:  REGISTER_SUBSYSTEM(Renderer, ForwardRenderer); break;
-	case RendererType::Deferred: REGISTER_SUBSYSTEM(Renderer, DeferredRenderer); break;
+	case RendererType::Forward:  REGISTER_SUBSYSTEM(IRenderer, ForwardRenderer); break;
+	case RendererType::Deferred: REGISTER_SUBSYSTEM(IRenderer, DeferredRenderer); break;
 	default: break;
 	}
 
@@ -104,7 +104,7 @@ void Config::RegisterInputSystem(InputType type, bool saveSettings /* = true */)
 {
 	switch (type)
 	{
-	case InputType::Direct: REGISTER_SUBSYSTEM(Input, DirectInput); break;
+	case InputType::Direct: REGISTER_SUBSYSTEM(IInput, DirectInput); break;
 	default: break;
 	}
 
@@ -116,7 +116,7 @@ void Config::RegisterAudioSystem(AudioType type, bool saveSettings /* = true */)
 {
 	switch (type)
 	{
-	case AudioType::FMOD: REGISTER_SUBSYSTEM(Audio, FMODAudio); break;
+	case AudioType::FMOD: REGISTER_SUBSYSTEM(IAudio, FMODAudio); break;
 	default: break;
 	}
 
@@ -128,7 +128,7 @@ void Config::RegisterPhysicsSystem(PhysicsType type, bool saveSettings) noexcept
 {
 	switch (type)
 	{
-	case PhysicsType::PhysX: REGISTER_SUBSYSTEM(Physics, PhysX); break;
+	case PhysicsType::PhysX: REGISTER_SUBSYSTEM(IPhysics, PhysX); break;
 	default: break;
 	}
 
@@ -138,14 +138,14 @@ void Config::RegisterPhysicsSystem(PhysicsType type, bool saveSettings) noexcept
 
 void Config::SetUpSubsystem() noexcept
 {
-	g_context->RegisterSubsystem<Timer>(std::make_unique<Timer>());
-	g_context->RegisterSubsystem<ResourceManager>(std::make_unique<ResourceManager>());
+	g_context->RegisterSubsystem<Timer>();
+	g_context->RegisterSubsystem<ResourceManager>();
+	g_context->RegisterSubsystem<ScriptEngine>();
+	g_context->RegisterSubsystem<World>();
 	RegisterInputSystem(m_inputSystem, false);
 	RegisterAudioSystem(m_audioSystem, false);
-	RegisterRendererSystem(m_rendererSystem, false);
 	RegisterPhysicsSystem(m_physicsSystem, false);
-	g_context->RegisterSubsystem<ScriptEngine>(std::make_unique<ScriptEngine>());
-	g_context->RegisterSubsystem<World>(std::make_unique<World>());
+	RegisterRendererSystem(m_rendererSystem, false);
 }
 
 void Config::SaveCurrentConfig() noexcept

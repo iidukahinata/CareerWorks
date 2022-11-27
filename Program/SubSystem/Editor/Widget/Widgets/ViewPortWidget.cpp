@@ -9,7 +9,7 @@
 #include "ViewPortWidget.h"
 #include "DetailsWidget.h"
 #include "SubSystem/Scene/World.h"
-#include "SubSystem/Renderer/Renderer.h"
+#include "SubSystem/Renderer/IRenderer.h"
 #include "SubSystem/Scene/Component/Components/Camera.h"
 #include "ThirdParty/ImGuizmo/ImGuizmo.h"
 
@@ -18,7 +18,7 @@ void ViewPortWidget::PostInitialize()
 	m_world = GetContext()->GetSubsystem<World>();
 	ASSERT(m_world);
 
-	m_renderer = GetContext()->GetSubsystem<Renderer>();
+	m_renderer = GetContext()->GetSubsystem<IRenderer>();
 	ASSERT(m_renderer);
 }
 

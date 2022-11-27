@@ -58,9 +58,7 @@ void RenderingThread::Stop() noexcept
 void RenderingThread::BegineFrame() noexcept
 {
 #ifdef IS_EDITOR
-	if (ImTimeLine::ShowTimeLine()) {
-		TIME_LINE_NEW_FRAME();
-	}
+	TIME_LINE_NEW_FRAME();
 #endif // IS_EDITOR
 
 	// 描画コマンド発行
@@ -81,9 +79,7 @@ void RenderingThread::EndFrame() noexcept
 	m_renderCommandFance.WaitForSingle();
 
 #ifdef IS_EDITOR
-	if (ImTimeLine::ShowTimeLine()) {
-		TIME_LINE_END_FRAME();
-	}
+	TIME_LINE_END_FRAME();
 #endif // IS_EDITOR
 }
 
@@ -98,7 +94,7 @@ void RenderingThread::Run()
 {
 #ifdef IS_EDITOR
 	auto showTimeLine = ImTimeLine::ShowTimeLine();
-	if (ImTimeLine::ShowTimeLine()) {
+	if (showTimeLine) {
 		TIME_LINE_WATCH_START(RenderingThread, "Command Process");
 	}
 #endif // IS_EDITOR

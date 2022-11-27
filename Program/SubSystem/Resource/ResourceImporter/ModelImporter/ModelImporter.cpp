@@ -15,9 +15,10 @@
 #include "SubSystem/Resource/ResourceManager.h"
 #include "SubSystem/Renderer/Geometry/Vertex.h"
 #include "../TextureImporter/TextureImporter.h"
-#include "SubSystem/Resource/ResourceData/ProprietaryModelData.h"
-#include "SubSystem/Resource/ResourceData/ProprietaryMeshData.h"
-#include "SubSystem/Resource/ResourceData/ProprietaryMaterialData.h"
+#include "SubSystem/Resource/Resources/3DModel/Model.h"
+#include "SubSystem/Resource/Resources/3DModel/Mesh.h"
+#include "SubSystem/Resource/Resources/3DModel/Material.h"
+#include "SubSystem/Resource/Resources/3DModel/Texture.h"
 #include "SubSystem/Resource/ResourceData/ProprietaryTextureData.h"
 
 ModelImporter::ModelImporter(ResourceManager* resourceManager) :
@@ -60,7 +61,7 @@ bool ModelImporter::CreateModelData(StringView filePath) noexcept
 
 void ModelImporter::CreateResourceData(StringView filePath) noexcept
 {
-	auto modelData = m_resourceManager->CreateResourceData("Model", filePath);
+	auto modelData = m_resourceManager->CreateResourceData<Model>(filePath);
 
 	for (const auto& meshPath : m_meshPaths)
 	{
@@ -68,17 +69,17 @@ void ModelImporter::CreateResourceData(StringView filePath) noexcept
 		const auto& texturePaths = m_texturePaths[materialPath];
 
 		// ƒ‚ƒfƒ‹ŽQÆŠÖŒW‚ð“o˜^
-		auto meshData = m_resourceManager->CreateResourceData("Mesh", meshPath);
+		auto meshData = m_resourceManager->CreateResourceData<Mesh>(meshPath);
 		modelData->m_refResourcePaths.emplace_back(meshData->m_resourcePath);
 
 		// ƒƒbƒVƒ…ŽQÆŠÖŒW‚ð“o˜^
-		auto materialData = m_resourceManager->CreateResourceData("Material", materialPath);
+		auto materialData = m_resourceManager->CreateResourceData<Material>(materialPath);
 		meshData->m_refResourcePaths.emplace_back(materialData->m_resourcePath);
 
 		// ƒ}ƒeƒŠƒAƒ‹ŽQÆŠÖŒW‚ð“o˜^
 		for (const auto& texturePath : texturePaths)
 		{
-			auto textureData = m_resourceManager->CreateResourceData("Texture", texturePath);
+			auto textureData = m_resourceManager->CreateResourceData<Texture>(texturePath);
 			materialData->m_refResourcePaths.emplace_back(textureData->m_resourcePath);
 		}
 

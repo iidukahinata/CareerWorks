@@ -10,7 +10,7 @@
 #include "Module/ModuleHelper.h"
 #include "SubSystem/Resource/ResourceManager.h"
 #include "SubSystem/Resource/Resources/Script/ScriptInstance.h"
-#include "SubSystem/Scene/Component/ComponentCollection.h"
+#include "SubSystem/Scene/Factory/ComponentFactory.h"
 #include "SubSystem/Scene/Component/Components/Script.h"
 
 #define BOOST_PYTHON_STATIC_LIB
@@ -25,7 +25,7 @@ bool ScriptEngine::Initialize()
 	Py_Initialize();
 
 	// register component
-	ComponentCollection::Register<Script, Script>();
+	ComponentFactory::Register<Script>();
 
 	return true;
 }
@@ -36,7 +36,7 @@ void ScriptEngine::RebuildAllScript() noexcept
 	{
 		boost::python::object importlib = boost::python::import("importlib").attr("__dict__");
 		if (!importlib.contains("reload")) {
-			LOG_ERROR("Not Find reload() from importlib");
+			LOG_ERROR("not found reload() from importlib");
 			return;
 		}
 

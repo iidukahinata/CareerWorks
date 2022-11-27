@@ -13,22 +13,24 @@ class Camera;
 /**
 * 他クラスと分離させるために各インターフェイス関数を持つ Ligth 管理抽象クラスとして実装変更した。
 */
-class LightMap
+class ILightMap
 {
 	COMPLETED_DEVELOPMENT()
-	SUPER_CLASS(LightMap)
+	SUPER_CLASS(ILightMap)
 public:
 
-	virtual ~LightMap();
+	virtual ~ILightMap();
 
 	/** 各 Light 定数バッファ等を作成等行う。*/
-	virtual void Initialize() {}
+	virtual void Initialize() = 0;
 
 	/**
 	* Light定数バッファをGPUにセットする処理を書き込む。
 	* 基本的には Renderer の描画前に呼び出される。
 	*/
-	virtual void Update(Camera* mainCamera) {}
+	virtual void Update(Camera* mainCamera) = 0;
+
+public:
 
 	void Clear() noexcept;
 

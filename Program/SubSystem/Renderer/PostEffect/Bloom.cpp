@@ -7,7 +7,7 @@
 
 
 #include "Bloom.h"
-#include "../Renderer.h"
+#include "../IRenderer.h"
 #include "../Geometry/Quad.h"
 #include "../Geometry/Vertex.h"
 #include "SubSystem/Window/Window.h"
@@ -153,7 +153,6 @@ void Bloom::LuminousPass() noexcept
 
 	// Pipeline Set
 	m_luminousPipeline.Set();
-	//m_sampler.PSSet();
 
 	// CRV Set
 	m_lumaConstantBuffer.PSSet(1);

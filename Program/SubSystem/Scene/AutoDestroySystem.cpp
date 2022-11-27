@@ -27,7 +27,7 @@ void AutoDestroySystem::RemoveAutoDestroy(GameObject* gameObject) noexcept
 
 void AutoDestroySystem::Initialize() noexcept
 {
-	m_job.SetFunction([this](double) { Tick(); }, FunctionType::PrePhysics);
+	m_job.SetFunction([this](double) { Tick(); }, FunctionType::StartPhysics);
 	m_job.RegisterToJobSystem();
 }
 
@@ -37,7 +37,8 @@ void AutoDestroySystem::Tick() noexcept
 
 	for (const auto& gameObject : m_gameObjects)
 	{
-		if (AllComponentsForDestructible(gameObject))
+		// check if an object can be erased
+		if (AllComponentsCanErase(gameObject))
 		{
 			destroyObjectList.emplace_back(gameObject);
 		}
@@ -47,7 +48,6 @@ void AutoDestroySystem::Tick() noexcept
 	for (const auto& gameObject : destroyObjectList)
 	{
 		m_gameObjects.erase(gameObject);
-
 		delete gameObject;
 	}
 }
@@ -57,7 +57,7 @@ void AutoDestroySystem::Shutdown() noexcept
 	m_job.UnRegisterFromJobSystem();
 }
 
-bool AutoDestroySystem::AllComponentsForDestructible(GameObject* gameObject) const noexcept
+bool AutoDestroySystem::AllComponentsCanErase(GameObject* gameObject) const noexcept
 {
 	for (const auto& component : gameObject->GetAllComponent())
 	{
@@ -66,6 +66,5 @@ bool AutoDestroySystem::AllComponentsForDestructible(GameObject* gameObject) con
 			return false;
 		}
 	}
-
 	return true;
 }

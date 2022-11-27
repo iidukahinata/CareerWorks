@@ -8,6 +8,7 @@
 
 #include "ShaderImporter.h"
 #include "SubSystem/Resource/ResourceManager.h"
+#include "SubSystem/Resource/Resources/3DModel/Shader.h"
 #include "SubSystem/Resource/ResourceData/ProprietaryShaderData.h"
 
 ShaderImporter::ShaderImporter(ResourceManager* resourceManager) :
@@ -25,5 +26,5 @@ bool ShaderImporter::CreateShaderData(StringView filePath) noexcept
 		return true;
 	}
 
-	return m_resourceManager->CreateResourceData("Shader", shaderPath);
+	return m_resourceManager->CreateResourceData<Shader>(shaderPath);
 }

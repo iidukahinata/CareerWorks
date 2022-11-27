@@ -10,7 +10,7 @@
 #include "../IComponent.h"
 #include "SubSystem/Thread/RenderingThread/RenderCommandFance.h"
 
-class Renderer;
+class IRenderer;
 
 enum LightType
 {
@@ -61,7 +61,7 @@ private:
 
 private:
 
-	Renderer* m_renderer = nullptr;
+	IRenderer* m_renderer = nullptr;
 
 	bool m_isRegister = false;
 

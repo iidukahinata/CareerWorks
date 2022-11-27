@@ -9,9 +9,9 @@
 
 #include <dinput.h>
 #include <wrl/client.h>
-#include "../Input.h"
+#include "../IInput.h"
 
-class DirectInput : public Input
+class DirectInput : public IInput
 {
 	COMPLETED_DEVELOPMENT()
 	SUB_CLASS(DirectInput)

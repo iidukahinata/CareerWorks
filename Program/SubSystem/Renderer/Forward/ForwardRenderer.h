@@ -2,17 +2,17 @@
 * @file	   ForwardRenderer.h
 * @brief
 *
-* @date	   2022/10/31 2022年度初版
+* @date	   2022/11/27 2022年度初版
 */
 #pragma once
 
 
-#include "../Renderer.h"
+#include "../IRenderer.h"
 #include "../GraphicsAPI/D3D12/D3D12RenderTexture.h"
 
-class ForwardRenderer : public Renderer
+class ForwardRenderer : public IRenderer
 {
-	IN_DEVELOPMENT("カリング処理と別スレッド上での動作を開発予定")
+	IN_DEVELOPMENT("カリング処理を開発予定")
 	SUB_CLASS(ForwardRenderer)
 public:
 
@@ -28,8 +28,11 @@ private:
 	/** Render Job の登録 */
 	void RegisterRenderJob() noexcept;
 
+	/** パイプラインで使用する全てのオブジェクトの初期化 */
+	bool SetupObjects() noexcept;
+
 	/** Z prepass で使用されるオブジェクトの初期化 */
-	bool SetUpPrePassObjects() noexcept;
+	bool SetupPrePassObjects() noexcept;
 
 private:
 

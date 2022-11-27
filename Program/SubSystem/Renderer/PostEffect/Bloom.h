@@ -7,10 +7,9 @@
 #pragma once
 
 
-#include "PostEffect.h"
 #include "Blur.h"
 
-class Bloom : public PostEffect
+class Bloom : public IPostEffect
 {
 	IN_DEVELOPMENT()
 	SUB_CLASS(Bloom)

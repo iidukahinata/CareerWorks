@@ -10,7 +10,7 @@
 #include "../Widget.h"
 
 class World;
-class Renderer;
+class IRenderer;
 class ResourceManager;
 class Material;
 
@@ -72,7 +72,7 @@ private:
 
 	World* m_world = nullptr;
 
-	Renderer* m_renderer = nullptr;
+	IRenderer* m_renderer = nullptr;
 
 	ResourceManager* m_resourceManager = nullptr;
 

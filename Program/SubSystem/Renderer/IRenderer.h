@@ -8,7 +8,7 @@
 
 
 #include "SkyBox.h"
-#include "LightMap.h"
+#include "ILightMap.h"
 #include "TransformCBuffer.h"
 #include "SubSystem/Core/ISubsystem.h"
 
@@ -22,13 +22,13 @@ class PostProcessEffect;
 * このクラスではインターフェースのみを実装。
 * 派生クラスで初期化等の関数を実装する。
 */
-class Renderer : public ISubsystem
+class IRenderer : public ISubsystem
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(Renderer)
+	SUB_CLASS(IRenderer)
 public:
 
-	virtual ~Renderer() = default;
+	virtual ~IRenderer() = default;
 
 	virtual bool Initialize() override;
 
@@ -67,7 +67,7 @@ protected:
 	UniquePtr<SkyBox> m_skyBox;
 
 	// * ライト管理のためのマップクラス
-	UniquePtr<LightMap> m_lightMap;
+	UniquePtr<ILightMap> m_lightMap;
 
 	// * 行列管理のためのクラス
 	UniquePtr<TransformCBuffer> m_transformCBuffer;

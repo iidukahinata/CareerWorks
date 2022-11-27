@@ -2,21 +2,21 @@
 * @file	   ForwardRenderer.cpp
 * @brief
 *
-* @date	   2022/10/30 2022年度初版
+* @date	   2022/11/27 2022年度初版
 */
 
 
 #include "ForwardRenderer.h"
-#include "SubSystem/Window/Window.h"
 #include "../LightMap/DefaultLightMap.h"
-#include "SubSystem/Editor/EditorSystem.h"
 #include "../GraphicsAPI/D3D12/D3D12GraphicsDevice.h"
+#include "SubSystem/Window/Window.h"
+#include "SubSystem/Editor/EditorSystem.h"
 #include "SubSystem/Scene/Component/Components/Camera.h"
 #include "SubSystem/Scene/Component/Components/RenderObject.h"
 
 bool ForwardRenderer::Initialize()
 {
-	Renderer::Initialize();
+	IRenderer::Initialize();
 
 	// Create SkyBox
 	m_skyBox = std::make_unique<SkyBox>();
@@ -29,20 +29,27 @@ bool ForwardRenderer::Initialize()
 	// Create TransCBuffer
 	m_transformCBuffer = std::make_unique<TransformCBuffer>();
 
-	// SetUp Objects
+	auto ret = SetupObjects();
+	if (!ret) {
+		return false;
+	}
+
+	RegisterRenderJob();
+
+	return true;
+}
+
+bool ForwardRenderer::SetupObjects() noexcept
+{
+	if (!SetupPrePassObjects())
 	{
-		if (!SetUpPrePassObjects())
-		{
-			return false;
-		}
+		return false;
 	}
 
 #if IS_EDITOR
 	m_renderTexture.Create(Window::Get().GetWindowWidth(), Window::Get().GetWindowHeight());
 	EditorSystem::Get().PostInitialize(m_renderTexture.GetShaderResourceView());
 #endif // IS_EDITOR
-
-	RegisterRenderJob();
 
 	return true;
 }
@@ -64,13 +71,6 @@ void ForwardRenderer::Update() noexcept
 	// 全体の描画準備
 	D3D12GraphicsDevice::Get().BegineFrame();
 
-#if IS_EDITOR
-	m_renderTexture.SetRenderTarget();
-	m_renderTexture.Clear(Math::Vector4(0.0f, 0.0f, 0.0f, 1.0f));
-#else
-	D3D12GraphicsDevice::Get().SetRenderTarget();
-#endif // IS_EDITOR
-
 	if (m_mainCamera)
 	{
 		PrePass();
@@ -90,12 +90,11 @@ void ForwardRenderer::Present() noexcept
 #endif // IS_EDITOR
 
 	D3D12GraphicsDevice::Get().EndFrame();
+	D3D12GraphicsDevice::Get().Present();
 
 #ifdef IS_EDITOR
 	TIME_LINE_WATCH_END(RenderingThread);
 #endif // IS_EDITOR
-
-	D3D12GraphicsDevice::Get().Present();
 }
 
 void ForwardRenderer::RegisterRenderJob() noexcept
@@ -109,7 +108,7 @@ void ForwardRenderer::RegisterRenderJob() noexcept
 	}
 }
 
-bool ForwardRenderer::SetUpPrePassObjects() noexcept
+bool ForwardRenderer::SetupPrePassObjects() noexcept
 {
 	// Create RootSignature
 	{
@@ -157,6 +156,13 @@ void ForwardRenderer::PrePass() noexcept
 {
 	m_lightMap->Update(m_mainCamera);
 	m_transformCBuffer->Update(m_mainCamera);
+
+#if IS_EDITOR
+	m_renderTexture.SetRenderTarget();
+	m_renderTexture.Clear(Math::Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+#else
+	D3D12GraphicsDevice::Get().SetRenderTarget();
+#endif // IS_EDITOR
 
 	// Z prepass
 	{

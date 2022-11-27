@@ -11,7 +11,6 @@
 void ThreadManager::Initialize() noexcept
 {
 	m_job.SetFunction([this](double) { Tick(); }, FunctionType::PreUpdate);
-
 	m_job.RegisterToJobSystem();
 }
 

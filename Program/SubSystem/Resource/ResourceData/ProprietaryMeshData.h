@@ -31,6 +31,8 @@ public:
 	void Serialized(FileStream* file) const override;
 	void Deserialized(FileStream* file) override;
 
+public:
+
 	/** assimp データから独自データに変換、テクスチャ生成で使用 */
 	static ProprietaryMeshData ConvertProprietaryData(aiMesh* mesh) noexcept;
 	/** pmd データから独自データに変換、テクスチャ生成で使用 */

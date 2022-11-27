@@ -6,11 +6,11 @@
 */
 
 
-#include "PostEffect.h"
-#include "../Renderer.h"
+#include "IPostEffect.h"
+#include "../IRenderer.h"
 #include "Subsystem/Scene/Component/Components/PostProcessEffect.h"
 
-Renderer* PostEffect::GetRenderer() const noexcept
+IRenderer* IPostEffect::GetRenderer() const noexcept
 {
 	ASSERT(m_postProcessEffect);
 	return m_postProcessEffect->GetRenderer();

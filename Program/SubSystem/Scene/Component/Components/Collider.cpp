@@ -47,7 +47,7 @@ void Collider::Deserialized(FileStream* file)
 
 void Collider::OnInitialize()
 {
-	m_physics = dynamic_cast<PhysX*>(GetContext()->GetSubsystem<Physics>());
+	m_physics = dynamic_cast<PhysX*>(GetContext()->GetSubsystem<IPhysics>());
 	ASSERT(m_physics);
 
 	// Create Material

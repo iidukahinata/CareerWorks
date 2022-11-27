@@ -95,7 +95,7 @@ void PostProcessEffectDetails::ShowAddPostEffectWindow() noexcept
 	}
 }
 
-void PostProcessEffectDetails::ShowBloom(PostEffect* postEffect) noexcept
+void PostProcessEffectDetails::ShowBloom(IPostEffect* postEffect) noexcept
 {
 	constexpr auto offsetPos = 130;
 

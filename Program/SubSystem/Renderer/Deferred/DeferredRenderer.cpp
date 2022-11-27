@@ -2,26 +2,24 @@
 * @file	   DeferredRenderer.cpp
 * @brief
 *
-* @date	   2022/09/17 2022年度初版
+* @date	   2022/11/27 2022年度初版
 */
 
 
 #include "DeferredRenderer.h"
-#include "GBuffer.h"
 #include "../Geometry/Quad.h"
 #include "../Geometry/Vertex.h"
-#include "SubSystem/Window/Window.h"
 #include "../LightMap/DefaultLightMap.h"
-#include "SubSystem/Editor/EditorSystem.h"
 #include "../GraphicsAPI/D3D12/D3D12GraphicsDevice.h"
+#include "SubSystem/Window/Window.h"
+#include "SubSystem/Editor/EditorSystem.h"
 #include "SubSystem/Scene/Component/Components/Camera.h"
 #include "SubSystem/Scene/Component/Components/RenderObject.h"
 #include "SubSystem/Scene/Component/Components/PostProcessEffect.h"
-#include "SubSystem/Resource/ResourceData/ProprietaryShaderData.h"
 
 bool DeferredRenderer::Initialize()
 {
-	Renderer::Initialize();
+	IRenderer::Initialize();
 
 	const auto width  = Window::Get().GetWindowWidth();
 	const auto height = Window::Get().GetWindowHeight();
@@ -41,33 +39,10 @@ bool DeferredRenderer::Initialize()
 	// Create TransCBuffer
 	m_transformCBuffer = std::make_unique<TransformCBuffer>();
 
-	// SetUp Objects
-	{
-		if (!SetUpPrePassObjects())
-		{
-			return false;
-		}
-
-		if (!SetUpRenderingObjects(width, height))
-		{
-			return false;
-		}
-
-		if (!SetUpLightingObjects(width, height))
-		{
-			return false;
-		}
-
-		if (!SetUpPostProcessObjects(width, height))
-		{
-			return false;
-		}
+	auto ret = SetupObjects();
+	if(!ret) {
+		return false;
 	}
-
-#if IS_EDITOR
-	m_renderTexture.Create(Window::Get().GetWindowWidth(), Window::Get().GetWindowHeight());
-	EditorSystem::Get().PostInitialize(m_renderTexture.GetShaderResourceView());
-#endif // IS_EDITOR
 
 	RegisterRenderJob();
 
@@ -116,22 +91,11 @@ void DeferredRenderer::Present() noexcept
 #endif // IS_EDITOR
 
 	D3D12GraphicsDevice::Get().EndFrame();
+	D3D12GraphicsDevice::Get().Present();
 
 #ifdef IS_EDITOR
 	TIME_LINE_WATCH_END(RenderingThread);
 #endif // IS_EDITOR
-
-	D3D12GraphicsDevice::Get().Present();
-}
-
-void DeferredRenderer::RegisterGBufferShader(StringView path)
-{
-
-}
-
-String DeferredRenderer::GetGBufferShader()
-{
-	return String();
 }
 
 void DeferredRenderer::RegisterRenderJob() noexcept
@@ -145,7 +109,49 @@ void DeferredRenderer::RegisterRenderJob() noexcept
 	}
 }
 
-bool DeferredRenderer::SetUpPrePassObjects() noexcept
+bool DeferredRenderer::SetupObjects() noexcept
+{
+	const auto width = Window::Get().GetWindowWidth();
+	const auto height = Window::Get().GetWindowHeight();
+
+	if (!SetupPrePassObjects())
+	{
+		return false;
+	}
+
+	if (!SetupRenderingObjects(width, height))
+	{
+		return false;
+	}
+
+	if (!SetupLightingObjects(width, height))
+	{
+		return false;
+	}
+
+	if (!SetupPostProcessObjects(width, height))
+	{
+		return false;
+	}
+
+#if IS_EDITOR
+
+	if (!m_renderTexture.Create(Window::Get().GetWindowWidth(), Window::Get().GetWindowHeight()))
+	{
+		return false;
+	}
+
+	if (!EditorSystem::Get().PostInitialize(m_renderTexture.GetShaderResourceView()))
+	{
+		return false;
+	}
+
+#endif // IS_EDITOR
+
+	return true;
+}
+
+bool DeferredRenderer::SetupPrePassObjects() noexcept
 {
 	// Create RootSignature
 	{
@@ -189,11 +195,11 @@ bool DeferredRenderer::SetUpPrePassObjects() noexcept
 	return true;
 }
 
-bool DeferredRenderer::SetUpRenderingObjects(UINT width, UINT height) noexcept
+bool DeferredRenderer::SetupRenderingObjects(UINT width, UINT height) noexcept
 {
 	// Create Matrix
-	m_Camera2DProj = Math::Matrix::CreateOrthographicLH(width, height, 0.1f, 100.0f);
-	m_Camera2DView = Math::Matrix(Math::Vector3(0, 0, 1), Math::Vector3::Zero, Math::Vector3::One);
+	m_camera2DProj = Math::Matrix::CreateOrthographicLH(width, height, 0.1f, 100.0f);
+	m_camera2DView = Math::Matrix(Math::Vector3(0, 0, 1), Math::Vector3::Zero, Math::Vector3::One);
 	m_constantBuffer.Create(sizeof(ConstantBufferMatrix));
 
 	// Create Sampler
@@ -223,7 +229,7 @@ bool DeferredRenderer::SetUpRenderingObjects(UINT width, UINT height) noexcept
 	return true;
 }
 
-bool DeferredRenderer::SetUpLightingObjects(UINT width, UINT height) noexcept
+bool DeferredRenderer::SetupLightingObjects(UINT width, UINT height) noexcept
 {
 	auto deferredShaderPath = FileSystem::FindFilePath(SHADER_DIRECTORY, "Deferred.hlsl");
 
@@ -248,7 +254,7 @@ bool DeferredRenderer::SetUpLightingObjects(UINT width, UINT height) noexcept
 	return true;
 }
 
-bool DeferredRenderer::SetUpPostProcessObjects(UINT width, UINT height) noexcept
+bool DeferredRenderer::SetupPostProcessObjects(UINT width, UINT height) noexcept
 {
 	// Create Luminous Pipeline
 	{
@@ -322,17 +328,20 @@ void DeferredRenderer::PrePass() noexcept
 	m_gbuffer->SetRenderTargets();
 	m_gbuffer->Clear();
 
-	// Z prepass
+	ZPrePass();
+}
+
+void DeferredRenderer::ZPrePass()
+{
+	m_preZPipeline.Set();
+
+	// Draw
+	for (auto renderObject : m_renderObjects)
 	{
-		m_preZPipeline.Set();
-	
-		for (auto renderObject : m_renderObjects)
-		{
-			if (!renderObject->GetActive())
-				continue;
-	
-			renderObject->PreRender();
-		}
+		if (!renderObject->GetActive())
+			continue;
+
+		renderObject->PreRender();
 	}
 }
 
@@ -353,7 +362,7 @@ void DeferredRenderer::GBufferPass() noexcept
 
 void DeferredRenderer::PreLightingPass() noexcept
 {
-	m_transformCBuffer->Update(m_Camera2DView.ToMatrixXM(), m_Camera2DProj.ToMatrixXM());
+	m_transformCBuffer->Update(m_camera2DView.ToMatrixXM(), m_camera2DProj.ToMatrixXM());
 	m_transformCBuffer->Bind(m_constantBuffer.GetCPUData(), Math::Matrix::Identity.ToMatrixXM());
 
 	m_constantBuffer.VSSet(0);

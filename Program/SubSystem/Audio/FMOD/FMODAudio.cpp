@@ -8,22 +8,24 @@
 
 #include "FMODAudio.h"
 #include "../AudioHelper.h"
-#include "SubSystem/Scene/Component/ComponentCollection.h"
+#include "SubSystem/Scene/Factory/ComponentFactory.h"
 #include "SubSystem/Scene/Component/Components/AudioSpeaker.h"
 #include "Subsystem/Scene/Component/Components/AudioListener.h"
 
 bool FMODAudio::Initialize()
 {
-	m_job.SetFunction([this](double) { Update(); }, FunctionType::PrePhysics);
+	m_job.SetFunction([this](double) { Update(); }, FunctionType::StartPhysics);
 	m_job.RegisterToJobSystem();
 
-	constexpr auto maxChannel = 64;
 	AUDIO_EORROR_CHECK(FMOD::System_Create(&m_system));
+	ASSERT(m_system);
+
+	constexpr auto maxChannel = 64;
 	AUDIO_EORROR_CHECK(m_system->init(maxChannel, FMOD_INIT_NORMAL, nullptr));
 
 	// register component
-	ComponentCollection::Register<AudioSpeaker, AudioSpeaker>();
-	ComponentCollection::Register<AudioListener, AudioListener>();
+	ComponentFactory::Register<AudioSpeaker>();
+	ComponentFactory::Register<AudioListener>();
 
 	return true;
 }
@@ -44,8 +46,6 @@ void FMODAudio::Update() const noexcept
 #ifdef IS_EDITOR
 	TIME_LINE_WATCH_START(MainThread, "Audio Update");
 #endif // IS_EDITOR
-
-	ASSERT(m_system);
 
 	// 3D Mode Žžˆ—
 	if (m_lisrener)
@@ -69,7 +69,6 @@ void FMODAudio::Update() const noexcept
 
 void FMODAudio::Set3DSettings(float dopplerscale, float distancefactor, float rolloffscale) const noexcept
 {
-	ASSERT(m_system);
 	AUDIO_EORROR_CHECK(m_system->set3DSettings(dopplerscale, distancefactor, rolloffscale));
 }
 

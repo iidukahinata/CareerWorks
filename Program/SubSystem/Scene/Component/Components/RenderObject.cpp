@@ -7,12 +7,12 @@
 
 
 #include "RenderObject.h"
-#include "SubSystem/Renderer/Renderer.h"
+#include "SubSystem/Renderer/IRenderer.h"
 #include "SubSystem/Thread/RenderingThread/RenderingThread.h"
 
 void RenderObject::OnInitialize()
 {
-	m_renderer = GetContext()->GetSubsystem<Renderer>();
+	m_renderer = GetContext()->GetSubsystem<IRenderer>();
 	ASSERT(m_renderer);
 
 	m_constantBufferMatrix.Create(sizeof(ConstantBufferMatrix));

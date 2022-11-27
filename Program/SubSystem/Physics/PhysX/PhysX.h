@@ -2,16 +2,16 @@
  * @file	PhysX.h
  * @brief
  *
- * @date	2022/11/06 2022年度初版
+ * @date	2022/11/27 2022年度初版
  */
 #pragma once
 
 
-#include "../Physics.h"
+#include "../IPhysics.h"
 #include <PxPhysicsAPI.h>
 
 
-class PhysX : public Physics, public physx::PxSimulationEventCallback
+class PhysX : public IPhysics, public physx::PxSimulationEventCallback
 {
     COMPLETED_DEVELOPMENT()
     SUB_CLASS(PhysX)
@@ -30,6 +30,12 @@ public:
     /** Gravity メソッド */
     void SetGravity(const Math::Vector3& gravity) override;
 
+private:
+
+    void SetupPhysXObjects() noexcept;
+
+    void CreatePhysXScene() noexcept;
+
 public:
 
     /** Event メソッド */
@@ -44,10 +50,6 @@ public:
 
     /** アクセス */
     physx::PxPhysics* GetDevice() const noexcept;
-
-private:
-
-    void CreateScene() noexcept;
 
 private:
 

@@ -11,7 +11,7 @@
 #include "SubSystem/Scene/World.h"
 #include "SubSystem/Window/Window.h"
 #include "SubSystem/Editor/DragDrop.h"
-#include "SubSystem/Renderer/Renderer.h"
+#include "SubSystem/Renderer/IRenderer.h"
 #include "SubSystem/Resource/ResourceManager.h"
 #include "SubSystem/Resource/Resources/Scene/Scene.h"
 #include "SubSystem/Resource/Resources/3DModel/Material.h"
@@ -21,7 +21,7 @@ void MainMenuBarWidget::PostInitialize()
     m_world = GetContext()->GetSubsystem<World>();
     ASSERT(m_world);
 
-    m_renderer = GetContext()->GetSubsystem<Renderer>();
+    m_renderer = GetContext()->GetSubsystem<IRenderer>();
     ASSERT(m_renderer);
 
     m_resourceManager = GetContext()->GetSubsystem<ResourceManager>();

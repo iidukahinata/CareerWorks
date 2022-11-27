@@ -21,7 +21,7 @@ void FileSystem::Remove(StringView path) noexcept
 	}
 	catch (const std::exception&)
 	{
-		LOG_ERROR("指定されたファイル、ディレクトリがありません。");
+		LOG_ERROR(String("not found file or directory ") + "path => " + path.data());
 	}
 }
 
@@ -33,7 +33,7 @@ void FileSystem::RemoveAll(StringView path) noexcept
 	}
 	catch (const std::exception&)
 	{
-		LOG_ERROR("指定されたファイル、ディレクトリがありません。");
+		LOG_ERROR(String("not found file or directory ") + "path => " + path.data());
 	}
 }
 
@@ -115,13 +115,13 @@ String FileSystem::GetParentDirectory(StringView directoryPath) noexcept
 	}
 }
 
-Vector<String> FileSystem::GetFilePathsFromDirectory(StringView filePath) noexcept
+Vector<String> FileSystem::GetFilePathsFromDirectory(StringView path) noexcept
 {
 	Vector<String> filePaths;
 
 	try
 	{
-		for (const auto& entry : std::filesystem::directory_iterator(filePath))
+		for (const auto& entry : std::filesystem::directory_iterator(path))
 		{
 			if (entry.is_directory())
 			{
@@ -133,19 +133,19 @@ Vector<String> FileSystem::GetFilePathsFromDirectory(StringView filePath) noexce
 	}
 	catch (const std::exception&)
 	{
-		LOG_ERROR("指定されたディレクトリの検索に失敗しました。");
+		LOG_ERROR(String("not found directory ") + "path => " + path.data());
 	}
 
 	return filePaths;
 }
 
-Vector<String> FileSystem::GetFilePathsRecursiveDirectory(StringView filePath) noexcept
+Vector<String> FileSystem::GetFilePathsRecursiveDirectory(StringView path) noexcept
 {
 	Vector<String> filePaths;
 
 	try
 	{
-		for (const auto& entry : std::filesystem::recursive_directory_iterator(filePath))
+		for (const auto& entry : std::filesystem::recursive_directory_iterator(path))
 		{
 			if (entry.is_directory())
 			{
@@ -157,19 +157,19 @@ Vector<String> FileSystem::GetFilePathsRecursiveDirectory(StringView filePath) n
 	}
 	catch (const std::exception&)
 	{
-		LOG_ERROR("指定されたディレクトリの検索に失敗しました。");
+		LOG_ERROR(String("not found directory ") + "path => " + path.data());
 	}
 
 	return filePaths;
 }
 
-Vector<String> FileSystem::GetDirectorysFromDirectory(StringView filePath) noexcept
+Vector<String> FileSystem::GetDirectorysFromDirectory(StringView path) noexcept
 {
 	Vector<String> filePaths;
 
 	try
 	{
-		for (const auto& entry : std::filesystem::directory_iterator(filePath))
+		for (const auto& entry : std::filesystem::directory_iterator(path))
 		{
 			if (!entry.is_directory())
 			{
@@ -181,19 +181,19 @@ Vector<String> FileSystem::GetDirectorysFromDirectory(StringView filePath) noexc
 	}
 	catch (const std::exception&)
 	{
-		LOG_ERROR("指定されたディレクトリの検索に失敗しました。");
+		LOG_ERROR(String("not found directory ") + "path => " + path.data());
 	}
 
 	return filePaths;
 }
 
-Vector<String> FileSystem::GetDirectorysRecursiveDirectory(StringView filePath) noexcept
+Vector<String> FileSystem::GetDirectorysRecursiveDirectory(StringView path) noexcept
 {
 	Vector<String> filePaths;
 
 	try
 	{
-		for (const auto& entry : std::filesystem::recursive_directory_iterator(filePath))
+		for (const auto& entry : std::filesystem::recursive_directory_iterator(path))
 		{
 			if (!entry.is_directory())
 			{
@@ -205,7 +205,7 @@ Vector<String> FileSystem::GetDirectorysRecursiveDirectory(StringView filePath) 
 	}
 	catch (const std::exception&)
 	{
-		LOG_ERROR("指定されたディレクトリの検索に失敗しました。");
+		LOG_ERROR(String("not found directory ") + "path => " + path.data());
 	}
 
 	return filePaths;

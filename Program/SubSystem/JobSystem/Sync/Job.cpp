@@ -22,8 +22,6 @@ Job::Job(Task&& task, FunctionType type) noexcept
 
 void Job::Execute(double deletaTime) noexcept
 {
-	// ŠÖ”‚ªİ’è‚³‚ê‚Ä‚¢‚È‚¢ Job ‚ªÀs‚³‚ê‚Ä‚¢‚éA‚±‚±‚Å~‚Ü‚è‚Ü‚·B
-	ASSERT(m_task);
 	m_task(deletaTime);
 }
 
@@ -35,6 +33,8 @@ void Job::SetFunction(Task&& task, FunctionType fincType) noexcept
 
 void Job::RegisterToJobSystem() noexcept
 {
+	ASSERT(m_task);
+
 	if (!m_isRegistered)
 	{
 		m_isRegistered = true;

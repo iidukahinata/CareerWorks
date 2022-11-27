@@ -7,11 +7,18 @@
 
 
 #include "ComponentFactory.h"
-#include "../Component/ComponentCollection.h"
+
+Unordered_Map<String, std::function<UniquePtr<IComponent>()>> ComponentFactory::m_componentFactorys;
 
 UniquePtr<IComponent> ComponentFactory::Create(GameObject* gameObject, StringView name) noexcept
 {
-    UniquePtr<IComponent> component = ComponentCollection::CreateComponent(name);
+	UniquePtr<IComponent> component;
+
+	String componentName(name);
+	if (m_componentFactorys.contains(componentName))
+	{
+		component = m_componentFactorys[componentName]();
+	}
 
     if (component)
     {
@@ -19,4 +26,16 @@ UniquePtr<IComponent> ComponentFactory::Create(GameObject* gameObject, StringVie
     }
 
     return component;
+}
+
+Vector<StringView> ComponentFactory::GetAllComponentType()
+{
+	Vector<StringView> componentTypes;
+
+	for (const auto& componentInfo : m_componentFactorys)
+	{
+		componentTypes.emplace_back(componentInfo.first);
+	}
+
+	return componentTypes;
 }

@@ -27,19 +27,19 @@ public:
 
 	static String FindFilePath(StringView directory, StringView path) noexcept;
 
-	static String Canonical(StringView filePath) noexcept;
+	static String Canonical(StringView path) noexcept;
 
-	static String GetFilePath(StringView filePath) noexcept;
+	static String GetFilePath(StringView path) noexcept;
 
-	static String GetParentDirectory(StringView directoryPath) noexcept;
+	static String GetParentDirectory(StringView path) noexcept;
 
-	static Vector<String> GetFilePathsFromDirectory(StringView filePath) noexcept;
+	static Vector<String> GetFilePathsFromDirectory(StringView path) noexcept;
 
-	static Vector<String> GetFilePathsRecursiveDirectory(StringView filePath) noexcept;
+	static Vector<String> GetFilePathsRecursiveDirectory(StringView path) noexcept;
 
-	static Vector<String> GetDirectorysFromDirectory(StringView filePath) noexcept;
+	static Vector<String> GetDirectorysFromDirectory(StringView path) noexcept;
 
-	static Vector<String> GetDirectorysRecursiveDirectory(StringView filePath) noexcept;
+	static Vector<String> GetDirectorysRecursiveDirectory(StringView path) noexcept;
 
 	static bool IsDirectoryPath(StringView path) noexcept;
 

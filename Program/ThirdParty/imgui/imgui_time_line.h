@@ -31,8 +31,8 @@
 #include <climits>
 #include "imgui.h"
 
-#define TIME_LINE_NEW_FRAME() ImTimeLine::NewFrame();
-#define TIME_LINE_END_FRAME() ImTimeLine::EndFrame();
+#define TIME_LINE_NEW_FRAME() if (ImTimeLine::ShowTimeLine()) { ImTimeLine::NewFrame(); }
+#define TIME_LINE_END_FRAME() if (ImTimeLine::ShowTimeLine()) { ImTimeLine::EndFrame(); }
 
 #define TIME_LINE_WATCH_START(Thread, Label) if (ImTimeLine::ShowTimeLine()) { ImTimeLine::BeginTimeLine(ImTimeLine::ThreadType::Thread, Label); }
 #define TIME_LINE_WATCH_END(Thread)          if (ImTimeLine::ShowTimeLine()) { ImTimeLine::EndTimeLine(ImTimeLine::ThreadType::Thread); }

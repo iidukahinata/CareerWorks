@@ -10,7 +10,7 @@
 #include "../Widget.h"
 
 class World;
-class Renderer;
+class IRenderer;
 
 class ViewPortWidget : public Widget
 {
@@ -38,7 +38,7 @@ private:
 
 	World* m_world = nullptr;
 
-	Renderer* m_renderer = nullptr;
+	IRenderer* m_renderer = nullptr;
 
 	// * ƒQ[ƒ€Às’†‚©‚ğ•Û
 	bool m_isPlay = false;

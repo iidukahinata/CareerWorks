@@ -158,7 +158,6 @@ void EventManager::Tick() noexcept
 
 		// タイムアウト処理
 		constexpr double maxTime = 16.0;
-		//auto time = m_stopwatch.GetRap(Milli);
 		if (maxTime <= m_stopwatch.GetRap(Milli))
 		{
 			break;

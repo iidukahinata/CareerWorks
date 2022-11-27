@@ -6,8 +6,8 @@
 */
 
 #include "PostProcessEffect.h"
-#include "SubSystem/Renderer/Renderer.h"
-#include "SubSystem/Renderer/PostEffect/PostEffect.h"
+#include "SubSystem/Renderer/IRenderer.h"
+#include "SubSystem/Renderer/PostEffect/IPostEffect.h"
 #include "SubSystem/Renderer/Factory/PostEffectFactory.h"
 #include "SubSystem/Thread/RenderingThread/RenderingThread.h"
 #include "SubSystem/Renderer/GraphicsAPI/D3D12/D3D12RenderTexture.h"
@@ -44,7 +44,7 @@ void PostProcessEffect::Deserialized(FileStream* file)
 
 void PostProcessEffect::OnInitialize()
 {
-	m_renderer = GetContext()->GetSubsystem<Renderer>();
+	m_renderer = GetContext()->GetSubsystem<IRenderer>();
 	ASSERT(m_renderer);
 }
 
@@ -74,9 +74,9 @@ bool PostProcessEffect::Erasable()
 	return m_renderCommandFance.IsSingle();;
 }
 
-PostEffect* PostProcessEffect::AddPostEffect(StringView name) noexcept
+IPostEffect* PostProcessEffect::AddPostEffect(StringView name) noexcept
 {
-	PostEffect* result = nullptr;
+	IPostEffect* result = nullptr;
 
 	if (auto postEffect = PostEffectFactory::Create(this, name))
 	{
@@ -87,7 +87,7 @@ PostEffect* PostProcessEffect::AddPostEffect(StringView name) noexcept
 	return result;
 }
 
-void PostProcessEffect::AddPostEffect(PostEffect* postEffect) noexcept
+void PostProcessEffect::AddPostEffect(IPostEffect* postEffect) noexcept
 {
 	ASSERT(postEffect);
 
@@ -105,7 +105,7 @@ void PostProcessEffect::AddPostEffect(PostEffect* postEffect) noexcept
 	}
 }
 
-void PostProcessEffect::RemovePostEffect(PostEffect* postEffect) noexcept
+void PostProcessEffect::RemovePostEffect(IPostEffect* postEffect) noexcept
 {
 	ASSERT(postEffect);
 
@@ -116,7 +116,7 @@ void PostProcessEffect::RemovePostEffect(PostEffect* postEffect) noexcept
 	}
 }
 
-void PostProcessEffect::GetAllPostEffect(Vector<PostEffect*>& postEffects) const noexcept
+void PostProcessEffect::GetAllPostEffect(Vector<IPostEffect*>& postEffects) const noexcept
 {
 	postEffects.resize(m_postEffects.size());
 
@@ -126,7 +126,7 @@ void PostProcessEffect::GetAllPostEffect(Vector<PostEffect*>& postEffects) const
 	}
 }
 
-const Map<uint32_t, UniquePtr<PostEffect>>& PostProcessEffect::GetAllPostEffect() noexcept
+const Map<uint32_t, UniquePtr<IPostEffect>>& PostProcessEffect::GetAllPostEffect() noexcept
 {
 	return m_postEffects;
 }
@@ -136,7 +136,7 @@ bool PostProcessEffect::HasPostEffect() const noexcept
 	return !m_postEffects.empty();
 }
 
-PostEffect* PostProcessEffect::FindPostEffect(StringView name) const noexcept
+IPostEffect* PostProcessEffect::FindPostEffect(StringView name) const noexcept
 {
 	const auto type = PostEffectType(name);
 
@@ -148,7 +148,7 @@ PostEffect* PostProcessEffect::FindPostEffect(StringView name) const noexcept
 	return nullptr;
 }
 
-Renderer* PostProcessEffect::GetRenderer() const noexcept
+IRenderer* PostProcessEffect::GetRenderer() const noexcept
 {
 	return m_renderer;
 }

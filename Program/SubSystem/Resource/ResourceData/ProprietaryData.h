@@ -17,6 +17,8 @@ public:
 	virtual void Serialized(FileStream* file) const = 0;
 	virtual void Deserialized(FileStream* file) = 0;
 
+public:
+
 	bool SaveToFile(StringView path) const noexcept
 	{
 		FileStream file;

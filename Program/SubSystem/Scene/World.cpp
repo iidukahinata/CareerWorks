@@ -15,24 +15,23 @@
 
 bool World::Initialize()
 {
-	TickManager::Get().Initialize();
-
-	m_resourceManager = GetContext()->GetSubsystem<ResourceManager>();
-	ASSERT(m_resourceManager);
-
-	// ロード完了チェックのため必要時まで登録は行わない
-	m_job.SetFunction([this](double) { Update(); }, FunctionType::PrePhysics);
-
-	m_autoDestroySystem.Initialize();
-
-	// SceneEvent 用リスナー関数の初期化
-	StartupListenerObjects();
-
 #ifdef IS_EDITOR
 	m_worldType = WorldType::Editor;
 #else
 	m_worldType = WorldType::Game;
 #endif // IS_EDITOR
+
+	StartupListenerObjects();
+
+	TickManager::Get().Initialize();
+
+	m_autoDestroySystem.Initialize();
+
+	// ロード完了チェックのため必要時まで登録は行わない
+	m_job.SetFunction([this](double) { Update(); }, FunctionType::StartPhysics);
+
+	m_resourceManager = GetContext()->GetSubsystem<ResourceManager>();
+	ASSERT(m_resourceManager);
 
 	return true;
 }
@@ -49,7 +48,7 @@ void World::Shutdown()
 void World::Update() noexcept
 {
 #ifdef IS_EDITOR
-	TIME_LINE_WATCH_START(TaskThread, "Component Update");
+	TIME_LINE_WATCH_START(MainThread, "Component Update");
 #endif // IS_EDITOR
 
 	for (auto resourceHandle : m_resourceHandles)
@@ -61,7 +60,7 @@ void World::Update() noexcept
 	}
 
 #ifdef IS_EDITOR
-	TIME_LINE_WATCH_END(TaskThread);
+	TIME_LINE_WATCH_END(MainThread);
 #endif // IS_EDITOR
 }
 
@@ -69,24 +68,25 @@ void World::LoadScene(StringView name) noexcept
 {
 	String sceneName(name);
 
-	// Load済み
+	// loaded
 	if (m_sceneList.contains(sceneName))
 	{
 		NotifyEvent<LoadSceneCompleteEvent>(sceneName);
+
 		return;
 	}
 
-	// Load中
+	// loading
 	if (m_resourceHandles.contains(sceneName))
 	{
 		return;
 	}
 
-	if (auto&& resourceHandle = m_resourceManager->Load<Scene>(name))
+	if (auto resourceHandle = m_resourceManager->Load<Scene>(name))
 	{
 		m_resourceHandles[sceneName] = resourceHandle;
 
-		// ロード完了チェック用に更新関数の登録
+		// for load completion confirmation, it is registered the update function
 		m_job.RegisterToJobSystem();
 	}
 }
@@ -97,11 +97,8 @@ void World::UnloadScene(StringView name) noexcept
 	if (m_sceneList.contains(sceneName))
 	{
 		RemoveScene(name);
+
 		m_resourceManager->Unload<Scene>(name);
-	}
-	else
-	{
-		LOG_ERROR("Scene は登録されていませんでした : 指定名 => " + sceneName);
 	}
 }
 
@@ -117,14 +114,16 @@ void World::ChangeScene(StringView name) noexcept
 	}
 	else
 	{
-		// 指定シーンが無い場合はシーンロードを行う。
+		// if not found scene, load a new scene
 		LoadScene(sceneName);
 
-		auto& handle = m_resourceHandles[sceneName];
-		handle->WaitForLoadComplete();
+		// wait loading and change new scene
+		if (auto handle = m_resourceHandles[sceneName])
+		{
+			handle->WaitForLoadComplete();
 
-		// 読み込んだシーンに変更
-		NotifyEvent<ChangeSceneEvent>(handle->GetResource<Scene>());
+			NotifyEvent<ChangeSceneEvent>(handle->GetResource<Scene>());
+		}
 	}
 }
 
@@ -132,7 +131,7 @@ GameObject* World::CreateGameObject(Scene* scene /* = nullptr */) noexcept
 {
 	GameObject* result = nullptr;
 	auto targetScene = scene ? scene : m_currentScene;
-	auto registerObject = targetScene == m_currentScene;
+	auto registerObject = (targetScene == m_currentScene);
 
 	ASSERT(targetScene);
 
@@ -145,6 +144,11 @@ GameObject* World::CreateGameObject(Scene* scene /* = nullptr */) noexcept
 
 		result = gameObject.get();
 		targetScene->AddGameObject(gameObject.release());
+	}
+	else
+	{
+		// can't create new gameobject.
+		ASSERT(0);
 	}
 
 	return result;
@@ -174,7 +178,6 @@ GameObject* World::GetGameObjectByName(StringView name) const noexcept
 
 void World::SetCurrentScene(Scene* scene) noexcept
 {
-	// 現在シーンの解放
 	if (m_currentScene)
 	{
 #ifdef IS_EDITOR
@@ -254,7 +257,7 @@ Scene* World::GetScene(StringView name) noexcept
 	}
 	else
 	{
-		LOG_ERROR("Load されていない / 完了していないため Scene 取得できません。");
+		LOG_ERROR("not loading or not load complete so not get scene.");
 		return nullptr;
 	}
 }
@@ -292,19 +295,17 @@ void World::StartupListenerObjects() noexcept
 
 		auto name = std::any_cast<String>(data);
 
-		if (!m_resourceHandles.contains(name))
+		ASSERT(m_resourceHandles.contains(name));
+		if (auto scene = m_resourceHandles[name]->GetResource<Scene>())
 		{
-			return;
+			AddScene(name, scene);
+
+			m_resourceHandles.erase(name);
 		}
 
-		auto scene = m_resourceHandles[name]->GetResource<Scene>();
-
-		AddScene(name, scene);
-
-		m_resourceHandles.erase(name);
+		// if empty check list unregister update function
 		if (m_resourceHandles.empty())
 		{
-			// 無駄な更新処理が入らないように登録解除
 			m_job.UnRegisterFromJobSystem();
 		}
 

@@ -8,6 +8,7 @@
 
 #include "ScriptImporter.h"
 #include "SubSystem/Resource/ResourceManager.h"
+#include "SubSystem/Resource/Resources/Script/ScriptInstance.h"
 
 ScriptImporter::ScriptImporter(ResourceManager* resourceManager) :
 	m_resourceManager(resourceManager)
@@ -25,7 +26,7 @@ bool ScriptImporter::CreateScriptData(StringView filePath) noexcept
 		return true;
 	}
 
-	return m_resourceManager->CreateResourceData("ScriptInstance", scriptPath);
+	return m_resourceManager->CreateResourceData<ScriptInstance>(scriptPath);
 }
 
 String ScriptImporter::ConvertProprietaryPath(StringView filePath) noexcept

@@ -15,13 +15,13 @@
 * このクラスではインターフェースのみを実装。
 * 派生クラスで初期化等の関数を実装する。
 */
-class Input : public ISubsystem
+class IInput : public ISubsystem
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(Input)
+	SUB_CLASS(IInput)
 public:
 
-	virtual ~Input() = default;
+	virtual ~IInput() = default;
 
 	/** マウス位置をスクリーン座標で返します */
 	virtual const Math::Vector2& GetMousePosition() const noexcept;

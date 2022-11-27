@@ -2,13 +2,13 @@
 * @file	   DeferredRenderer.h
 * @brief
 *
-* @date	   2022/11/03 2022年度初版
+* @date	   2022/11/27 2022年度初版
 */
 #pragma once
 
 
 #include "GBuffer.h"
-#include "../Renderer.h"
+#include "../IRenderer.h"
 #include "../GraphicsAPI/D3D12/D3D12PipelineState.h"
 #include "../GraphicsAPI/D3D12/D3D12RootSignature.h"
 #include "../GraphicsAPI/D3D12/D3D12RenderTexture.h"
@@ -17,9 +17,9 @@
 #include "../GraphicsAPI/D3D12/D3D12IndexBuffer.h"
 #include "../GraphicsAPI/D3D12/D3D12VertexBuffer.h"
 
-class DeferredRenderer : public Renderer
+class DeferredRenderer : public IRenderer
 {
-	WAIT_FOR_DEVELOPMENT("作成順序を簡単なGUI作成後に変更")
+	COMPLETED_DEVELOPMENT()
 	SUB_CLASS(DeferredRenderer)
 public:
 
@@ -30,30 +30,33 @@ public:
 	void Update() noexcept;
 	void Present() noexcept;
 
-	void RegisterGBufferShader(StringView path) override;
-	String GetGBufferShader() override;
-
 private:
 
 	/** Render Job の登録 */
 	void RegisterRenderJob() noexcept;
 
+	/** パイプラインで使用する全てのオブジェクトの初期化 */
+	bool SetupObjects() noexcept;
+
 	/** Z prepass で使用されるオブジェクトの初期化 */
-	bool SetUpPrePassObjects() noexcept;
+	bool SetupPrePassObjects() noexcept;
 
 	/** RootSignature などの共通的な Rendering Object の生成 */
-	bool SetUpRenderingObjects(UINT width, UINT height) noexcept;
+	bool SetupRenderingObjects(UINT width, UINT height) noexcept;
 
 	/** Lighting Pass で使用されるパイプライン初期化 */
-	bool SetUpLightingObjects(UINT width, UINT height) noexcept;
+	bool SetupLightingObjects(UINT width, UINT height) noexcept;
 
 	/** PostProcess Pass で使用されるパイプライン初期化 */
-	bool SetUpPostProcessObjects(UINT width, UINT height) noexcept;
+	bool SetupPostProcessObjects(UINT width, UINT height) noexcept;
 
 private:
 
-	/** Zバッファ、LightMap情報 などの生成 */
+	/** フレーム内で使用する描画情報の生成 */
 	void PrePass() noexcept;
+
+	/** Zバッファ生成 */
+	void ZPrePass();
 
 	/** PrePass で生成した情報から GBuffer の生成 */
 	void GBufferPass() noexcept;
@@ -108,8 +111,8 @@ private:
 	};
 
 	// * 2D camera objects
-	Math::Matrix m_Camera2DView;
-	Math::Matrix m_Camera2DProj;
+	Math::Matrix m_camera2DView;
+	Math::Matrix m_camera2DProj;
 	D3D12ConstantBuffer m_constantBuffer;
 
 	// * sprite mesh buffer

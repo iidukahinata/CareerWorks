@@ -11,7 +11,7 @@
 #include "SubSystem/Thread/RenderingThread/RenderCommandFance.h"
 #include "SubSystem/Renderer/GraphicsAPI/D3D12/D3D12ConstantBuffer.h"
 
-class Renderer;
+class IRenderer;
 class IResource;
 class Model;
 class Mesh;
@@ -47,7 +47,7 @@ private:
 
 protected:
 
-	Renderer* m_renderer = nullptr;
+	IRenderer* m_renderer = nullptr;
 
 	bool m_isRegister = false;
 

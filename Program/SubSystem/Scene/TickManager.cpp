@@ -143,7 +143,6 @@ void TickManager::WaitForTask() noexcept
 {
 	if (WaitForSingleObject(m_hEvent, INFINITE) == WAIT_OBJECT_0)
 	{
-		// 毎フレーム作成データ消去
 		m_anyThreadTaskList.clear();
 		m_gameThreadTaskList.clear();
 	}

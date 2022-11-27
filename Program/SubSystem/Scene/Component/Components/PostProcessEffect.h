@@ -8,10 +8,10 @@
 
 
 #include "../IComponent.h"
-#include "SubSystem/Renderer/PostEffect/PostEffect.h"
+#include "SubSystem/Renderer/PostEffect/IPostEffect.h"
 #include "SubSystem/Thread/RenderingThread/RenderCommandFance.h"
 
-class Renderer;
+class IRenderer;
 
 class PostProcessEffect : public IComponent
 {
@@ -36,24 +36,24 @@ public:
 public:
 
 	/** 指定名エフェクト追加。指定名が存在しない等の場合、null を返す。*/
-	PostEffect* AddPostEffect(StringView name) noexcept;
-	void AddPostEffect(PostEffect* postEffect) noexcept;
+	IPostEffect* AddPostEffect(StringView name) noexcept;
+	void AddPostEffect(IPostEffect* postEffect) noexcept;
 
 	/** 保持するエフェクトを消去するため、そのアドレスを引数とする。*/
-	void RemovePostEffect(PostEffect* postEffect) noexcept;
+	void RemovePostEffect(IPostEffect* postEffect) noexcept;
 
 	/** 型名からコンポーネントを検索。*/
 	template<class T>
 	T* GetPostEffect();
-	void GetAllPostEffect(Vector<PostEffect*>& postEffects) const noexcept;
-	const Map<uint32_t, UniquePtr<PostEffect>>& GetAllPostEffect() noexcept;
+	void GetAllPostEffect(Vector<IPostEffect*>& postEffects) const noexcept;
+	const Map<uint32_t, UniquePtr<IPostEffect>>& GetAllPostEffect() noexcept;
 	bool HasPostEffect() const noexcept;
 
 	/** 指定名エフェクトを保持する場合、そのアドレスを返す。*/
-	PostEffect* FindPostEffect(StringView name) const noexcept;
+	IPostEffect* FindPostEffect(StringView name) const noexcept;
 
 	/** アクセス */
-	Renderer* GetRenderer() const noexcept;
+	IRenderer* GetRenderer() const noexcept;
 
 private:
 
@@ -62,10 +62,10 @@ private:
 
 private:
 
-	Renderer* m_renderer = nullptr;
+	IRenderer* m_renderer = nullptr;
 
 	// * -> ハッシュ値 : 各エフェクトオブジェクト
-	Map<uint32_t, UniquePtr<PostEffect>> m_postEffects;
+	Map<uint32_t, UniquePtr<IPostEffect>> m_postEffects;
 
 	RenderCommandFance m_renderCommandFance;
 };

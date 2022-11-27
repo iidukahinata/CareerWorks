@@ -8,6 +8,7 @@
 
 #include "TextureImporter.h"
 #include "SubSystem/Resource/ResourceManager.h"
+#include "SubSystem/Resource/Resources/3DModel/Texture.h"
 #include "SubSystem/Resource/ResourceData/ProprietaryTextureData.h"
 
 TextureImporter::TextureImporter(ResourceManager* resourceManager) :
@@ -31,7 +32,10 @@ bool TextureImporter::CreateTextureData(StringView filePath) noexcept
 	auto texturePath = ProprietaryTextureData::ConvertProprietaryPath(filePath);
 	auto textureData = ProprietaryTextureData::ConvertProprietaryData(meta, image.get());
 
-	m_resourceManager->CreateResourceData("Texture", texturePath);
+	if (!m_resourceManager->CreateResourceData<Texture>(texturePath))
+	{
+		return false;
+	}
 
 	return textureData.SaveToFile(texturePath);
 }

@@ -11,7 +11,7 @@
 
 class ProfilerWidget : public Widget
 {
-	WAIT_FOR_DEVELOPMENT("Šeˆ—‚ÌÀsŠÔ‚Ì•\¦‚È‚Ç‚ª–¢ì¬")
+	COMPLETED_DEVELOPMENT()
 public:
 
 	void Draw() override;

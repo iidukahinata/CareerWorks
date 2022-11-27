@@ -2,7 +2,7 @@
  * @file	Context.h
  * @brief	Subsystem コンテナクラス
  *
- * @date	2022/09/06 2022年度初版
+ * @date	2022/11/27 2022年度初版
  */
 #pragma once
 
@@ -18,9 +18,14 @@ public:
 	Context() = default;
 	void Release();
 
+public:
+
 	/** 登録した T は取得時 指定 Key クラスとして取得するため継承関係になければならない。*/
-	template<class Key, class T>
-	void RegisterSubsystem(UniquePtr<T> subsystem);
+	template<class Key, class T = Key>
+	void RegisterSubsystem();
+
+	template<class Key>
+	void UnRegisterSubsystem();
 
 	/** 登録時対応させた Key を使用して Subsytem の取得。*/
 	template<class Key>
@@ -30,6 +35,7 @@ private:
 
 	/** キーの重複が無いもとして登録。*/
 	void RegisterSubsystem(uint32_t hash, ISubsystem* subsystem) noexcept;
+	void UnRegisterSubsystem(uint32_t hash) noexcept;
 	ISubsystem* GetSubsystemByHash(uint32_t hash) noexcept;
 
 private:
@@ -38,10 +44,16 @@ private:
 	Map<uint32_t, UniquePtr<ISubsystem>> m_subsystems;
 };
 
-template<class Key, class T>
-FORCEINLINE void Context::RegisterSubsystem(UniquePtr<T> subsystem)
+template<class Key, class T /*= Key */>
+FORCEINLINE void Context::RegisterSubsystem()
 {
-	RegisterSubsystem(Key::TypeData.Hash, subsystem.release());
+	RegisterSubsystem(Key::TypeData.Hash, new T());
+}
+
+template<class Key>
+FORCEINLINE void Context::UnRegisterSubsystem()
+{
+	UnRegisterSubsystem(Key::TypeData.Hash);
 }
 
 template<class Key>

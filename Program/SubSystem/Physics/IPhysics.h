@@ -11,13 +11,13 @@
 
 class RigidBody;
 
-class Physics : public ISubsystem
+class IPhysics : public ISubsystem
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(Physics)
+	SUB_CLASS(IPhysics)
 public:
 
-	virtual ~Physics() = default;
+	virtual ~IPhysics() = default;
 
 	/** RigidBody ÉÅÉ\ÉbÉh */
 	virtual void RegisterRigidBody(RigidBody* rigidBody);

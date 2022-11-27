@@ -7,7 +7,7 @@
 
 
 #include "SkyBox.h"
-#include "Renderer.h"
+#include "IRenderer.h"
 #include "Geometry/Cube.h"
 #include "Geometry/Vertex.h"
 #include "GraphicsAPI/D3D12/D3D12GraphicsDevice.h"

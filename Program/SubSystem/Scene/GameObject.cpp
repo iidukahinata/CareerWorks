@@ -2,7 +2,7 @@
 * @file    GameObject.cpp
 * @brief
 *
-* @date	   2022/10/25 2022年度初版
+* @date	   2022/11/27 2022年度初版
 */
 
 
@@ -27,19 +27,21 @@ void GameObject::Serialized(FileStream* file) const noexcept
 	file->Write(m_path);
 	m_transform.Serialized(file);
 
+	// component data
 	size_t numComponent = m_components.size();
 	file->Write(numComponent);
 
 	for (const auto& componentInfo : m_components)
 	{
 		const auto& component = componentInfo.second;
-		auto componentName = component->GetTypeData().Name;
 
+		auto componentName = component->GetTypeData().Name;
 		file->Write(componentName);
+
 		component->Serialized(file);
 	}
 
-	// children
+	// children data
 	size_t numChild = m_transform.GetChildCount();
 	file->Write(numChild);
 
@@ -54,6 +56,7 @@ void GameObject::Deserialized(FileStream* file) noexcept
 	file->Read(&m_path);
 	m_transform.Deserialized(file);
 
+	// component data
 	size_t numComponent;
 	file->Read(&numComponent);
 
@@ -62,11 +65,13 @@ void GameObject::Deserialized(FileStream* file) noexcept
 		String componentName;
 		file->Read(&componentName);
 
-		auto component = AddComponent(componentName);
-		component->Deserialized(file);
+		if (auto component = AddComponent(componentName))
+		{
+			component->Deserialized(file);
+		}
 	}
 
-	// children
+	// children data
 	size_t numChild;
 	file->Read(&numChild);
 
@@ -113,32 +118,36 @@ void GameObject::UnRegisterAllComponents() noexcept
 
 void GameObject::BeginPlay() noexcept
 {
-	if (!m_isPlaying)
+	if (m_isPlaying)
 	{
-		m_isPlaying = true;
+		return;
+	}
 
-		for (const auto& componentInfo : m_components)
+	m_isPlaying = true;
+
+	for (const auto& componentInfo : m_components)
+	{
+		if (!componentInfo.second->IsBeginPlay())
 		{
-			if (!componentInfo.second->IsBeginPlay())
-			{
-				componentInfo.second->OnStart();
-			}
+			componentInfo.second->OnStart();
 		}
 	}
 }
 
 void GameObject::EndPlay() noexcept
 {
-	if (m_isPlaying)
+	if (!m_isPlaying)
 	{
-		m_isPlaying = false;
+		return;
+	}
 
-		for (const auto& componentInfo : m_components)
+	m_isPlaying = false;
+
+	for (const auto& componentInfo : m_components)
+	{
+		if (componentInfo.second->IsBeginPlay())
 		{
-			if (componentInfo.second->IsBeginPlay())
-			{
-				componentInfo.second->OnStop();
-			}
+			componentInfo.second->OnStop();
 		}
 	}
 }
@@ -147,6 +156,8 @@ void GameObject::Tick(double deltaTime) noexcept
 {
 	bool finishTick = true;
 
+	// safe component  erase process.
+	// check component remove request processed.
 	std::erase_if(m_components, [&finishTick](auto& component) {
 
 		if (component.second->RequestRemove())
@@ -190,28 +201,31 @@ IComponent* GameObject::AddComponent(StringView name) noexcept
 
 void GameObject::AddComponent(IComponent* component) noexcept
 {
-	ASSERT(component);
-
 	const auto hash = component->GetTypeData().Hash;
-	if (!m_components.contains(hash))
+
+	if (m_components.contains(hash))
 	{
-		component->OnInitialize();
-
-		if (m_registered && !component->IsRegistered())
-		{
-			component->OnRegister();
-		}
-
-		if (m_isPlaying && !component->IsBeginPlay())
-		{
-			component->OnStart();
-		}
-
-		m_components.emplace(hash, component);
+		LOG_ERROR("already has same component of the  hash value");
 	}
 	else
 	{
-		LOG_ERROR("既に同じHash値のコンポーネントが存在しています。");
+		m_components.emplace(hash, component);
+		PostAddComponent(component);
+	}
+}
+
+void GameObject::PostAddComponent(IComponent* component)
+{
+	component->OnInitialize();
+
+	if (m_registered && !component->IsRegistered())
+	{
+		component->OnRegister();
+	}
+
+	if (m_isPlaying && !component->IsBeginPlay())
+	{
+		component->OnStart();
 	}
 }
 
@@ -220,6 +234,7 @@ void GameObject::RemoveComponent(IComponent* component) noexcept
 	ASSERT(component);
 
 	const auto hash = component->GetTypeData().Hash;
+
 	if (m_components.contains(hash))
 	{
 		component->OnRemove();
@@ -309,16 +324,14 @@ bool GameObject::RequestAutoDestroy() const noexcept
 		return false;
 	}
 
-	bool request = false;
-	for (const auto& component : m_components)
+	for (const auto& componentInfo : m_components)
 	{
-		if (!component.second->Erasable())
+		if (!componentInfo.second->Erasable())
 		{
-			request = true;
+			return true;
 		}
 	}
-
-	return request;
+	return false;
 }
 
 void GameObject::SetID(uint32_t id) noexcept

@@ -13,15 +13,17 @@
 struct aiMaterial;
 struct PMDMaterial;
 
-struct TextureInfo
-{
-	String texturePath;
-	uint32_t bindPoint;
-};
-
 struct ProprietaryMaterialData : public ProprietaryData
 {
 	COMPLETED_DEVELOPMENT()
+private:
+
+	struct TexturePramInfo
+	{
+		String texturePath;
+		uint32_t bindPoint;
+	};
+
 public:
 
 	Math::Vector3 m_albedo;
@@ -33,7 +35,7 @@ public:
 	BLEND_MODE m_blendMode;
 
 	// * マテリアルで使用するマテリアル名
-	Unordered_Map<String, TextureInfo> m_textureInfos;
+	Unordered_Map<String, TexturePramInfo> m_textureInfos;
 
 	// * マテリアルで使用するシェーダー名
 	Array<String, ShaderType::NumAllType> m_shaderPaths;
