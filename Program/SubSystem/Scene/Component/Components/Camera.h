@@ -2,20 +2,20 @@
 * @file    Camera.h
 * @brief
 *
-* @date	   2022/11/04 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
 
-#include "../IComponent.h"
+#include "../ICamera.h"
 #include "SubSystem/Thread/RenderingThread/RenderCommandFance.h"
 
 class IRenderer;
 
-class Camera : public IComponent
+class Camera : public ICamera
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(Camera)
+	SUB_CLASS(Camera, ICamera)
 public:
 
 	void Serialized(FileStream* file) const override;
@@ -31,25 +31,25 @@ public:
 public:
 
 	/** view port のサイズ設定を反映 */
-	float GetWidth() const noexcept;
-	void SetWidth(float width) noexcept;
-	float GetHeight() const noexcept;
-	void SetHeight(float height) noexcept;
+	float GetWidth() const override;
+	void SetWidth(float width) override;
+	float GetHeight() const override;
+	void SetHeight(float height) override;
 
 	/** 内部処理では sWidth / Height には依存しない。*/
-	float GetAspect() const noexcept;
-	void SetAspect(float aspect) noexcept;
+	float GetAspect() const override;
+	void SetAspect(float aspect) override;
 
-	float GetFov() const noexcept;
-	void SetFov(float fov) noexcept;
-	float GetNear() const noexcept;
-	void SetNear(float nearClip) noexcept;
-	float GetFar() const noexcept;
-	void SetFar(float farClip) noexcept;
+	float GetFov() const override;
+	void SetFov(float fov) override;
+	float GetNear() const override;
+	void SetNear(float nearClip) override;
+	float GetFar() const override;
+	void SetFar(float farClip) override;
 
-	const Math::Matrix& GetViewMatrix() const noexcept;
-	const Math::Matrix& GetProjectionMatrix() const noexcept;
-	const Math::Matrix& GetOrthographicMatrix() const noexcept;
+	const Math::Matrix& GetViewMatrix() const override;
+	const Math::Matrix& GetProjectionMatrix() const override;
+	const Math::Matrix& GetOrthographicMatrix() const override;
 
 private:
 

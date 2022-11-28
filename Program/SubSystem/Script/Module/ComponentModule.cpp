@@ -2,7 +2,7 @@
 * @file    ComponentModule.cpp
 * @brief
 *
-* @date	   2022/11/22 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 #include "ModuleHelper.h"
@@ -54,7 +54,7 @@ void SetUpComponentModule()
         PY_CLASS_MAKE_GET("gameObject", Transform, GetOwner, PY_RET_REF);
 
     PY_CLASS_NOCOPY(IComponent)
-        PY_CLASS_MAKE_GETSET("active", AudioSpeaker, GetActive, PY_BY_VALUE, SetActive)
+        PY_CLASS_MAKE_GETSET("active", IComponent, GetActive, PY_BY_VALUE, SetActive)
         PY_CLASS_DEF(IComponent, SetTickThreadSafe)
         PY_CLASS_DEF(IComponent, SetTickEnable)
         PY_CLASS_DEF(IComponent, SetTickPriority)
@@ -64,76 +64,76 @@ void SetUpComponentModule()
         PY_CLASS_MAKE_GET("scene", IComponent, GetScene, PY_RET_REF)
         PY_CLASS_MAKE_GET("world", IComponent, GetWorld, PY_RET_REF);
 
-    PY_BASE_CLASS_NOCOPY(AudioListener, IComponent)
-        PY_CLASS_MAKE_GETSET("velocity", AudioListener, GetVelocity, PY_RET_REF, SetVelocity);
+    PY_BASE_CLASS_NOCOPY(IAudioListener, IComponent)
+        PY_CLASS_MAKE_GETSET("velocity", IAudioListener, GetVelocity, PY_RET_REF, SetVelocity);
 
-    PY_BASE_CLASS_NOCOPY(AudioSpeaker, IComponent)
-        PY_CLASS_DEF(AudioSpeaker, Play)
-        PY_CLASS_DEF_OVERLOADS(AudioSpeaker, PlayOneShot, PlayOneShotOverloads())
-        PY_CLASS_DEF(AudioSpeaker, Pause)
-        PY_CLASS_DEF(AudioSpeaker, UnPause)
-        PY_CLASS_DEF(AudioSpeaker, Stop)
-        PY_CLASS_MAKE_GETSET("clip", AudioSpeaker, GetAudioClip, PY_RET_REF, SetAudioClip)
-        PY_CLASS_GETSET("mute", AudioSpeaker, GetMute, SetMute)
-        PY_CLASS_GETSET("isLoop", AudioSpeaker, GetIsLoop, SetIsLoop)
-        PY_CLASS_GETSET("priority", AudioSpeaker, GetPriority, SetPriority)
-        PY_CLASS_GETSET("volume", AudioSpeaker, GetVolume, SetVolume)
-        PY_CLASS_GETSET("pitch", AudioSpeaker, GetPitch, SetPitch)
-        PY_CLASS_GETSET("pan", AudioSpeaker, GetPan, SetPan)
-        PY_CLASS_GETSET("is2DMode", AudioSpeaker, GetIs2DMode, SetIs2DMode)
-        PY_CLASS_GETSET("maxDistance", AudioSpeaker, GetMaxDistance, SetMaxDistance)
-        PY_CLASS_MAKE_GETSET("outPutMatrix", AudioSpeaker, GetOutPutMatrix, PY_RET_REF, SetOutPutMatrix);
+    PY_BASE_CLASS_NOCOPY(IAudioSpeaker, IComponent)
+        PY_CLASS_DEF(IAudioSpeaker, Play)
+        PY_CLASS_DEF_OVERLOADS(IAudioSpeaker, PlayOneShot, PlayOneShotOverloads())
+        PY_CLASS_DEF(IAudioSpeaker, Pause)
+        PY_CLASS_DEF(IAudioSpeaker, UnPause)
+        PY_CLASS_DEF(IAudioSpeaker, Stop)
+        PY_CLASS_MAKE_GETSET("clip", IAudioSpeaker, GetAudioClip, PY_RET_REF, SetAudioClip)
+        PY_CLASS_GETSET("mute", IAudioSpeaker, GetMute, SetMute)
+        PY_CLASS_GETSET("isLoop", IAudioSpeaker, GetIsLoop, SetIsLoop)
+        PY_CLASS_GETSET("priority", IAudioSpeaker, GetPriority, SetPriority)
+        PY_CLASS_GETSET("volume", IAudioSpeaker, GetVolume, SetVolume)
+        PY_CLASS_GETSET("pitch", IAudioSpeaker, GetPitch, SetPitch)
+        PY_CLASS_GETSET("pan", IAudioSpeaker, GetPan, SetPan)
+        PY_CLASS_GETSET("is2DMode", IAudioSpeaker, GetIs2DMode, SetIs2DMode)
+        PY_CLASS_GETSET("maxDistance", IAudioSpeaker, GetMaxDistance, SetMaxDistance)
+        PY_CLASS_MAKE_GETSET("outPutMatrix", IAudioSpeaker, GetOutPutMatrix, PY_RET_REF, SetOutPutMatrix);
 
-    PY_BASE_CLASS_NOCOPY(Camera, IComponent)
-        PY_CLASS_GETSET("width", Camera, GetWidth, SetWidth)
-        PY_CLASS_GETSET("height", Camera, GetHeight, SetHeight)
-        PY_CLASS_GETSET("aspect", Camera, GetAspect, SetAspect)
-        PY_CLASS_GETSET("fov", Camera, SetFov, SetFov)
-        PY_CLASS_GETSET("near", Camera, GetNear, SetNear)
-        PY_CLASS_GETSET("far", Camera, GetFar, SetFar)
-        PY_CLASS_MAKE_GET("view", Camera, GetViewMatrix, PY_RET_REF)
-        PY_CLASS_MAKE_GET("projection", Camera, GetProjectionMatrix, PY_RET_REF)
-        PY_CLASS_MAKE_GET("orthographic", Camera, GetOrthographicMatrix, PY_RET_REF);
+    PY_BASE_CLASS_NOCOPY(ICamera, IComponent)
+        PY_CLASS_GETSET("width", ICamera, GetWidth, SetWidth)
+        PY_CLASS_GETSET("height", ICamera, GetHeight, SetHeight)
+        PY_CLASS_GETSET("aspect", ICamera, GetAspect, SetAspect)
+        PY_CLASS_GETSET("fov", ICamera, SetFov, SetFov)
+        PY_CLASS_GETSET("near", ICamera, GetNear, SetNear)
+        PY_CLASS_GETSET("far", ICamera, GetFar, SetFar)
+        PY_CLASS_MAKE_GET("view", ICamera, GetViewMatrix, PY_RET_REF)
+        PY_CLASS_MAKE_GET("projection", ICamera, GetProjectionMatrix, PY_RET_REF)
+        PY_CLASS_MAKE_GET("orthographic", ICamera, GetOrthographicMatrix, PY_RET_REF);
 
     PY_ENUM(ShapeType)
         PY_VALUE(Box)
         PY_VALUE(Sphere)
         PY_VALUE(Capsule);
 
-    PY_BASE_CLASS_NOCOPY(Collider, IComponent)
-        PY_CLASS_MAKE_GETSET("shapeType", Collider, GetShapeType, PY_COPY_CONST_REF, SetShapeType)
-        PY_CLASS_GETSET("isTrigger", Collider, GetTrigger, SetTrigger)
-        PY_CLASS_MAKE_GETSET("scale", Collider, GetScale, PY_RET_REF, SetScale)
-        PY_CLASS_GETSET("restOffset", Collider, GetRestOffset, SetRestOffset)
-        PY_CLASS_GETSET("staticFriction", Collider, GetStaticFriction, SetStaticFriction)
-        PY_CLASS_GETSET("dynamicFriction", Collider, GetDynamicFriction, SetDynamicFriction)
-        PY_CLASS_GETSET("restitution", Collider, GetRestitution, SetRestitution);
+    PY_BASE_CLASS_NOCOPY(ICollider, IComponent)
+        PY_CLASS_MAKE_GETSET("shapeType", ICollider, GetShapeType, PY_BY_VALUE, SetShapeType)
+        PY_CLASS_GETSET("isTrigger", ICollider, GetTrigger, SetTrigger)
+        PY_CLASS_MAKE_GETSET("scale", ICollider, GetScale, PY_RET_REF, SetScale)
+        PY_CLASS_GETSET("restOffset", ICollider, GetRestOffset, SetRestOffset)
+        PY_CLASS_GETSET("staticFriction", ICollider, GetStaticFriction, SetStaticFriction)
+        PY_CLASS_GETSET("dynamicFriction", ICollider, GetDynamicFriction, SetDynamicFriction)
+        PY_CLASS_GETSET("restitution", ICollider, GetRestitution, SetRestitution);
 
     PY_ENUM(LightType)
         PY_VALUE(DirectionalLight)
         PY_VALUE(PointLight)
         PY_VALUE(SpotLight);
 
-    PY_BASE_CLASS_NOCOPY(Light, IComponent)
-        PY_CLASS_MAKE_GETSET("lightType", Light, GetLightType, PY_BY_VALUE, SetLightType)
-        PY_CLASS_MAKE_GETSET("color", Light, GetColor, PY_RET_REF, SetColor)
-        PY_CLASS_GETSET("intensity", Light, GetIntensity, SetIntensity)
-        PY_CLASS_GETSET("influenceRange", Light, GetInfluenceRange, SetInfluenceRange)
-        PY_CLASS_GETSET("angle", Light, GetAngle, SetAngle);
+    PY_BASE_CLASS_NOCOPY(ILight, IComponent)
+        PY_CLASS_MAKE_GETSET("lightType", ILight, GetLightType, PY_BY_VALUE, SetLightType)
+        PY_CLASS_MAKE_GETSET("color", ILight, GetColor, PY_RET_REF, SetColor)
+        PY_CLASS_GETSET("intensity", ILight, GetIntensity, SetIntensity)
+        PY_CLASS_GETSET("influenceRange", ILight, GetInfluenceRange, SetInfluenceRange)
+        PY_CLASS_GETSET("angle", ILight, GetAngle, SetAngle);
 
-    IPostEffect* (PostProcessEffect::*addPostEffect)(StringView) = &PostProcessEffect::AddPostEffect;
+    IPostEffect* (IPostProcessEffect::*addPostEffect)(StringView) = &IPostProcessEffect::AddPostEffect;
 
-    PY_BASE_CLASS_NOCOPY(PostProcessEffect, IComponent)
+    PY_BASE_CLASS_NOCOPY(IPostProcessEffect, IComponent)
         .def("AddPostEffect", addPostEffect, PY_RET_REF)
-        PY_CLASS_DEF(PostProcessEffect, RemovePostEffect)
-        PY_CLASS_DEF_POLICIE(PostProcessEffect, GetPostEffect<Bloom>, PY_RET_REF)
-        PY_CLASS_DEF_POLICIE(PostProcessEffect, FindPostEffect, PY_RET_REF);
+        PY_CLASS_DEF(IPostProcessEffect, RemovePostEffect)
+        PY_CLASS_DEF_POLICIE(IPostProcessEffect, GetPostEffect<Bloom>, PY_RET_REF)
+        PY_CLASS_DEF_POLICIE(IPostProcessEffect, FindPostEffect, PY_RET_REF);
 
-    PY_BASE_CLASS_NOCOPY(MeshRender, IComponent)
-        PY_CLASS_MAKE_GETSET("mesh", MeshRender, GetMesh, PY_RET_REF, SetMesh);
+    PY_BASE_CLASS_NOCOPY(IMeshRender, IComponent)
+        PY_CLASS_MAKE_GETSET("mesh", IMeshRender, GetMesh, PY_RET_REF, SetMesh);
 
-    PY_BASE_CLASS_NOCOPY(ModelRender, IComponent)
-        PY_CLASS_MAKE_GETSET("model", ModelRender, GetModel, PY_RET_REF, SetModel);
+    PY_BASE_CLASS_NOCOPY(IModelRender, IComponent)
+        PY_CLASS_MAKE_GETSET("model", IModelRender, GetModel, PY_RET_REF, SetModel);
 
     PY_ENUM(BodyType)
         PY_VALUE(Dynamic)
@@ -143,20 +143,20 @@ void SetUpComponentModule()
         PY_VALUE(Force)
         PY_VALUE(Impulse);
 
-    PY_BASE_CLASS_NOCOPY(RigidBody, IComponent)
-        PY_CLASS_MAKE_GETSET("bodyType", RigidBody, GetBodyType, PY_COPY_CONST_REF, SetBodyType)
-        PY_CLASS_DEF_OVERLOADS(RigidBody, AddForce, AddForceOverloads())
-        PY_CLASS_DEF_OVERLOADS(RigidBody, AddTorque, AddTorqueOverloads())
-        PY_CLASS_DEF(RigidBody, AddVelocity)
-        PY_CLASS_DEF(RigidBody, AddAngularVelocity)
-        PY_CLASS_MAKE_GETSET("velocity", RigidBody, GetVelocity, PY_BY_VALUE, SetVelocity)
-        PY_CLASS_MAKE_GETSET("angularVelocity", RigidBody, GetAngularVelocity, PY_BY_VALUE, SetAngularVelocity)
-        PY_CLASS_GETSET("mass", RigidBody, GetMass, SetMass)
-        PY_CLASS_GETSET("useGravity", RigidBody, UseGravity, SetUseGravity)
-        PY_CLASS_GETSET("isKinematic", RigidBody, IsKinematic, SetKinematic)
-        PY_CLASS_GET("isDynamic", RigidBody, IsDynamic)
-        PY_CLASS_MAKE_GETSET("positionLock", RigidBody, GetPositionLock, PY_RET_REF, SetPositionLock)
-        PY_CLASS_MAKE_GETSET("rotationLock", RigidBody, GetRotationLock, PY_RET_REF, SetRotationLock);
+    PY_BASE_CLASS_NOCOPY(IRigidBody, IComponent)
+        PY_CLASS_MAKE_GETSET("bodyType", IRigidBody, GetBodyType, PY_BY_VALUE, SetBodyType)
+        PY_CLASS_DEF_OVERLOADS(IRigidBody, AddForce, AddForceOverloads())
+        PY_CLASS_DEF_OVERLOADS(IRigidBody, AddTorque, AddTorqueOverloads())
+        PY_CLASS_DEF(IRigidBody, AddVelocity)
+        PY_CLASS_DEF(IRigidBody, AddAngularVelocity)
+        PY_CLASS_MAKE_GETSET("velocity", IRigidBody, GetVelocity, PY_BY_VALUE, SetVelocity)
+        PY_CLASS_MAKE_GETSET("angularVelocity", IRigidBody, GetAngularVelocity, PY_BY_VALUE, SetAngularVelocity)
+        PY_CLASS_GETSET("mass", IRigidBody, GetMass, SetMass)
+        PY_CLASS_GETSET("useGravity", IRigidBody, UseGravity, SetUseGravity)
+        PY_CLASS_GETSET("isKinematic", IRigidBody, IsKinematic, SetKinematic)
+        PY_CLASS_GET("isDynamic", IRigidBody, IsDynamic)
+        PY_CLASS_MAKE_GETSET("positionLock", IRigidBody, GetPositionLock, PY_RET_REF, SetPositionLock)
+        PY_CLASS_MAKE_GETSET("rotationLock", IRigidBody, GetRotationLock, PY_RET_REF, SetRotationLock);
 
-    PY_BASE_CLASS_NOCOPY(Script, IComponent);
+    PY_BASE_CLASS_NOCOPY(IScript, IComponent);
 }

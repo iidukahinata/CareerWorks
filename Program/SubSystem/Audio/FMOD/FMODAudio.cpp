@@ -2,7 +2,7 @@
 * @file    FMODAudio.cpp
 * @brief
 *
-* @date	   2022/10/03 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 
@@ -24,8 +24,8 @@ bool FMODAudio::Initialize()
 	AUDIO_EORROR_CHECK(m_system->init(maxChannel, FMOD_INIT_NORMAL, nullptr));
 
 	// register component
-	ComponentFactory::Register<AudioSpeaker>();
-	ComponentFactory::Register<AudioListener>();
+	ComponentFactory::Register<IAudioSpeaker, AudioSpeaker>();
+	ComponentFactory::Register<IAudioListener, AudioListener>();
 
 	return true;
 }

@@ -1,14 +1,14 @@
 /**
-* @file    Audio.cpp
+* @file    IAudio.cpp
 * @brief
 *
-* @date	   2022/08/02 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 
 #include "IAudio.h"
 
-void IAudio::SetAudioListener(AudioListener* listener) noexcept
+void IAudio::SetAudioListener(IAudioListener* listener) noexcept
 {
 	m_lisrener = listener;
 }

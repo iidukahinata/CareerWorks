@@ -2,15 +2,14 @@
 * @file    Collider.h
 * @brief
 *
-* @date	   2022/11/07 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
 
-#include "../IComponent.h"
+#include "../ICollider.h"
 
 class PhysX;
-class RigidBody;
 
 namespace physx
 {
@@ -18,23 +17,10 @@ namespace physx
 	class PxMaterial;
 }
 
-enum ShapeType
-{
-	Box,
-
-	Sphere,
-
-	Capsule,
-
-	//Mesh,
-
-	//ConvexMesh,
-};
-
-class Collider : public IComponent
+class Collider : public ICollider
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(Collider)
+	SUB_CLASS(Collider, ICollider)
 public:
 
 	void Serialized(FileStream* file) const override;
@@ -49,30 +35,30 @@ public:
 public:
 
 	/** shape */
-	void SetShapeType(ShapeType type) noexcept;
-	const ShapeType& GetShapeType() const noexcept;
-	void SetTrigger(bool trigger) noexcept;
-	bool GetTrigger() const noexcept;
+	void SetShapeType(ShapeType type) override;
+	ShapeType GetShapeType() const override;
+	void SetTrigger(bool trigger) override;
+	bool GetTrigger() const override;
 
 	/** scale */
-	void SetScale(const Math::Vector3& scale) noexcept;
-	const Math::Vector3& GetScale() const noexcept;
-	float GetRadius() const noexcept;
-	float GetHight() const noexcept;
+	void SetScale(const Math::Vector3& scale) override;
+	const Math::Vector3& GetScale() const override;
+	float GetRadius() const override;
+	float GetHight() const override;
 
 	/** offset */
-	void SetRestOffset(float restOffset) noexcept;
-	float GetRestOffset() const noexcept;
-	void SetContactOffset(float contactOffset) noexcept;
-	float GetContactOffset() const noexcept;
+	void SetRestOffset(float restOffset) override;
+	float GetRestOffset() const override;
+	void SetContactOffset(float contactOffset) override;
+	float GetContactOffset() const override;
 
 	/** material */
-	void SetStaticFriction(float friction) noexcept;
-	float GetStaticFriction() const noexcept;
-	void SetDynamicFriction(float friction) noexcept;
-	float GetDynamicFriction() const noexcept;
-	void SetRestitution(float restitution) noexcept;
-	float GetRestitution() const noexcept;
+	void SetStaticFriction(float friction) override;
+	float GetStaticFriction() const override;
+	void SetDynamicFriction(float friction) override;
+	float GetDynamicFriction() const override;
+	void SetRestitution(float restitution) override;
+	float GetRestitution() const override;
 
 	/** アクセス */
 	physx::PxShape* GetShape() noexcept;

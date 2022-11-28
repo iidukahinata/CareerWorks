@@ -2,7 +2,7 @@
 * @file    ScriptInstance.h
 * @brief
 *
-* @date	   2022/11/20 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
@@ -75,7 +75,7 @@ class Script;
 class ScriptInstance : public IResource
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(ScriptInstance)
+	SUB_CLASS(ScriptInstance, IResource)
 public:
 
 	/** asset ファイルと独自データの作成を行う。*/

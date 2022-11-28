@@ -2,21 +2,20 @@
 * @file	   PostProcessEffectDetails.cpp
 * @brief
 *
-* @date	   2022/10/29 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 
 #include "PostProcessEffectDetails.h"
-#include "SubSystem/Scene/Component/Components/PostProcessEffect.h"
+#include "SubSystem/Scene/Component/IPostProcessEffect.h"
 
 #include "SubSystem/Renderer/PostEffect/Blur.h"
 #include "SubSystem/Renderer/PostEffect/Bloom.h"
-#include "SubSystem/Renderer/PostEffect/Monotone.h"
 #include "SubSystem/Renderer/PostEffect/DepthOfField.h"
 
 PostProcessEffectDetails::PostProcessEffectDetails(DetailsWidget* detailsWidget, IComponent* component) : ComponentDetails(detailsWidget)
 {
-	m_postProcessEffect = dynamic_cast<PostProcessEffect*>(component);
+	m_postProcessEffect = dynamic_cast<IPostProcessEffect*>(component);
 	ASSERT(m_postProcessEffect);
 
 	// Add PostEffect 時の検索に使用

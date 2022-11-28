@@ -2,14 +2,14 @@
 * @file	   CameraDetails.h
 * @brief
 *
-* @date	   2022/10/27 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
 
 #include "../ComponentDetails.h"
 
-class Camera;
+class ICamera;
 
 class CameraDetails : public ComponentDetails
 {
@@ -21,5 +21,5 @@ public:
 
 private:
 
-	Camera* m_camera = nullptr;
+	ICamera* m_camera = nullptr;
 };

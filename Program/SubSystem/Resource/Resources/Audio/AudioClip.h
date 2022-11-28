@@ -2,7 +2,7 @@
 * @file		AudioClip.h
 * @brief
 *
-* @date		2022/08/09 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
@@ -18,7 +18,7 @@ class FMODAudio;
 */
 class AudioClip : public IResource
 {
-	SUB_CLASS(AudioClip)
+	SUB_CLASS(AudioClip, IResource)
 public:
 
 	AudioClip();

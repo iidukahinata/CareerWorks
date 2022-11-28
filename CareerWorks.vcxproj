@@ -570,7 +570,16 @@
     <ClInclude Include="Program\SubSystem\Scene\Component\Components\RenderObject.h" />
     <ClInclude Include="Program\SubSystem\Scene\Component\Components\RigidBody.h" />
     <ClInclude Include="Program\SubSystem\Scene\Component\Components\Script.h" />
+    <ClInclude Include="Program\SubSystem\Scene\Component\IAudioListener.h" />
+    <ClInclude Include="Program\SubSystem\Scene\Component\IAudioSpeaker.h" />
+    <ClInclude Include="Program\SubSystem\Scene\Component\ICamera.h" />
+    <ClInclude Include="Program\SubSystem\Scene\Component\ICollider.h" />
     <ClInclude Include="Program\SubSystem\Scene\Component\IComponent.h" />
+    <ClInclude Include="Program\SubSystem\Scene\Component\ILight.h" />
+    <ClInclude Include="Program\SubSystem\Scene\Component\IPostProcessEffect.h" />
+    <ClInclude Include="Program\SubSystem\Scene\Component\IRenderObject.h" />
+    <ClInclude Include="Program\SubSystem\Scene\Component\IRigidBody.h" />
+    <ClInclude Include="Program\SubSystem\Scene\Component\IScript.h" />
     <ClInclude Include="Program\SubSystem\Scene\Component\Transform.h" />
     <ClInclude Include="Program\SubSystem\Scene\Factory\ComponentFactory.h" />
     <ClInclude Include="Program\SubSystem\Scene\Factory\GameObjectFactory.h" />

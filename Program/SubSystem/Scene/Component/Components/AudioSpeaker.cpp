@@ -2,7 +2,7 @@
 * @file    AudioSpeaker.cpp
 * @brief
 *
-* @date	   2022/10/03 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 
@@ -107,7 +107,7 @@ void AudioSpeaker::Tick(double deltaTime)
 	m_oldPos = worldPos;
 }
 
-void AudioSpeaker::Play() noexcept
+void AudioSpeaker::Play()
 {
 	ASSERT(m_audioClip);
 
@@ -122,7 +122,7 @@ void AudioSpeaker::Play() noexcept
 	m_isPlaying = true;
 }
 
-void AudioSpeaker::PlayOneShot(AudioClip* audioClip, float volume /* = 1.f */) const noexcept
+void AudioSpeaker::PlayOneShot(AudioClip* audioClip, float volume /* = 1.f */) const
 {
 	ASSERT(audioClip);
 
@@ -141,7 +141,7 @@ void AudioSpeaker::PlayOneShot(AudioClip* audioClip, float volume /* = 1.f */) c
 	}
 }
 
-void AudioSpeaker::Pause() const noexcept
+void AudioSpeaker::Pause() const
 {
 	if (m_audioClip)
 	{
@@ -149,7 +149,7 @@ void AudioSpeaker::Pause() const noexcept
 	}
 }
 
-void AudioSpeaker::UnPause() const noexcept
+void AudioSpeaker::UnPause() const
 {
 	if (m_audioClip)
 	{
@@ -157,7 +157,7 @@ void AudioSpeaker::UnPause() const noexcept
 	}
 }
 
-void AudioSpeaker::Stop() noexcept
+void AudioSpeaker::Stop()
 {
 	if (m_audioClip)
 	{
@@ -166,7 +166,7 @@ void AudioSpeaker::Stop() noexcept
 	}
 }
 
-void AudioSpeaker::SetAudioClip(AudioClip* audioClip) noexcept
+void AudioSpeaker::SetAudioClip(AudioClip* audioClip)
 {
 	if (!audioClip)
 	{
@@ -181,107 +181,107 @@ void AudioSpeaker::SetAudioClip(AudioClip* audioClip) noexcept
 	}
 }
 
-AudioClip* AudioSpeaker::GetAudioClip() const noexcept
+AudioClip* AudioSpeaker::GetAudioClip() const
 {
 	return m_audioClip;
 }
 
-void AudioSpeaker::SetPlayOnAwake(bool playOnAwake) noexcept
+void AudioSpeaker::SetPlayOnAwake(bool playOnAwake)
 {
 	m_playOnAwake = playOnAwake;
 }
 
-bool AudioSpeaker::GetPlayOnAwake() const noexcept
+bool AudioSpeaker::GetPlayOnAwake() const
 {
 	return m_playOnAwake;
 }
 
-void AudioSpeaker::SetMute(bool mute) noexcept
+void AudioSpeaker::SetMute(bool mute)
 {
 	m_mute = mute;
 }
 
-bool AudioSpeaker::GetMute() const noexcept
+bool AudioSpeaker::GetMute() const
 {
 	return m_mute;
 }
 
-void AudioSpeaker::SetIsLoop(bool isLoop) noexcept
+void AudioSpeaker::SetIsLoop(bool isLoop)
 {
 	m_isLoop = isLoop;
 }
 
-bool AudioSpeaker::GetIsLoop() const noexcept
+bool AudioSpeaker::GetIsLoop() const
 {
 	return m_isLoop;
 }
 
-void AudioSpeaker::SetPriority(int priority) noexcept
+void AudioSpeaker::SetPriority(int priority)
 {
 	m_priority = std::clamp(priority, 0, 256);
 }
 
-int AudioSpeaker::GetPriority() const noexcept
+int AudioSpeaker::GetPriority() const
 {
 	return m_priority;
 }
 
-void AudioSpeaker::SetVolume(float volume) noexcept
+void AudioSpeaker::SetVolume(float volume)
 {
 	m_volume = std::clamp(volume, 0.f, 1.f);
 }
 
-float AudioSpeaker::GetVolume() const noexcept
+float AudioSpeaker::GetVolume() const
 {
 	return m_volume;
 }
 
-void AudioSpeaker::SetPitch(float pitch) noexcept
+void AudioSpeaker::SetPitch(float pitch)
 {
 	m_pitch = std::clamp(pitch, 0.f, 2.f);
 }
 
-float AudioSpeaker::GetPitch() const noexcept
+float AudioSpeaker::GetPitch() const
 {
 	return m_pitch;
 }
 
-void AudioSpeaker::SetPan(float pan) noexcept
+void AudioSpeaker::SetPan(float pan)
 {
 	m_pan = std::clamp(pan, -1.f, 1.f);
 }
 
-float AudioSpeaker::GetPan() const noexcept
+float AudioSpeaker::GetPan() const
 {
 	return m_pan;
 }
 
-void AudioSpeaker::SetIs2DMode(bool is2DMode) noexcept
+void AudioSpeaker::SetIs2DMode(bool is2DMode)
 {
 	m_is2DMode = is2DMode;
 }
 
-bool AudioSpeaker::GetIs2DMode() const noexcept
+bool AudioSpeaker::GetIs2DMode() const
 {
 	return m_is2DMode;
 }
 
-void AudioSpeaker::SetMaxDistance(float max) noexcept
+void AudioSpeaker::SetMaxDistance(float max)
 {
 	m_maxDistance = max(max, 1.f);
 }
 
-float AudioSpeaker::GetMaxDistance() const noexcept
+float AudioSpeaker::GetMaxDistance() const
 {
 	return m_maxDistance;
 }
 
-void AudioSpeaker::SetOutPutMatrix(const Array<float, 8>& matrix) noexcept
+void AudioSpeaker::SetOutPutMatrix(const Array<float, 8>& matrix)
 {
 	m_levelMatrix = matrix;
 }
 
-const Array<float, 8>& AudioSpeaker::GetOutPutMatrix() const noexcept
+const Array<float, 8>& AudioSpeaker::GetOutPutMatrix() const
 {
 	return m_levelMatrix;
 }

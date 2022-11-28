@@ -2,12 +2,12 @@
 * @file    Collider.cpp
 * @brief
 *
-* @date	   2022/11/07 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 
 #include "Collider.h"
-#include "RigidBody.h"
+#include "../IRigidBody.h"
 #include "SubSystem/Scene/World.h"
 #include "SubSystem/Physics/PhysX/PhysX.h"
 
@@ -103,7 +103,7 @@ void Collider::SetActive(bool active)
 	}
 }
 
-void Collider::SetShapeType(ShapeType type) noexcept
+void Collider::SetShapeType(ShapeType type)
 {
 	m_shapeType = type;
 
@@ -122,12 +122,12 @@ void Collider::SetShapeType(ShapeType type) noexcept
 	m_shape->userData = this;
 }
 
-const ShapeType& Collider::GetShapeType() const noexcept
+ShapeType Collider::GetShapeType() const
 {
 	return m_shapeType;
 }
 
-void Collider::SetTrigger(bool trigger) noexcept
+void Collider::SetTrigger(bool trigger)
 {
 	m_isTrigger = trigger;
 
@@ -143,83 +143,83 @@ void Collider::SetTrigger(bool trigger) noexcept
 	}
 }
 
-bool Collider::GetTrigger() const noexcept
+bool Collider::GetTrigger() const
 {
 	return m_isTrigger;
 }
 
-void Collider::SetScale(const Math::Vector3& scale) noexcept
+void Collider::SetScale(const Math::Vector3& scale)
 {
 	m_scale = scale;
 	UpdateGeometry();
 }
 
-const Math::Vector3& Collider::GetScale() const noexcept
+const Math::Vector3& Collider::GetScale() const
 {
 	return m_scale;
 }
 
-float Collider::GetRadius() const noexcept
+float Collider::GetRadius() const
 {
 	return m_scale.x;
 }
 
-float Collider::GetHight() const noexcept
+float Collider::GetHight() const
 {
 	return m_scale.y;
 }
 
-void Collider::SetRestOffset(float restOffset) noexcept
+void Collider::SetRestOffset(float restOffset)
 {
 	m_restOffset = restOffset;
 	m_shape->setRestOffset(restOffset);
 }
 
-float Collider::GetRestOffset() const noexcept
+float Collider::GetRestOffset() const
 {
 	return m_restOffset;
 }
 
-void Collider::SetContactOffset(float contactOffset) noexcept
+void Collider::SetContactOffset(float contactOffset)
 {
 	m_contactOffset = contactOffset;
 	m_shape->setContactOffset(contactOffset);
 }
 
-float Collider::GetContactOffset() const noexcept
+float Collider::GetContactOffset() const
 {
 	return m_contactOffset;
 }
 
-void Collider::SetStaticFriction(float friction) noexcept
+void Collider::SetStaticFriction(float friction)
 {
 	m_staticFriction = friction;
 	m_material->setStaticFriction(friction);
 }
 
-float Collider::GetStaticFriction() const noexcept
+float Collider::GetStaticFriction() const
 {
 	return m_staticFriction;
 }
 
-void Collider::SetDynamicFriction(float friction) noexcept
+void Collider::SetDynamicFriction(float friction)
 {
 	m_dynamicFriction = friction;
 	m_material->setDynamicFriction(friction);
 }
 
-float Collider::GetDynamicFriction() const noexcept
+float Collider::GetDynamicFriction() const
 {
 	return m_dynamicFriction;
 }
 
-void Collider::SetRestitution(float restitution) noexcept
+void Collider::SetRestitution(float restitution)
 {
 	m_restitution = restitution;
 	m_material->setRestitution(restitution);
 }
 
-float Collider::GetRestitution() const noexcept
+float Collider::GetRestitution() const
 {
 	return m_restitution;
 }
@@ -260,7 +260,7 @@ void Collider::UpdateGeometry() const noexcept
 
 void Collider::AttachToRegidBody() noexcept
 {
-	if (auto rigidBody = GetOwner()->GetComponent<RigidBody>())
+	if (auto rigidBody = GetOwner()->GetComponent<IRigidBody>())
 	{
 		if (!m_shape)
 		{
@@ -273,7 +273,7 @@ void Collider::AttachToRegidBody() noexcept
 
 void Collider::DetachFromRegidBody() noexcept
 {
-	if (auto rigidBody = GetOwner()->GetComponent<RigidBody>())
+	if (auto rigidBody = GetOwner()->GetComponent<IRigidBody>())
 	{
 		rigidBody->SetCollider(nullptr);
 

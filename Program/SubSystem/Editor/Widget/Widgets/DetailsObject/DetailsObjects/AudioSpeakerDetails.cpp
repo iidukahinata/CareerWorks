@@ -2,17 +2,17 @@
 * @file	   AudioSpeakerDetails.cpp
 * @brief
 *
-* @date	   2022/10/27 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 #include "AudioSpeakerDetails.h"
 #include "SubSystem/Resource/Resources/Audio/AudioClip.h"
-#include "SubSystem/Scene/Component/Components/AudioSpeaker.h"
+#include "SubSystem/Scene/Component/IAudioSpeaker.h"
 
 AudioSpeakerDetails::AudioSpeakerDetails(DetailsWidget* detailsWidget, IComponent* component) :
 	ComponentDetails(detailsWidget)
 {
-	m_audioSpeaker = dynamic_cast<AudioSpeaker*>(component);
+	m_audioSpeaker = dynamic_cast<IAudioSpeaker*>(component);
 	ASSERT(m_audioSpeaker);
 }
 

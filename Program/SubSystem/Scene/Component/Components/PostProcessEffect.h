@@ -2,21 +2,21 @@
 * @file    PostProcessEffect.h
 * @brief
 *
-* @date	   2022/10/29 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
 
-#include "../IComponent.h"
+#include "../IPostProcessEffect.h"
 #include "SubSystem/Renderer/PostEffect/IPostEffect.h"
 #include "SubSystem/Thread/RenderingThread/RenderCommandFance.h"
 
 class IRenderer;
 
-class PostProcessEffect : public IComponent
+class PostProcessEffect : public IPostProcessEffect
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(PostProcessEffect)
+	SUB_CLASS(PostProcessEffect, IPostProcessEffect)
 public:
 
 	void Serialized(FileStream* file) const override;
@@ -31,26 +31,29 @@ public:
 
 public:
 
-	void Render() noexcept;
+	void Render() override;
 
 public:
 
 	/** 指定名エフェクト追加。指定名が存在しない等の場合、null を返す。*/
-	IPostEffect* AddPostEffect(StringView name) noexcept;
-	void AddPostEffect(IPostEffect* postEffect) noexcept;
+	IPostEffect* AddPostEffect(StringView name) override;
 
 	/** 保持するエフェクトを消去するため、そのアドレスを引数とする。*/
-	void RemovePostEffect(IPostEffect* postEffect) noexcept;
-
-	/** 型名からコンポーネントを検索。*/
-	template<class T>
-	T* GetPostEffect();
-	void GetAllPostEffect(Vector<IPostEffect*>& postEffects) const noexcept;
-	const Map<uint32_t, UniquePtr<IPostEffect>>& GetAllPostEffect() noexcept;
-	bool HasPostEffect() const noexcept;
+	void RemovePostEffect(IPostEffect* postEffect) override;
 
 	/** 指定名エフェクトを保持する場合、そのアドレスを返す。*/
-	IPostEffect* FindPostEffect(StringView name) const noexcept;
+	IPostEffect* FindPostEffect(StringView name) const override;
+
+private:
+
+	void AddPostEffect(IPostEffect* postEffect) noexcept;
+
+public:
+
+	void GetAllPostEffect(Vector<IPostEffect*>& postEffects) const noexcept;
+	const Map<uint32_t, UniquePtr<IPostEffect>>& GetAllPostEffect() override;
+
+	bool HasPostEffect() const noexcept;
 
 	/** アクセス */
 	IRenderer* GetRenderer() const noexcept;
@@ -69,9 +72,3 @@ private:
 
 	RenderCommandFance m_renderCommandFance;
 };
-
-template<class T>
-FORCEINLINE T* PostProcessEffect::GetPostEffect()
-{
-	return dynamic_cast<T*>(FindPostEffect(T::TypeData.Name));
-}

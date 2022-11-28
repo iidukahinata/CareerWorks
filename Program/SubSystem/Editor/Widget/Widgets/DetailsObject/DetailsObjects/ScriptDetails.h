@@ -2,14 +2,14 @@
 * @file	   ScriptDetails.h
 * @brief
 *
-* @date	   2022/11/16 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
 
 #include "../ComponentDetails.h"
 
-class Script;
+class IScript;
 
 class ScriptDetails : public ComponentDetails
 {
@@ -21,5 +21,5 @@ public:
 
 private:
 
-	Script* m_script = nullptr;
+	IScript* m_script = nullptr;
 };

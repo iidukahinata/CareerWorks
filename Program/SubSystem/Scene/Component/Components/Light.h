@@ -2,27 +2,20 @@
 * @file    Light.h
 * @brief
 *
-* @date	   2022/11/04 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
 
-#include "../IComponent.h"
+#include "../ILight.h"
 #include "SubSystem/Thread/RenderingThread/RenderCommandFance.h"
 
 class IRenderer;
 
-enum LightType
-{
-	DirectionalLight,
-	PointLight,
-	SpotLight,
-};
-
-class Light : public IComponent
+class Light : public ILight
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(Light)
+	SUB_CLASS(Light, ILight)
 public:
 
 	void Serialized(FileStream* file) const override;
@@ -37,22 +30,22 @@ public:
 
 public:
 
-	void SetLightType(LightType lightType) noexcept;
-	LightType GetLightType() const noexcept;
+	void SetLightType(LightType lightType) override;
+	LightType GetLightType() const override;
 
-	void SetColor(const Math::Vector4& color) noexcept;
-	const Math::Vector4& GetColor() const noexcept;
+	void SetColor(const Math::Vector4& color) override;
+	const Math::Vector4& GetColor() const override;
 
-	void SetIntensity(float intensity) noexcept;
-	float GetIntensity() const noexcept;
+	void SetIntensity(float intensity) override;
+	float GetIntensity() const override;
 
 	/** ポイント、スポットライト時有効 */
-	void SetInfluenceRange(float influenceRange) noexcept;
-	float GetInfluenceRange() const noexcept;
+	void SetInfluenceRange(float influenceRange) override;
+	float GetInfluenceRange() const override;
 
 	/** スポットライト時のみ有効 */
-	void SetAngle(float angle) noexcept;
-	float GetAngle() const noexcept;
+	void SetAngle(float angle) override;
+	float GetAngle() const override;
 
 private:
 

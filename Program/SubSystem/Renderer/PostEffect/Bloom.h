@@ -2,7 +2,7 @@
 * @file    Bloom.h
 * @brief
 *
-* @date	   2022/11/10 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
@@ -12,7 +12,7 @@
 class Bloom : public IPostEffect
 {
 	IN_DEVELOPMENT()
-	SUB_CLASS(Bloom)
+	SUB_CLASS(Bloom, IPostEffect)
 public:
 
 	void Serialized(FileStream* file) const override;

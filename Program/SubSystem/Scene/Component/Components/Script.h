@@ -2,22 +2,19 @@
 * @file    Script.h
 * @brief
 *
-* @date	   2022/11/20 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
 
-#include "../IComponent.h"
-
 #define BOOST_PYTHON_STATIC_LIB
 #include <boost/python/object_items.hpp>
+#include "../IScript.h"
 
-class ScriptInstance;
-
-class Script : public IComponent
+class Script : public IScript
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(Script)
+	SUB_CLASS(Script, IScript)
 public:
 
 	void Serialized(FileStream* file) const override;
@@ -33,8 +30,10 @@ public:
 
 public:
 
-	void SetScript(ScriptInstance* scriptInstance) noexcept;
-	ScriptInstance* GetScript() const noexcept;
+	void SetScript(ScriptInstance* scriptInstance) override;
+	ScriptInstance* GetScript() const override;
+
+private:
 
 	void CallInitFunctions();
 

@@ -2,7 +2,7 @@
 * @file	   DeferredRenderer.h
 * @brief
 *
-* @date	   2022/11/27 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
@@ -12,7 +12,6 @@
 #include "../GraphicsAPI/D3D12/D3D12PipelineState.h"
 #include "../GraphicsAPI/D3D12/D3D12RootSignature.h"
 #include "../GraphicsAPI/D3D12/D3D12RenderTexture.h"
-#include "../GraphicsAPI/D3D12/D3D12Shader.h"
 #include "../GraphicsAPI/D3D12/D3D12Sampler.h"
 #include "../GraphicsAPI/D3D12/D3D12IndexBuffer.h"
 #include "../GraphicsAPI/D3D12/D3D12VertexBuffer.h"
@@ -20,7 +19,7 @@
 class DeferredRenderer : public IRenderer
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(DeferredRenderer)
+	SUB_CLASS(DeferredRenderer, IRenderer)
 public:
 
 	bool Initialize() override;

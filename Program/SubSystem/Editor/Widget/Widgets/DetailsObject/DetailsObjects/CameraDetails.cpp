@@ -2,16 +2,16 @@
 * @file	   CameraDetails.cpp
 * @brief
 *
-* @date	   2022/10/23 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 #include "CameraDetails.h"
-#include "SubSystem/Scene/Component/Components/Camera.h"
+#include "SubSystem/Scene/Component/ICamera.h"
 
 CameraDetails::CameraDetails(DetailsWidget* detailsWidget, IComponent* component) : 
 	ComponentDetails(detailsWidget)
 {
-	m_camera = dynamic_cast<Camera*>(component);
+	m_camera = dynamic_cast<ICamera*>(component);
 	ASSERT(m_camera);
 }
 

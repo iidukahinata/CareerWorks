@@ -2,7 +2,7 @@
 * @file	   GameObjectDetails.h
 * @brief
 *
-* @date	   2022/10/27 2022年度初版
+* @date	   2022/11/27 2022年度初版
 */
 #pragma once
 

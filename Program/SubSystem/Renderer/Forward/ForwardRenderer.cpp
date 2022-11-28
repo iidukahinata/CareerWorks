@@ -2,17 +2,18 @@
 * @file	   ForwardRenderer.cpp
 * @brief
 *
-* @date	   2022/11/27 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 
 #include "ForwardRenderer.h"
 #include "../LightMap/DefaultLightMap.h"
+#include "../GraphicsAPI/D3D12/D3D12Shader.h"
 #include "../GraphicsAPI/D3D12/D3D12GraphicsDevice.h"
 #include "SubSystem/Window/Window.h"
 #include "SubSystem/Editor/EditorSystem.h"
-#include "SubSystem/Scene/Component/Components/Camera.h"
-#include "SubSystem/Scene/Component/Components/RenderObject.h"
+#include "SubSystem/Scene/Component/ICamera.h"
+#include "SubSystem/Scene/Component/IRenderObject.h"
 
 bool ForwardRenderer::Initialize()
 {

@@ -2,7 +2,7 @@
 * @file	   SceneWidget.cpp
 * @brief
 *
-* @date	   2022/10/31 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 
@@ -270,7 +270,7 @@ void SceneWidget::CreateGameObjectFromModel(Model* model) noexcept
 	auto meshes = model->GetAllMeshes();
 	if (meshes.size() == 1)
 	{
-		if (auto component = rootGameObject->AddComponent("MeshRender"))
+		if (auto component = rootGameObject->AddComponent("IMeshRender"))
 		{
 			auto meshComponent = dynamic_cast<MeshRender*>(component);
 			meshComponent->SetMesh(meshes.front());
@@ -284,7 +284,7 @@ void SceneWidget::CreateGameObjectFromModel(Model* model) noexcept
 			gameObject->SetName(mesh->GetAssetName());
 			gameObject->GetTransform().SetParent(&rootTransform);
 
-			if (auto component = gameObject->AddComponent("MeshRender"))
+			if (auto component = gameObject->AddComponent("IMeshRender"))
 			{
 				auto meshComponent = dynamic_cast<MeshRender*>(component);
 				meshComponent->SetMesh(mesh);

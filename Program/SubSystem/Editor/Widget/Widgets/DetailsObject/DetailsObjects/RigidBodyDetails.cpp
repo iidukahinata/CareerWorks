@@ -2,17 +2,17 @@
 * @file	   RigidBodyDetails.cpp
 * @brief
 *
-* @date	   2022/11/08 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 
 #include "RigidBodyDetails.h"
-#include "SubSystem/Scene/Component/Components/RigidBody.h"
+#include "SubSystem/Scene/Component/IRigidBody.h"
 
 RigidBodyDetails::RigidBodyDetails(DetailsWidget* detailsWidget, IComponent* component) :
 	ComponentDetails(detailsWidget)
 {
-	m_rigidBody = dynamic_cast<RigidBody*>(component);
+	m_rigidBody = dynamic_cast<IRigidBody*>(component);
 	ASSERT(m_rigidBody);
 }
 

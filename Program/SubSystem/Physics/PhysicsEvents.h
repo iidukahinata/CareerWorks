@@ -2,7 +2,7 @@
 * @file    PhysicsEvents.h
 * @brief
 *
-* @date	   2022/11/09 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
@@ -24,7 +24,7 @@ struct HitPairInfo
 class CollisionEnterEvent : public IEvent
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(CollisionEnterEvent)
+	SUB_CLASS(CollisionEnterEvent, IEvent)
 public:
 
 	CollisionEnterEvent(RigidBody* rigidBodyA, RigidBody* rigidBodyB);
@@ -39,7 +39,7 @@ private:
 class CollisionStayEvent : public IEvent
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(CollisionStayEvent)
+	SUB_CLASS(CollisionStayEvent, IEvent)
 public:
 
 	CollisionStayEvent(RigidBody* rigidBodyA, RigidBody* rigidBodyB);
@@ -54,7 +54,7 @@ private:
 class CollisionExitEvent : public IEvent
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(CollisionExitEvent)
+	SUB_CLASS(CollisionExitEvent, IEvent)
 public:
 
 	CollisionExitEvent(RigidBody* rigidBodyA, RigidBody* rigidBodyB);
@@ -69,7 +69,7 @@ private:
 class TriggerEnterEvent : public IEvent
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(TriggerEnterEvent)
+	SUB_CLASS(TriggerEnterEvent, IEvent)
 public:
 
 	TriggerEnterEvent(RigidBody* rigidBodyA, RigidBody* rigidBodyB);
@@ -84,7 +84,7 @@ private:
 class TriggerStayEvent : public IEvent
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(TriggerStayEvent)
+	SUB_CLASS(TriggerStayEvent, IEvent)
 public:
 
 	TriggerStayEvent(RigidBody* rigidBodyA, RigidBody* rigidBodyB);
@@ -99,7 +99,7 @@ private:
 class TriggerExitEvent : public IEvent
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(TriggerExitEvent)
+	SUB_CLASS(TriggerExitEvent, IEvent)
 public:
 
 	TriggerExitEvent(RigidBody* rigidBodyA, RigidBody* rigidBodyB);

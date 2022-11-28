@@ -2,14 +2,14 @@
 * @file	   TransformCBuffer.cpp
 * @brief
 *
-* @date	   2022/11/02 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 
 #include "TransformCBuffer.h"
-#include "SubSystem/Scene/Component/Components/Camera.h"
+#include "SubSystem/Scene/Component/ICamera.h"
 
-void TransformCBuffer::Update(Camera* mainCamera) noexcept
+void TransformCBuffer::Update(ICamera* mainCamera) noexcept
 {
 	ASSERT(mainCamera);
 

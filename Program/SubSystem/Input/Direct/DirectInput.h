@@ -2,7 +2,7 @@
  * @file	DirectInput.h
  * @brief
  *
- * @date	2022/09/06 2022年度初版
+ * @date	2022/11/28 2022年度初版
  */
 #pragma once
 
@@ -14,7 +14,7 @@
 class DirectInput : public IInput
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(DirectInput)
+	SUB_CLASS(DirectInput, IInput)
 public:
 
 	bool Initialize() override;

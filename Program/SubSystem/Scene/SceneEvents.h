@@ -2,7 +2,7 @@
 * @file    SceneEvents.h
 * @brief
 *
-* @date	   2022/09/05 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
@@ -12,7 +12,7 @@ class Scene;
 class ChangeSceneEvent : public IEvent
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(ChangeSceneEvent)
+	SUB_CLASS(ChangeSceneEvent, IEvent)
 public:
 
 	ChangeSceneEvent(Scene* scene);
@@ -27,7 +27,7 @@ private:
 class LoadSceneCompleteEvent : public IEvent
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(LoadSceneCompleteEvent)
+	SUB_CLASS(LoadSceneCompleteEvent, IEvent)
 public:
 
 	LoadSceneCompleteEvent(const String& name);

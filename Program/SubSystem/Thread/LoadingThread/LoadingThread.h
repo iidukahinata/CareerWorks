@@ -2,7 +2,7 @@
 * @file    LoadingThread.h
 * @brief
 *
-* @date	   2022/11/01 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
@@ -67,7 +67,7 @@ void RegisterLoadingCommand(Func&& task) noexcept
 class LoadingThread : public IThread
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(LoadingThread)
+	SUB_CLASS(LoadingThread, IThread)
 public:
 
 	void Run() override;

@@ -2,18 +2,19 @@
 * @file	   ForwardRenderer.h
 * @brief
 *
-* @date	   2022/11/27 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
 
 #include "../IRenderer.h"
 #include "../GraphicsAPI/D3D12/D3D12RenderTexture.h"
+#include "../GraphicsAPI/D3D12/D3D12PipelineState.h"
 
 class ForwardRenderer : public IRenderer
 {
 	IN_DEVELOPMENT("カリング処理を開発予定")
-	SUB_CLASS(ForwardRenderer)
+	SUB_CLASS(ForwardRenderer, IRenderer)
 public:
 
 	bool Initialize() override;

@@ -2,17 +2,17 @@
 * @file	   LightDetails.cpp
 * @brief
 *
-* @date	   2022/10/23 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 
 #include "LightDetails.h"
-#include "SubSystem/Scene/Component/Components/Light.h"
+#include "SubSystem/Scene/Component/ILight.h"
 
 LightDetails::LightDetails(DetailsWidget* detailsWidget, IComponent* component) :
 	ComponentDetails(detailsWidget)
 {
-	m_light = dynamic_cast<Light*>(component);
+	m_light = dynamic_cast<ILight*>(component);
 	ASSERT(m_light);
 }
 

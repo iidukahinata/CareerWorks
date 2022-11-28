@@ -2,14 +2,14 @@
 * @file	   AudioSpeakerDetails.h
 * @brief
 *
-* @date	   2022/10/27 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
 
 #include "../ComponentDetails.h"
 
-class AudioSpeaker;
+class IAudioSpeaker;
 
 class AudioSpeakerDetails : public ComponentDetails
 {
@@ -17,10 +17,9 @@ class AudioSpeakerDetails : public ComponentDetails
 public:
 
 	AudioSpeakerDetails(DetailsWidget* detailsWidget, IComponent* component);
-
 	void Draw() override;
 
 private:
 
-	AudioSpeaker* m_audioSpeaker = nullptr;
+	IAudioSpeaker* m_audioSpeaker = nullptr;
 };

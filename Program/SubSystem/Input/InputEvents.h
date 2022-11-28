@@ -2,7 +2,7 @@
 * @file    InputEvents.h
 * @brief   入力関係のイベントクラス定義
 *
-* @date	   2022/09/06 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
@@ -12,7 +12,7 @@
 class KeyPressedEvent : public IEvent
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(KeyPressedEvent)
+	SUB_CLASS(KeyPressedEvent, IEvent)
 public:
 
 	KeyPressedEvent(Button::KeyAndMouse key);
@@ -26,7 +26,7 @@ private:
 class KeyReleasedEvent : public IEvent
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(KeyReleasedEvent)
+	SUB_CLASS(KeyReleasedEvent, IEvent)
 public:
 
 	KeyReleasedEvent(Button::KeyAndMouse key);

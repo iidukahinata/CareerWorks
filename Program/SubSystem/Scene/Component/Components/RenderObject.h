@@ -2,12 +2,12 @@
 * @file    RenderObject.h
 * @brief
 *
-* @date	   2022/11/04 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
 
-#include "../IComponent.h"
+#include "../IRenderObject.h"
 #include "SubSystem/Thread/RenderingThread/RenderCommandFance.h"
 #include "SubSystem/Renderer/GraphicsAPI/D3D12/D3D12ConstantBuffer.h"
 
@@ -17,41 +17,21 @@ class Model;
 class Mesh;
 class Material;
 
-class RenderObject : public IComponent
+class RenderObject
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(RenderObject)
-public:
+protected:
 
-	virtual ~RenderObject() = default;
-
-	virtual void OnInitialize() override;
-	virtual void OnRegister() override;
-	virtual void OnUnRegister() override;
-	virtual void OnRemove() override;
-
-	void SetActive(bool active) override;
-
-	bool Erasable() override;
-
-	/** Z PrePass 用レンダリング関数 */
-	virtual void PreRender() = 0;
-
-	/** 実際のモデル表示処理を記述。*/
-	virtual void Render() = 0;
-
-private:
-
-	void RegisterToRenderer() noexcept;
-	void UnRegisterFromRenderer() noexcept;
+	void RegisterToRenderer(IRenderObject* renderObject) noexcept;
+	void UnRegisterFromRenderer(IRenderObject* renderObject) noexcept;
 
 protected:
+
+	RenderCommandFance m_renderCommandFance;
 
 	IRenderer* m_renderer = nullptr;
 
 	bool m_isRegister = false;
-
-	RenderCommandFance m_renderCommandFance;
 
 	struct ConstantBufferMatrix
 	{
@@ -68,14 +48,24 @@ protected:
 	D3D12ConstantBuffer m_constantBufferMatrix;
 };
 
-class ModelRender : public RenderObject
+class ModelRender : public IModelRender, RenderObject
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(ModelRender)
+	SUB_CLASS(ModelRender, IModelRender)
 public:
 
 	void Serialized(FileStream* file) const override;
 	void Deserialized(FileStream* file) override;
+
+	void OnInitialize() override;
+	void OnRegister() override;
+	void OnUnRegister() override;
+	void OnRemove() override;
+
+	void SetActive(bool active) override;
+	bool Erasable() override;
+
+public:
 
 	void PreRender() override;
 	void Render() override;
@@ -90,14 +80,24 @@ private:
 	Model* m_model = nullptr;
 };
 
-class MeshRender : public RenderObject
+class MeshRender : public IMeshRender, RenderObject
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(MeshRender)
+	SUB_CLASS(MeshRender, IMeshRender)
 public:
 
 	void Serialized(FileStream* file) const override;
 	void Deserialized(FileStream* file) override;
+
+	void OnInitialize() override;
+	void OnRegister() override;
+	void OnUnRegister() override;
+	void OnRemove() override;
+
+	void SetActive(bool active) override;
+	bool Erasable() override;
+
+public:
 
 	void PreRender() override;
 	void Render() override;

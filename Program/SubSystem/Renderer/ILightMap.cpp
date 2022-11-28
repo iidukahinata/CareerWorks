@@ -1,8 +1,7 @@
 /**
-* @file	   LightMap.cpp
-* @brief   Light管理クラス
+* @file	   ILightMap.cpp
 *
-* @date	   2022/08/02 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 
@@ -19,12 +18,12 @@ void ILightMap::Clear() noexcept
 	m_lights.shrink_to_fit();
 }
 
-void ILightMap::AddLight(Light* light) noexcept
+void ILightMap::AddLight(ILight* light) noexcept
 {
 	m_lights.push_back(light);
 }
 
-void ILightMap::RemoveLight(Light* light) noexcept
+void ILightMap::RemoveLight(ILight* light) noexcept
 {
 	std::erase(m_lights, light);
 }

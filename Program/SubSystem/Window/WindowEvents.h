@@ -2,7 +2,7 @@
 * @file    WindowEvents.h
 * @brief
 *
-* @date	   2022/11/01 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
@@ -10,7 +10,7 @@
 class DestroyWindowEvent : public IEvent
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(DestroyWindowEvent)
+	SUB_CLASS(DestroyWindowEvent, IEvent)
 public:
 
 	DestroyWindowEvent();
@@ -20,7 +20,7 @@ public:
 class CommandWindowEvent : public IEvent
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(CommandWindowEvent)
+	SUB_CLASS(CommandWindowEvent, IEvent)
 public:
 
 	CommandWindowEvent(int cmd);

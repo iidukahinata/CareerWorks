@@ -1,15 +1,15 @@
 /**
-* @file    Audio.h
+* @file    IAudio.h
 * @brief
 *
-* @date	   2022/08/02 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
 
 #include "SubSystem/Core/ISubsystem.h"
 
-class AudioListener;
+class IAudioListener;
 
 /**
 * Audio抽象クラス
@@ -19,15 +19,15 @@ class AudioListener;
 class IAudio : public ISubsystem
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(IAudio)
+	SUB_CLASS(IAudio, ISubsystem)
 public:
 
 	virtual ~IAudio() {}
 
 	/** 3D サウンドを使用する場合は必ず値をセットする必要があります。*/
-	void SetAudioListener(AudioListener* listener) noexcept;
+	void SetAudioListener(IAudioListener* listener) noexcept;
 
 protected:
 
-	AudioListener* m_lisrener = nullptr;
+	IAudioListener* m_lisrener = nullptr;
 };

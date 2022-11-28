@@ -2,7 +2,7 @@
 * @file    Camera.cpp
 * @brief
 *
-* @date	   2022/11/04 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 
@@ -94,85 +94,85 @@ bool Camera::Erasable()
 	return m_renderCommandFance.IsSingle();
 }
 
-float Camera::GetAspect() const noexcept
-{
-	return m_aspect;
-}
-
-void Camera::SetAspect(float aspect) noexcept
-{
-	m_aspect = aspect;
-	CreateProjectionMatrix();
-}
-
-float Camera::GetWidth() const noexcept
+float Camera::GetWidth() const
 {
 	return m_width;
 }
 
-void Camera::SetWidth(float width) noexcept
+void Camera::SetWidth(float width)
 {
 	m_width = width;
 	CreateOrthographicMatrix();
 }
 
-float Camera::GetHeight() const noexcept
+float Camera::GetHeight() const
 {
 	return m_height;
 }
 
-void Camera::SetHeight(float height) noexcept
+void Camera::SetHeight(float height)
 {
 	m_height = height;
 	CreateOrthographicMatrix();
 }
 
-float Camera::GetFov() const noexcept
+float Camera::GetAspect() const
+{
+	return m_aspect;
+}
+
+void Camera::SetAspect(float aspect)
+{
+	m_aspect = aspect;
+	CreateProjectionMatrix();
+}
+
+float Camera::GetFov() const
 {
 	return m_fov;
 }
 
-void Camera::SetFov(float fov) noexcept
+void Camera::SetFov(float fov)
 {
 	m_fov = fov;
 	CreateProjectionMatrix();
 }
 
-float Camera::GetNear() const noexcept
+float Camera::GetNear() const
 {
 	return m_near;
 }
 
-void Camera::SetNear(float nearClip) noexcept
+void Camera::SetNear(float nearClip)
 {
 	m_near = max(0.01f, nearClip);
 	CreateProjectionMatrix();
 	CreateOrthographicMatrix();
 }
 
-float Camera::GetFar() const noexcept
+float Camera::GetFar() const
 {
 	return m_far;
 }
 
-void Camera::SetFar(float farClip) noexcept
+void Camera::SetFar(float farClip)
 {
 	m_far = farClip;
 	CreateProjectionMatrix();
 	CreateOrthographicMatrix();
 }
 
-const Math::Matrix& Camera::GetViewMatrix() const noexcept
+const Math::Matrix& Camera::GetViewMatrix() const
 {
 	return GetTransform().GetWorldMatrix().Inverse();
 }
 
-const Math::Matrix& Camera::GetProjectionMatrix() const noexcept
+const Math::Matrix& Camera::GetProjectionMatrix() const
 {
 	return m_projection;
 }
 
-const Math::Matrix& Camera::GetOrthographicMatrix() const noexcept
+const Math::Matrix& Camera::GetOrthographicMatrix() const
 {
 	return m_orthographic;
 }

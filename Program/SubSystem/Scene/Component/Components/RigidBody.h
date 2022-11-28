@@ -2,12 +2,12 @@
 * @file    RigidBody.h
 * @brief
 *
-* @date	   2022/11/06 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
 
-#include "../IComponent.h"
+#include "../IRigidBody.h"
 
 class PhysX;
 class Collider;
@@ -17,24 +17,10 @@ namespace physx
 	class PxRigidActor;
 }
 
-enum BodyType
-{
-	Dynamic,
-
-	Static,
-};
-
-enum ForceMode
-{
-	Force,
-
-	Impulse,
-};
-
-class RigidBody : public IComponent
+class RigidBody : public IRigidBody
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(RigidBody)
+	SUB_CLASS(RigidBody, IRigidBody)
 public:
 
 	void Serialized(FileStream* file) const override;
@@ -44,50 +30,52 @@ public:
 	void OnStart() override;
 	void OnStop() override;
 
-	void Update() noexcept;
-
 	void SetActive(bool active) override;
+
+	void Update() override;
 
 public:
 
-	void SetBodyType(BodyType type) noexcept;
-	const BodyType& GetBodyType() const noexcept;
-	void SetCollider(Collider* collider) noexcept;
+	void SetCollider(ICollider* collider) override;
+
+	/** body type */
+	void SetBodyType(BodyType type) override;
+	BodyType GetBodyType() const override;
 
 	/** force */
-	void AddForce(const Math::Vector3& force, ForceMode mode = ForceMode::Force) noexcept;
-	void AddTorque(const Math::Vector3& torque, ForceMode mode = ForceMode::Force) noexcept;
+	void AddForce(const Math::Vector3& force, ForceMode mode = ForceMode::Force) override;
+	void AddTorque(const Math::Vector3& torque, ForceMode mode = ForceMode::Force) override;
 
 	/** velocity */
-	void SetVelocity(const Math::Vector3& velocity) noexcept;
-	void AddVelocity(const Math::Vector3& addVelocity) noexcept;
-	Math::Vector3 GetVelocity() const noexcept;
+	void SetVelocity(const Math::Vector3& velocity) override;
+	void AddVelocity(const Math::Vector3& addVelocity) override;
+	Math::Vector3 GetVelocity() const override;
 
 	/** angular velocity */
-	void SetAngularVelocity(const Math::Vector3& velocity) noexcept;
-	void AddAngularVelocity(const Math::Vector3& addVelocity) noexcept;
-	Math::Vector3 GetAngularVelocity() const noexcept;
+	void SetAngularVelocity(const Math::Vector3& velocity) override;
+	void AddAngularVelocity(const Math::Vector3& addVelocity) override;
+	Math::Vector3 GetAngularVelocity() const override;
 
 	/** mass */
-	void SetMass(float mass) noexcept;
-	float GetMass() const noexcept;
+	void SetMass(float mass) override;
+	float GetMass() const override;
 
 	/** flags */
-	void SetUseGravity(bool useGravity) noexcept;
-	bool UseGravity() const noexcept;
-	void SetKinematic(bool kinematic) noexcept;
-	bool IsKinematic() const noexcept;
-	bool IsDynamic() const noexcept;
+	void SetUseGravity(bool useGravity) override;
+	bool UseGravity() const override;
+	void SetKinematic(bool kinematic) override;
+	bool IsKinematic() const override;
+	bool IsDynamic() const override;
 
 	/** lock */
-	void SetPositionLock(const Math::Vector3& positionLock) noexcept;
-	const Math::Vector3& GetPositionLock() const noexcept;
-	void SetRotationLock(const Math::Vector3& rotationLock) noexcept;
-	const Math::Vector3& GetRotationLock() const noexcept;
+	void SetPositionLock(const Math::Vector3& positionLock) override;
+	const Math::Vector3& GetPositionLock() const override;
+	void SetRotationLock(const Math::Vector3& rotationLock) override;
+	const Math::Vector3& GetRotationLock() const override;
 
 	/** transform */
-	void SetPosition(const Math::Vector3& pos) const noexcept;
-	void SetRotation(const Math::Vector3& rot) const noexcept;
+	void SetPosition(const Math::Vector3& pos) const override;
+	void SetRotation(const Math::Vector3& rot) const override;
 
 	/** アクセス */
 	physx::PxRigidActor* GetRigidActor() noexcept;
@@ -100,9 +88,10 @@ private:
 private:
 
 	PhysX* m_physics = nullptr;
-	Collider* m_collider = nullptr;
 
 	bool m_isRegister = false;
+
+	Collider* m_collider = nullptr;
 
 	physx::PxRigidActor* m_actor = nullptr;
 

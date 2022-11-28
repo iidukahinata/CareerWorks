@@ -2,7 +2,7 @@
 * @file    RigidBody.cpp
 * @brief
 *
-* @date	   2022/11/06 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 
@@ -70,21 +70,6 @@ void RigidBody::OnStop()
 	}
 }
 
-void RigidBody::Update() noexcept
-{
-	auto&& transform = m_actor->getGlobalPose();
-	auto&& pos  = Math::Vector3(transform.p.x, transform.p.y, transform.p.z);
-	auto&& quat = Math::Quaternion(transform.q.x, transform.q.y, transform.q.z, transform.q.w);
-
-	auto&& rot = quat.GetEuler();
-	rot.x = Math::ToRadian(rot.x);
-	rot.y = Math::ToRadian(rot.y);
-	rot.z = Math::ToRadian(rot.z);
-
-	GetTransform().SetPosition(pos);
-	GetTransform().SetRotation(rot);
-}
-
 void RigidBody::SetActive(bool active)
 {
 	if (GetActive() == active)
@@ -104,7 +89,53 @@ void RigidBody::SetActive(bool active)
 	}
 }
 
-void RigidBody::SetBodyType(BodyType type) noexcept
+void RigidBody::Update()
+{
+	auto&& transform = m_actor->getGlobalPose();
+	auto&& pos  = Math::Vector3(transform.p.x, transform.p.y, transform.p.z);
+	auto&& quat = Math::Quaternion(transform.q.x, transform.q.y, transform.q.z, transform.q.w);
+
+	auto&& rot = quat.GetEuler();
+	rot.x = Math::ToRadian(rot.x);
+	rot.y = Math::ToRadian(rot.y);
+	rot.z = Math::ToRadian(rot.z);
+
+	GetTransform().SetPosition(pos);
+	GetTransform().SetRotation(rot);
+}
+
+void RigidBody::SetCollider(ICollider* collider)
+{
+	if (!m_actor)
+	{
+		return;
+	}
+
+	if (m_collider == collider)
+	{
+		return;
+	}
+
+	if (m_collider)
+	{
+		if (auto shape = m_collider->GetShape())
+		{
+			m_actor->detachShape(*shape);
+		}
+	}
+
+	m_collider = dynamic_cast<Collider*>(collider);
+
+	if (m_collider)
+	{
+		if (auto shape = m_collider->GetShape())
+		{
+			m_actor->attachShape(*shape);
+		}
+	}
+}
+
+void RigidBody::SetBodyType(BodyType type)
 {
 	if (m_actor)
 	{
@@ -147,43 +178,12 @@ void RigidBody::SetBodyType(BodyType type) noexcept
 	}
 }
 
-const BodyType& RigidBody::GetBodyType() const noexcept
+BodyType RigidBody::GetBodyType() const
 {
 	return m_bodyType;
 }
 
-void RigidBody::SetCollider(Collider* collider) noexcept
-{
-	if (!m_actor)
-	{
-		return;
-	}
-
-	if (m_collider == collider)
-	{
-		return;
-	}
-
-	if (m_collider)
-	{
-		if (auto shape = m_collider->GetShape())
-		{
-			m_actor->detachShape(*shape);
-		}
-	}
-
-	if (collider)
-	{
-		if (auto shape = collider->GetShape())
-		{
-			m_actor->attachShape(*shape);
-		}
-	}
-
-	m_collider = collider;
-}
-
-void RigidBody::AddForce(const Math::Vector3& force, ForceMode mode /* = ForceMode::Force */) noexcept
+void RigidBody::AddForce(const Math::Vector3& force, ForceMode mode /* = ForceMode::Force */)
 {
 	if (!IsDynamic())
 	{
@@ -207,7 +207,7 @@ void RigidBody::AddForce(const Math::Vector3& force, ForceMode mode /* = ForceMo
 	}
 }
 
-void RigidBody::AddTorque(const Math::Vector3& torque, ForceMode mode /* = ForceMode::Force */) noexcept
+void RigidBody::AddTorque(const Math::Vector3& torque, ForceMode mode /* = ForceMode::Force */)
 {
 	if (!IsDynamic())
 	{
@@ -231,7 +231,7 @@ void RigidBody::AddTorque(const Math::Vector3& torque, ForceMode mode /* = Force
 	}
 }
 
-void RigidBody::SetVelocity(const Math::Vector3& velocity) noexcept
+void RigidBody::SetVelocity(const Math::Vector3& velocity)
 {
 	if (IsDynamic())
 	{
@@ -240,7 +240,7 @@ void RigidBody::SetVelocity(const Math::Vector3& velocity) noexcept
 	}
 }
 
-void RigidBody::AddVelocity(const Math::Vector3& addVelocity) noexcept
+void RigidBody::AddVelocity(const Math::Vector3& addVelocity)
 {
 	if (IsDynamic())
 	{
@@ -255,7 +255,7 @@ void RigidBody::AddVelocity(const Math::Vector3& addVelocity) noexcept
 	}
 }
 
-Math::Vector3 RigidBody::GetVelocity() const noexcept
+Math::Vector3 RigidBody::GetVelocity() const
 {
 	if (IsDynamic())
 	{
@@ -267,7 +267,7 @@ Math::Vector3 RigidBody::GetVelocity() const noexcept
 	return Math::Vector3::Zero;
 }
 
-void RigidBody::SetAngularVelocity(const Math::Vector3& velocity) noexcept
+void RigidBody::SetAngularVelocity(const Math::Vector3& velocity)
 {
 	if (IsDynamic())
 	{
@@ -276,7 +276,7 @@ void RigidBody::SetAngularVelocity(const Math::Vector3& velocity) noexcept
 	}
 }
 
-void RigidBody::AddAngularVelocity(const Math::Vector3& addVelocity) noexcept
+void RigidBody::AddAngularVelocity(const Math::Vector3& addVelocity)
 {
 	if (IsDynamic())
 	{
@@ -291,7 +291,7 @@ void RigidBody::AddAngularVelocity(const Math::Vector3& addVelocity) noexcept
 	}
 }
 
-Math::Vector3 RigidBody::GetAngularVelocity() const noexcept
+Math::Vector3 RigidBody::GetAngularVelocity() const
 {
 	if (IsDynamic())
 	{
@@ -303,7 +303,7 @@ Math::Vector3 RigidBody::GetAngularVelocity() const noexcept
 	return Math::Vector3::Zero;
 }
 
-void RigidBody::SetMass(float mass) noexcept
+void RigidBody::SetMass(float mass)
 {
 	if (IsDynamic())
 	{
@@ -314,12 +314,12 @@ void RigidBody::SetMass(float mass) noexcept
 	}
 }
 
-float RigidBody::GetMass() const noexcept
+float RigidBody::GetMass() const
 {
 	return m_mass;
 }
 
-void RigidBody::SetKinematic(bool kinematic) noexcept
+void RigidBody::SetKinematic(bool kinematic)
 {
 	if (IsDynamic())
 	{
@@ -330,28 +330,28 @@ void RigidBody::SetKinematic(bool kinematic) noexcept
 	}
 }
 
-bool RigidBody::IsKinematic() const noexcept
+bool RigidBody::IsKinematic() const
 {
 	return m_isKinematic;
 }
 
-bool RigidBody::IsDynamic() const noexcept
+bool RigidBody::IsDynamic() const
 {
 	return m_bodyType == BodyType::Dynamic;
 }
 
-void RigidBody::SetUseGravity(bool useGravity) noexcept
+void RigidBody::SetUseGravity(bool useGravity)
 {
 	m_useGravity = useGravity;
 	m_actor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, !useGravity);
 }
 
-bool RigidBody::UseGravity() const noexcept
+bool RigidBody::UseGravity() const
 {
 	return m_useGravity;
 }
 
-void RigidBody::SetPositionLock(const Math::Vector3& positionLock) noexcept
+void RigidBody::SetPositionLock(const Math::Vector3& positionLock)
 {
 	if (IsDynamic())
 	{
@@ -364,12 +364,12 @@ void RigidBody::SetPositionLock(const Math::Vector3& positionLock) noexcept
 	}
 }
 
-const Math::Vector3& RigidBody::GetPositionLock() const noexcept
+const Math::Vector3& RigidBody::GetPositionLock() const
 {
 	return m_positionLock;
 }
 
-void RigidBody::SetRotationLock(const Math::Vector3& rotationLock) noexcept
+void RigidBody::SetRotationLock(const Math::Vector3& rotationLock)
 {
 	if (IsDynamic())
 	{
@@ -382,12 +382,12 @@ void RigidBody::SetRotationLock(const Math::Vector3& rotationLock) noexcept
 	}
 }
 
-const Math::Vector3& RigidBody::GetRotationLock() const noexcept
+const Math::Vector3& RigidBody::GetRotationLock() const
 {
 	return m_rotationLock;
 }
 
-void RigidBody::SetPosition(const Math::Vector3& pos) const noexcept
+void RigidBody::SetPosition(const Math::Vector3& pos) const
 {
 	auto&& transform = m_actor->getGlobalPose();
 	transform.p = physx::PxVec3(pos.x, pos.y, pos.z);
@@ -395,7 +395,7 @@ void RigidBody::SetPosition(const Math::Vector3& pos) const noexcept
 	m_actor->setGlobalPose(transform);
 }
 
-void RigidBody::SetRotation(const Math::Vector3& rot) const noexcept
+void RigidBody::SetRotation(const Math::Vector3& rot) const
 {
 	auto&& transform = m_actor->getGlobalPose();
 	auto&& quat = Math::Quaternion::FromYawPitchRool(rot);

@@ -2,7 +2,7 @@
 * @file    ScriptEngine.h
 * @brief
 *
-* @date	   2022/11/23 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
@@ -12,7 +12,7 @@
 class ScriptEngine : public ISubsystem
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(ScriptEngine)
+	SUB_CLASS(ScriptEngine, ISubsystem)
 public:
 
 	bool Initialize();

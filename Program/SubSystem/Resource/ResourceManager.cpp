@@ -2,7 +2,7 @@
 * @file    ResourceManager.cpp
 * @brief
 *
-* @date	   2022/11/01 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 
@@ -399,8 +399,14 @@ const Map<uint32_t, Unordered_Map<String, ResourceData>>& ResourceManager::GetAl
 
 const Unordered_Map<String, ResourceData>& ResourceManager::GetResourceDataListByType(uint32_t type) const noexcept
 {
-    ASSERT(m_resourceTypeList.contains(type));
-    return m_resourceTypeList.at(type);
+    if (m_resourceTypeList.contains(type))
+    {
+        return m_resourceTypeList.at(type);
+    }
+    else
+    {
+        return Unordered_Map<String, ResourceData>();
+    }
 }
 
 #ifdef IS_EDITOR

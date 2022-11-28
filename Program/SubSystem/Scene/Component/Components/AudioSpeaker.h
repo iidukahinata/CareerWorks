@@ -2,19 +2,17 @@
 * @file    AudioSpeaker.h
 * @brief
 *
-* @date	   2022/10/03 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
 
-#include "../IComponent.h"
+#include "../IAudioSpeaker.h"
 
-class AudioClip;
-
-class AudioSpeaker : public IComponent
+class AudioSpeaker : public IAudioSpeaker
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(AudioSpeaker)
+	SUB_CLASS(AudioSpeaker, IAudioSpeaker)
 public:
 
 	void Serialized(FileStream* file) const override;
@@ -30,62 +28,62 @@ public:
 public:
 
 	/** 登録された AudioClip を使用して音源を再生します。*/
-	void Play() noexcept;
+	void Play() override;
 
 	/** SE などの同じ設定で複数の音源を再生される時などに使用。*/
-	void PlayOneShot(AudioClip* audioClip, float volume = 1.f) const noexcept;
+	void PlayOneShot(AudioClip* audioClip, float volume = 1.f) const override;
 
 	/** 登録音源が再生されている場合のみ処理を行う。*/
-	void Pause() const noexcept;
+	void Pause() const override;
 
 	/** 登録音源が Pause 時のみ処理を行う。*/
-	void UnPause() const noexcept;
+	void UnPause() const override;
 
 	/** 登録された AudioClip を使用して音源を中止します。*/
-	void Stop() noexcept;
+	void Stop() override;
 
 public:
 
 	/** playOnAwake = true の時登録と同時に音源を再生します。*/
-	void SetAudioClip(AudioClip* audioClip) noexcept;
-	AudioClip* GetAudioClip() const noexcept;
+	void SetAudioClip(AudioClip* audioClip) override;
+	AudioClip* GetAudioClip() const override;
 
-	void SetPlayOnAwake(bool playOnAwake) noexcept;
-	bool GetPlayOnAwake() const noexcept;
+	void SetPlayOnAwake(bool playOnAwake) override;
+	bool GetPlayOnAwake() const override;
 
-	void SetMute(bool mute) noexcept;
-	bool GetMute() const noexcept;
+	void SetMute(bool mute) override;
+	bool GetMute() const override;
 
-	void SetIsLoop(bool isLoop) noexcept;
-	bool GetIsLoop() const noexcept;
+	void SetIsLoop(bool isLoop) override;
+	bool GetIsLoop() const override;
 
 	/* 0 が一番優先度が高く、引数値は 0 から 256 の間に clamp されます。*/
-	void SetPriority(int priority) noexcept;
-	int GetPriority() const noexcept;
+	void SetPriority(int priority) override;
+	int GetPriority() const override;
 
 	/* 1 が一番音が大きく、引数値は 0 から 1 の間に clamp されます。*/
-	void SetVolume(float volume) noexcept;
-	float GetVolume() const noexcept;
+	void SetVolume(float volume) override;
+	float GetVolume() const override;
 
 	/* 2 が一番音が高く、引数値は 0 から 2 の間に clamp されます。*/
-	void SetPitch(float pitch) noexcept;
-	float GetPitch() const noexcept;
+	void SetPitch(float pitch) override;
+	float GetPitch() const override;
 
 	/* 0 が左右同じバランスになり、引数値は -1 から 1 の間に clamp されます。*/
-	void SetPan(float pan) noexcept;
-	float GetPan() const noexcept;
+	void SetPan(float pan) override;
+	float GetPan() const override;
 
 	/* true にすると 3D 処理を無視します。*/
-	void SetIs2DMode(bool is2DMode) noexcept;
-	bool GetIs2DMode() const noexcept;
+	void SetIs2DMode(bool is2DMode) override;
+	bool GetIs2DMode() const override;
 
 	/* 	サウンドの減衰を停止させる距離 */
-	void SetMaxDistance(float max) noexcept;
-	float GetMaxDistance() const noexcept;
+	void SetMaxDistance(float max) override;
+	float GetMaxDistance() const override;
 
 	/* スピーカーの音を個別で調整する関数です。*/
-	void SetOutPutMatrix(const Array<float, 8>& matrix) noexcept;
-	const Array<float, 8>& GetOutPutMatrix() const noexcept;
+	void SetOutPutMatrix(const Array<float, 8>& matrix) override;
+	const Array<float, 8>& GetOutPutMatrix() const override;
 
 private:
 

@@ -2,14 +2,14 @@
 * @file	   LightDetails.h
 * @brief
 *
-* @date	   2022/10/27 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
 
 #include "../ComponentDetails.h"
 
-class Light;
+class ILight;
 
 class LightDetails : public ComponentDetails
 {
@@ -21,5 +21,5 @@ public:
 
 private:
 
-	Light* m_light = nullptr;
+	ILight* m_light = nullptr;
 };

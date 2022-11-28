@@ -2,16 +2,16 @@
 * @file	   AudioListenerDetails.cpp
 * @brief
 *
-* @date	   2022/10/27 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 #include "AudioListenerDetails.h"
-#include "SubSystem/Scene/Component/Components/AudioListener.h"
+#include "SubSystem/Scene/Component/IAudioListener.h"
 
 AudioListenerDetails::AudioListenerDetails(DetailsWidget* detailsWidget, IComponent* component) :
 	ComponentDetails(detailsWidget)
 {
-	m_audioListener = dynamic_cast<AudioListener*>(component);
+	m_audioListener = dynamic_cast<IAudioListener*>(component);
 	ASSERT(m_audioListener);
 }
 

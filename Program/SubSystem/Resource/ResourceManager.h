@@ -2,7 +2,7 @@
 * @file    ResourceManager.h
 * @brief
 *
-* @date	   2022/10/21 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
@@ -26,7 +26,7 @@ enum PrioritySetting
 class ResourceManager : public ISubsystem
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(ResourceManager)
+	SUB_CLASS(ResourceManager, ISubsystem)
 public:
 
 	bool Initialize() override;

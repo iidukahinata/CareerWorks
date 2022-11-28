@@ -1,9 +1,9 @@
 /**
- * @file	Timer.h
- * @brief   フレーム管理クラス
- *
- * @date	2022/09/06 2022年度初版
- */
+* @file	Timer.h
+* @brief   フレーム管理クラス
+*
+* @date	   2022/11/28 2022年度初版
+*/
 #pragma once
 
 
@@ -12,7 +12,7 @@
 class Timer : public ISubsystem
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(Timer)
+	SUB_CLASS(Timer, ISubsystem)
 public:
 
 	bool Initialize() override;

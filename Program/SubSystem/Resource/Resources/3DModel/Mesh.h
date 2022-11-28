@@ -2,7 +2,7 @@
 * @file    Mesh.h
 * @brief
 *
-* @date	   2022/10/30 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
@@ -17,7 +17,7 @@ class Material;
 class Mesh : public IResource
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(Mesh)
+	SUB_CLASS(Mesh, IResource)
 public:
 
 	bool Load(StringView path) override;

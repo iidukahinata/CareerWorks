@@ -2,7 +2,7 @@
 * @file    Scene.h
 * @brief
 *
-* @date	   2022/11/04 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
@@ -15,7 +15,7 @@ class World;
 class Scene : public IResource
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(Scene)
+	SUB_CLASS(Scene, IResource)
 public:
 
 	Scene();

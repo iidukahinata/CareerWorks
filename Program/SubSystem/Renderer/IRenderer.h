@@ -1,8 +1,8 @@
 /**
-* @file	   Renderer.h
+* @file	   IRenderer.h
 * @brief
 *
-* @date	   2022/10/28 2022年度初版
+* @date	   2022/11/27 2022年度初版
 */
 #pragma once
 
@@ -12,10 +12,10 @@
 #include "TransformCBuffer.h"
 #include "SubSystem/Core/ISubsystem.h"
 
-class Light;
-class Camera;
-class RenderObject;
-class PostProcessEffect;
+class ILight;
+class ICamera;
+class IRenderObject;
+class IPostProcessEffect;
 
 /**
 * Renderer抽象クラス
@@ -25,7 +25,7 @@ class PostProcessEffect;
 class IRenderer : public ISubsystem
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(IRenderer)
+	SUB_CLASS(IRenderer, ISubsystem)
 public:
 
 	virtual ~IRenderer() = default;
@@ -35,27 +35,23 @@ public:
 public:
 
 	/** Light メソッド */
-	void AddLight(Light* light) noexcept;
-	void RemoveLight(Light* light) noexcept;
+	void AddLight(ILight* light) noexcept;
+	void RemoveLight(ILight* light) noexcept;
 
 	/** Camera メソッド */
-	void AddCamera(Camera* camera) noexcept;
-	void RemoveCamera(Camera* camera) noexcept;
-	Camera* GetMainCamera() const noexcept;
+	void AddCamera(ICamera* camera) noexcept;
+	void RemoveCamera(ICamera* camera) noexcept;
+	ICamera* GetMainCamera() const noexcept;
 
 	/** Render Object メソッド */
-	void AddRenderObject(RenderObject* rederObject) noexcept;
-	void RemoveRenderObject(RenderObject* rederObject) noexcept;
+	void AddRenderObject(IRenderObject* rederObject) noexcept;
+	void RemoveRenderObject(IRenderObject* rederObject) noexcept;
 
 	/** Post Process Effect メソッド */
-	void RegisterPostProcess(PostProcessEffect* postProcess) noexcept;
-	void UnRegisterPostProcess(PostProcessEffect* postProcess) noexcept;
-	PostProcessEffect* GetPostProcess() noexcept;
+	void RegisterPostProcess(IPostProcessEffect* postProcess) noexcept;
+	void UnRegisterPostProcess(IPostProcessEffect* postProcess) noexcept;
+	IPostProcessEffect* GetPostProcess() noexcept;
 	bool HasPostProcessSetting() noexcept;
-
-	/** Deferred Renderer */
-	virtual void RegisterGBufferShader(StringView path) {}
-	virtual String GetGBufferShader() { return "none"; }
 
 	/** アクセス */
 	SkyBox*			  GetSkyBox()			const noexcept { return m_skyBox.get(); }
@@ -73,12 +69,12 @@ protected:
 	UniquePtr<TransformCBuffer> m_transformCBuffer;
 
 	// * Sceneに設置された描画オブジェクト配列。
-	Vector<RenderObject*> m_renderObjects;
+	Vector<IRenderObject*> m_renderObjects;
 
-	Camera* m_mainCamera = nullptr;
+	ICamera* m_mainCamera = nullptr;
 
 	// * 配列にするのは後にレイヤーなどでUIなどの描画を制御させていくため。
-	Vector<Camera*> m_cameras;
+	Vector<ICamera*> m_cameras;
 
-	PostProcessEffect* m_postProcessEffect = nullptr;
+	IPostProcessEffect* m_postProcessEffect = nullptr;
 };

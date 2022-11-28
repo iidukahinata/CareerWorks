@@ -2,7 +2,7 @@
 * @file    SceneModule.cpp
 * @brief
 *
-* @date	   2022/11/14 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 
@@ -30,16 +30,16 @@ void SetUpSceneModule()
 		PY_CLASS_DEF(GameObject, Destroy)
 		.def("AddComponent", addComponent, PY_RET_REF)
 		PY_CLASS_DEF(GameObject, RemoveComponent)
-		.def("GetAudioListener", &GameObject::GetComponent<AudioListener>, PY_RET_REF)
-		.def("GetAudioSpeaker", &GameObject::GetComponent<AudioSpeaker>, PY_RET_REF)
-		.def("GetCamera", &GameObject::GetComponent<Camera>, PY_RET_REF)
-		.def("GetCollider", &GameObject::GetComponent<Collider>, PY_RET_REF)
-		.def("GetLight", &GameObject::GetComponent<Light>, PY_RET_REF)
-		.def("GetPostProcessEffect", &GameObject::GetComponent<PostProcessEffect>, PY_RET_REF)
-		.def("GetMeshRender", &GameObject::GetComponent<MeshRender>, PY_RET_REF)
-		.def("GetModelRender", &GameObject::GetComponent<ModelRender>, PY_RET_REF)
-		.def("GetRigidBody", &GameObject::GetComponent<RigidBody>, PY_RET_REF)
-		.def("GetScript", &GameObject::GetComponent<Script>, PY_RET_REF)
+		.def("GetAudioListener", &GameObject::GetComponent<IAudioListener>, PY_RET_REF)
+		.def("GetAudioSpeaker", &GameObject::GetComponent<IAudioSpeaker>, PY_RET_REF)
+		.def("GetCamera", &GameObject::GetComponent<ICamera>, PY_RET_REF)
+		.def("GetCollider", &GameObject::GetComponent<ICollider>, PY_RET_REF)
+		.def("GetLight", &GameObject::GetComponent<ILight>, PY_RET_REF)
+		.def("GetPostProcessEffect", &GameObject::GetComponent<IPostProcessEffect>, PY_RET_REF)
+		.def("GetMeshRender", &GameObject::GetComponent<IMeshRender>, PY_RET_REF)
+		.def("GetModelRender", &GameObject::GetComponent<IModelRender>, PY_RET_REF)
+		.def("GetRigidBody", &GameObject::GetComponent<IRigidBody>, PY_RET_REF)
+		.def("GetScript", &GameObject::GetComponent<IScript>, PY_RET_REF)
 		PY_CLASS_DEF_POLICIE(GameObject, FindComponent, PY_RET_REF)
 		PY_CLASS_MAKE_GETSET("active", GameObject, GetActive, PY_BY_VALUE, SetActive)
 		PY_CLASS_MAKE_GETSET("name", GameObject, GetName, PY_RET_REF, SetName)

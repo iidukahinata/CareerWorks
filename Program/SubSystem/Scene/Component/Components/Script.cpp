@@ -2,7 +2,7 @@
 * @file    Script.cpp
 * @brief
 *
-* @date	   2022/11/20 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 
@@ -112,7 +112,7 @@ void Script::Tick(double deltaTime)
 	m_scriptInstance->CallTickFunction(this, deltaTime);
 }
 
-void Script::SetScript(ScriptInstance* scriptInstance) noexcept
+void Script::SetScript(ScriptInstance* scriptInstance)
 {
 	if (m_scriptInstance)
 	{
@@ -137,7 +137,7 @@ void Script::SetScript(ScriptInstance* scriptInstance) noexcept
 	}
 }
 
-ScriptInstance* Script::GetScript() const noexcept
+ScriptInstance* Script::GetScript() const
 {
 	return m_scriptInstance;
 }

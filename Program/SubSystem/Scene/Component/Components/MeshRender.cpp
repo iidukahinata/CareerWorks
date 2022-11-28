@@ -2,7 +2,7 @@
 * @file    MeshRender.cpp
 * @brief
 *
-* @date	   2022/11/03 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 
@@ -45,6 +45,70 @@ void MeshRender::Deserialized(FileStream* file)
 			SetMesh(dynamic_cast<Mesh*>(resource));
 		}
 	}
+}
+
+void MeshRender::OnInitialize()
+{
+	m_renderer = GetContext()->GetSubsystem<IRenderer>();
+	ASSERT(m_renderer);
+
+	m_constantBufferMatrix.Create(sizeof(ConstantBufferMatrix));
+}
+
+void MeshRender::OnRegister()
+{
+	IComponent::OnRegister();
+
+	if (GetActive())
+	{
+		RegisterToRenderer(this);
+	}
+}
+
+void MeshRender::OnUnRegister()
+{
+	IComponent::OnUnRegister();
+
+	if (GetActive())
+	{
+		UnRegisterFromRenderer(this);
+	}
+}
+
+void MeshRender::OnRemove()
+{
+	if (m_isRegister)
+	{
+		UnRegisterFromRenderer(this);
+
+		m_renderCommandFance.BegineFrame();
+	}
+
+	IComponent::OnRemove();
+}
+
+void MeshRender::SetActive(bool active)
+{
+	if (GetActive() == active)
+	{
+		return;
+	}
+
+	IComponent::SetActive(active);
+
+	if (active)
+	{
+		RegisterToRenderer(this);
+	}
+	else
+	{
+		UnRegisterFromRenderer(this);
+	}
+}
+
+bool MeshRender::Erasable()
+{
+	return m_renderCommandFance.IsSingle();
 }
 
 void MeshRender::SetMesh(Mesh* mesh) noexcept

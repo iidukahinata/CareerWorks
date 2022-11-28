@@ -2,7 +2,7 @@
 * @file    PostProcessEffect.cpp
 * @brief
 *
-* @date	   2022/10/29 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 #include "PostProcessEffect.h"
@@ -74,7 +74,7 @@ bool PostProcessEffect::Erasable()
 	return m_renderCommandFance.IsSingle();;
 }
 
-IPostEffect* PostProcessEffect::AddPostEffect(StringView name) noexcept
+IPostEffect* PostProcessEffect::AddPostEffect(StringView name)
 {
 	IPostEffect* result = nullptr;
 
@@ -105,7 +105,7 @@ void PostProcessEffect::AddPostEffect(IPostEffect* postEffect) noexcept
 	}
 }
 
-void PostProcessEffect::RemovePostEffect(IPostEffect* postEffect) noexcept
+void PostProcessEffect::RemovePostEffect(IPostEffect* postEffect)
 {
 	ASSERT(postEffect);
 
@@ -114,6 +114,18 @@ void PostProcessEffect::RemovePostEffect(IPostEffect* postEffect) noexcept
 	{
 		m_postEffects.erase(hash);
 	}
+}
+
+IPostEffect* PostProcessEffect::FindPostEffect(StringView name) const
+{
+	const auto type = PostEffectType(name);
+
+	if (m_postEffects.contains(type.Hash))
+	{
+		return m_postEffects.at(type.Hash).get();
+	}
+
+	return nullptr;
 }
 
 void PostProcessEffect::GetAllPostEffect(Vector<IPostEffect*>& postEffects) const noexcept
@@ -126,7 +138,7 @@ void PostProcessEffect::GetAllPostEffect(Vector<IPostEffect*>& postEffects) cons
 	}
 }
 
-const Map<uint32_t, UniquePtr<IPostEffect>>& PostProcessEffect::GetAllPostEffect() noexcept
+const Map<uint32_t, UniquePtr<IPostEffect>>& PostProcessEffect::GetAllPostEffect()
 {
 	return m_postEffects;
 }
@@ -136,24 +148,12 @@ bool PostProcessEffect::HasPostEffect() const noexcept
 	return !m_postEffects.empty();
 }
 
-IPostEffect* PostProcessEffect::FindPostEffect(StringView name) const noexcept
-{
-	const auto type = PostEffectType(name);
-
-	if (m_postEffects.contains(type.Hash))
-	{
-		return m_postEffects.at(type.Hash).get();
-	}
-
-	return nullptr;
-}
-
 IRenderer* PostProcessEffect::GetRenderer() const noexcept
 {
 	return m_renderer;
 }
 
-void PostProcessEffect::Render() noexcept
+void PostProcessEffect::Render()
 {
 	for (const auto& postEffectInfo : m_postEffects)
 	{

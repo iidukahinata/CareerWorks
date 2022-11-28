@@ -2,7 +2,7 @@
 * @file    Material.h
 * @brief
 *
-* @date	   2022/09/24 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
@@ -29,7 +29,7 @@ struct TexturePramInfo
 class Material : public IResource
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(Material)
+	SUB_CLASS(Material, IResource)
 public:
 
 	/** asset ファイルと独自データの作成を行う */

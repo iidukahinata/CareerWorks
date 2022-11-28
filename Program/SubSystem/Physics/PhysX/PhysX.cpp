@@ -1,9 +1,9 @@
 /**
- * @file	PhysX.cpp
- * @brief
- *
- * @date	2022/11/27 2022年度初版
- */
+* @file	   PhysX.cpp
+* @brief
+*
+* @date	   2022/11/28 2022年度初版
+*/
 
 
 #include "PhysX.h"
@@ -45,8 +45,8 @@ bool PhysX::Initialize()
     SetupPhysXObjects();
 
     // register component
-    ComponentFactory::Register<Collider>();
-    ComponentFactory::Register<RigidBody>();
+    ComponentFactory::Register<ICollider, Collider>();
+    ComponentFactory::Register<IRigidBody, RigidBody>();
 
     return true;
 }
@@ -97,9 +97,12 @@ void PhysX::ReflectUpdate() noexcept
 #endif // IS_EDITOR
 }
 
-void PhysX::RegisterRigidBody(RigidBody* rigidBody)
+void PhysX::RegisterRigidBody(IRigidBody* rigidBody)
 {
-    if (auto actor = rigidBody->GetRigidActor())
+    auto body = dynamic_cast<RigidBody*>(rigidBody);
+    ASSERT(body);
+
+    if (auto actor = body->GetRigidActor())
     {
         m_scene->addActor(*actor);
     }
@@ -113,9 +116,12 @@ void PhysX::RegisterRigidBody(RigidBody* rigidBody)
     }
 }
 
-void PhysX::UnRegisterRigidBody(RigidBody* rigidBody)
+void PhysX::UnRegisterRigidBody(IRigidBody* rigidBody)
 {
-    if (auto actor = rigidBody->GetRigidActor())
+    auto body = dynamic_cast<RigidBody*>(rigidBody);
+    ASSERT(body);
+
+    if (auto actor = body->GetRigidActor())
     {
         m_scene->removeActor(*actor);
     }

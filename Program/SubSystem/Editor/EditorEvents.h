@@ -2,7 +2,7 @@
 * @file    EditorEvents.h
 * @brief
 *
-* @date	   2022/10/28 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
@@ -10,7 +10,7 @@
 class ImportResourceEvent : public IEvent
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(ImportResourceEvent)
+	SUB_CLASS(ImportResourceEvent, IEvent)
 public:
 
 	ImportResourceEvent(String importFilePath);
@@ -25,7 +25,7 @@ private:
 class DeleteObjectEvent : public IEvent
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(DeleteObjectEvent)
+	SUB_CLASS(DeleteObjectEvent, IEvent)
 public:
 
 	DeleteObjectEvent(String deleteObject);
@@ -51,7 +51,7 @@ enum class EditorState
 class ChangeEditorStateEvent : public IEvent
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(ChangeEditorStateEvent)
+	SUB_CLASS(ChangeEditorStateEvent, IEvent)
 public:
 
 	ChangeEditorStateEvent(EditorState editorState);

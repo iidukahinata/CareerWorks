@@ -2,7 +2,7 @@
 * @file	   ModelRenderDetails.cpp
 * @brief
 *
-* @date	   2022/10/27 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 #include "ModelRenderDetails.h"
@@ -10,12 +10,12 @@
 #include "SubSystem/Resource/Resources/3DModel/Mesh.h"
 #include "SubSystem/Resource/Resources/3DModel/Material.h"
 #include "SubSystem/Resource/Resources/3DModel/Model.h"
-#include "SubSystem/Scene/Component/Components/RenderObject.h"
+#include "SubSystem/Scene/Component/IRenderObject.h"
 
 ModelRenderDetails::ModelRenderDetails(DetailsWidget* detailsWidget, IComponent* component) :
 	ComponentDetails(detailsWidget)
 {
-	m_modelRender = dynamic_cast<ModelRender*>(component);
+	m_modelRender = dynamic_cast<IModelRender*>(component);
 	ASSERT(m_modelRender);
 
 	m_gameObject = m_modelRender->GetOwner();

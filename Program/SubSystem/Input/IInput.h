@@ -1,8 +1,8 @@
 /**
- * @file	Input.h
+ * @file	IInput.h
  * @brief   入力制御クラス
  *
- * @date	2022/09/06 2022年度初版
+ * @date	2022/11/28 2022年度初版
  */
 #pragma once
 
@@ -18,7 +18,7 @@
 class IInput : public ISubsystem
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(IInput)
+	SUB_CLASS(IInput, ISubsystem)
 public:
 
 	virtual ~IInput() = default;

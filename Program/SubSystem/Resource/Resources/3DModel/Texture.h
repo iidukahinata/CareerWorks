@@ -2,7 +2,7 @@
 * @file    Texture.h
 * @brief
 *
-* @date	   2022/09/04 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
@@ -13,7 +13,7 @@
 class Texture : public IResource
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(Texture)
+	SUB_CLASS(Texture, IResource)
 public:
 
 	bool Load(StringView path) override;

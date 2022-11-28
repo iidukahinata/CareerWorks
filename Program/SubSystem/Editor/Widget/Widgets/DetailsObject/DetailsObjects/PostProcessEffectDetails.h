@@ -2,7 +2,7 @@
 * @file	   PostProcessEffectDetails.h
 * @brief
 *
-* @date	   2022/10/29 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
@@ -10,7 +10,7 @@
 #include "../ComponentDetails.h"
 #include "SubSystem/Renderer/PostEffect/IPostEffect.h"
 
-class PostProcessEffect;
+class IPostProcessEffect;
 
 class PostProcessEffectDetails : public ComponentDetails
 {
@@ -43,7 +43,7 @@ private:
 	// * AddPostEffect 用フィルター
 	ImGuiTextFilter m_filter;
 
-	PostProcessEffect* m_postProcessEffect = nullptr;
+	IPostProcessEffect* m_postProcessEffect = nullptr;
 };
 
 template<class T>

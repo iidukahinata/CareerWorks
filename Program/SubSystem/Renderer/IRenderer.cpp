@@ -1,8 +1,8 @@
 /**
-* @file	   Renderer.h
+* @file	   IRenderer.h
 * @brief
 *
-* @date	   2022/09/09 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 
@@ -26,26 +26,26 @@ bool IRenderer::Initialize()
 	D3D12GraphicsDevice::Get().Init(handle, width, height, Window::Get().IsFullscreen());
 
 	// register component
-	ComponentFactory::Register<Camera>();
-	ComponentFactory::Register<Light>();
-	ComponentFactory::Register<MeshRender>();
-	ComponentFactory::Register<ModelRender>();
-	ComponentFactory::Register<PostProcessEffect>();
+	ComponentFactory::Register<ICamera, Camera>();
+	ComponentFactory::Register<ILight, Light>();
+	ComponentFactory::Register<IMeshRender, MeshRender>();
+	ComponentFactory::Register<IModelRender, ModelRender>();
+	ComponentFactory::Register<IPostProcessEffect, PostProcessEffect>();
 
 	return true;
 }
 
-void IRenderer::AddLight(Light* light) noexcept
+void IRenderer::AddLight(ILight* light) noexcept
 {
 	m_lightMap->AddLight(light);
 }
 
-void IRenderer::RemoveLight(Light* light) noexcept
+void IRenderer::RemoveLight(ILight* light) noexcept
 {
 	m_lightMap->RemoveLight(light);
 }
 
-void IRenderer::AddCamera(Camera* camera) noexcept
+void IRenderer::AddCamera(ICamera* camera) noexcept
 {
 	m_cameras.emplace_back(camera);
 
@@ -55,7 +55,7 @@ void IRenderer::AddCamera(Camera* camera) noexcept
 	}
 }
 
-void IRenderer::RemoveCamera(Camera* camera) noexcept
+void IRenderer::RemoveCamera(ICamera* camera) noexcept
 {
 	std::erase(m_cameras, camera);
 
@@ -72,27 +72,27 @@ void IRenderer::RemoveCamera(Camera* camera) noexcept
 	}
 }
 
-Camera* IRenderer::GetMainCamera() const noexcept
+ICamera* IRenderer::GetMainCamera() const noexcept
 {
 	return m_mainCamera;
 }
 
-void IRenderer::AddRenderObject(RenderObject* rederObject) noexcept
+void IRenderer::AddRenderObject(IRenderObject* rederObject) noexcept
 {
 	m_renderObjects.emplace_back(rederObject);
 }
 
-void IRenderer::RemoveRenderObject(RenderObject* rederObject) noexcept
+void IRenderer::RemoveRenderObject(IRenderObject* rederObject) noexcept
 {
 	std::erase(m_renderObjects, rederObject);
 }
 
-void IRenderer::RegisterPostProcess(PostProcessEffect* postProcess) noexcept
+void IRenderer::RegisterPostProcess(IPostProcessEffect* postProcess) noexcept
 {
 	m_postProcessEffect = postProcess;
 }
 
-void IRenderer::UnRegisterPostProcess(PostProcessEffect* postProcess) noexcept
+void IRenderer::UnRegisterPostProcess(IPostProcessEffect* postProcess) noexcept
 {
 	if (m_postProcessEffect == postProcess)
 	{
@@ -100,12 +100,12 @@ void IRenderer::UnRegisterPostProcess(PostProcessEffect* postProcess) noexcept
 	}
 }
 
-PostProcessEffect* IRenderer::GetPostProcess() noexcept
+IPostProcessEffect* IRenderer::GetPostProcess() noexcept
 {
 	return m_postProcessEffect;
 }
 
 bool IRenderer::HasPostProcessSetting() noexcept
 {
-	return !!m_postProcessEffect && m_postProcessEffect->GetActive() && m_postProcessEffect->HasPostEffect();
+	return !!m_postProcessEffect && m_postProcessEffect->GetActive() && !m_postProcessEffect->GetAllPostEffect().empty();
 }

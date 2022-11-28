@@ -2,13 +2,13 @@
 * @file    DefaultLightMap.cpp
 * @brief
 *
-* @date	   2022/09/19 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 
 #include "DefaultLightMap.h"
-#include "SubSystem/Scene/Component/Components/Light.h"
-#include "SubSystem/Scene/Component/Components/Camera.h"
+#include "SubSystem/Scene/Component/ILight.h"
+#include "SubSystem/Scene/Component/ICamera.h"
 
 void DefaultLightMap::Initialize()
 {
@@ -17,7 +17,7 @@ void DefaultLightMap::Initialize()
 	m_constantBuffer.Create(sizeof(ConstantBufferLight));
 }
 
-void DefaultLightMap::Update(Camera* mainCamera)
+void DefaultLightMap::Update(ICamera* mainCamera)
 {
 	// pre update
 	ConstantBufferLight buffer = CreateConstantBufferLight(mainCamera);
@@ -29,7 +29,7 @@ void DefaultLightMap::Update(Camera* mainCamera)
 	m_constantBuffer.VSSet(1);
 }
 
-DefaultLightMap::ConstantBufferLight DefaultLightMap::CreateConstantBufferLight(const Camera* mainCamera) const noexcept
+DefaultLightMap::ConstantBufferLight DefaultLightMap::CreateConstantBufferLight(const ICamera* mainCamera) const noexcept
 {
 	ConstantBufferLight buffer = {};
 

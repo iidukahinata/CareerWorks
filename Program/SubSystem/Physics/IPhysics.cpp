@@ -1,19 +1,19 @@
 /**
- * @file	Physics.cpp
+ * @file	IPhysics.cpp
  * @brief
  *
- * @date	2022/11/06 2022年度初版
+ * @date	2022/11/28 2022年度初版
  */
 
 
 #include "IPhysics.h"
 
-void IPhysics::RegisterRigidBody(RigidBody* rigidBody)
+void IPhysics::RegisterRigidBody(IRigidBody* rigidBody)
 {
 	m_rigidBodys.emplace_back(rigidBody);
 }
 
-void IPhysics::UnRegisterRigidBody(RigidBody* rigidBody)
+void IPhysics::UnRegisterRigidBody(IRigidBody* rigidBody)
 {
 	std::erase(m_rigidBodys, rigidBody);
 }

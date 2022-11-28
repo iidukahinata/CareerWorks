@@ -2,7 +2,7 @@
 * @file    RenderingThread.h
 * @brief
 *
-* @date	   2022/11/01 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
@@ -68,7 +68,7 @@ void RegisterRenderCommand(Func&& task) noexcept
 class RenderingThread : public IThread
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(RenderingThread)
+	SUB_CLASS(RenderingThread, IThread)
 public:
 
 	void Run() override;

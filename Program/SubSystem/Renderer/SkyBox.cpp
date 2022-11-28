@@ -2,16 +2,15 @@
 * @file	   SkyBox.cpp
 * @brief
 *
-* @date	   2022/10/28 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 
 #include "SkyBox.h"
-#include "IRenderer.h"
 #include "Geometry/Cube.h"
 #include "Geometry/Vertex.h"
 #include "GraphicsAPI/D3D12/D3D12GraphicsDevice.h"
-#include "SubSystem/Scene/Component/Components/Camera.h"
+#include "SubSystem/Scene/Component/ICamera.h"
 #include "SubSystem/Resource/Resources/3DModel/Material.h"
 
 void SkyBox::Initialize() noexcept
@@ -22,7 +21,7 @@ void SkyBox::Initialize() noexcept
 	ASSERT(m_constantBufferMatrix.Create(sizeof(ConstantBufferMatrix)));
 }
 
-void SkyBox::Render(Camera* mainCamera) noexcept
+void SkyBox::Render(ICamera* mainCamera) noexcept
 {
 	if (!m_material)
 	{

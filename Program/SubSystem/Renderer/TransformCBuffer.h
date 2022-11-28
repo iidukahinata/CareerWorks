@@ -2,21 +2,21 @@
 * @file	   TransformCBuffer.h
 * @brief
 *
-* @date	   2022/11/02 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
 
 #include "GraphicsAPI/D3D12/D3D12ConstantBuffer.h"
 
-class Camera;
+class ICamera;
 
 class TransformCBuffer
 {
 	COMPLETED_DEVELOPMENT()
 public:
 
-	void Update(Camera* mainCamera) noexcept;
+	void Update(ICamera* mainCamera) noexcept;
 	void Update(DirectX::XMMATRIX view, DirectX::XMMATRIX projection) noexcept;
 
 	void Bind(void* matrixBuffer, const DirectX::XMMATRIX& world) noexcept;

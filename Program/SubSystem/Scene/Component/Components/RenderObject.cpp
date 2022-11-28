@@ -2,7 +2,7 @@
 * @file    RenderObject.cpp
 * @brief
 *
-* @date	   2022/11/04 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 
@@ -10,71 +10,7 @@
 #include "SubSystem/Renderer/IRenderer.h"
 #include "SubSystem/Thread/RenderingThread/RenderingThread.h"
 
-void RenderObject::OnInitialize()
-{
-	m_renderer = GetContext()->GetSubsystem<IRenderer>();
-	ASSERT(m_renderer);
-
-	m_constantBufferMatrix.Create(sizeof(ConstantBufferMatrix));
-}
-
-void RenderObject::OnRegister()
-{
-	IComponent::OnRegister();
-
-	if (GetActive())
-	{
-		RegisterToRenderer();
-	}
-}
-
-void RenderObject::OnUnRegister()
-{
-	IComponent::OnUnRegister();
-
-	if (GetActive())
-	{
-		UnRegisterFromRenderer();
-	}
-}
-
-void RenderObject::OnRemove()
-{
-	if (m_isRegister)
-	{
-		UnRegisterFromRenderer();
-
-		m_renderCommandFance.BegineFrame();
-	}
-
-	IComponent::OnRemove();
-}
-
-void RenderObject::SetActive(bool active)
-{
-	if (GetActive() == active)
-	{
-		return;
-	}
-
-	IComponent::SetActive(active);
-
-	if (active)
-	{
-		RegisterToRenderer();
-	}
-	else
-	{
-		UnRegisterFromRenderer();
-	}
-}
-
-bool RenderObject::Erasable()
-{
-	return m_renderCommandFance.IsSingle();
-}
-
-void RenderObject::RegisterToRenderer() noexcept
+void RenderObject::RegisterToRenderer(IRenderObject* renderObject) noexcept
 {
 	if (m_isRegister)
 	{
@@ -85,15 +21,15 @@ void RenderObject::RegisterToRenderer() noexcept
 
 	if (IsInRenderingThread())
 	{
-		m_renderer->AddRenderObject(this);
+		m_renderer->AddRenderObject(renderObject);
 	}
 	else
 	{
-		RegisterRenderCommand([this] { m_renderer->AddRenderObject(this); });
+		RegisterRenderCommand([this, renderObject] { m_renderer->AddRenderObject(renderObject); });
 	}
 }
 
-void RenderObject::UnRegisterFromRenderer() noexcept
+void RenderObject::UnRegisterFromRenderer(IRenderObject* renderObject) noexcept
 {
 	if (!m_isRegister)
 	{
@@ -104,10 +40,10 @@ void RenderObject::UnRegisterFromRenderer() noexcept
 
 	if (IsInRenderingThread())
 	{
-		m_renderer->RemoveRenderObject(this);
+		m_renderer->RemoveRenderObject(renderObject);
 	}
 	else
 	{
-		RegisterRenderCommand([this] { m_renderer->RemoveRenderObject(this); });
+		RegisterRenderCommand([this, renderObject] { m_renderer->RemoveRenderObject(renderObject); });
 	}
 }

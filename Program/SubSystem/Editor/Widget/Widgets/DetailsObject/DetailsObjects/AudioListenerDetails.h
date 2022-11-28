@@ -2,14 +2,14 @@
 * @file	   AudioListenerDetails.h
 * @brief
 *
-* @date	   2022/10/27 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
 
 #include "../ComponentDetails.h"
 
-class AudioListener;
+class IAudioListener;
 
 class AudioListenerDetails : public ComponentDetails
 {
@@ -21,5 +21,5 @@ public:
 
 private:
 
-	AudioListener* m_audioListener = nullptr;
+	IAudioListener* m_audioListener = nullptr;
 };

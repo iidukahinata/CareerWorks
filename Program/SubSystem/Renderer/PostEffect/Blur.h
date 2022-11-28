@@ -2,7 +2,7 @@
 * @file    Blur.h
 * @brief
 *
-* @date	   2022/11/10 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
@@ -18,7 +18,7 @@
 class Blur : public IPostEffect
 {
 	IN_DEVELOPMENT()
-	SUB_CLASS(Blur)
+	SUB_CLASS(Blur, IPostEffect)
 public:
 
 	void Serialized(FileStream* file) const override;

@@ -2,7 +2,7 @@
 * @file    GameObject.cpp
 * @brief
 *
-* @date	   2022/11/27 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 
@@ -35,7 +35,7 @@ void GameObject::Serialized(FileStream* file) const noexcept
 	{
 		const auto& component = componentInfo.second;
 
-		auto componentName = component->GetTypeData().Name;
+		auto componentName = component->GetSuperTypeData().Name;
 		file->Write(componentName);
 
 		component->Serialized(file);

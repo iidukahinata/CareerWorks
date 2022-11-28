@@ -2,7 +2,7 @@
 * @file  Macro.h
 * @brief 共通的な処理をまとめている
 *
-* @date	 2022/08/02 2022年度初版
+* @date	 2022/11/28 2022年度初版
 */
 #pragma once
 
@@ -48,22 +48,30 @@ CLASS& operator=(const CLASS&) = delete;
 public:																		  \
 static INLINE ClassTypeData TypeData = ClassTypeData(#CLASS, GET_HASH(CLASS));
 
-#define SUPER_CLASS(CLASS)						\
-public:											\
-CLASS_DATA(CLASS)								\
-virtual const ClassTypeData& GetTypeData() const\
-{												\
-	return TypeData;							\
-}												\
-const std::type_info& TypeInfo() noexcept		\
-{												\
-	return typeid(*this);						\
+#define SUPER_CLASS(CLASS)							 \
+public:												 \
+CLASS_DATA(CLASS)									 \
+virtual const ClassTypeData& GetTypeData() const	 \
+{													 \
+	return TypeData;								 \
+}													 \
+const std::type_info& TypeInfo() noexcept			 \
+{													 \
+	return typeid(*this);							 \
+}													 \
+virtual const ClassTypeData& GetSuperTypeData() const\
+{													 \
+	return TypeData;								 \
 }
 
-#define SUB_CLASS(CLASS)								 \
-public:													 \
-CLASS_DATA(CLASS)										 \
-virtual const ClassTypeData& GetTypeData() const override\
-{														 \
-	return TypeData;									 \
+#define SUB_CLASS(CLASS, SUPER)								  \
+public:														  \
+CLASS_DATA(CLASS)											  \
+virtual const ClassTypeData& GetTypeData() const override	  \
+{															  \
+	return TypeData;										  \
+}															  \
+virtual const ClassTypeData& GetSuperTypeData() const override\
+{															  \
+	return SUPER::TypeData;									  \
 }

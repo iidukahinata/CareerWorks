@@ -2,20 +2,20 @@
 * @file	   ScriptDetails.cpp
 * @brief
 *
-* @date	   2022/11/16 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 #include "ScriptDetails.h"
 #include "SubSystem/Scene/World.h"
 #include "SubSystem/Editor/DragDrop.h"
 #include "SubSystem/Resource/ResourceManager.h"
-#include "SubSystem/Scene/Component/Components/Script.h"
+#include "SubSystem/Scene/Component/IScript.h"
 #include "SubSystem/Resource/Resources/Script/ScriptInstance.h"
 
 ScriptDetails::ScriptDetails(DetailsWidget* detailsWidget, IComponent* component) :
 	ComponentDetails(detailsWidget)
 {
-	m_script = dynamic_cast<Script*>(component);
+	m_script = dynamic_cast<IScript*>(component);
 	ASSERT(m_script);
 }
 

@@ -2,7 +2,7 @@
 * @file    Light.cpp
 * @brief
 *
-* @date	   2022/11/04 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 
@@ -82,7 +82,7 @@ bool Light::Erasable()
 	return m_renderCommandFance.IsSingle();
 }
 
-void Light::SetLightType(LightType lightType) noexcept
+void Light::SetLightType(LightType lightType)
 {
 	if (IsInRenderingThread())
 	{
@@ -94,12 +94,12 @@ void Light::SetLightType(LightType lightType) noexcept
 	}
 }
 
-LightType Light::GetLightType() const noexcept
+LightType Light::GetLightType() const
 {
 	return m_lightType;
 }
 
-void Light::SetColor(const Math::Vector4& color) noexcept
+void Light::SetColor(const Math::Vector4& color)
 {
 	if (IsInRenderingThread())
 	{
@@ -111,12 +111,12 @@ void Light::SetColor(const Math::Vector4& color) noexcept
 	}
 }
 
-const Math::Vector4& Light::GetColor() const noexcept
+const Math::Vector4& Light::GetColor() const
 {
 	return m_color;
 }
 
-void Light::SetIntensity(float intensity) noexcept
+void Light::SetIntensity(float intensity)
 {
 	if (IsInRenderingThread())
 	{
@@ -128,12 +128,12 @@ void Light::SetIntensity(float intensity) noexcept
 	}
 }
 
-float Light::GetIntensity() const noexcept
+float Light::GetIntensity() const
 {
 	return m_intensity;
 }
 
-void Light::SetInfluenceRange(float influenceRange) noexcept
+void Light::SetInfluenceRange(float influenceRange)
 {
 	if (IsInRenderingThread())
 	{
@@ -145,12 +145,12 @@ void Light::SetInfluenceRange(float influenceRange) noexcept
 	}
 }
 
-float Light::GetInfluenceRange() const noexcept
+float Light::GetInfluenceRange() const
 {
 	return m_influenceRange;
 }
 
-void Light::SetAngle(float angle) noexcept
+void Light::SetAngle(float angle)
 {
 	if (IsInRenderingThread())
 	{
@@ -162,7 +162,7 @@ void Light::SetAngle(float angle) noexcept
 	}
 }
 
-float Light::GetAngle() const noexcept
+float Light::GetAngle() const
 {
 	return m_angle;
 }

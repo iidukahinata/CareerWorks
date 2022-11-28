@@ -2,7 +2,7 @@
 * @file	   ModelRenderDetails.h
 * @brief
 *
-* @date	   2022/10/27 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
@@ -10,7 +10,7 @@
 #include "../ComponentDetails.h"
 
 class Model;
-class ModelRender;
+class IModelRender;
 
 class ModelRenderDetails : public ComponentDetails
 {
@@ -33,5 +33,5 @@ private:
 
 	GameObject* m_gameObject = nullptr;
 
-	ModelRender* m_modelRender = nullptr;
+	IModelRender* m_modelRender = nullptr;
 };

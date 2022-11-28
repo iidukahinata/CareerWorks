@@ -2,7 +2,7 @@
 * @file    World.h
 * @brief
 *
-* @date	   2022/11/04 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
@@ -27,7 +27,7 @@ class Scene;
 class World : public ISubsystem
 {
 	WAIT_FOR_DEVELOPMENT("現在シーンの再ロードの申請時の処理はまだない && Play Stop 後のリソースアクセス等は仕様が決まり次第作成")
-	SUB_CLASS(World)
+	SUB_CLASS(World, ISubsystem)
 public:
 
 	bool Initialize() override;

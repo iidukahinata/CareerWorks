@@ -2,7 +2,7 @@
  * @file	PhysX.h
  * @brief
  *
- * @date	2022/11/27 2022年度初版
+ * @date	2022/11/28 2022年度初版
  */
 #pragma once
 
@@ -14,7 +14,7 @@
 class PhysX : public IPhysics, public physx::PxSimulationEventCallback
 {
     COMPLETED_DEVELOPMENT()
-    SUB_CLASS(PhysX)
+    SUB_CLASS(PhysX, IPhysics)
 public:
 
     bool Initialize() override;
@@ -24,8 +24,8 @@ public:
     void ReflectUpdate() noexcept;
 
     /** RigidBody メソッド */
-    void RegisterRigidBody(RigidBody* rigidBody) override;
-    void UnRegisterRigidBody(RigidBody* rigidBody) override;
+    void RegisterRigidBody(IRigidBody* rigidBody) override;
+    void UnRegisterRigidBody(IRigidBody* rigidBody) override;
 
     /** Gravity メソッド */
     void SetGravity(const Math::Vector3& gravity) override;

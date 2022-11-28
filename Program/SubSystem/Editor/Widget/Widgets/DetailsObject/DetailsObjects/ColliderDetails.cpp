@@ -2,17 +2,17 @@
 * @file	   ColliderDetails.cpp
 * @brief
 *
-* @date	   2022/11/08 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 
 #include "ColliderDetails.h"
-#include "SubSystem/Scene/Component/Components/Collider.h"
+#include "SubSystem/Scene/Component/ICollider.h"
 
 ColliderDetails::ColliderDetails(DetailsWidget* detailsWidget, IComponent* component) :
 	ComponentDetails(detailsWidget)
 {
-	m_collider = dynamic_cast<Collider*>(component);
+	m_collider = dynamic_cast<ICollider*>(component);
 	ASSERT(m_collider);
 }
 

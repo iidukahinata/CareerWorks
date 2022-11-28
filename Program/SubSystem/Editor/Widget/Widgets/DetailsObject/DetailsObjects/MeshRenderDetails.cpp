@@ -2,7 +2,7 @@
 * @file	   MeshRenderDetails.cpp
 * @brief
 *
-* @date	   2022/11/04 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 
@@ -10,12 +10,12 @@
 #include "SubSystem/Scene/GameObject.h"
 #include "SubSystem/Resource/Resources/3DModel/Mesh.h"
 #include "SubSystem/Resource/Resources/3DModel/Material.h"
-#include "SubSystem/Scene/Component/Components/RenderObject.h"
+#include "SubSystem/Scene/Component/IRenderObject.h"
 
 MeshRenderDetails::MeshRenderDetails(DetailsWidget* detailsWidget, IComponent* component) :
 	ComponentDetails(detailsWidget)
 {
-	m_meshRender = dynamic_cast<MeshRender*>(component);
+	m_meshRender = dynamic_cast<IMeshRender*>(component);
 	ASSERT(m_meshRender);
 
 	m_gameObject = m_meshRender->GetOwner();

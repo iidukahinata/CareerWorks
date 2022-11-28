@@ -2,7 +2,7 @@
 * @file    AudioListener.cpp
 * @brief
 *
-* @date	   2022/10/02 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 
@@ -29,12 +29,12 @@ void AudioListener::OnUnRegister()
 	UnRegisterFromAudioSystem();
 }
 
-void AudioListener::SetVelocity(const Math::Vector3& velocity) noexcept
+void AudioListener::SetVelocity(const Math::Vector3& velocity)
 {
 	m_velocity = velocity;
 }
 
-const Math::Vector3& AudioListener::GetVelocity() const noexcept
+const Math::Vector3& AudioListener::GetVelocity() const
 {
 	return m_velocity;
 }

@@ -2,14 +2,14 @@
 * @file	   ColliderDetails.h
 * @brief
 *
-* @date	   2022/11/08 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
 
 #include "../ComponentDetails.h"
 
-class Collider;
+class ICollider;
 
 class ColliderDetails : public ComponentDetails
 {
@@ -21,5 +21,5 @@ public:
 
 private:
 
-	Collider* m_collider = nullptr;
+	ICollider* m_collider = nullptr;
 };

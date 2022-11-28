@@ -2,19 +2,16 @@
 * @file	   SkyBox.h
 * @brief
 *
-* @date	   2022/10/28 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
 
-#include "GraphicsAPI/D3D12/D3D12Shader.h"
-#include "GraphicsAPI/D3D12/D3D12Sampler.h"
 #include "GraphicsAPI/D3D12/D3D12IndexBuffer.h"
 #include "GraphicsAPI/D3D12/D3D12VertexBuffer.h"
-#include "GraphicsAPI/D3D12/D3D12PipelineState.h"
 #include "GraphicsAPI/D3D12/D3D12ConstantBuffer.h"
 
-class Camera;
+class ICamera;
 class Material;
 
 class SkyBox
@@ -23,7 +20,7 @@ public:
 
 	void Initialize() noexcept;
 
-	void Render(Camera* mainCamera) noexcept;
+	void Render(ICamera* mainCamera) noexcept;
 
 	void SetMaterial(Material* material) noexcept;
 	Material* GetMaterial() const noexcept;

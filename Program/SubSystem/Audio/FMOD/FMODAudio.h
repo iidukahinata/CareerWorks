@@ -2,7 +2,7 @@
 * @file    FMODAudio.h
 * @brief
 *
-* @date	   2022/09/06 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
@@ -17,7 +17,7 @@ namespace FMOD
 class FMODAudio : public IAudio
 {
 	COMPLETED_DEVELOPMENT()
-	SUB_CLASS(FMODAudio)
+	SUB_CLASS(FMODAudio, IAudio)
 public:
 
 	bool Initialize() override;

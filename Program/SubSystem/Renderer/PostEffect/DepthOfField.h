@@ -2,7 +2,7 @@
 * @file    DepthOfField.h
 * @brief
 *
-* @date	   2022/10/29 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
@@ -18,7 +18,7 @@
 class DepthOfField : public IPostEffect
 {
 	IN_DEVELOPMENT()
-	SUB_CLASS(DepthOfField)
+	SUB_CLASS(DepthOfField, IPostEffect)
 public:
 
 	void Serialized(FileStream* file) const override;

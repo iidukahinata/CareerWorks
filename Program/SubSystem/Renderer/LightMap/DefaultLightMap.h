@@ -2,7 +2,7 @@
 * @file    DefaultLightMap.h
 * @brief
 *
-* @date	   2022/09/19 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 #pragma once
 
@@ -14,11 +14,11 @@
 
 class DefaultLightMap : public ILightMap
 {
-	SUB_CLASS(DefaultLightMap)
+	SUB_CLASS(DefaultLightMap, ILightMap)
 public:
 
 	void Initialize() override;
-	void Update(Camera* mainCamera) override;
+	void Update(ICamera* mainCamera) override;
 
 private:
 
@@ -62,8 +62,10 @@ private:
 		float spotLightCount;
 	};
 
+private:
+
 	/** LightListからGPU転送用データを作成し、戻り値として返します。*/
-	ConstantBufferLight CreateConstantBufferLight(const Camera* mainCamera) const noexcept;
+	ConstantBufferLight CreateConstantBufferLight(const ICamera* mainCamera) const noexcept;
 
 private:
 

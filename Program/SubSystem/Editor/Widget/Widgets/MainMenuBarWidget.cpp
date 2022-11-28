@@ -2,7 +2,7 @@
 * @file	   MainMenuBarWidget.cpp
 * @brief
 *
-* @date	   2022/10/21 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 
@@ -183,12 +183,12 @@ void MainMenuBarWidget::ShowNewSceneModal() noexcept
             {
                 auto camera = m_world->CreateGameObject(scene);
                 camera->SetName("Main Camera");
-                camera->AddComponent("Camera");
-                camera->AddComponent("AudioListener");
+                camera->AddComponent("ICamera");
+                camera->AddComponent("IAudioListener");
 
                 auto DirectionalLight = m_world->CreateGameObject(scene);
                 DirectionalLight->SetName("Directional Light");
-                DirectionalLight->AddComponent("Light");
+                DirectionalLight->AddComponent("ILight");
 
                 scene->Update();
 
@@ -302,7 +302,7 @@ void MainMenuBarWidget::ShowSubsystemSettings() noexcept
 {
     constexpr auto offsetPos = 130;
 
-    if (ImGui::CollapsingHeader("SubSystem", ImGuiTreeNodeFlags_DefaultOpen))
+    if (ImGui::CollapsingHeader("Subsystem", ImGuiTreeNodeFlags_DefaultOpen))
     {
         constexpr auto rendererTypeCombo = "Forward\0Deferred\0\0";
         constexpr auto inputTypeCombo = "Dirext\0\0";
