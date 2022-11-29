@@ -323,3 +323,8 @@ uint32_t AudioSpeaker::GetModeFromSettings() const noexcept
 
 	return mode;
 }
+
+void AudioSpeaker::GetUseResourcePaths(Vector<String>& resources)
+{
+	resources.emplace_back(m_audioClip->GetFilePath());
+}

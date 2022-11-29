@@ -122,6 +122,11 @@ Model* ModelRender::GetModel() const noexcept
 	return m_model;
 }
 
+void ModelRender::GetUseResourcePaths(Vector<String>& resources)
+{
+	resources.emplace_back(m_model->GetFilePath());
+}
+
 void ModelRender::PreRender()
 {
 	if (!m_model)

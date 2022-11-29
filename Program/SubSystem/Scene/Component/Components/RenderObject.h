@@ -75,6 +75,10 @@ public:
 	void SetModel(Model* model) noexcept;
 	Model* GetModel() const noexcept;
 
+public:
+
+	void GetUseResourcePaths(Vector<String>& resources) override;
+
 private:
 
 	Model* m_model = nullptr;
@@ -106,6 +110,10 @@ public:
 
 	void SetMesh(Mesh* mesh) noexcept;
 	Mesh* GetMesh() const noexcept;
+
+public:
+
+	void GetUseResourcePaths(Vector<String>& resources) override;
 
 private:
 

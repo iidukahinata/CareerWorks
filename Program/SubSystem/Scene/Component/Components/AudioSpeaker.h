@@ -93,6 +93,10 @@ private:
 	/** 登録された設定から音声 Mode を作成。*/
 	uint32_t GetModeFromSettings() const noexcept;
 
+public:
+
+	void GetUseResourcePaths(Vector<String>& resources) override;
+
 private:
 
 	// * 自身の移動速度をフレーム間差分から求めるため使用。2D の場合は未使用。

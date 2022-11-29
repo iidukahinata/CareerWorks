@@ -252,18 +252,19 @@ void Scene::UpdateResourceDataFile() noexcept
     refResourcePaths.clear();
     refResourcePaths.shrink_to_fit();
 
-    // Eidter 上では一つのレベルしかロードされないため
-    auto&& resources = m_resourceManager->GetResources();
-
-    // 自身を参照リソースに入れないため
-    refResourcePaths.reserve(resources.size() - 1);
-
-    for (const auto& resource : resources)
+    Vector<String> refResources;
+    for (auto& gameObject : m_gameObjects)
     {
-        if (resource == this)
-            continue;
+        for (auto& component : gameObject->GetAllComponent())
+        {
+            component.second->GetUseResourcePaths(refResources);
+        }
+    }
 
-        refResourcePaths.push_back(ResourcePath(resource->GetType(), resource->GetFilePath()));
+    for (auto& resource : refResources)
+    {
+        auto resourceData = m_resourceManager->GetResourceData(resource);
+        refResourcePaths.emplace_back(resourceData->m_resourcePath);
     }
 
     m_resourceManager->UpdateResourceData(resourceData);

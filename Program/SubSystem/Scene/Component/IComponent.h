@@ -84,6 +84,10 @@ public:
 
 public:
 
+	virtual void GetUseResourcePaths(Vector<String>& resources);
+
+public:
+
 	bool IsRegistered() const noexcept;
 	bool IsBeginPlay() const noexcept;
 

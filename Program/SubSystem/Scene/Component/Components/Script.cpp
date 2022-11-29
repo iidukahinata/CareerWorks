@@ -144,17 +144,6 @@ void Script::SetScript(ScriptInstance* scriptInstance)
 	}
 }
 
-void Script::FnishSetScript()
-{
-	// call init functions from component state
-	CallInitFunctions();
-
-	if (IsBeginPlay() && m_scriptInstance->HasTickFunction())
-	{
-		m_tickFunction.RegisterToTickManager();
-	}
-}
-
 ScriptInstance* Script::GetScript() const
 {
 	return m_scriptInstance;
@@ -164,6 +153,22 @@ void Script::NotifyHit(HitEventType type, IRigidBody* rigidBody)
 {
 	auto funcType = ScriptFuncType::OnCollisionEnter + type;
 	m_scriptInstance->CallFunction(this, static_cast<ScriptFuncType>(funcType), boost::python::ptr(rigidBody));
+}
+
+void Script::GetUseResourcePaths(Vector<String>& resources)
+{
+	resources.emplace_back(m_scriptInstance->GetFilePath());
+}
+
+void Script::FnishSetScript()
+{
+	// call init functions from component state
+	CallInitFunctions();
+
+	if (IsBeginPlay() && m_scriptInstance->HasTickFunction())
+	{
+		m_tickFunction.RegisterToTickManager();
+	}
 }
 
 void Script::CallInitFunctions()

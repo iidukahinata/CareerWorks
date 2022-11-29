@@ -143,6 +143,11 @@ void IComponent::AddTickPrerequisite(TickFunction* prerequisite) noexcept
 	m_tickFunction.AddPrerequisite(prerequisite);
 }
 
+void IComponent::GetUseResourcePaths(Vector<String>& resources)
+{
+
+}
+
 bool IComponent::IsRegistered() const noexcept
 {
 	return m_registered;

@@ -52,6 +52,10 @@ public:
 
 	void NotifyHit(HitEventType type, IRigidBody* rigidBody);
 
+public:
+
+	void GetUseResourcePaths(Vector<String>& resources) override;
+
 private:
 
 	void FnishSetScript();

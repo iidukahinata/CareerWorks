@@ -27,6 +27,7 @@ void DefaultLightMap::Update(ICamera* mainCamera)
 
 	// set buffer
 	m_constantBuffer.VSSet(1);
+	m_constantBuffer.PSSet(1);
 }
 
 DefaultLightMap::ConstantBufferLight DefaultLightMap::CreateConstantBufferLight(const ICamera* mainCamera) const noexcept

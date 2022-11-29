@@ -73,7 +73,7 @@ void Material::Render() noexcept
 	m_pipeline.Set();
 
 	// Set ConstantBuffer
-	m_constantBufferMaterial.VSSet(2);
+	m_constantBufferMaterial.PSSet(2);
 
 	// Set Sampler
 	for (auto& sampler : m_samplers)

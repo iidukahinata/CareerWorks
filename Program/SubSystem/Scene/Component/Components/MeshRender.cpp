@@ -10,6 +10,7 @@
 #include "SubSystem/Renderer/IRenderer.h"
 #include "SubSystem/Resource/ResourceManager.h"
 #include "SubSystem/Resource/Resources/3DModel/Mesh.h"
+#include "SubSystem/Resource/Resources/3DModel/Material.h"
 
 void MeshRender::Serialized(FileStream* file) const
 {
@@ -119,6 +120,11 @@ void MeshRender::SetMesh(Mesh* mesh) noexcept
 Mesh* MeshRender::GetMesh() const noexcept
 {
 	return m_mesh;
+}
+
+void MeshRender::GetUseResourcePaths(Vector<String>& resources)
+{
+	resources.emplace_back(m_mesh->GetFilePath());
 }
 
 void MeshRender::PreRender()

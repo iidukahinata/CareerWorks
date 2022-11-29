@@ -195,7 +195,7 @@ void MaterialDetails::ShowTextureList(Material* material) noexcept
 		{
 			if (auto catchTexture = LoadResource<Texture>(resourceData))
 			{
-				RegisterEditorCommand([material, pramName](auto data) { material->SetTexture(pramName, data); }, catchTexture, texture);
+				RegisterEditorCommand([material, pramName](auto data) { material->SetTexture(pramName, data, true); }, catchTexture, texture);
 			}
 		}
 
@@ -243,7 +243,7 @@ bool MaterialDetails::DragDropTexture(Material* material, Texture* texture, Stri
 	{
 		if (auto catchTexture = CatchDragObject<Texture>())
 		{
-			RegisterEditorCommand([material, pramName](auto data) { material->SetTexture(pramName, data); }, catchTexture, texture);
+			RegisterEditorCommand([material, pramName](auto data) { material->SetTexture(pramName, data, true); }, catchTexture, texture);
 			result = true;
 		}
 	}
