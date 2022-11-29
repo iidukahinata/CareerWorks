@@ -31804,3 +31804,5 @@ FodyWeavers.xsd
 /Data/Resource/Scene/game_scene.scene
 /Data/Resource/Script/MonoBehaviour.py
 /Data/asset/Standard/Script/MonoBehaviour.asset
+/Data/asset/Material/Test.asset
+/Data/Resource/Material/Test.material

@@ -4,6 +4,8 @@ import MonoBehaviour
 class testScript(MonoBehaviour.MonoBehaviour) :
 
     def Start(self) :
+        self.camera = self.gameobject.GetCamera()
+        Engine.DebugLog(self.camera)
         return
     
     def Update(self, deltaTime) :
