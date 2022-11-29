@@ -7,15 +7,15 @@
 #pragma once
 
 
-class RigidBody;
+class IRigidBody;
 
 struct HitPairInfo
 {
-	RigidBody* rigidBodyA;
-	RigidBody* rigidBodyB;
+	IRigidBody* rigidBodyA;
+	IRigidBody* rigidBodyB;
 
 	HitPairInfo() = default;
-	HitPairInfo(RigidBody* bodyA, RigidBody* bodyB) : rigidBodyA(bodyA), rigidBodyB(bodyB)
+	HitPairInfo(IRigidBody* bodyA, IRigidBody* bodyB) : rigidBodyA(bodyA), rigidBodyB(bodyB)
 	{
 
 	}
@@ -27,7 +27,7 @@ class CollisionEnterEvent : public IEvent
 	SUB_CLASS(CollisionEnterEvent, IEvent)
 public:
 
-	CollisionEnterEvent(RigidBody* rigidBodyA, RigidBody* rigidBodyB);
+	CollisionEnterEvent(IRigidBody* rigidBodyA, IRigidBody* rigidBodyB);
 	std::any GetData() override;
 
 private:
@@ -42,7 +42,7 @@ class CollisionStayEvent : public IEvent
 	SUB_CLASS(CollisionStayEvent, IEvent)
 public:
 
-	CollisionStayEvent(RigidBody* rigidBodyA, RigidBody* rigidBodyB);
+	CollisionStayEvent(IRigidBody* rigidBodyA, IRigidBody* rigidBodyB);
 	std::any GetData() override;
 
 private:
@@ -57,7 +57,7 @@ class CollisionExitEvent : public IEvent
 	SUB_CLASS(CollisionExitEvent, IEvent)
 public:
 
-	CollisionExitEvent(RigidBody* rigidBodyA, RigidBody* rigidBodyB);
+	CollisionExitEvent(IRigidBody* rigidBodyA, IRigidBody* rigidBodyB);
 	std::any GetData() override;
 
 private:
@@ -72,7 +72,7 @@ class TriggerEnterEvent : public IEvent
 	SUB_CLASS(TriggerEnterEvent, IEvent)
 public:
 
-	TriggerEnterEvent(RigidBody* rigidBodyA, RigidBody* rigidBodyB);
+	TriggerEnterEvent(IRigidBody* rigidBodyA, IRigidBody* rigidBodyB);
 	std::any GetData() override;
 
 private:
@@ -87,7 +87,7 @@ class TriggerStayEvent : public IEvent
 	SUB_CLASS(TriggerStayEvent, IEvent)
 public:
 
-	TriggerStayEvent(RigidBody* rigidBodyA, RigidBody* rigidBodyB);
+	TriggerStayEvent(IRigidBody* rigidBodyA, IRigidBody* rigidBodyB);
 	std::any GetData() override;
 
 private:
@@ -102,7 +102,7 @@ class TriggerExitEvent : public IEvent
 	SUB_CLASS(TriggerExitEvent, IEvent)
 public:
 
-	TriggerExitEvent(RigidBody* rigidBodyA, RigidBody* rigidBodyB);
+	TriggerExitEvent(IRigidBody* rigidBodyA, IRigidBody* rigidBodyB);
 	std::any GetData() override;
 
 private:

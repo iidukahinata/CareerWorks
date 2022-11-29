@@ -8,7 +8,7 @@
 
 #include "PhysicsEvents.h"
 
-CollisionEnterEvent::CollisionEnterEvent(RigidBody* rigidBodyA, RigidBody* rigidBodyB) : m_hitPair(rigidBodyA, rigidBodyB)
+CollisionEnterEvent::CollisionEnterEvent(IRigidBody* rigidBodyA, IRigidBody* rigidBodyB) : m_hitPair(rigidBodyA, rigidBodyB)
 {
 }
 
@@ -17,7 +17,7 @@ std::any CollisionEnterEvent::GetData()
 	return m_hitPair;
 }
 
-CollisionStayEvent::CollisionStayEvent(RigidBody* rigidBodyA, RigidBody* rigidBodyB) : m_hitPair(rigidBodyA, rigidBodyB)
+CollisionStayEvent::CollisionStayEvent(IRigidBody* rigidBodyA, IRigidBody* rigidBodyB) : m_hitPair(rigidBodyA, rigidBodyB)
 {
 }
 
@@ -26,7 +26,7 @@ std::any CollisionStayEvent::GetData()
 	return m_hitPair;
 }
 
-CollisionExitEvent::CollisionExitEvent(RigidBody* rigidBodyA, RigidBody* rigidBodyB) : m_hitPair(rigidBodyA, rigidBodyB)
+CollisionExitEvent::CollisionExitEvent(IRigidBody* rigidBodyA, IRigidBody* rigidBodyB) : m_hitPair(rigidBodyA, rigidBodyB)
 {
 }
 
@@ -35,7 +35,7 @@ std::any CollisionExitEvent::GetData()
 	return m_hitPair;
 }
 
-TriggerEnterEvent::TriggerEnterEvent(RigidBody* rigidBodyA, RigidBody* rigidBodyB) : m_hitPair(rigidBodyA, rigidBodyB)
+TriggerEnterEvent::TriggerEnterEvent(IRigidBody* rigidBodyA, IRigidBody* rigidBodyB) : m_hitPair(rigidBodyA, rigidBodyB)
 {
 }
 
@@ -44,7 +44,7 @@ std::any TriggerEnterEvent::GetData()
 	return m_hitPair;
 }
 
-TriggerStayEvent::TriggerStayEvent(RigidBody* rigidBodyA, RigidBody* rigidBodyB) : m_hitPair(rigidBodyA, rigidBodyB)
+TriggerStayEvent::TriggerStayEvent(IRigidBody* rigidBodyA, IRigidBody* rigidBodyB) : m_hitPair(rigidBodyA, rigidBodyB)
 {
 }
 
@@ -53,7 +53,7 @@ std::any TriggerStayEvent::GetData()
 	return m_hitPair;
 }
 
-TriggerExitEvent::TriggerExitEvent(RigidBody* rigidBodyA, RigidBody* rigidBodyB) : m_hitPair(rigidBodyA, rigidBodyB)
+TriggerExitEvent::TriggerExitEvent(IRigidBody* rigidBodyA, IRigidBody* rigidBodyB) : m_hitPair(rigidBodyA, rigidBodyB)
 {
 }
 

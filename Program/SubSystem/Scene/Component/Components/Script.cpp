@@ -9,6 +9,7 @@
 #include "Script.h"
 #include "SubSystem/Resource/ResourceManager.h"
 #include "SubSystem/Resource/Resources/Script/ScriptInstance.h"
+#include "SubSystem/Scene/Component/IRigidBody.h"
 
 void Script::Serialized(FileStream* file) const
 {
@@ -78,6 +79,11 @@ void Script::OnStart()
 		{
 			m_tickFunction.RegisterToTickManager();
 		}
+
+		if (!m_scriptInstance->IsRegisterEventFunction())
+		{
+			m_scriptInstance->RegisterEventFunctionList();
+		}
 	}
 }
 
@@ -93,6 +99,11 @@ void Script::OnStop()
 		{
 			m_tickFunction.UnRegisterFromTickManager();
 		}
+
+		if (m_scriptInstance->IsRegisterEventFunction())
+		{
+			m_scriptInstance->UnRegisterEventFunctionList();
+		}
 	}
 }
 
@@ -103,35 +114,42 @@ void Script::OnRemove()
 	if (m_scriptInstance)
 	{
 		m_scriptInstance->CallFunction(this, ScriptFuncType::Remove);
+
+		// destory this script instance
+		m_scriptInstance->UnRegisterScript(this);
 	}
 }
 
 void Script::Tick(double deltaTime)
 {
-	ASSERT(m_scriptInstance);
-	m_scriptInstance->CallTickFunction(this, deltaTime);
+	m_scriptInstance->CallFunction(this, ScriptFuncType::Update, deltaTime);
 }
 
 void Script::SetScript(ScriptInstance* scriptInstance)
 {
 	if (m_scriptInstance)
 	{
+		// destory this script instance
 		m_scriptInstance->UnRegisterScript(this);
 	}
 
 	m_scriptInstance = scriptInstance;
 
-	if (!m_scriptInstance)
+	if (scriptInstance)
 	{
-		return;
+		// create function list for this script instance.
+		m_scriptInstance->RegisterScript(this);
+
+		FnishSetScript();
 	}
+}
 
-	m_scriptInstance->RegisterScript(this);
-
-	// call functions from component state
+void Script::FnishSetScript()
+{
+	// call init functions from component state
 	CallInitFunctions();
 
-	if (m_scriptInstance->HasTickFunction() && IsBeginPlay())
+	if (IsBeginPlay() && m_scriptInstance->HasTickFunction())
 	{
 		m_tickFunction.RegisterToTickManager();
 	}
@@ -142,8 +160,16 @@ ScriptInstance* Script::GetScript() const
 	return m_scriptInstance;
 }
 
+void Script::NotifyHit(HitEventType type, IRigidBody* rigidBody)
+{
+	auto funcType = ScriptFuncType::OnCollisionEnter + type;
+	m_scriptInstance->CallFunction(this, static_cast<ScriptFuncType>(funcType), boost::python::ptr(rigidBody));
+}
+
 void Script::CallInitFunctions()
 {
+	ASSERT(m_scriptInstance);
+
 	m_scriptInstance->CallFunction(this, ScriptFuncType::Init);
 
 	if (IsRegistered())

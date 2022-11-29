@@ -2,16 +2,18 @@
 * @file    ScriptEngine.cpp
 * @brief
 *
-* @date	   2022/11/23 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 
 #include "ScriptEngine.h"
 #include "Module/ModuleHelper.h"
+#include "SubSystem/Scene/GameObject.h"
+#include "SubSystem/Scene/Factory/ComponentFactory.h"
+#include "SubSystem/Scene/Component/IRigidBody.h"
+#include "SubSystem/Scene/Component/Components/Script.h"
 #include "SubSystem/Resource/ResourceManager.h"
 #include "SubSystem/Resource/Resources/Script/ScriptInstance.h"
-#include "SubSystem/Scene/Factory/ComponentFactory.h"
-#include "SubSystem/Scene/Component/Components/Script.h"
 
 #define BOOST_PYTHON_STATIC_LIB
 #include <boost/python.hpp>
@@ -24,32 +26,43 @@ bool ScriptEngine::Initialize()
 	InitModule();
 	Py_Initialize();
 
+	SetupEventLisneterList();
+
 	// register component
-	ComponentFactory::Register<Script>();
+	ComponentFactory::Register<IScript, Script>();
 
 	return true;
 }
 
 void ScriptEngine::RebuildAllScript() noexcept
 {
-	try
+	auto resources = m_resourceManager->GetResourcesByType<ScriptInstance>();
+	for (const auto& resource : resources)
 	{
-		boost::python::object importlib = boost::python::import("importlib").attr("__dict__");
-		if (!importlib.contains("reload")) {
-			LOG_ERROR("not found reload() from importlib");
-			return;
-		}
+		auto scriptInstance = dynamic_cast<ScriptInstance*>(resource);
 
-		auto resources = m_resourceManager->GetResourcesByType<ScriptInstance>();
-		for (const auto& resource : resources)
+		scriptInstance->Reload();
+	}
+}
+
+void ScriptEngine::SetupEventLisneterList()
+{
+	auto notifyHit = [](HitEventType type, IRigidBody* target, IRigidBody* hitObject) {
+
+		if (auto component = target->GetOwner()->FindComponent(IScript::TypeData.Name))
 		{
-			auto script = dynamic_cast<ScriptInstance*>(resource);
-			importlib["reload"](boost::python::import(script->GetScriptName().c_str()));
-			script->Load(script->GetFilePath());
+			auto script = dynamic_cast<Script*>(component);
+			script->NotifyHit(type, hitObject);
 		}
-	}
-	catch (const std::exception&)
-	{
-		LOG_ERROR("Script Refresh Error");
-	}
+	};
+
+	// collision event
+	SetupHitEventLisneter<CollisionEnterEvent>(OnCollisionEnter, notifyHit, CollisionEnter);
+	SetupHitEventLisneter<CollisionStayEvent>(OnCollisionStay, notifyHit, CollisionStay);
+	SetupHitEventLisneter<CollisionExitEvent>(OnCollisionExit, notifyHit, CollisionExit);
+
+	// trigger event
+	SetupHitEventLisneter<TriggerEnterEvent>(OnTriggerEnter, notifyHit, TriggerEnter);
+	SetupHitEventLisneter<TriggerStayEvent>(OnTriggerStay, notifyHit, TriggerStay);
+	SetupHitEventLisneter<TriggerExitEvent>(OnTriggerExit, notifyHit, TriggerExit);
 }

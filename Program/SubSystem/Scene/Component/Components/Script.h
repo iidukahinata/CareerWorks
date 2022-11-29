@@ -11,6 +11,23 @@
 #include <boost/python/object_items.hpp>
 #include "../IScript.h"
 
+enum HitEventType
+{
+	CollisionEnter,
+
+	CollisionStay,
+
+	CollisionExit,
+
+	TriggerEnter,
+
+	TriggerStay,
+
+	TriggerExit,
+};
+
+class IRigidBody;
+
 class Script : public IScript
 {
 	COMPLETED_DEVELOPMENT()
@@ -33,7 +50,11 @@ public:
 	void SetScript(ScriptInstance* scriptInstance) override;
 	ScriptInstance* GetScript() const override;
 
+	void NotifyHit(HitEventType type, IRigidBody* rigidBody);
+
 private:
+
+	void FnishSetScript();
 
 	void CallInitFunctions();
 

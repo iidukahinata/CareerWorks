@@ -2,7 +2,7 @@
 * @file	   DetailsObjectFactory.cpp
 * @brief
 *
-* @date	   2022/11/08 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 
@@ -44,18 +44,19 @@ Vector<UniquePtr<DetailsObject>> DetailsObjectFactory::Create(DetailsWidget* det
 			continue;
 		}
 
-		switch (component.first)
+		const auto typeData = component.second->GetSuperTypeData();
+		switch (typeData.Hash)
 		{
-		case GET_HASH(Light)			: CREATE_DETAILS_OBJECT(LightDetails			, component.second.get()); break;
-		case GET_HASH(Camera)			: CREATE_DETAILS_OBJECT(CameraDetails			, component.second.get()); break;
-		case GET_HASH(MeshRender)		: CREATE_DETAILS_OBJECT(MeshRenderDetails		, component.second.get()); break;
-		case GET_HASH(ModelRender)		: CREATE_DETAILS_OBJECT(ModelRenderDetails		, component.second.get()); break;
-		case GET_HASH(PostProcessEffect): CREATE_DETAILS_OBJECT(PostProcessEffectDetails, component.second.get()); break;
-		case GET_HASH(AudioSpeaker)		: CREATE_DETAILS_OBJECT(AudioSpeakerDetails		, component.second.get()); break;
-		case GET_HASH(AudioListener)	: CREATE_DETAILS_OBJECT(AudioListenerDetails	, component.second.get()); break;
-		case GET_HASH(Collider)			: CREATE_DETAILS_OBJECT(ColliderDetails			, component.second.get()); break;
-		case GET_HASH(RigidBody)		: CREATE_DETAILS_OBJECT(RigidBodyDetails		, component.second.get()); break;
-		case GET_HASH(Script)			: CREATE_DETAILS_OBJECT(ScriptDetails			, component.second.get()); break;
+		case GET_HASH(ILight)			 : CREATE_DETAILS_OBJECT(LightDetails			 , component.second.get()); break;
+		case GET_HASH(ICamera)			 : CREATE_DETAILS_OBJECT(CameraDetails			 , component.second.get()); break;
+		case GET_HASH(IMeshRender)		 : CREATE_DETAILS_OBJECT(MeshRenderDetails		 , component.second.get()); break;
+		case GET_HASH(IModelRender)		 : CREATE_DETAILS_OBJECT(ModelRenderDetails		 , component.second.get()); break;
+		case GET_HASH(IPostProcessEffect): CREATE_DETAILS_OBJECT(PostProcessEffectDetails, component.second.get()); break;
+		case GET_HASH(IAudioSpeaker)	 : CREATE_DETAILS_OBJECT(AudioSpeakerDetails	 , component.second.get()); break;
+		case GET_HASH(IAudioListener)	 : CREATE_DETAILS_OBJECT(AudioListenerDetails	 , component.second.get()); break;
+		case GET_HASH(ICollider)		 : CREATE_DETAILS_OBJECT(ColliderDetails		 , component.second.get()); break;
+		case GET_HASH(IRigidBody)		 : CREATE_DETAILS_OBJECT(RigidBodyDetails		 , component.second.get()); break;
+		case GET_HASH(IScript)			 : CREATE_DETAILS_OBJECT(ScriptDetails			 , component.second.get()); break;
 		default: break;
 		}
 	}

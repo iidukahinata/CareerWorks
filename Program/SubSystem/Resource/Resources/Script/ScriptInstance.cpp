@@ -2,42 +2,36 @@
 * @file    ScriptInstance.cpp
 * @brief
 *
-* @date	   2022/11/20 2022年度初版
+* @date	   2022/11/28 2022年度初版
 */
 
 
 #include "ScriptInstance.h"
+#include "SubSystem/Scene/Component/IScript.h"
+#include "SubSystem/Scene/Component/IRigidBody.h"
 #include "SubSystem/Resource/Resources/Scene/Scene.h"
-#include "SubSystem/Scene/Component/Components/Script.h"
-#include "SubSystem/Scene/Component/Components/RigidBody.h"
 #include <boost/python.hpp>
 
 ScriptInstance* ScriptInstance::Create(StringView name) noexcept
 {
-    auto&& path = (SCRIPT_DIRECTORY + FileSystem::GetFilePath(name) + SCRIPT_EXTENSION);
+	auto&& path = (SCRIPT_DIRECTORY + FileSystem::GetFilePath(name) + SCRIPT_EXTENSION);
 
-    // create scene
-    if (const auto script = CreateResource<ScriptInstance>(path))
-    {
-        script->Update();
-        return script;
-    }
+	// create scene
+	if (const auto script = CreateResource<ScriptInstance>(path))
+	{
+		script->Update();
+		return script;
+	}
 
-    return nullptr;
+	return nullptr;
 }
 
 bool ScriptInstance::Load(StringView path)
 {
-    path = path.substr(0, path.find("."));
-    m_scriptName = FileSystem::GetFilePath(path);
+	path = path.substr(0, path.find("."));
+	m_scriptName = FileSystem::GetFilePath(path);
 
 	PostInit();
-
-	if (!m_scripts.empty())
-	{
-		// 関数の設定し直す必要がある
-		SetUpEventFunctionLisyt();
-	}
 
 	return true;
 }
@@ -47,72 +41,65 @@ void ScriptInstance::Update()
 	FileStream file(m_filePath, OpenMode::Txt_Mode);
 	ASSERT(file.IsOpen());
 
+	StringView path = m_filePath;
+
+	String classDef = "class ";
+	classDef += FileSystem::GetFilePath(path.substr(0, path.find(".")));
+	classDef += "(MonoBehaviour.MonoBehaviour) :\n";
+
 	Vector<String> initData = {
 		"import Engine\n",
+		"import MonoBehaviour\n",
 		"\n",
-		"def Start(this) :\n",
-		"    return\n",
+		classDef,
+		"\n"
+		"	def Start(self) :\n",
+		"		return\n",
 		"\n",
-		"def Update(this, deltaTime) :\n",
-		"    return"
+		"	def Update(self, deltaTime) :\n",
+		"		return"
 	};
 
 	file.Write(initData);
 }
 
-void ScriptInstance::RegisterScript(Script* script) noexcept
+void ScriptInstance::Reload() noexcept
+{
+	try
+	{
+		auto importlib  = boost::python::import("importlib");
+		auto reloadFunc = importlib.attr("reload");
+
+		reloadFunc(boost::python::import(m_scriptName.data()));
+
+		// get and init from new script data
+		PostInit();
+
+		m_eventListenerMap.clear();
+		m_classInstanceDataMap.clear();
+
+		// recreate all instance for attach new data
+		for (auto script : m_scripts)
+		{
+			CreateClassInstance(script);
+		}
+	}
+	catch (const boost::python::error_already_set&)
+	{
+		ErrorHandle();
+	}
+}
+
+void ScriptInstance::RegisterScript(IScript* script) noexcept
 {
 	m_scripts.emplace_back(script);
 
 	CreateClassInstance(script);
-
-	// 関数の設定し直す必要がある
-	SetUpEventFunctionLisyt();
 }
 
-void ScriptInstance::UnRegisterScript(Script* script) noexcept
+void ScriptInstance::UnRegisterScript(IScript* script) noexcept
 {
 	std::erase(m_scripts, script);
-
-	// 関数の設定し直す必要がある
-	SetUpEventFunctionLisyt();
-}
-
-void ScriptInstance::CallFunction(Script* script, ScriptFuncType type) noexcept
-{
-	if (!m_hasFunctionList[type])
-	{
-		return;
-	}
-
-	try
-	{
-		auto& instance = m_classInstanceDataMap[script];
-		auto& function = instance.m_functionMap[type];
-
-		function();
-	}
-	catch (const boost::python::error_already_set&)
-	{
-		ErrorHandle();
-	}
-}
-
-void ScriptInstance::CallTickFunction(Script* script, double deltaTime) noexcept
-{
-	ASSERT(m_hasFunctionList[ScriptFuncType::Update]);
-
-	try
-	{
-		auto& instance = m_classInstanceDataMap[script];
-		auto& function = instance.m_functionMap[ScriptFuncType::Update];
-
-		function(deltaTime);
-	}
-	catch (const boost::python::error_already_set&)
-	{
-		ErrorHandle();
-	}
 }
 
 bool ScriptInstance::HasTickFunction() const noexcept
@@ -120,9 +107,72 @@ bool ScriptInstance::HasTickFunction() const noexcept
 	return m_hasFunctionList[ScriptFuncType::Update];
 }
 
-const String& ScriptInstance::GetScriptName() const noexcept
+void ScriptInstance::RegisterEventFunctionList() noexcept
 {
-	return m_scriptName;
+	SetupEventFunction<ChangeSceneEvent, Scene*>(ScriptEventFuncType::OnChangeScene);
+	SetupEventFunction<LoadSceneCompleteEvent, Scene*>(ScriptEventFuncType::OnLoadSceneComplete);
+	SetupEventFunction<KeyPressedEvent , Button::KeyAndMouse>(ScriptEventFuncType::OnKeyPressed);
+	SetupEventFunction<KeyReleasedEvent, Button::KeyAndMouse>(ScriptEventFuncType::OnKeyReleased);
+
+	m_registerEventListener = true;
+}
+
+void ScriptInstance::UnRegisterEventFunctionList() noexcept
+{
+	for (auto& eventListener : m_eventListenerMap)
+	{
+		eventListener.second.UnRegisterFromEventManager();
+	}
+
+	m_registerEventListener = false;
+}
+
+bool ScriptInstance::IsRegisterEventFunction() const noexcept
+{
+	return m_registerEventListener;
+}
+
+void ScriptInstance::PostInit() noexcept
+{
+	m_scriptClass = CompileScript(m_scriptName);
+	if (m_scriptClass.is_none())
+	{
+		return;
+	}
+
+	// clear old data
+	m_hasFunctionList.fill(false);
+	m_hasEventFunctionList.fill(false);
+
+	try
+	{
+		auto classInfo = m_scriptClass.attr("__dict__");
+
+		// setup function
+		InitFunction("Init"			   , ScriptFuncType::Init			 , classInfo);
+		InitFunction("Register"		   , ScriptFuncType::Register		 , classInfo);
+		InitFunction("UnRegister"	   , ScriptFuncType::UnRegister		 , classInfo);
+		InitFunction("Start"		   , ScriptFuncType::Start			 , classInfo);
+		InitFunction("Stop"			   , ScriptFuncType::Stop			 , classInfo);
+		InitFunction("Remove"		   , ScriptFuncType::Remove			 , classInfo);
+		InitFunction("Update"		   , ScriptFuncType::Update			 , classInfo);
+		InitFunction("OnCollisionEnter", ScriptFuncType::OnCollisionEnter, classInfo);
+		InitFunction("OnCollisionStay" , ScriptFuncType::OnCollisionStay , classInfo);
+		InitFunction("OnCollisionExit" , ScriptFuncType::OnCollisionExit , classInfo);
+		InitFunction("OnTriggerEnter"  , ScriptFuncType::OnTriggerEnter  , classInfo);
+		InitFunction("OnTriggerStay"   , ScriptFuncType::OnTriggerStay   , classInfo);
+		InitFunction("OnTriggerExit"   , ScriptFuncType::OnTriggerExit   , classInfo);
+
+		// setup event function
+		InitEventFunction("OnKeyPressed"	   , ScriptEventFuncType::OnKeyPressed	     , classInfo);
+		InitEventFunction("OnKeyReleased"	   , ScriptEventFuncType::OnKeyReleased		 , classInfo);
+		InitEventFunction("OnChangeScene"	   , ScriptEventFuncType::OnChangeScene		 , classInfo);
+		InitEventFunction("OnLoadSceneComplete", ScriptEventFuncType::OnLoadSceneComplete, classInfo);
+	}
+	catch (const boost::python::error_already_set&)
+	{
+		ErrorHandle();
+	}
 }
 
 boost::python::object ScriptInstance::CompileScript(StringView name) noexcept
@@ -132,13 +182,13 @@ boost::python::object ScriptInstance::CompileScript(StringView name) noexcept
 		auto&& scriptmodule = boost::python::import(name.data());
 		if (scriptmodule.is_none())
 		{
-			LOG_ERROR("スクリプトモジュールのインポートに失敗");
+			LOG_ERROR("can't import script module");
 		}
 
-		auto&& classModule  = scriptmodule.attr(name.data());
+		auto&& classModule = scriptmodule.attr(name.data());
 		if (scriptmodule.is_none())
 		{
-			LOG_ERROR("スクリプトクラス取得に失敗");
+			LOG_ERROR("can't get script class");
 		}
 
 		return classModule;
@@ -152,42 +202,7 @@ boost::python::object ScriptInstance::CompileScript(StringView name) noexcept
 	}
 }
 
-void ScriptInstance::PostInit() noexcept
-{
-	m_scriptClass = CompileScript(m_scriptName);
-	if (m_scriptClass.is_none())
-	{
-		return;
-	}
-
-	auto classInfo = m_scriptClass.attr("__dict__");
-
-	// clear old data
-	m_hasFunctionList.fill(false);
-	m_hasEventFunctionList.fill(false);
-
-	// setup function
-	InitFunction("Init"		 , ScriptFuncType::Init		 , classInfo);
-	InitFunction("Register"	 , ScriptFuncType::Register  , classInfo);
-	InitFunction("UnRegister", ScriptFuncType::UnRegister, classInfo);
-	InitFunction("Start"	 , ScriptFuncType::Start	 , classInfo);
-	InitFunction("Stop"		 , ScriptFuncType::Stop		 , classInfo);
-	InitFunction("Remove"	 , ScriptFuncType::Remove	 , classInfo);
-	InitFunction("Update"	 , ScriptFuncType::Update	 , classInfo);
-
-	// setup event function
-	InitEventFunction("OnKeyPressed"	, ScriptEventFuncType::OnKeyPressed	   , classInfo);
-	InitEventFunction("OnKeyReleased"   , ScriptEventFuncType::OnKeyReleased   , classInfo);
-	InitEventFunction("OnCollisionEnter", ScriptEventFuncType::OnCollisionEnter, classInfo);
-	InitEventFunction("OnCollisionStay" , ScriptEventFuncType::OnCollisionStay , classInfo);
-	InitEventFunction("OnCollisionExit" , ScriptEventFuncType::OnCollisionExit , classInfo);
-	InitEventFunction("OnTriggerEnter"  , ScriptEventFuncType::OnTriggerEnter  , classInfo);
-	InitEventFunction("OnTriggerStay"   , ScriptEventFuncType::OnTriggerStay   , classInfo);
-	InitEventFunction("OnTriggerExit"   , ScriptEventFuncType::OnTriggerExit   , classInfo);
-	InitEventFunction("OnChangeScene"   , ScriptEventFuncType::OnChangeScene   , classInfo);
-}
-
-void ScriptInstance::CreateClassInstance(Script* script) noexcept
+void ScriptInstance::CreateClassInstance(IScript* script) noexcept
 {
 	try
 	{
@@ -226,7 +241,7 @@ void ScriptInstance::CreateClassInstance(Script* script) noexcept
 			m_classInstanceDataMap[script].m_eventFunctionMap[i] = newInstance.attr(funcName);
 		}
 	}
-	catch (const std::exception&)
+	catch (const boost::python::error_already_set&)
 	{
 		ErrorHandle();
 
@@ -234,41 +249,12 @@ void ScriptInstance::CreateClassInstance(Script* script) noexcept
 	}
 }
 
-void ScriptInstance::SetUpEventFunctionLisyt() noexcept
-{
-	SetUpEventFunction<KeyPressedEvent, Button::KeyAndMouse>(ScriptEventFuncType::OnKeyPressed);
-	SetUpEventFunction<KeyReleasedEvent, Button::KeyAndMouse>(ScriptEventFuncType::OnKeyReleased);
-	SetUpEventFunction<CollisionEnterEvent, RigidBody*>(ScriptEventFuncType::OnCollisionEnter);
-	SetUpEventFunction<CollisionStayEvent, RigidBody*>(ScriptEventFuncType::OnCollisionStay);
-	SetUpEventFunction<CollisionExitEvent, RigidBody*>(ScriptEventFuncType::OnCollisionExit);
-	SetUpEventFunction<TriggerEnterEvent, RigidBody*>(ScriptEventFuncType::OnTriggerEnter);
-	SetUpEventFunction<TriggerStayEvent, RigidBody*>(ScriptEventFuncType::OnTriggerStay);
-	SetUpEventFunction<TriggerExitEvent, RigidBody*>(ScriptEventFuncType::OnTriggerExit);
-	SetUpEventFunction<ChangeSceneEvent, Scene*>(ScriptEventFuncType::OnChangeScene);
-}
-
 void ScriptInstance::ErrorHandle() noexcept
 {
-	PyObject* type, *value, *traceback;
+	PyObject* type, * value, * traceback;
 	PyErr_Fetch(&type, &value, &traceback);
 
-	boost::python::handle<> hexc(type), hval(boost::python::allow_null(value)), htb(boost::python::allow_null(traceback));
-	boost::python::object tracebackObject(boost::python::import("traceback"));
-
-	boost::python::object formatted_list;
-	if (!traceback)
-	{
-		boost::python::object format_exception_only(tracebackObject.attr("format_exception_only"));
-		formatted_list = format_exception_only(hexc, hval);
-	}
-	else
-	{
-		boost::python::object format_exception(tracebackObject.attr("format_exception"));
-		formatted_list = format_exception(hexc, hval, htb);
-	}
-
-	boost::python::object formatted(boost::python::str("\n").join(formatted_list));
-	String errorMsg = boost::python::extract<String>(formatted);
+	String errorMsg = boost::python::extract<String>(value);
 
 	LOG_ERROR(errorMsg);
 }

@@ -55,18 +55,18 @@ void GameObjectDetails::ShowAddComponentWindow() noexcept
 
 		ImGui::BeginChild("##Components", ImVec2(180, 500));
 
-		auto typeList = ComponentFactory::GetAllComponentType();
-		for (auto type : typeList)
+		auto componentTypes = ComponentFactory::GetAllComponentType();
+		for (auto componentType : componentTypes)
 		{
-			if (!m_filter.PassFilter(type.data()))
+			if (!m_filter.PassFilter(componentType.data()))
 				continue;
 
-			if (m_gameObject->FindComponent(type))
+			if (m_gameObject->FindComponent(componentType))
 				continue;
 
-			if (ImGui::Button(type.data(), ImVec2(180, 20)))
+			if (ImGui::Button(componentType.data(), ImVec2(180, 20)))
 			{
-				m_gameObject->AddComponent(type);
+				m_gameObject->AddComponent(componentType);
 				m_detailsWidget->RequestUpdate();
 			}
 		}
