@@ -167,6 +167,21 @@ namespace Math
 			return *this;
 		}
 
+		Vector2 Lerp(const Vector2& V, float t) noexcept
+		{
+			return *this + ((V - *this) * t);
+		}
+
+		Vector2 Slerp(const Vector2& V, float t) noexcept
+		{
+			auto angle = this->Dot(V);
+
+			auto p0 = *this * sin(angle * (1.f - t));
+			auto p1 = V		* sin(angle * t);
+
+			return (p0 + p1) / sin(angle);
+		}
+
 		float Cross(const Vector2& V) const noexcept
 		{
 			float result;

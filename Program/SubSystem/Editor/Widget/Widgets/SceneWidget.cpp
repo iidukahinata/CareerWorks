@@ -23,6 +23,16 @@ void SceneWidget::PostInitialize()
 
 	m_resourceManager = GetContext()->GetSubsystem<ResourceManager>();
 	ASSERT(m_resourceManager);
+
+	m_eventListener.SetFunction([this](std::any data) {
+		m_allRootGameObjects.clear();
+		if(auto currentScene = m_world->GetCurrentScene())
+		{
+			currentScene->GetAllRootGameObjects(m_allRootGameObjects);
+		}
+	});
+
+	m_eventListener.RegisterToEventManager<UpdateSceneTreeEvent>();
 }
 
 void SceneWidget::Draw()
@@ -36,12 +46,10 @@ void SceneWidget::Draw()
 
 	if (auto currentScene = m_world->GetCurrentScene())
 	{
-		if (ImGui::CollapsingHeader(currentScene->GetAssetName().data(), ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_DefaultOpen))
+		if (ImGui::CollapsingHeader(currentScene->GetAssetName().data(), ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_DefaultOpen) && !EditorHelper::Get().IsChangePlayMode())
 		{
 			// show gameObjects
-			Vector<GameObject*> allRootGameObjects;
-			currentScene->GetAllRootGameObjects(allRootGameObjects);
-			for (const auto& rootGameObject : allRootGameObjects)
+			for (const auto& rootGameObject : m_allRootGameObjects)
 			{
 				AddGameObjectToTree(rootGameObject);
 			}
@@ -73,6 +81,13 @@ void SceneWidget::Draw()
 
 				m_selectGameObject = false;
 			}
+		}
+		else if(EditorHelper::Get().IsChangePlayMode())
+		{
+			// モード切り替え時の出力バグ回避のため
+			m_allRootGameObjects.clear();
+
+			NotifyEvent<UpdateSceneTreeEvent>();
 		}
 	}
 

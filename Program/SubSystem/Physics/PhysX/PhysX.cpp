@@ -85,7 +85,7 @@ void PhysX::ReflectUpdate() noexcept
 #endif // IS_EDITOR
 
     // wait for finish simulate
-    m_scene->fetchResults();
+    m_scene->fetchResults(true);
 
     for (const auto rigidBody : m_rigidBodys)
     {
@@ -176,7 +176,7 @@ void PhysX::SetupPhysXObjects() noexcept
 void PhysX::CreatePhysXScene() noexcept
 {
     physx::PxSceneDesc sceneDesc(m_physics->getTolerancesScale());
-    sceneDesc.gravity = physx::PxVec3(0.0f, m_gravity.y, 0.0f);
+    sceneDesc.gravity = physx::PxVec3(m_gravity.x, m_gravity.y, m_gravity.z);
     sceneDesc.cpuDispatcher = m_dispatcher;
     sceneDesc.cudaContextManager = m_cudaContextManager;
     sceneDesc.filterShader = FilterShader;
@@ -188,11 +188,11 @@ void PhysX::CreatePhysXScene() noexcept
     sceneDesc.broadPhaseType = physx::PxBroadPhaseType::eGPU;
     sceneDesc.sceneQueryUpdateMode = physx::PxSceneQueryUpdateMode::eBUILD_ENABLED_COMMIT_DISABLED;
     sceneDesc.gpuDynamicsConfig.constraintBufferCapacity *= 2;
-    sceneDesc.gpuDynamicsConfig.contactBufferCapacity *= 2;
-    sceneDesc.gpuDynamicsConfig.tempBufferCapacity *= 2;
-    sceneDesc.gpuDynamicsConfig.contactStreamSize *= 2;
-    sceneDesc.gpuDynamicsConfig.patchStreamSize *= 2;
-    sceneDesc.gpuDynamicsConfig.forceStreamCapacity *= 2;
+    sceneDesc.gpuDynamicsConfig.contactBufferCapacity    *= 2;
+    sceneDesc.gpuDynamicsConfig.tempBufferCapacity       *= 2;
+    sceneDesc.gpuDynamicsConfig.contactStreamSize        *= 2;
+    sceneDesc.gpuDynamicsConfig.patchStreamSize          *= 2;
+    sceneDesc.gpuDynamicsConfig.forceStreamCapacity      *= 2;
 
     m_scene = m_physics->createScene(sceneDesc);
     ASSERT(m_scene);

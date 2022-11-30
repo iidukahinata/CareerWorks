@@ -21,7 +21,5 @@ void ProprietaryModelData::Deserialized(FileStream* file)
 String ProprietaryModelData::ConvertProprietaryPath(StringView filePath) noexcept
 {
     // ファイル拡張子を独自ファイル用に変更するため消去
-    filePath = filePath.substr(0, filePath.find("."));
-
-    return (MODEL_DIRECTORY + FileSystem::GetFilePath(filePath) + MODEL_EXTENSION);
+    return (MODEL_DIRECTORY + FileSystem::GetFilePath(filePath.substr(0, filePath.find("."))) + MODEL_EXTENSION);
 }

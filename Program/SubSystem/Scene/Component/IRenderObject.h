@@ -28,6 +28,11 @@ public:
 	{
 		ASSERT(0);
 	}
+
+	bool IsTranslucent()
+	{
+		ASSERT(0); return {};
+	}
 };
 
 class IMeshRender : public IRenderObject

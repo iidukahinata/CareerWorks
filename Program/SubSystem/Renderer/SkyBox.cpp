@@ -19,6 +19,7 @@ void SkyBox::Initialize() noexcept
 	ASSERT(m_indexBuffer.Create(triangleList.m_indices));
 	ASSERT(m_vertexBuffer.Create(triangleList.m_vertices));
 	ASSERT(m_constantBufferMatrix.Create(sizeof(ConstantBufferMatrix)));
+	m_sampler.Create(D3D12_FILTER_MIN_MAG_MIP_LINEAR);
 }
 
 void SkyBox::Render(ICamera* mainCamera) noexcept
@@ -51,6 +52,7 @@ void SkyBox::Render(ICamera* mainCamera) noexcept
 
 	// Set Pipline Objects
 	m_material->Render();
+	m_sampler.PSSet();
 
 	// Set Mesh Buffer
 	m_vertexBuffer.IASet();

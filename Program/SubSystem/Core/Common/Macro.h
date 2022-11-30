@@ -23,7 +23,7 @@
 */
 struct ClassTypeData
 {
-	const StringView Name = nullptr;
+	const String Name = nullptr;
 
 	const size_t Hash = 0;
 

@@ -157,7 +157,10 @@ void Script::NotifyHit(HitEventType type, IRigidBody* rigidBody)
 
 void Script::GetUseResourcePaths(Vector<String>& resources)
 {
-	resources.emplace_back(m_scriptInstance->GetFilePath());
+	if (m_scriptInstance)
+	{
+		resources.emplace_back(m_scriptInstance->GetFilePath());
+	}
 }
 
 void Script::FnishSetScript()

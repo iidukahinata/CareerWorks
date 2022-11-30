@@ -124,7 +124,10 @@ Mesh* MeshRender::GetMesh() const noexcept
 
 void MeshRender::GetUseResourcePaths(Vector<String>& resources)
 {
-	resources.emplace_back(m_mesh->GetFilePath());
+	if (m_mesh)
+	{
+		resources.emplace_back(m_mesh->GetFilePath());
+	}
 }
 
 void MeshRender::PreRender()

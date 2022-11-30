@@ -76,9 +76,9 @@ public:
 	* @pram name 元データがあるファイルパス
 	*/
 	template<class T>
-	ResourceData* CreateResourceData(StringView path, StringView assetPath = StringView()) noexcept;
-	ResourceData* CreateResourceData(StringView type, StringView path, StringView assetPath = StringView()) noexcept;
-	ResourceData* CreateResourceData(uint32_t type, StringView path, StringView assetPath = StringView()) noexcept;
+	ResourceData* CreateResourceData(StringView path, StringView assetPath = String()) noexcept;
+	ResourceData* CreateResourceData(StringView type, StringView path, StringView assetPath = String()) noexcept;
+	ResourceData* CreateResourceData(uint32_t type, StringView path, StringView assetPath = String()) noexcept;
 
 	/** 
 	* Assetファイルの更新処理のリクエストを行う。
@@ -138,7 +138,7 @@ private:
 	bool IsScriptFilePath(StringView path) const noexcept;
 
 	String GetAssetPath(StringView assetName) const noexcept;
-	String ToAssetDirectory(StringView resourcePath) const noexcept;
+	String ToAssetDirectory(String resourcePath) const noexcept;
 
 private:
 

@@ -62,3 +62,13 @@ private:
 	// * 変更後エディター状態
 	EditorState m_editorState;
 };
+
+class UpdateSceneTreeEvent : public IEvent
+{
+	COMPLETED_DEVELOPMENT()
+	SUB_CLASS(UpdateSceneTreeEvent, IEvent)
+public:
+
+	UpdateSceneTreeEvent();
+	std::any GetData() override;
+};

@@ -135,7 +135,5 @@ ProprietaryMaterialData ProprietaryMaterialData::ConvertProprietaryData(PMDMater
 String ProprietaryMaterialData::ConvertProprietaryPath(StringView filePath) noexcept
 {
 	// ファイル拡張子を独自ファイル用に変更するため消去
-	filePath = filePath.substr(0, filePath.find("."));
-
-	return (MATERIAL_DIRECTORY + FileSystem::GetFilePath(filePath) + MATERIAL_EXTENSION);
+	return (MATERIAL_DIRECTORY + FileSystem::GetFilePath(filePath.substr(0, filePath.find("."))) + MATERIAL_EXTENSION);
 }

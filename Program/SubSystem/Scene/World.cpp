@@ -66,25 +66,23 @@ void World::Update() noexcept
 
 void World::LoadScene(StringView name) noexcept
 {
-	String sceneName(name);
-
 	// loaded
-	if (m_sceneList.contains(sceneName))
+	if (m_sceneList.contains(name))
 	{
-		NotifyEvent<LoadSceneCompleteEvent>(sceneName);
+		NotifyEvent<LoadSceneCompleteEvent>(name);
 
 		return;
 	}
 
 	// loading
-	if (m_resourceHandles.contains(sceneName))
+	if (m_resourceHandles.contains(name))
 	{
 		return;
 	}
 
 	if (auto resourceHandle = m_resourceManager->Load<Scene>(name))
 	{
-		m_resourceHandles[sceneName] = resourceHandle;
+		m_resourceHandles[name] = resourceHandle;
 
 		// for load completion confirmation, it is registered the update function
 		m_job.RegisterToJobSystem();
@@ -93,8 +91,7 @@ void World::LoadScene(StringView name) noexcept
 
 void World::UnloadScene(StringView name) noexcept
 {
-	String sceneName(name);
-	if (m_sceneList.contains(sceneName))
+	if (m_sceneList.contains(name))
 	{
 		RemoveScene(name);
 
@@ -104,21 +101,20 @@ void World::UnloadScene(StringView name) noexcept
 
 void World::ChangeScene(StringView name) noexcept
 {
-	String sceneName(name);
-	if (m_sceneList.contains(sceneName))
+	if (m_sceneList.contains(name))
 	{
-		if (m_currentScene != m_sceneList[sceneName]) 
+		if (m_currentScene != m_sceneList[name])
 		{
-			NotifyEvent<ChangeSceneEvent>(m_sceneList[sceneName]);
+			NotifyEvent<ChangeSceneEvent>(m_sceneList[name]);
 		}
 	}
 	else
 	{
 		// if not found scene, load a new scene
-		LoadScene(sceneName);
+		LoadScene(name);
 
 		// wait loading and change new scene
-		if (auto handle = m_resourceHandles[sceneName])
+		if (auto handle = m_resourceHandles[name])
 		{
 			handle->WaitForLoadComplete();
 
@@ -144,6 +140,13 @@ GameObject* World::CreateGameObject(Scene* scene /* = nullptr */) noexcept
 
 		result = gameObject.get();
 		targetScene->AddGameObject(gameObject.release());
+
+#ifdef IS_EDITOR
+		if (m_currentScene)
+		{
+			NotifyEvent<UpdateSceneTreeEvent>();
+		}
+#endif // IS_EDITOR
 	}
 	else
 	{
@@ -162,6 +165,13 @@ void World::DestroyGameObject(GameObject* gameObject) const noexcept
 	ASSERT(scene);
 
 	scene->RemoveGameObject(gameObject);
+
+#ifdef IS_EDITOR
+	if (m_currentScene == scene)
+	{
+		NotifyEvent<UpdateSceneTreeEvent>();
+	}
+#endif // IS_EDITOR
 }
 
 GameObject* World::GetGameObjectByName(StringView name) const noexcept
@@ -195,6 +205,10 @@ void World::SetCurrentScene(Scene* scene) noexcept
 	if (scene)
 	{
 		scene->AddToWorld();
+
+#ifdef IS_EDITOR
+		NotifyEvent<UpdateSceneTreeEvent>();
+#endif // IS_EDITOR
 	}
 
 	m_currentScene = scene;
@@ -209,16 +223,15 @@ void World::AddScene(StringView name, Scene* scene) noexcept
 {
 	ASSERT(scene);
 
-	String sceneName(name);
-	if (!m_sceneList.contains(sceneName))
+	if (!m_sceneList.contains(name))
 	{
-		m_sceneList[sceneName] = scene;
+		m_sceneList[name] = scene;
 	}
 }
 
 void World::RemoveScene(Scene* scene) noexcept
 {
-	StringView name;
+	String name;
 	for (auto& sceneInfo : m_sceneList)
 	{
 		if (sceneInfo.second == scene)
@@ -236,15 +249,18 @@ void World::RemoveScene(Scene* scene) noexcept
 
 void World::RemoveScene(StringView name) noexcept
 {
-	String sceneName(name);
-	if (m_sceneList.contains(sceneName))
+	if (m_sceneList.contains(name))
 	{
-		if (m_currentScene == m_sceneList[sceneName])
+		if (m_currentScene == m_sceneList[name])
 		{
 			m_currentScene = nullptr;
+
+#ifdef IS_EDITOR
+			NotifyEvent<UpdateSceneTreeEvent>();
+#endif // IS_EDITOR
 		}
 
-		m_sceneList.erase(sceneName);
+		m_sceneList.erase(name);
 	}
 }
 

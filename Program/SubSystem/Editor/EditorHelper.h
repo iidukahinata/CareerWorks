@@ -48,6 +48,11 @@ public:
 
 public:
 
+	bool IsChangePlayMode() const noexcept;
+	void SetIsChangePlayMode(bool changeMode) noexcept;
+
+public:
+
 	/**
 	* 表示する Texture DescriptorHeap を管理するために作成。
 	* この関数を無視して ImGui::Image を使用すると画面表示が行われない。
@@ -95,6 +100,8 @@ public:
 	void AddEditorCommand(UniquePtr<ICommand> command) noexcept;
 
 private:
+
+	bool m_changeMode = false;
 
 	// * Undo & Redo 用の Editor コマンドリスト
 	CommandList m_commandList;

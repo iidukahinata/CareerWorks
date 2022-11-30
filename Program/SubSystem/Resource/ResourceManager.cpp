@@ -699,7 +699,7 @@ String ResourceManager::GetAssetPath(StringView assetName) const noexcept
     return ASSET_DATA_DIRECTORY + String(assetName) + ASSET_EXTENSION;
 }
 
-String ResourceManager::ToAssetDirectory(StringView resourcePath) const noexcept
+String ResourceManager::ToAssetDirectory(String resourcePath) const noexcept
 {
     // Data/Resource/ : ägí£éqÇÃè¡ãé
     resourcePath = resourcePath.substr(resourcePath.find("/") + 1, resourcePath.size());

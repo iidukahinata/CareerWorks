@@ -48,5 +48,5 @@ void EventListener::UnRegisterFromEventManager() noexcept
 	}
 
 	EventManager::Get().RemoveEventLisener(this, EventType(m_eventName));
-	m_eventName = StringView();
+	m_eventName = String();
 }

@@ -31806,3 +31806,14 @@ FodyWeavers.xsd
 /Data/asset/Standard/Script/MonoBehaviour.asset
 /Data/asset/Material/Test.asset
 /Data/Resource/Material/Test.material
+/Data/Resource/Script/Camera.py
+/Data/Resource/Script/Player.py
+/Data/asset/Standard/Texture/script_icon.asset
+/Data/asset/Script/Camera.asset
+/Data/asset/Script/Player.asset
+/Data/asset/Script/Player.asset
+/Data/asset/Script/Camera.asset
+/Data/Resource/Material/SkyBox.material
+/Data/asset/Script/BulletManager.asset
+/Data/asset/Material/SkyBox.asset
+/Data/Resource/Script/BulletManager.py

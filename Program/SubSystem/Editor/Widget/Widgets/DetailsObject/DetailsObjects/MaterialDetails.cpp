@@ -9,6 +9,7 @@
 #include "MaterialDetails.h"
 #include "SubSystem/Scene/World.h"
 #include "SubSystem/Editor/DragDrop.h"
+#include "SubSystem/Renderer/IRenderer.h"
 #include "SubSystem/Resource/ResourceManager.h"
 #include "SubSystem/Resource/Resources/3DModel/Material.h"
 
@@ -27,7 +28,16 @@ MaterialDetails::MaterialDetails(DetailsWidget* detailsWidget, ResourceData* res
 
 MaterialDetails::~MaterialDetails()
 {
-	if (!IsCurrentSceneResource())
+	auto renderer = m_detailsWidget->GetContext()->GetSubsystem<IRenderer>();
+	ASSERT(renderer);
+
+	bool unload = true;
+	if (auto skybox = renderer->GetSkyBox())
+	{
+		unload = m_material != skybox->GetMaterial();
+	}
+
+	if (!IsCurrentSceneResource() && unload)
 	{
 		auto resourceManager = m_detailsWidget->GetResourceManager();
 		if (auto resourceData = resourceManager->GetResourceData(m_material->GetFilePath()))
@@ -196,6 +206,7 @@ void MaterialDetails::ShowTextureList(Material* material) noexcept
 			if (auto catchTexture = LoadResource<Texture>(resourceData))
 			{
 				RegisterEditorCommand([material, pramName](auto data) { material->SetTexture(pramName, data, true); }, catchTexture, texture);
+				material->Update();
 			}
 		}
 

@@ -42,7 +42,7 @@ public:
 private:
 
 	// * UnRegister g—p
-	StringView m_eventName;
+	String m_eventName;
 
 	// * Listener ŠÖ”
 	Func m_function;

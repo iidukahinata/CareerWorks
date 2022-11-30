@@ -21,7 +21,7 @@ public:
 	static UniquePtr<IComponent> Create(GameObject* gameObject, StringView name) noexcept;
 
 	/** 呼び出し時に登録されているコンポーネントタイプ（Key）を返します。*/
-	static Vector<StringView> GetAllComponentType();
+	static Vector<String> GetAllComponentType();
 
 public:
 

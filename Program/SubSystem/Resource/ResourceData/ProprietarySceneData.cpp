@@ -21,7 +21,5 @@ void ProprietarySceneData::Deserialized(FileStream* file)
 String ProprietarySceneData::ConvertProprietaryPath(StringView filePath) noexcept
 {
     // ファイル拡張子を独自ファイル用に変更するため消去
-    filePath = filePath.substr(0, filePath.find("."));
-
-    return (SCENE_DIRECTORY + FileSystem::GetFilePath(filePath) + SCENE_EXTENSION);
+    return (SCENE_DIRECTORY + FileSystem::GetFilePath(filePath.substr(0, filePath.find("."))) + SCENE_EXTENSION);
 }

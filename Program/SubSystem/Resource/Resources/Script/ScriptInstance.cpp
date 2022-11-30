@@ -28,8 +28,7 @@ ScriptInstance* ScriptInstance::Create(StringView name) noexcept
 
 bool ScriptInstance::Load(StringView path)
 {
-	path = path.substr(0, path.find("."));
-	m_scriptName = FileSystem::GetFilePath(path);
+	m_scriptName = FileSystem::GetFilePath(path.substr(0, path.find(".")));
 
 	PostInit();
 
@@ -41,10 +40,8 @@ void ScriptInstance::Update()
 	FileStream file(m_filePath, OpenMode::Txt_Mode);
 	ASSERT(file.IsOpen());
 
-	StringView path = m_filePath;
-
 	String classDef = "class ";
-	classDef += FileSystem::GetFilePath(path.substr(0, path.find(".")));
+	classDef += FileSystem::GetFilePath(m_filePath.substr(0, m_filePath.find(".")));
 	classDef += "(MonoBehaviour.MonoBehaviour) :\n";
 
 	Vector<String> initData = {

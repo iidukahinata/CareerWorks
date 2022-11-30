@@ -174,7 +174,7 @@ Vector<String> ModelImporter::LoadTextures(aiMaterial* material, bool isCreate)
 		// マテリアルからｉ番目のテクスチャファイル名を取得する
 		material->GetTexture(aiTextureType_DIFFUSE, i, &str);
 
-		StringView path(str.C_Str());
+		String path(str.C_Str());
 
 		// テクスチャ名のディレクトリを処理出来るカレントディレクトリに変更
 		path = path.substr(path.find_last_of("\\/"), path.length() - 1);
@@ -195,7 +195,7 @@ String ModelImporter::LoadMesh(PMDMesh* mesh, StringView path)
 {
 	// 各データを独自モデルとして出力するため変換
 	// Path は asset データ作成時にマテリアルと同じにならないように、文字列を追加
-	auto meshPath = ProprietaryMeshData::ConvertProprietaryPath(String(path) + "Mesh");
+	auto meshPath = ProprietaryMeshData::ConvertProprietaryPath(path + "Mesh");
 	auto meshData = ProprietaryMeshData::ConvertProprietaryData(mesh);
 
 	// メッシュで使用されているマテリアルを解析
@@ -213,7 +213,7 @@ String ModelImporter::LoadMaterial(PMDMaterial* material, StringView path)
 {
 	// 各データを独自モデルとして出力するため変換
 	// Path は asset データ作成時にメッシュと同じにならないように、文字列を追加
-	auto materialPath = ProprietaryMaterialData::ConvertProprietaryPath(String(path) + "Material");
+	auto materialPath = ProprietaryMaterialData::ConvertProprietaryPath(path + "Material");
 	auto materialData = ProprietaryMaterialData::ConvertProprietaryData(material);
 
 	materialData.SaveToFile(materialPath);
@@ -227,7 +227,7 @@ String ModelImporter::LoadTexture(PMDMaterial* material, bool isCreate)
 
 	auto textureImporter = m_resourceManager->GetTextureImporter();
 
-	StringView path = material->m_texFilePath;
+	String path = material->m_texFilePath;
 
 	// テクスチャ名のディレクトリを処理出来るカレントディレクトリに変更
 	path = path.substr(path.find_last_of("\\/"), path.length() - 1);
@@ -311,8 +311,7 @@ bool ModelImporter::LoadPMDFile(StringView filePath) noexcept
 		}
 
 		// 同じ名前の Mesh が無いように ID を名前に追加
-		filePath = filePath.substr(0, filePath.find("."));
-		const auto path = String(filePath) + "_" + std::to_string(i) + "_";
+		const auto path = filePath.substr(0, filePath.find(".")) + "_" + std::to_string(i) + "_";
 
 		auto meshPath = LoadMesh(&mesh, path);
 

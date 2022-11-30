@@ -22,6 +22,8 @@
 #include "SubSystem/Scene/Component/Components/RigidBody.h"
 #include "SubSystem/Scene/Component/Components/Script.h"
 
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(CreateGameObjectOverloads, CreateGameObject, 0, 1)
+
 void SetUpSceneModule()
 {
 	IComponent* (GameObject::*addComponent)(StringView) = &GameObject::AddComponent;
@@ -52,7 +54,7 @@ void SetUpSceneModule()
 		PY_CLASS_DEF(World, LoadScene)
 		PY_CLASS_DEF(World, UnloadScene)
 		PY_CLASS_DEF(World, ChangeScene)
-		PY_CLASS_DEF_POLICIE(World, CreateGameObject, PY_RET_REF)
+		.def("CreateGameObject", &World::CreateGameObject, PY_RET_REF, CreateGameObjectOverloads())
 		PY_CLASS_DEF(World, DestroyGameObject)
 		PY_CLASS_MAKE_GET("currentScene", World, GetCurrentScene, PY_RET_REF)
 		PY_CLASS_DEF_POLICIE(World, GetScene, PY_RET_REF)

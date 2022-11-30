@@ -126,7 +126,7 @@ void SetUpComponentModule()
     PY_BASE_CLASS_NOCOPY(IPostProcessEffect, IComponent)
         .def("AddPostEffect", addPostEffect, PY_RET_REF)
         PY_CLASS_DEF(IPostProcessEffect, RemovePostEffect)
-        PY_CLASS_DEF_POLICIE(IPostProcessEffect, GetPostEffect<Bloom>, PY_RET_REF)
+        .def("GetBloom", &IPostProcessEffect::GetPostEffect<Bloom>, PY_RET_REF)
         PY_CLASS_DEF_POLICIE(IPostProcessEffect, FindPostEffect, PY_RET_REF);
 
     PY_BASE_CLASS_NOCOPY(IMeshRender, IComponent)

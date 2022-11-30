@@ -65,6 +65,8 @@ void ViewPortWidget::ShowToolBar() noexcept
 
 	if (isPlay)
 	{
+		EditorHelper::Get().SetIsChangePlayMode(true);
+
 		m_isPlay = !m_isPlay;
 		auto state = m_isPlay ? EditorState::Run : EditorState::Stop;
 		NotifyEvent<ChangeEditorStateEvent>(state);
@@ -74,6 +76,10 @@ void ViewPortWidget::ShowToolBar() noexcept
 			DetailsWidget::ClearSelectObject();
 			m_isPouse = false;
 		}
+	}
+	else
+	{
+		EditorHelper::Get().SetIsChangePlayMode(false);
 	}
 
 	if (m_isPlay && isStop)

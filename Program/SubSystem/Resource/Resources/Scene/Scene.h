@@ -58,7 +58,7 @@ public:
 private:
 
 	/** 独自 Scene データを構築しファイル更新を行う。*/
-	void UpdateProprietaryDataFile(StringView path = StringView()) noexcept;
+	void UpdateProprietaryDataFile(StringView path = String()) noexcept;
 
 	/** ResourceData データを構築しファイル更新を行う。*/
 	void UpdateResourceDataFile() noexcept;

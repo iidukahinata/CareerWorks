@@ -180,7 +180,5 @@ ProprietaryMeshData ProprietaryMeshData::ConvertProprietaryData(PMDMesh* mesh) n
 String ProprietaryMeshData::ConvertProprietaryPath(StringView filePath) noexcept
 {
 	// ファイル拡張子を独自ファイル用に変更するため消去
-	filePath = filePath.substr(0, filePath.find("."));
-
-	return (MESH_DIRECTORY + FileSystem::GetFilePath(filePath) + MESH_EXTENSION);
+	return (MESH_DIRECTORY + FileSystem::GetFilePath(filePath.substr(0, filePath.find("."))) + MESH_EXTENSION);
 }

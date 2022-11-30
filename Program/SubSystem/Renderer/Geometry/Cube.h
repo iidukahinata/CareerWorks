@@ -22,22 +22,22 @@ public:
 
 		vertices.resize(8);
 
-		vertices[0].position = Math::Vector3(-size,  size, -size);
-		vertices[1].position = Math::Vector3( size,  size, -size);
-		vertices[2].position = Math::Vector3( size, -size, -size);
-		vertices[3].position = Math::Vector3(-size, -size, -size);
-		vertices[4].position = Math::Vector3(-size,  size,  size);
-		vertices[5].position = Math::Vector3( size,  size,  size);
-		vertices[6].position = Math::Vector3( size, -size,  size);
-		vertices[7].position = Math::Vector3(-size, -size,  size);
+		vertices[0].position = Math::Vector3(-size,  size,  size);
+		vertices[1].position = Math::Vector3( size,  size,  size);
+		vertices[2].position = Math::Vector3(-size,  size, -size);
+		vertices[3].position = Math::Vector3( size,  size, -size);
+		vertices[4].position = Math::Vector3(-size, -size,  size);
+		vertices[5].position = Math::Vector3( size, -size,  size);
+		vertices[6].position = Math::Vector3(-size, -size, -size);
+		vertices[7].position = Math::Vector3( size, -size, -size);
 
 		indices = {
-			0, 1, 2,  2, 3, 0,// 前
-			5, 4, 7,  7, 6, 5,// 奥
-			4, 0, 7,  0, 3, 7,// 左
-			1, 5, 6,  1, 6, 2,// 右
-			0, 4, 1,  4, 5, 1,// 上
-			3, 2, 7,  6, 7, 2 // 下
+			2, 1, 0,  1, 3, 2,// 前
+			4, 0, 2,  2, 6, 4,// 奥
+			5, 1, 0,  0, 4, 5,// 左
+			7, 3, 1,  1, 5, 7,// 右
+			6, 2, 3,  3, 7, 6,// 上
+			4, 6, 7,  7, 5, 4 // 下
 		};
 
 		return triangleList;

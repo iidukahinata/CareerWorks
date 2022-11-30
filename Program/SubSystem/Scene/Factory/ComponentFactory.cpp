@@ -28,9 +28,9 @@ UniquePtr<IComponent> ComponentFactory::Create(GameObject* gameObject, StringVie
     return component;
 }
 
-Vector<StringView> ComponentFactory::GetAllComponentType()
+Vector<String> ComponentFactory::GetAllComponentType()
 {
-	Vector<StringView> componentTypes;
+	Vector<String> componentTypes;
 
 	for (const auto& componentInfo : m_componentFactorys)
 	{

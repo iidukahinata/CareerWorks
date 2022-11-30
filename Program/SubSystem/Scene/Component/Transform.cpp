@@ -24,7 +24,8 @@ Transform::~Transform()
 {
 	SetParent(nullptr);
 
-	for (auto child : m_children)
+	auto children = m_children;
+	for (auto child : children)
 	{
 		child->SetParent(nullptr);
 	}

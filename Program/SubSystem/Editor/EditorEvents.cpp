@@ -40,3 +40,12 @@ std::any ChangeEditorStateEvent::GetData()
 {
 	return m_editorState;
 }
+
+UpdateSceneTreeEvent::UpdateSceneTreeEvent()
+{
+}
+
+std::any UpdateSceneTreeEvent::GetData()
+{
+	return std::any();
+}

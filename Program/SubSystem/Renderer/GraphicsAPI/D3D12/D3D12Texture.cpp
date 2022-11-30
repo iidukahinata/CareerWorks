@@ -92,7 +92,10 @@ bool D3D12Texture::Create(DXGI_FORMAT format, UINT width, UINT height, UINT dept
 
 bool D3D12Texture::Create(const DirectX::Image* images, size_t imageSize, const DirectX::TexMetadata& meta) noexcept
 {
-	Create(meta);
+	if (!Create(meta))
+	{
+		return false;
+	}
 
 	for (int i = 0; i < imageSize; ++i)
 	{

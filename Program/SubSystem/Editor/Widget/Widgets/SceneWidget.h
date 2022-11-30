@@ -63,6 +63,10 @@ private:
 	bool m_selectGameObject = false;
 
 	GameObject* m_gameObject = nullptr;
+
+	Vector<GameObject*> m_allRootGameObjects;
+
+	EventListener m_eventListener;
 };
 
 template<class T>

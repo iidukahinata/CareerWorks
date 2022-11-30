@@ -7,6 +7,7 @@
 #pragma once
 
 
+#include "GraphicsAPI/D3D12/D3D12Sampler.h"
 #include "GraphicsAPI/D3D12/D3D12IndexBuffer.h"
 #include "GraphicsAPI/D3D12/D3D12VertexBuffer.h"
 #include "GraphicsAPI/D3D12/D3D12ConstantBuffer.h"
@@ -28,6 +29,8 @@ public:
 private:
 
 	Material* m_material = nullptr;
+
+	D3D12Sampler m_sampler;
 
 	// * mesh objects
 	D3D12IndexBuffer  m_indexBuffer;

@@ -160,6 +160,8 @@ void RigidBody::SetBodyType(BodyType type)
 		return;
 	}
 
+	ASSERT(m_actor);
+
 	/** set prams */
 	SetMass(m_mass);
 	SetUseGravity(m_useGravity);

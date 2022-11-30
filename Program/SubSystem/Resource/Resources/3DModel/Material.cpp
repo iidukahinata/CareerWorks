@@ -295,11 +295,12 @@ const Math::Vector3& Material::GetEmission() const noexcept
 
 bool Material::DefineSettingToPixelShader(StringView path /* = StringView() */, bool recompile /* = false */) noexcept
 {
+	String shaderPath = path;
 	if (path.empty())
 	{
-		path = m_materialData.m_shaderPaths[PixelShader];
+		shaderPath = m_materialData.m_shaderPaths[PixelShader];
 
-		if (path.empty())
+		if (shaderPath.empty())
 		{
 			return false;
 		}

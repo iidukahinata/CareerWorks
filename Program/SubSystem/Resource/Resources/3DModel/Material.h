@@ -69,7 +69,7 @@ public:
 private:
 
 	/** マテリアル設定の Define をシェーダーに定義 */
-	bool DefineSettingToPixelShader(StringView path = StringView(), bool recompile = false) noexcept;
+	bool DefineSettingToPixelShader(StringView path = String(), bool recompile = false) noexcept;
 
 	/** セットされたシェーダファイルから各パラメーター取得 */
 	void ParametricAnalysis(bool isClear = true) noexcept;

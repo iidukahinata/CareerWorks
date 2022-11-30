@@ -54,6 +54,16 @@ void EditorHelper::Shutdown() noexcept
 	}
 }
 
+bool EditorHelper::IsChangePlayMode() const noexcept
+{
+	return m_changeMode;
+}
+
+void EditorHelper::SetIsChangePlayMode(bool changeMode) noexcept
+{
+	m_changeMode = changeMode;
+}
+
 void EditorHelper::AddImage(void* shaderResourceView, const ImVec2& imageSize, const ImVec2& uv0, const ImVec2& uv1, const ImVec4& tint_col, const ImVec4& border_col) noexcept
 {
 	const auto srv = static_cast<D3D12ShaderResourceView*>(shaderResourceView);

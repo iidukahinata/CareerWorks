@@ -339,9 +339,6 @@ void DeferredRenderer::ZPrePass()
 	// Draw
 	for (auto renderObject : m_renderObjects)
 	{
-		if (!renderObject->GetActive())
-			continue;
-
 		renderObject->PreRender();
 	}
 }
@@ -351,14 +348,8 @@ void DeferredRenderer::GBufferPass() noexcept
 	// Draw
 	for (auto renderObject : m_renderObjects)
 	{
-		if (!renderObject->GetActive())
-			continue;
-
 		renderObject->Render();
 	}
-
-	// Draw SkyBox
-	m_skyBox->Render(m_mainCamera);
 }
 
 void DeferredRenderer::PreLightingPass() noexcept
@@ -387,6 +378,16 @@ void DeferredRenderer::LightingPass() noexcept
 #endif // IS_EDITOR
 	}
 
+	DefferedLightingPass();
+
+	//ForwardLightingPass();
+
+	// Draw SkyBox
+	m_skyBox->Render(m_mainCamera);
+}
+
+void DeferredRenderer::DefferedLightingPass()
+{
 	// Pipeline Set
 	m_deferredPipeline.Set();
 	m_sampler.PSSet();
@@ -404,6 +405,11 @@ void DeferredRenderer::LightingPass() noexcept
 
 	// Draw
 	D3D12GraphicsDevice::Get().GetCommandContext().DrawIndexedInstanced(6, 1, 0, 0, 0);
+}
+
+void DeferredRenderer::ForwardLightingPass()
+{
+	m_transformCBuffer->Update(m_mainCamera);
 }
 
 void DeferredRenderer::PostPass() noexcept

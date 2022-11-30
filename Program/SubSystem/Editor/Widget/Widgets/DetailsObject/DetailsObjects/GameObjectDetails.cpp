@@ -38,6 +38,7 @@ void GameObjectDetails::Draw()
 
 	ImGui::Text("Name"); ImGui::SameLine(offsetPos);
 	auto inputName = ImGui::InputText("##Object Name", name.data(), name.size());
+	name.resize(name.find_first_of('\0'));
 
 	ImGui::Text("Active"); ImGui::SameLine(offsetPos);
 	auto inputActive = ImGui::Checkbox("##Active Mode", &active);

@@ -63,7 +63,7 @@ String ConvertToJapanese(StringView str) noexcept
 String GetExt(StringView filePath) noexcept
 {
 	auto ext_i = filePath.find_last_of(".");
-	if (ext_i == StringView::npos)
+	if (ext_i == String::npos)
 	{
 		return String();
 	}

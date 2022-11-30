@@ -54,8 +54,8 @@ void Scene::SaveAs(StringView name) noexcept
     auto newAssetDirectory = assetFullPath.substr(0, assetFullPath.find_last_of("/\\") + 1);
 
     // new data file path
-    auto newResourcePath = String(newResourceDirectory) + name.data() + SCENE_EXTENSION;
-    auto newAssetFullPath = String(newAssetDirectory) + name.data() + ASSET_EXTENSION;
+    auto newResourcePath = newResourceDirectory + name + SCENE_EXTENSION;
+    auto newAssetFullPath = newAssetDirectory + name + ASSET_EXTENSION;
 
     // save as new data
     {
@@ -124,15 +124,23 @@ void Scene::RemoveFromWorld() noexcept
 {
     if (m_world->IsGameMode())
     {
-        for (const auto& gameObject : m_gameObjects)
+        auto numGameObject = m_gameObjects.size();
+        for (int i = 0; i < numGameObject; ++i)
         {
-            gameObject->EndPlay();
+            if (i >= m_gameObjects.size())
+                break;
+
+            m_gameObjects[i]->EndPlay();
         }
     }
 
-    for (const auto& gameObject : m_gameObjects)
+    auto numGameObject = m_gameObjects.size();
+    for (int i = 0; i < numGameObject; ++i)
     {
-        gameObject->UnRegisterAllComponents();
+        if (i >= m_gameObjects.size())
+            break;
+
+        m_gameObjects[i]->UnRegisterAllComponents();
     }
 }
 
@@ -173,6 +181,9 @@ void Scene::GetAllRootGameObjects(Vector<GameObject*>& gameObjects) const noexce
     const auto numObject = m_gameObjects.size();
     for (int i = 0; i < numObject; ++i)
     {
+        if (!m_gameObjects[i])
+            continue;
+
         if (m_gameObjects[i]->GetTransform().HasParent())
             continue;
 
@@ -209,6 +220,9 @@ void Scene::ClearGameObjects() noexcept
 {
     for (auto& gameObject : m_gameObjects)
     {
+        if (!gameObject)
+            continue;
+
         gameObject->ClearComponets();
 
         if (gameObject->RequestAutoDestroy())
@@ -223,12 +237,17 @@ void Scene::ClearGameObjects() noexcept
 
 void Scene::UpdateProprietaryDataFile(StringView path /* = StringView() */) noexcept
 {
+    FileStream file;
+
     if (path.empty())
     {
-        path = m_filePath;
+        file.Load(m_filePath, OpenMode::Write_Mode);
+    }
+    else
+    {
+        file.Load(path, OpenMode::Write_Mode);
     }
 
-    FileStream file(path, OpenMode::Write_Mode);
     ASSERT(file.IsOpen());
 
     Vector<GameObject*> rootGameObjects;

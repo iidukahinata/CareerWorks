@@ -7,13 +7,19 @@
 #pragma once
 
 
-#include <string_view>
+#include <string>
 
-using StringView = std::string_view;
-using WstringView = std::wstring_view;
+using String = std::basic_string<char, std::char_traits<char>, std::allocator<char>>;
+
+using Wstring = std::basic_string<wchar_t, std::char_traits<wchar_t>, std::allocator<wchar_t>>;
+
+using StringView = const String&;
+using WstringView = const Wstring&;
 
 #ifdef __cpp_lib_char8_t
-using u8StringView = std::u8string_view;
+using u8String = std::basic_string<char8_t, std::char_traits<char8_t>, std::allocator<char8_t>>;
+
+using u8StringView = const u8String&;
 #endif // __cpp_lib_char8_t
 
 /**

@@ -19,14 +19,6 @@
 #include <unordered_map>
 #include <unordered_set>
 
-using String = std::basic_string<char, std::char_traits<char>, std::allocator<char>>;
-
-using Wstring = std::basic_string<wchar_t, std::char_traits<wchar_t>, std::allocator<wchar_t>>;
-
-#ifdef __cpp_lib_char8_t
-using u8String = std::basic_string<char8_t, std::char_traits<char8_t>, std::allocator<char8_t>>;
-#endif // __cpp_lib_char8_t
-
 template<class T>
 using List = std::list<T, std::allocator<T>>;
 

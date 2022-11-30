@@ -233,7 +233,7 @@ void GameObject::RemoveComponent(IComponent* component) noexcept
 {
 	ASSERT(component);
 
-	const auto hash = component->GetTypeData().Hash;
+	const auto hash = component->GetSuperTypeData().Hash;
 
 	if (m_components.contains(hash))
 	{

@@ -490,7 +490,7 @@ void AssetsWidget::DoubleClickResource(IconType type, StringView name) noexcept
 	{
 		// フォルダ構成情報を更新
 		m_directoryTree.emplace_back(name);
-		m_currentDirectory += String("/") + name.data();
+		m_currentDirectory += "/" + name;
 
 		m_isSelectDirectory = true;
 	}
@@ -510,7 +510,7 @@ void AssetsWidget::DoubleClickResource(IconType type, StringView name) noexcept
 		{
 			auto resourceData = m_resourceManager->GetResourceData(resourceType, name);
 			auto resourcePath = resourceData->m_resourcePath.m_path;
-			auto cmd = String("start ") + resourcePath;
+			auto cmd = "start " + resourcePath;
 
 			// VS プロジェクトで立ち上げ
 			system(cmd.c_str());

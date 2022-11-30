@@ -565,8 +565,8 @@ ResourceData* MainMenuBarWidget::ShowSearchResourceHelper(uint32_t selectType) n
 
 bool MainMenuBarWidget::OpenResourceHelper(StringView lavel) noexcept
 {
-    const auto buttonLavel = String("*##") + lavel.data();
-    m_searchResourceLavel = String("SearchResourceHelper") + lavel.data();
+    const auto buttonLavel = "*##" + lavel;
+    m_searchResourceLavel = "SearchResourceHelper" + lavel;
 
     if (ImGui::Button(buttonLavel.c_str(), ImVec2(20, 20)))
     {

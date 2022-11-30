@@ -66,6 +66,12 @@ private:
 	/** 実際に Lighting を考慮した計算 */
 	void LightingPass() noexcept;
 
+	/** GBuffer 情報からライティング計算を行う。*/
+	void DefferedLightingPass();
+
+	/** その他の半透明オブジェクトのなど描画 */
+	void ForwardLightingPass();
+
 	/** Bloom : DOF などの Effect 処理 */
 	void PostPass() noexcept;
 

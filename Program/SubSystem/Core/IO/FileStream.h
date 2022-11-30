@@ -92,7 +92,7 @@ FORCEINLINE void FileStream::Write(T data) noexcept
 }
 
 template<>
-FORCEINLINE void FileStream::Write(StringView data) noexcept
+FORCEINLINE void FileStream::Write(String data) noexcept
 {
 	if (m_openMode == OpenMode::Txt_Mode)
 	{
@@ -104,12 +104,6 @@ FORCEINLINE void FileStream::Write(StringView data) noexcept
 		fwrite(reinterpret_cast<void*>(&length), sizeof(size_t), 1, m_fp);
 		fwrite(reinterpret_cast<void*>(const_cast<char*>(data.data())), length, 1, m_fp);
 	}
-}
-
-template<>
-FORCEINLINE void FileStream::Write(String data) noexcept
-{
-	Write<StringView>(data);
 }
 
 template<class T>
