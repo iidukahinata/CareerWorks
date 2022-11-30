@@ -101,6 +101,11 @@ public:
 	void UnRegisterEventFunctionList() noexcept;
 	bool IsRegisterEventFunction() const noexcept;
 
+public:
+
+	/** スクリプトインスタンスの取得 */
+	boost::python::object GetInstance(IScript* script) const noexcept;
+
 private:
 
 	/**

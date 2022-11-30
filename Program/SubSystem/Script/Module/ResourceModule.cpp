@@ -2,7 +2,7 @@
 * @file    ResourceModule.cpp
 * @brief
 *
-* @date	   2022/11/14 2022年度初版
+* @date	   2022/11/30 2022年度初版
 */
 
 
@@ -14,6 +14,8 @@
 #include "Subsystem/Resource/Resources/3DModel/Mesh.h"
 #include "Subsystem/Resource/Resources/3DModel/Model.h"
 #include "Subsystem/Resource/Resources/Scene/Scene.h"
+#include "Subsystem/Resource/Resources/Script/ScriptInstance.h"
+#include "Subsystem/Scene/Component/IScript.h"
 
 void SetUpResourceModule()
 {
@@ -73,4 +75,7 @@ void SetUpResourceModule()
 	PY_BASE_CLASS_NOCOPY(Model, IResource)
 		PY_CLASS_MAKE_GET("mesh", Model, GetMesh, PY_RET_REF)
 		PY_CLASS_MAKE_GET("meshes", Model, GetAllMeshes, PY_RET_REF);
+
+	PY_BASE_CLASS_NOCOPY(ScriptInstance, IResource)
+		PY_CLASS_DEF(ScriptInstance, GetInstance);
 }

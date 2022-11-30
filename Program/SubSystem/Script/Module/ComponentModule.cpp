@@ -13,6 +13,7 @@
 #include "Subsystem/Resource/Resources/3DModel/Mesh.h"
 #include "Subsystem/Resource/Resources/3DModel/Model.h"
 #include "Subsystem/Resource/Resources/Scene/Scene.h"
+#include "SubSystem/Resource/Resources/Script/ScriptInstance.h"
 #include "Subsystem/Scene/Component/Transform.h"
 #include "SubSystem/Scene/Component/Components/AudioListener.h"
 #include "SubSystem/Scene/Component/Components/AudioSpeaker.h"
@@ -158,5 +159,6 @@ void SetUpComponentModule()
         PY_CLASS_MAKE_GETSET("positionLock", IRigidBody, GetPositionLock, PY_RET_REF, SetPositionLock)
         PY_CLASS_MAKE_GETSET("rotationLock", IRigidBody, GetRotationLock, PY_RET_REF, SetRotationLock);
 
-    PY_BASE_CLASS_NOCOPY(IScript, IComponent);
+    PY_BASE_CLASS_NOCOPY(IScript, IComponent)
+        PY_CLASS_DEF_POLICIE(IScript, GetScript, PY_RET_REF);
 }

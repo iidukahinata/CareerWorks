@@ -129,6 +129,15 @@ bool ScriptInstance::IsRegisterEventFunction() const noexcept
 	return m_registerEventListener;
 }
 
+boost::python::object ScriptInstance::GetInstance(IScript* script) const noexcept
+{
+	if (m_classInstanceDataMap.contains(script))
+	{
+		return m_classInstanceDataMap.at(script).m_instance;
+	}
+	return boost::python::object();
+}
+
 void ScriptInstance::PostInit() noexcept
 {
 	m_scriptClass = CompileScript(m_scriptName);
