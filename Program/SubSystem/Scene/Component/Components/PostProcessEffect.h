@@ -67,6 +67,8 @@ private:
 
 	IRenderer* m_renderer = nullptr;
 
+	bool m_isRegister = false;
+
 	// * -> ハッシュ値 : 各エフェクトオブジェクト
 	Map<uint32_t, UniquePtr<IPostEffect>> m_postEffects;
 

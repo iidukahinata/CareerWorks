@@ -71,6 +71,11 @@ void PhysX::Simulate(double deltaTime) noexcept
     TIME_LINE_WATCH_START(MainThread, "Physics Simulate");
 #endif // IS_EDITOR
 
+    for (const auto rigidBody : m_rigidBodys)
+    {
+        rigidBody->PreUpdate();
+    }
+
     m_scene->simulate(deltaTime);
 
 #ifdef IS_EDITOR

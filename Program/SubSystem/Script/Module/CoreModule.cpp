@@ -8,6 +8,8 @@
 
 #include "ModuleHelper.h"
 #include "Subsystem/Window/Window.h"
+#include "Subsystem/Core/Context.h"
+#include "Subsystem/Resource/ResourceManager.h"
 
 void DebugLog(String text)
 {
@@ -31,6 +33,9 @@ int ScreenHeight()
 
 void SetUpCoreModule()
 {
+	PY_CLASS_NOCOPY(Context)
+		.def("GetResource", &Context::GetSubsystem<ResourceManager>, PY_RET_REF);
+
 	PY_DEF(DebugLog);
 	PY_DEF(DebugLogError);
 	

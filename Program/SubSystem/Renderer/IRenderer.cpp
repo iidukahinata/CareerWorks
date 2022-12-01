@@ -107,5 +107,5 @@ IPostProcessEffect* IRenderer::GetPostProcess() noexcept
 
 bool IRenderer::HasPostProcessSetting() noexcept
 {
-	return !!m_postProcessEffect && m_postProcessEffect->GetActive() && !m_postProcessEffect->GetAllPostEffect().empty();
+	return !!m_postProcessEffect && !m_postProcessEffect->GetAllPostEffect().empty();
 }

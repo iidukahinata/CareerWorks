@@ -144,6 +144,8 @@ void EventManager::Tick() noexcept
 {
 	// キューの入れ替え
 	const auto numQueue = m_numActiveQueue;
+	(++m_numActiveQueue) %= m_eventQueues.max_size();
+
 	while (m_eventQueues[numQueue].size() != 0)
 	{
 		const auto& event = m_eventQueues[numQueue].front();
@@ -164,8 +166,7 @@ void EventManager::Tick() noexcept
 		}
 	}
 
-	(++m_numActiveQueue) %= m_eventQueues.max_size();
-	m_eventQueues[m_numActiveQueue].clear();
+	std::unique_lock<std::mutex> lock(m_mutex);
 
 	// タイムアウト処理が起きた場合、残ったタスクを次フレームに持ち越す。
 	m_eventQueues[m_numActiveQueue].merge(m_eventQueues[numQueue]);

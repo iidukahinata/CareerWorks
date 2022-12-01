@@ -31,6 +31,11 @@ class IRigidBody : public IComponent
 	SUB_CLASS(IRigidBody, IComponent)
 public:
 
+	virtual void PreUpdate()
+	{
+		ASSERT(0);
+	}
+
 	virtual void Update()
 	{
 		ASSERT(0);

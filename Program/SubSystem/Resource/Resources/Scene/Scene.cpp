@@ -105,17 +105,29 @@ void Scene::Update()
 
 void Scene::AddToWorld() noexcept
 {
-    for (const auto& gameObject : m_gameObjects)
+    auto numGameObject = m_gameObjects.size();
+    for (int i = 0; i < numGameObject; ++i)
     {
-        gameObject->RegisterAllComponents();
+        m_gameObjects[i]->RegisterAllComponents();
     }
 
     // ŽÀs’†‚Í“o˜^Žž‚ÉÄ¶ŠJŽn
-    if (m_world->IsGameMode())
+    if (!m_world->IsGameMode())
     {
-        for (const auto& gameObject : m_gameObjects)
+        return;
+    }
+
+    while (true)
+    {
+        auto numGameObject = m_gameObjects.size();
+        for (int i = 0; i < numGameObject; ++i)
         {
-            gameObject->BeginPlay();
+            m_gameObjects[i]->BeginPlay();
+        }
+
+        if (m_gameObjects.size() == numGameObject)
+        {
+            break;
         }
     }
 }

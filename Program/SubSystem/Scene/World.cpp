@@ -144,6 +144,7 @@ GameObject* World::CreateGameObject(Scene* scene /* = nullptr */) noexcept
 #ifdef IS_EDITOR
 		if (m_currentScene)
 		{
+			CancelEvent<UpdateSceneTreeEvent>(false);
 			NotifyEvent<UpdateSceneTreeEvent>();
 		}
 #endif // IS_EDITOR
@@ -169,6 +170,7 @@ void World::DestroyGameObject(GameObject* gameObject) const noexcept
 #ifdef IS_EDITOR
 	if (m_currentScene == scene)
 	{
+		CancelEvent<UpdateSceneTreeEvent>(false);
 		NotifyEvent<UpdateSceneTreeEvent>();
 	}
 #endif // IS_EDITOR
@@ -207,6 +209,7 @@ void World::SetCurrentScene(Scene* scene) noexcept
 		scene->AddToWorld();
 
 #ifdef IS_EDITOR
+		CancelEvent<UpdateSceneTreeEvent>(false);
 		NotifyEvent<UpdateSceneTreeEvent>();
 #endif // IS_EDITOR
 	}
@@ -256,6 +259,7 @@ void World::RemoveScene(StringView name) noexcept
 			m_currentScene = nullptr;
 
 #ifdef IS_EDITOR
+			CancelEvent<UpdateSceneTreeEvent>(false);
 			NotifyEvent<UpdateSceneTreeEvent>();
 #endif // IS_EDITOR
 		}
@@ -311,7 +315,11 @@ void World::StartupListenerObjects() noexcept
 
 		auto name = std::any_cast<String>(data);
 
-		ASSERT(m_resourceHandles.contains(name));
+		if (!m_resourceHandles.contains(name))
+		{
+			return;
+		}
+		
 		if (auto scene = m_resourceHandles[name]->GetResource<Scene>())
 		{
 			AddScene(name, scene);

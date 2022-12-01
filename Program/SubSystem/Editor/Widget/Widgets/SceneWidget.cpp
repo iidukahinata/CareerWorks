@@ -87,6 +87,7 @@ void SceneWidget::Draw()
 			// モード切り替え時の出力バグ回避のため
 			m_allRootGameObjects.clear();
 
+			CancelEvent<UpdateSceneTreeEvent>(false);
 			NotifyEvent<UpdateSceneTreeEvent>();
 		}
 	}

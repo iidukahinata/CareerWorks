@@ -32,6 +32,7 @@ public:
 
 	void SetActive(bool active) override;
 
+	void PreUpdate() override;
 	void Update() override;
 
 public:

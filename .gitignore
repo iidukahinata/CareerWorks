@@ -31817,3 +31817,5 @@ FodyWeavers.xsd
 /Data/asset/Script/BulletManager.asset
 /Data/asset/Material/SkyBox.asset
 /Data/Resource/Script/BulletManager.py
+/Data/Resource/Script/Bullet.py
+/Data/asset/Script/Bullet.asset

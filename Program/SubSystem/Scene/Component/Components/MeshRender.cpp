@@ -11,6 +11,7 @@
 #include "SubSystem/Resource/ResourceManager.h"
 #include "SubSystem/Resource/Resources/3DModel/Mesh.h"
 #include "SubSystem/Resource/Resources/3DModel/Material.h"
+#include "SubSystem/Thread/RenderingThread/RenderingThread.h"
 
 void MeshRender::Serialized(FileStream* file) const
 {
@@ -53,7 +54,14 @@ void MeshRender::OnInitialize()
 	m_renderer = GetContext()->GetSubsystem<IRenderer>();
 	ASSERT(m_renderer);
 
-	m_constantBufferMatrix.Create(sizeof(ConstantBufferMatrix));
+	if (IsInRenderingThread())
+	{
+		m_constantBufferMatrix.Create(sizeof(ConstantBufferMatrix));
+	}
+	else
+	{
+		RegisterRenderCommand([this] { m_constantBufferMatrix.Create(sizeof(ConstantBufferMatrix)); });
+	}
 }
 
 void MeshRender::OnRegister()

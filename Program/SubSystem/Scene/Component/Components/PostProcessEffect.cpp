@@ -52,26 +52,37 @@ void PostProcessEffect::OnRegister()
 {
 	IComponent::OnRegister();
 
-	RegisterToRenderer();
+	if (GetActive())
+	{
+		RegisterToRenderer();
+	}
 }
 
 void PostProcessEffect::OnUnRegister()
 {
 	IComponent::OnUnRegister();
 
-	UnRegisterFromRenderer();
+	if (GetActive())
+	{
+		UnRegisterFromRenderer();
+	}
 }
 
 void PostProcessEffect::OnRemove()
 {
-	m_renderCommandFance.BegineFrame();
+	if (m_isRegister)
+	{
+		m_renderCommandFance.BegineFrame();
+
+		UnRegisterFromRenderer();
+	}
 
 	IComponent::OnRemove();
 }
 
 bool PostProcessEffect::Erasable()
 {
-	return m_renderCommandFance.IsSingle();;
+	return m_renderCommandFance.IsSingle();
 }
 
 IPostEffect* PostProcessEffect::AddPostEffect(StringView name)
@@ -171,12 +182,38 @@ void PostProcessEffect::Render()
 
 void PostProcessEffect::RegisterToRenderer() noexcept
 {
-	ASSERT(m_renderer);
-	m_renderer->RegisterPostProcess(this);
+	if (m_isRegister)
+	{
+		return;
+	}
+
+	m_isRegister = true;
+
+	if (IsInRenderingThread())
+	{
+		m_renderer->RegisterPostProcess(this);
+	}
+	else
+	{
+		RegisterRenderCommand([this] { m_renderer->RegisterPostProcess(this); });
+	}
 }
 
 void PostProcessEffect::UnRegisterFromRenderer() noexcept
 {
-	ASSERT(m_renderer);
-	m_renderer->UnRegisterPostProcess(this);
+	if (!m_isRegister)
+	{
+		return;
+	}
+
+	m_isRegister = false;
+
+	if (IsInRenderingThread())
+	{
+		m_renderer->UnRegisterPostProcess(this);
+	}
+	else
+	{
+		RegisterRenderCommand([this] { m_renderer->UnRegisterPostProcess(this); });
+	}
 }

@@ -41,13 +41,6 @@ void RigidBody::OnInitialize()
 {
 	m_physics = dynamic_cast<PhysX*>(GetContext()->GetSubsystem<IPhysics>());
 	ASSERT(m_physics);
-
-#if IS_EDITOR
-	if (!GetWorld()->IsGameMode())
-	{
-		SetBodyType(m_bodyType);
-	}
-#endif // IS_EDITOR
 }
 
 void RigidBody::OnStart()
@@ -87,6 +80,11 @@ void RigidBody::SetActive(bool active)
 	{
 		UnRegisterFromPhysics();
 	}
+}
+
+void RigidBody::PreUpdate()
+{
+	SetPosition(GetTransform().GetPosition());
 }
 
 void RigidBody::Update()
@@ -164,6 +162,7 @@ void RigidBody::SetBodyType(BodyType type)
 
 	/** set prams */
 	SetMass(m_mass);
+	SetVelocity(m_velocity);
 	SetUseGravity(m_useGravity);
 	SetKinematic(m_isKinematic);
 	SetPositionLock(m_positionLock);
@@ -187,7 +186,7 @@ BodyType RigidBody::GetBodyType() const
 
 void RigidBody::AddForce(const Math::Vector3& force, ForceMode mode /* = ForceMode::Force */)
 {
-	if (!IsDynamic())
+	if (!m_actor && !IsDynamic())
 	{
 		return;
 	}
@@ -211,7 +210,7 @@ void RigidBody::AddForce(const Math::Vector3& force, ForceMode mode /* = ForceMo
 
 void RigidBody::AddTorque(const Math::Vector3& torque, ForceMode mode /* = ForceMode::Force */)
 {
-	if (!IsDynamic())
+	if (!m_actor && !IsDynamic())
 	{
 		return;
 	}
@@ -235,16 +234,18 @@ void RigidBody::AddTorque(const Math::Vector3& torque, ForceMode mode /* = Force
 
 void RigidBody::SetVelocity(const Math::Vector3& velocity)
 {
-	if (IsDynamic())
+	if (m_actor && IsDynamic())
 	{
 		auto dynamicActor = static_cast<physx::PxRigidDynamic*>(m_actor);
 		dynamicActor->setLinearVelocity(physx::PxVec3(velocity.x, velocity.y, velocity.z));
 	}
+
+	m_velocity = velocity;
 }
 
 void RigidBody::AddVelocity(const Math::Vector3& addVelocity)
 {
-	if (IsDynamic())
+	if (m_actor && IsDynamic())
 	{
 		auto dynamicActor = static_cast<physx::PxRigidDynamic*>(m_actor);
 		auto&& velocity = dynamicActor->getLinearVelocity();
@@ -255,11 +256,13 @@ void RigidBody::AddVelocity(const Math::Vector3& addVelocity)
 
 		dynamicActor->setLinearVelocity(velocity);
 	}
+
+	m_velocity += addVelocity;
 }
 
 Math::Vector3 RigidBody::GetVelocity() const
 {
-	if (IsDynamic())
+	if (m_actor && IsDynamic())
 	{
 		auto dynamicActor = static_cast<physx::PxRigidDynamic*>(m_actor);
 		auto&& velocity = dynamicActor->getLinearVelocity();
@@ -271,7 +274,7 @@ Math::Vector3 RigidBody::GetVelocity() const
 
 void RigidBody::SetAngularVelocity(const Math::Vector3& velocity)
 {
-	if (IsDynamic())
+	if (m_actor && IsDynamic())
 	{
 		auto dynamicActor = static_cast<physx::PxRigidDynamic*>(m_actor);
 		dynamicActor->setAngularVelocity(physx::PxVec3(velocity.x, velocity.y, velocity.z));
@@ -280,7 +283,7 @@ void RigidBody::SetAngularVelocity(const Math::Vector3& velocity)
 
 void RigidBody::AddAngularVelocity(const Math::Vector3& addVelocity)
 {
-	if (IsDynamic())
+	if (m_actor && IsDynamic())
 	{
 		auto dynamicActor = static_cast<physx::PxRigidDynamic*>(m_actor);
 		auto&& velocity = dynamicActor->getAngularVelocity();
@@ -295,7 +298,7 @@ void RigidBody::AddAngularVelocity(const Math::Vector3& addVelocity)
 
 Math::Vector3 RigidBody::GetAngularVelocity() const
 {
-	if (IsDynamic())
+	if (m_actor && IsDynamic())
 	{
 		auto dynamicActor = static_cast<physx::PxRigidDynamic*>(m_actor);
 		auto&& velocity = dynamicActor->getAngularVelocity();
@@ -307,13 +310,13 @@ Math::Vector3 RigidBody::GetAngularVelocity() const
 
 void RigidBody::SetMass(float mass)
 {
-	if (IsDynamic())
+	if (m_actor && IsDynamic())
 	{
-		m_mass = mass;
-
 		auto dynamicActor = static_cast<physx::PxRigidDynamic*>(m_actor);
 		dynamicActor->setMass(mass);
 	}
+
+	m_mass = mass;
 }
 
 float RigidBody::GetMass() const
@@ -323,13 +326,13 @@ float RigidBody::GetMass() const
 
 void RigidBody::SetKinematic(bool kinematic)
 {
-	if (IsDynamic())
+	if (m_actor && IsDynamic())
 	{
-		m_isKinematic = kinematic;
-
 		auto dynamicActor = static_cast<physx::PxRigidDynamic*>(m_actor);
 		dynamicActor->setRigidBodyFlag(physx::PxRigidBodyFlag::eKINEMATIC, kinematic);
 	}
+
+	m_isKinematic = kinematic;
 }
 
 bool RigidBody::IsKinematic() const
@@ -344,8 +347,12 @@ bool RigidBody::IsDynamic() const
 
 void RigidBody::SetUseGravity(bool useGravity)
 {
+	if (m_actor)
+	{
+		m_actor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, !useGravity);
+	}
+
 	m_useGravity = useGravity;
-	m_actor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, !useGravity);
 }
 
 bool RigidBody::UseGravity() const
@@ -355,15 +362,15 @@ bool RigidBody::UseGravity() const
 
 void RigidBody::SetPositionLock(const Math::Vector3& positionLock)
 {
-	if (IsDynamic())
+	if (m_actor && IsDynamic())
 	{
-		m_positionLock = positionLock;
-
 		auto dynamicActor = static_cast<physx::PxRigidDynamic*>(m_actor);
 		dynamicActor->setRigidDynamicLockFlag(physx::PxRigidDynamicLockFlag::eLOCK_LINEAR_X, !!positionLock.x);
 		dynamicActor->setRigidDynamicLockFlag(physx::PxRigidDynamicLockFlag::eLOCK_LINEAR_Y, !!positionLock.y);
 		dynamicActor->setRigidDynamicLockFlag(physx::PxRigidDynamicLockFlag::eLOCK_LINEAR_Z, !!positionLock.z);
 	}
+
+	m_positionLock = positionLock;
 }
 
 const Math::Vector3& RigidBody::GetPositionLock() const
@@ -373,15 +380,15 @@ const Math::Vector3& RigidBody::GetPositionLock() const
 
 void RigidBody::SetRotationLock(const Math::Vector3& rotationLock)
 {
-	if (IsDynamic())
+	if (m_actor && IsDynamic())
 	{
-		m_rotationLock = rotationLock;
-
 		auto dynamicActor = static_cast<physx::PxRigidDynamic*>(m_actor);
 		dynamicActor->setRigidDynamicLockFlag(physx::PxRigidDynamicLockFlag::eLOCK_ANGULAR_X, !!rotationLock.x);
 		dynamicActor->setRigidDynamicLockFlag(physx::PxRigidDynamicLockFlag::eLOCK_ANGULAR_Y, !!rotationLock.y);
 		dynamicActor->setRigidDynamicLockFlag(physx::PxRigidDynamicLockFlag::eLOCK_ANGULAR_Z, !!rotationLock.z);
 	}
+
+	m_rotationLock = rotationLock;
 }
 
 const Math::Vector3& RigidBody::GetRotationLock() const
@@ -391,19 +398,25 @@ const Math::Vector3& RigidBody::GetRotationLock() const
 
 void RigidBody::SetPosition(const Math::Vector3& pos) const
 {
-	auto&& transform = m_actor->getGlobalPose();
-	transform.p = physx::PxVec3(pos.x, pos.y, pos.z);
+	if (m_actor)
+	{
+		auto&& transform = m_actor->getGlobalPose();
+		transform.p = physx::PxVec3(pos.x, pos.y, pos.z);
 
-	m_actor->setGlobalPose(transform);
+		m_actor->setGlobalPose(transform);
+	}
 }
 
 void RigidBody::SetRotation(const Math::Vector3& rot) const
 {
-	auto&& transform = m_actor->getGlobalPose();
-	auto&& quat = Math::Quaternion::FromYawPitchRool(rot);
-	transform.q = physx::PxQuat(quat.x, quat.y, quat.z, quat.w);
+	if (m_actor)
+	{
+		auto&& transform = m_actor->getGlobalPose();
+		auto&& quat = Math::Quaternion::FromYawPitchRool(rot);
+		transform.q = physx::PxQuat(quat.x, quat.y, quat.z, quat.w);
 
-	m_actor->setGlobalPose(transform);
+		m_actor->setGlobalPose(transform);
+	}
 }
 
 physx::PxRigidActor* RigidBody::GetRigidActor() noexcept

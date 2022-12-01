@@ -313,11 +313,9 @@ ResourceData* ResourceManager::GetResourceData(uint32_t type, StringView name) n
 {
     if (m_resourceTypeList.contains(type))
     {
-        String assetName(name);
-
-        if (m_resourceTypeList[type].contains(assetName))
+        if (m_resourceTypeList[type].contains(name))
         {
-            return &m_resourceTypeList[type][assetName];
+            return &m_resourceTypeList[type][name];
         }
     }
 

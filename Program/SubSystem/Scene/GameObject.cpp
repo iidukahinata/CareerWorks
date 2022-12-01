@@ -25,6 +25,7 @@ GameObject::GameObject() : m_transform(this)
 void GameObject::Serialized(FileStream* file) const noexcept
 {
 	file->Write(m_path);
+	file->Write(m_active);
 	m_transform.Serialized(file);
 
 	// component data
@@ -54,6 +55,7 @@ void GameObject::Serialized(FileStream* file) const noexcept
 void GameObject::Deserialized(FileStream* file) noexcept
 {
 	file->Read(&m_path);
+	file->Read(&m_active);
 	m_transform.Deserialized(file);
 
 	// component data
@@ -156,7 +158,7 @@ void GameObject::Tick(double deltaTime) noexcept
 {
 	bool finishTick = true;
 
-	// safe component  erase process.
+	// safe component erase process.
 	// check component remove request processed.
 	std::erase_if(m_components, [&finishTick](auto& component) {
 

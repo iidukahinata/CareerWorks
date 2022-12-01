@@ -48,7 +48,8 @@ void SetUpSceneModule()
 		PY_CLASS_MAKE_GETSET("id", GameObject, GetID, PY_BY_VALUE, SetID)
 		PY_CLASS_MAKE_GET("transform", GameObject, GetTransform, PY_RET_REF)
 		PY_CLASS_MAKE_GET("scene", GameObject, GetOwner, PY_RET_REF)
-		PY_CLASS_MAKE_GET("world", GameObject, GetWorld, PY_RET_REF);
+		PY_CLASS_MAKE_GET("world", GameObject, GetWorld, PY_RET_REF)
+		PY_CLASS_MAKE_GET("context", GameObject, GetContext, PY_RET_REF);
 
 	PY_CLASS_NOCOPY(World)
 		PY_CLASS_DEF(World, LoadScene)

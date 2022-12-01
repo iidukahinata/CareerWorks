@@ -160,5 +160,5 @@ void SetUpComponentModule()
         PY_CLASS_MAKE_GETSET("rotationLock", IRigidBody, GetRotationLock, PY_RET_REF, SetRotationLock);
 
     PY_BASE_CLASS_NOCOPY(IScript, IComponent)
-        PY_CLASS_DEF_POLICIE(IScript, GetScript, PY_RET_REF);
+        PY_CLASS_MAKE_GETSET("scriptInstance", IScript, GetScript, PY_RET_REF, SetScript);
 }

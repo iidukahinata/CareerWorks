@@ -19,13 +19,20 @@
 
 void SetUpResourceModule()
 {
-	ResourceHandle* (ResourceManager:: * load)(StringView, StringView, uint32_t) = &ResourceManager::Load;
+	ResourceHandle* (ResourceManager:: * load		  )(StringView, StringView, uint32_t) = &ResourceManager::Load;
 	ResourceHandle* (ResourceManager:: * loadTexture  )(StringView, uint32_t) = &ResourceManager::Load<Texture>;
 	ResourceHandle* (ResourceManager:: * loadMaterial )(StringView, uint32_t) = &ResourceManager::Load<Material>;
 	ResourceHandle* (ResourceManager:: * loadMesh	  )(StringView, uint32_t) = &ResourceManager::Load<Mesh>;
 	ResourceHandle* (ResourceManager:: * loadModel	  )(StringView, uint32_t) = &ResourceManager::Load<Model>;
 	ResourceHandle* (ResourceManager:: * loadAudioClip)(StringView, uint32_t) = &ResourceManager::Load<AudioClip>;
-	void (ResourceManager::*unload)(StringView, StringView) = &ResourceManager::Unload;
+	ResourceHandle* (ResourceManager:: * loadScript   )(StringView, uint32_t) = &ResourceManager::Load<ScriptInstance>;
+	Texture*		(ResourceManager:: * getTexture	  )(StringView) = &ResourceManager::GetResource<Texture>;
+	Material*		(ResourceManager:: * getMaterial  )(StringView) = &ResourceManager::GetResource<Material>;
+	Mesh*			(ResourceManager:: * getMesh	  )(StringView) = &ResourceManager::GetResource<Mesh>;
+	Model*			(ResourceManager:: * getModel	  )(StringView) = &ResourceManager::GetResource<Model>;
+	AudioClip*		(ResourceManager:: * getAudioClip )(StringView) = &ResourceManager::GetResource<AudioClip>;
+	ScriptInstance* (ResourceManager:: * getScript	  )(StringView) = &ResourceManager::GetResource<ScriptInstance>;
+	void			(ResourceManager::*unload		  )(StringView, StringView)  = &ResourceManager::Unload;
 
 	PY_CLASS_NOCOPY(ResourceHandle)
 		PY_CLASS_DEF(ResourceHandle, IsValid)
@@ -35,6 +42,7 @@ void SetUpResourceModule()
 		.def("GetMesh", &ResourceHandle::GetResource<Mesh>, PY_RET_REF)
 		.def("GetModel", &ResourceHandle::GetResource<Model>, PY_RET_REF)
 		.def("GetAudioClip", &ResourceHandle::GetResource<AudioClip>, PY_RET_REF)
+		.def("GetScript", &ResourceHandle::GetResource<ScriptInstance>, PY_RET_REF)
 		PY_CLASS_DEF(ResourceHandle, WaitForLoadComplete);
 
 	PY_CLASS_NOCOPY(ResourceManager)
@@ -44,6 +52,13 @@ void SetUpResourceModule()
 		.def("LoadMesh", loadMesh, PY_RET_REF)
 		.def("LoadModel", loadModel, PY_RET_REF)
 		.def("LoadAudioClip", loadAudioClip, PY_RET_REF)
+		.def("LoadScript", loadScript, PY_RET_REF)
+		.def("GetTexture", getTexture, PY_RET_REF)
+		.def("GetMaterial", getMaterial, PY_RET_REF)
+		.def("GetMesh", getMesh, PY_RET_REF)
+		.def("GetModel", getModel, PY_RET_REF)
+		.def("GetAudioClip", getAudioClip, PY_RET_REF)
+		.def("GetScript", getScript, PY_RET_REF)
 		.def("Unload", unload);
 
 	PY_CLASS_NOCOPY(IResource)

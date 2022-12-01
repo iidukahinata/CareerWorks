@@ -112,11 +112,6 @@ namespace ImTimeLine
         ASSERT(m_currentLogs.size());
         m_currentLogs.top().endTime = m_stopwatch.GetRap(Milli);
 
-        if (m_currentLogs.top().label == "Update")
-        {
-            int i = 0;
-        }
-
         // add timeLine log
         auto& timelineObjects = m_timelineObjects[g_currentTimeLinePos];
         timelineObjects.logs.emplace_back(m_currentLogs.top());
