@@ -11,6 +11,14 @@
 
 class Mesh;
 class Model;
+class D3D12ConstantBuffer;
+
+struct Batch
+{
+	Vector<Mesh*> meshes;
+
+	D3D12ConstantBuffer* constantBuffer;
+};
 
 class IRenderObject : public IComponent
 {
@@ -23,13 +31,7 @@ public:
 		ASSERT(0);
 	}
 
-	/** 実際のモデル表示処理を記述。*/
-	virtual void Render()
-	{
-		ASSERT(0);
-	}
-
-	bool IsTranslucent()
+	virtual Batch GetBatch()
 	{
 		ASSERT(0); return {};
 	}

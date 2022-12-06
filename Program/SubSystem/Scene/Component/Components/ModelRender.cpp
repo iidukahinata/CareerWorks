@@ -11,6 +11,8 @@
 #include "SubSystem/Resource/ResourceManager.h"
 #include "SubSystem/Resource/Resources/3DModel/Mesh.h"
 #include "SubSystem/Resource/Resources/3DModel/Model.h"
+#include "SubSystem/Resource/Resources/3DModel/Material.h"
+#include "SubSystem/Renderer/GraphicsAPI/D3D12/D3D12GraphicsDevice.h"
 #include "SubSystem/Thread/RenderingThread/RenderingThread.h"
 
 void ModelRender::Serialized(FileStream* file) const
@@ -140,44 +142,23 @@ void ModelRender::GetUseResourcePaths(Vector<String>& resources)
 
 void ModelRender::PreRender()
 {
-	if (!m_model)
-	{
-		return;
-	}
-
 	// 描画時使用する MatrixBuffer の更新
-	{
-		auto&& handle = m_constantBufferMatrix.GetCPUData();
-		auto&& transform = GetTransform().GetWorldMatrix().ToMatrixXM();
+	auto&& handle = m_constantBufferMatrix.GetCPUData();
+	auto&& transform = GetTransform().GetWorldMatrix().ToMatrixXM();
 
-		m_renderer->GetTransformCBuffer()->Bind(handle, transform);
-		m_constantBufferMatrix.VSSet(0);
-	}
-
-	for (auto mesh : m_model->GetAllMeshes())
-	{
-		if (!mesh->GetMaterial())
-			continue;
-
-		mesh->PreRender();
-	}
+	m_renderer->GetTransformCBuffer()->Bind(handle, transform);
+	m_constantBufferMatrix.VSSet(0);
 }
 
-void ModelRender::Render()
+Batch ModelRender::GetBatch()
 {
-	if (!m_model)
+	Batch batch;
+
+	if (m_model)
 	{
-		return;
+		batch.constantBuffer = &m_constantBufferMatrix;
+		batch.meshes = m_model->GetAllMeshes();
 	}
 
-	// PreRender で更新済み
-	m_constantBufferMatrix.VSSet(0);
-
-	for (const auto& meshes = m_model->GetAllMeshes(); auto mesh : meshes)
-	{
-		if (!mesh->GetMaterial())
-			continue;
-
-		mesh->Render();
-	}
+	return batch;
 }

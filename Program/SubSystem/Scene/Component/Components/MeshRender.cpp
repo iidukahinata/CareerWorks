@@ -11,6 +11,7 @@
 #include "SubSystem/Resource/ResourceManager.h"
 #include "SubSystem/Resource/Resources/3DModel/Mesh.h"
 #include "SubSystem/Resource/Resources/3DModel/Material.h"
+#include "SubSystem/Renderer/GraphicsAPI/D3D12/D3D12GraphicsDevice.h"
 #include "SubSystem/Thread/RenderingThread/RenderingThread.h"
 
 void MeshRender::Serialized(FileStream* file) const
@@ -140,42 +141,23 @@ void MeshRender::GetUseResourcePaths(Vector<String>& resources)
 
 void MeshRender::PreRender()
 {
-	if (!m_mesh)
-	{
-		return;
-	}
-
-	if (!m_mesh->GetMaterial())
-	{
-		return;
-	}
-
 	// 描画時使用する MatrixBuffer の更新
-	{
-		auto&& handle = m_constantBufferMatrix.GetCPUData();
-		auto&& transform = GetTransform().GetWorldMatrix().ToMatrixXM();
+	auto&& handle = m_constantBufferMatrix.GetCPUData();
+	auto&& transform = GetTransform().GetWorldMatrix().ToMatrixXM();
 
-		m_renderer->GetTransformCBuffer()->Bind(handle, transform);
-		m_constantBufferMatrix.VSSet(0);
-	}
-
-	m_mesh->PreRender();
+	m_renderer->GetTransformCBuffer()->Bind(handle, transform);
+	m_constantBufferMatrix.VSSet(0);
 }
 
-void MeshRender::Render()
+Batch MeshRender::GetBatch()
 {
-	if (!m_mesh)
+	Batch batch;
+
+	if (m_mesh)
 	{
-		return;
+		batch.constantBuffer = &m_constantBufferMatrix;
+		batch.meshes.emplace_back(m_mesh);
 	}
 
-	if (!m_mesh->GetMaterial())
-	{
-		return;
-	}
-
-	// PreRender で更新済み
-	m_constantBufferMatrix.VSSet(0);
-
-	m_mesh->Render();
+	return batch;
 }

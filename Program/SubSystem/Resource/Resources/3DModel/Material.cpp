@@ -111,6 +111,20 @@ bool Material::IsTranslucent() const noexcept
 	return m_materialData.m_blendMode != BLEND_MODE_NO_ALPHA;
 }
 
+void Material::SetIsInstancing(bool instancing) noexcept
+{
+	m_materialData.m_isInstancing = instancing;
+
+	DefineSettingToVertexShader();
+
+	CreatePipeline();
+}
+
+bool Material::IsInstancing() const noexcept
+{
+	return m_materialData.m_isInstancing;
+}
+
 void Material::SetRasterizerState(RASTERIZER_STATE rasterizerState) noexcept
 {
 	m_materialData.m_rasterizerState = rasterizerState;
@@ -132,6 +146,10 @@ bool Material::SetShader(ShaderType type, StringView path, bool createPipeline /
 	}
 
 	// テクスチャ設定の Define を定義したコンパイルを行うため
+	if (type == VertexShader)
+	{
+		DefineSettingToVertexShader(path);
+	}
 	if (type == PixelShader)
 	{
 		// 初期ロード時かを PixelShader の有無で判断している
@@ -176,7 +194,11 @@ void Material::RefreshShader() noexcept
 			continue;
 		}
 
-		if (i == PixelShader)
+		if (i == VertexShader)
+		{
+			DefineSettingToVertexShader(String(), true);
+		}
+		else if (i == PixelShader)
 		{
 			DefineSettingToPixelShader(String(), true);
 		}
@@ -334,11 +356,49 @@ bool Material::DefineSettingToPixelShader(StringView path /* = StringView() */, 
 
 	if (recompile)
 	{
-		m_shader.ReCompile(PixelShader, defines.data());
+		return m_shader.ReCompile(PixelShader, defines.data());
 	}
 	else
 	{
-		return m_shader.SetShader(PixelShader, path, defines.data());
+		return m_shader.SetShader(PixelShader, shaderPath, defines.data());
+	}
+}
+
+bool Material::DefineSettingToVertexShader(StringView path /* = String() */, bool recompile /* = false */) noexcept
+{
+	String shaderPath = path;
+	if (path.empty())
+	{
+		shaderPath = m_materialData.m_shaderPaths[VertexShader];
+
+		if (shaderPath.empty())
+		{
+			return false;
+		}
+	}
+
+	Map<String, String> macros;
+	macros.emplace("USE_INSTANCING", m_materialData.m_isInstancing ? "1" : "0");
+
+	Vector<D3D_SHADER_MACRO> defines;
+
+	constexpr auto NumNullObject = 1;
+	defines.reserve(macros.size() + NumNullObject);
+
+	for (auto& macro : macros)
+	{
+		defines.push_back(D3D_SHADER_MACRO(macro.first.c_str(), macro.second.c_str()));
+	}
+
+	defines.push_back(D3D_SHADER_MACRO(NULL, NULL));
+
+	if (recompile)
+	{
+		return m_shader.ReCompile(VertexShader, defines.data());
+	}
+	else
+	{
+		return m_shader.SetShader(VertexShader, shaderPath, defines.data());
 	}
 }
 
@@ -381,7 +441,6 @@ bool Material::CreatePipeline() noexcept
 	desc.BlendMode		 = m_materialData.m_blendMode;
 	desc.RasterizerState = m_materialData.m_rasterizerState;
 	desc.PrimitiveType	 = PRIMITIVE_TYPE_TRIANGLELIST;
-	//desc.SampleDesc.Count = 4;
 
 	if (desc.PS)
 	{
@@ -455,6 +514,9 @@ bool Material::CompileShader() noexcept
 	{
 		return false;
 	}
+
+	// 実際には処理されていないが、処理を外すとインスタンス有効時に正常に動作しなくなるため記述
+	DefineSettingToVertexShader();
 
 	if (!CreatePipeline())
 	{

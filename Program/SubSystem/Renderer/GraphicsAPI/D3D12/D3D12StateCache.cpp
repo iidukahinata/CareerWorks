@@ -128,7 +128,10 @@ void D3D12StateCache::Apply(PipelineType type) noexcept
 
 void D3D12StateCache::SetGraphicsPipelineState(D3D12GraphicsPipelineState* pipelineState) noexcept
 {
-	ASSERT(pipelineState);
+	if (m_state.m_pipelineState == pipelineState->Get())
+	{
+		return;
+	}
 
 	auto primitiveType = static_cast<D3D_PRIMITIVE_TOPOLOGY>(pipelineState->GetDesc().PrimitiveType);
 	SetPrimitiveTopology(primitiveType);
@@ -145,7 +148,10 @@ void D3D12StateCache::SetGraphicsPipelineState(D3D12GraphicsPipelineState* pipel
 
 void D3D12StateCache::SetComputePipelineState(D3D12ComputePipelineState* pipelineState) noexcept
 {
-	ASSERT(pipelineState);
+	if (m_state.m_pipelineState == pipelineState->Get())
+	{
+		return;
+	}
 
 	if (auto rootSignature = pipelineState->GetRootSignature())
 	{
@@ -167,7 +173,6 @@ void D3D12StateCache::SetVertexBuffer(D3D12_VERTEX_BUFFER_VIEW* vertexBufferView
 	m_state.m_vertexBufferViews[index].SizeInBytes = vertexBufferView->SizeInBytes;
 
 	m_state.m_vertexBufferViewMask |= 1 << (index + 1);
-	m_state.m_numVertexBufferViews = index;
 
 	auto max = GetMsb(m_state.m_vertexBufferViewMask);
 	m_state.m_numVertexBufferViews = max;

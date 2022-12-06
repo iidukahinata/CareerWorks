@@ -30,6 +30,7 @@ public:
 	float m_metallic;
 	float m_smooth;
 	Math::Vector3 m_emission;
+	bool m_isInstancing;
 
 	RASTERIZER_STATE m_rasterizerState;
 	BLEND_MODE m_blendMode;

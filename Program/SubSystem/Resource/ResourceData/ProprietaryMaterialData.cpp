@@ -21,6 +21,7 @@ ProprietaryMaterialData::ProprietaryMaterialData()
 	m_metallic		  = 0.0f;
 	m_smooth		  = 0.0f;
 	m_emission		  = Math::Vector3::Zero;
+	m_isInstancing	  = false;
 	m_blendMode		  = BLEND_MODE::BLEND_MODE_NO_ALPHA;
 	m_rasterizerState = RASTERIZER_STATE::NO_CULL;
 }
@@ -33,6 +34,7 @@ void ProprietaryMaterialData::Serialized(FileStream* file) const
 	file->Write(m_emission);
 	file->Write(m_blendMode);
 	file->Write(m_rasterizerState);
+	file->Write(m_isInstancing);
 
 	for (int i = 0; i < ShaderType::NumAllType; ++i)
 	{
@@ -56,6 +58,7 @@ void ProprietaryMaterialData::Deserialized(FileStream* file)
 	file->Read(&m_emission);
 	file->Read(&m_blendMode);
 	file->Read(&m_rasterizerState);
+	file->Read(&m_isInstancing);
 
 	for (int i = 0; i < ShaderType::NumAllType; ++i)
 	{

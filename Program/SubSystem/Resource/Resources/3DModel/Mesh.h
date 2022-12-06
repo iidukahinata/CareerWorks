@@ -25,14 +25,15 @@ public:
 	/** 主にEditer上で使用される asset や独自データの更新処理 */
 	void Update() override;
 
-	void PreRender() noexcept;
-	void Render() noexcept;
-
 public:
 
 	/** パラメーター */
 	void SetMaterial(Material* material) noexcept;
 	Material* GetMaterial() const noexcept;
+
+	D3D12VertexBuffer* GetVertexBuffer() noexcept;
+	D3D12IndexBuffer* GetIndexBuffer() noexcept;
+	uint32_t GetIndexNum() const noexcept;
 
 private:
 

@@ -304,6 +304,15 @@ Vector<D3D12_INPUT_ELEMENT_DESC> D3D12Shader::GetInputLayout() noexcept
 				inputElementDesc.Format = DXGI_FORMAT_R32G32B32_FLOAT;
 		}
 
+		if (inputElementDesc.SemanticName == StringView("MATRIX"))
+		{
+			inputElementDesc.InputSlot = 1;
+			inputElementDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+			inputElementDesc.AlignedByteOffset = inputElementDesc.SemanticIndex * 16;
+			inputElementDesc.InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA;
+			inputElementDesc.InstanceDataStepRate = 1;
+		}
+
 		inputElementDescs.push_back(std::move(inputElementDesc));
 	}
 

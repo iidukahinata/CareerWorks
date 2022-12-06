@@ -76,6 +76,9 @@ void ViewPortWidget::ShowToolBar() noexcept
 			DetailsWidget::ClearSelectObject();
 			m_isPouse = false;
 		}
+
+		CancelEvent<KeyPressedEvent>(true);
+		CancelEvent<KeyReleasedEvent>(true);
 	}
 	else
 	{

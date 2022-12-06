@@ -31819,3 +31819,5 @@ FodyWeavers.xsd
 /Data/Resource/Script/BulletManager.py
 /Data/Resource/Script/Bullet.py
 /Data/asset/Script/Bullet.asset
+/Data/Resource/Scene/Test.scene
+/Data/asset/Scene/Test.asset

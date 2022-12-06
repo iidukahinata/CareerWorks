@@ -68,7 +68,7 @@ public:
 public:
 
 	void PreRender() override;
-	void Render() override;
+	Batch GetBatch() override;
 
 public:
 
@@ -104,7 +104,7 @@ public:
 public:
 
 	void PreRender() override;
-	void Render() override;
+	Batch GetBatch() override;
 
 public:
 

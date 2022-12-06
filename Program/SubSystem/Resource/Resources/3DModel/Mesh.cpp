@@ -2,14 +2,13 @@
 * @file    Meshcpp
 * @brief
 *
-* @date	   2022/10/30 2022年度初版
+* @date	   2022/12/01 2022年度初版
 */
 
 
 #include "Mesh.h"
 #include "Material.h"
 #include "SubSystem/Resource/ResourceManager.h"
-#include "SubSystem/Renderer/GraphicsAPI/D3D12/D3D12GraphicsDevice.h"
 
 bool Mesh::Load(StringView path)
 {
@@ -47,30 +46,6 @@ void Mesh::Update()
 	UpdateResourceDataFile();
 }
 
-void Mesh::PreRender() noexcept
-{
-	ASSERT(m_material);
-
-	// Set Mesh Buffer
-	m_vertexBuffer.IASet();
-	m_indexBuffer.IASet();
-
-	D3D12GraphicsDevice::Get().GetCommandContext().DrawIndexedInstanced(m_meshData.m_indices.size(), 1, 0, 0, 0);
-}
-
-void Mesh::Render() noexcept
-{
-	ASSERT(m_material);
-
-	m_material->Render();
-	
-	// Set Mesh Buffer
-	m_vertexBuffer.IASet();
-	m_indexBuffer.IASet();
-
-	D3D12GraphicsDevice::Get().GetCommandContext().DrawIndexedInstanced(m_meshData.m_indices.size(), 1, 0, 0, 0);
-}
-
 void Mesh::SetMaterial(Material* material) noexcept
 {
 	m_material = material;
@@ -79,6 +54,21 @@ void Mesh::SetMaterial(Material* material) noexcept
 Material* Mesh::GetMaterial() const noexcept
 {
 	return m_material;
+}
+
+D3D12VertexBuffer* Mesh::GetVertexBuffer() noexcept
+{
+	return &m_vertexBuffer;
+}
+
+D3D12IndexBuffer* Mesh::GetIndexBuffer() noexcept
+{
+	return &m_indexBuffer;
+}
+
+uint32_t Mesh::GetIndexNum() const noexcept
+{
+	return m_meshData.m_indices.size();
 }
 
 void Mesh::UpdateProprietaryDataFile() noexcept

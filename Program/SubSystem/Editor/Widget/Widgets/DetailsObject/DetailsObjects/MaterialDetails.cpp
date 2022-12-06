@@ -79,6 +79,7 @@ void MaterialDetails::ShowMaterialInterface() noexcept
 		auto metallic	= material->GetMetallic();
 		auto smooth		= material->GetSmooth();
 		auto emissive	= material->GetEmission();
+		auto instancing = material->IsInstancing();
 
 		ImGui::Text("Name"); ImGui::SameLine(offsetPos);
 		ImGui::Text(path.c_str());
@@ -108,12 +109,16 @@ void MaterialDetails::ShowMaterialInterface() noexcept
 			ShowTextureList(material);
 		}
 
-		if (inputBlendMode)  RegisterEditorCommand([material](auto data) { material->SetBlendMode(data);	   }, blendMode	 , material->GetBlendMode());
-		if (inputRasterizer) RegisterEditorCommand([material](auto data) { material->SetRasterizerState(data); }, rasterizer , material->GetRasterizerState());
-		if (inputAlbedo)     RegisterEditorCommand([material](auto data) { material->SetAlbedo(data);		   }, albedo	 , material->GetAlbedo());
-		if (inputMetallic)   RegisterEditorCommand([material](auto data) { material->SetMetallic(data);		   }, metallic	 , material->GetMetallic());
-		if (inputSmooth)	 RegisterEditorCommand([material](auto data) { material->SetSmooth(data);		   }, smooth	 , material->GetSmooth());
-		if (inputEmissive)   RegisterEditorCommand([material](auto data) { material->SetEmission(data);		   }, emissive	 , material->GetEmission());
+		ImGui::Text("Enable Instancing"); ImGui::SameLine(offsetPos);
+		auto inputInstancing = ImGui::Checkbox("##Instancing", &instancing);
+
+		if (inputBlendMode)  RegisterEditorCommand([material](auto data) { material->SetBlendMode(data); material->Update();	   }, blendMode	 , material->GetBlendMode());
+		if (inputRasterizer) RegisterEditorCommand([material](auto data) { material->SetRasterizerState(data); material->Update(); }, rasterizer , material->GetRasterizerState());
+		if (inputAlbedo)     RegisterEditorCommand([material](auto data) { material->SetAlbedo(data); material->Update();		   }, albedo	 , material->GetAlbedo());
+		if (inputMetallic)   RegisterEditorCommand([material](auto data) { material->SetMetallic(data); material->Update();		   }, metallic	 , material->GetMetallic());
+		if (inputSmooth)	 RegisterEditorCommand([material](auto data) { material->SetSmooth(data); material->Update();		   }, smooth	 , material->GetSmooth());
+		if (inputEmissive)   RegisterEditorCommand([material](auto data) { material->SetEmission(data); material->Update();		   }, emissive	 , material->GetEmission());
+		if (inputInstancing) RegisterEditorCommand([material](auto data) { material->SetIsInstancing(data); material->Update();	   }, instancing , material->IsInstancing());
 	}
 }
 
@@ -205,8 +210,7 @@ void MaterialDetails::ShowTextureList(Material* material) noexcept
 		{
 			if (auto catchTexture = LoadResource<Texture>(resourceData))
 			{
-				RegisterEditorCommand([material, pramName](auto data) { material->SetTexture(pramName, data, true); }, catchTexture, texture);
-				material->Update();
+				RegisterEditorCommand([material, pramName](auto data) { material->SetTexture(pramName, data, true); material->Update(); }, catchTexture, texture);
 			}
 		}
 
@@ -254,17 +258,11 @@ bool MaterialDetails::DragDropTexture(Material* material, Texture* texture, Stri
 	{
 		if (auto catchTexture = CatchDragObject<Texture>())
 		{
-			RegisterEditorCommand([material, pramName](auto data) { material->SetTexture(pramName, data, true); }, catchTexture, texture);
-			result = true;
+			RegisterEditorCommand([material, pramName](auto data) { material->SetTexture(pramName, data, true); material->Update(); }, catchTexture, texture);
 		}
 	}
 
 	ShowDragDropHelper<Texture>(hoverd, 156, 0, 31);
-
-	if (result)
-	{
-		material->Update();
-	}
 
 	return result;
 }

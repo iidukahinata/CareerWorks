@@ -49,6 +49,8 @@ public:
 	void SetBlendMode(BLEND_MODE mode) noexcept;
 	BLEND_MODE GetBlendMode() const noexcept;
 	bool IsTranslucent() const noexcept;
+	void SetIsInstancing(bool instancing) noexcept;
+	bool IsInstancing() const noexcept;
 	void SetRasterizerState(RASTERIZER_STATE mode) noexcept;
 	RASTERIZER_STATE GetRasterizerState() const noexcept;
 	bool SetShader(ShaderType type, StringView path, bool createPipeline = true) noexcept;
@@ -70,6 +72,7 @@ private:
 
 	/** マテリアル設定の Define をシェーダーに定義 */
 	bool DefineSettingToPixelShader(StringView path = String(), bool recompile = false) noexcept;
+	bool DefineSettingToVertexShader(StringView path = String(), bool recompile = false) noexcept;
 
 	/** セットされたシェーダファイルから各パラメーター取得 */
 	void ParametricAnalysis(bool isClear = true) noexcept;

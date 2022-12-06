@@ -51,6 +51,8 @@ private:
 
 private:
 
+	void CreateRenderList();
+
 	/** フレーム内で使用する描画情報の生成 */
 	void PrePass() noexcept;
 
@@ -126,4 +128,25 @@ private:
 
 	// * Update と Present
 	Array<Job, 2> m_jobs;
+
+public:
+
+	struct DrawBacth
+	{
+		Material* material;
+		D3D12ConstantBuffer* constantBuffer;
+		Vector<D3D12VertexBuffer*> vertexBuffers;
+		D3D12IndexBuffer* indexBuffer;
+		uint32_t indexNum;
+		uint32_t instancingNum;
+	};
+
+	struct DrawInstancingBacth : public DrawBacth
+	{
+		D3D12VertexBuffer instancingBuffer;
+		Vector<DirectX::XMMATRIX> matList;
+	};
+
+	Vector<DrawBacth> m_bacthList;
+	Vector<D3D12VertexBuffer> m_instancingBuffer;
 };

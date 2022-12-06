@@ -13,14 +13,17 @@ class BulletManager(MonoBehaviour.MonoBehaviour) :
 
 	#= BulletList ===================================
 	def Allocate(self) :
-		bullet = self.__bulletList[self.__numBullet]
-		self.__numBullet += 1
-		return bullet
+		return 	self.__bulletList.pop(0)
+
+	def Deallocate(self, bullet) :
+		self.__bulletList.append(bullet)
+		return
 
 	def __CreateNewList(self, num) :
 
 		# get bullet resource
 		bulletScript = self.context.GetResource().GetScript("Bullet")
+		bulletMesh   = self.context.GetResource().GetMesh("Cube")
 
 		for i in range(num) :
 
@@ -35,7 +38,7 @@ class BulletManager(MonoBehaviour.MonoBehaviour) :
 
 			# script postInit
 			bullet = script.scriptInstance.GetInstance(script)
-			bullet.PostInit(self)
+			bullet.PostInit(self, bulletMesh)
 
 			# add list
 			self.__bulletList.append(bullet)

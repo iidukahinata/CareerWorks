@@ -182,13 +182,13 @@ void ForwardRenderer::PrePass() noexcept
 void ForwardRenderer::LightingPass() noexcept
 {
 	// Draw
-	for (auto renderObject : m_renderObjects)
-	{
-		if (!renderObject->GetActive())
-			continue;
-
-		renderObject->Render();
-	}
+	//for (auto renderObject : m_renderObjects)
+	//{
+	//	if (!renderObject->GetActive())
+	//		continue;
+	//
+	//	renderObject->Render();
+	//}
 
 	// Draw SkyBox
 	m_skyBox->Render(m_mainCamera);
