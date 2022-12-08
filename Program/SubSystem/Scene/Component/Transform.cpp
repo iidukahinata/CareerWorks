@@ -11,7 +11,7 @@
 Transform::Transform(GameObject* gameObject) :
 	m_owner(gameObject),
 	m_localPosition(0.f, 0.f, 0.f),
-	m_localRotation(0.f, 0.f, 0.f),
+	m_localRotation(0.f, 0.f, 0.f, 1.f),
 	m_localScale(1.f, 1.f, 1.f),
 	m_right(1.f, 0.f, 0.f),
 	m_up(0.f, 1.f, 0.f),
@@ -63,7 +63,7 @@ const Math::Vector3& Transform::GetWoldPosition() const
 	return GetWorldMatrix().GetTranslation();
 }
 
-void Transform::SetRotation(const Math::Vector3& rotation) noexcept
+void Transform::SetRotation(const Math::Quaternion& rotation) noexcept
 {
 	m_localRotation = rotation;
 
@@ -73,7 +73,7 @@ void Transform::SetRotation(const Math::Vector3& rotation) noexcept
 	m_forward = Math::Vector3(rot.m[2][0], rot.m[2][1], rot.m[2][2]);
 }
 
-const Math::Vector3& Transform::GetRotation() const noexcept
+const Math::Quaternion& Transform::GetRotation() const noexcept
 {
 	return m_localRotation;
 }
@@ -95,10 +95,9 @@ void Transform::LockAt(const Math::Vector3& target, const Math::Vector3& up /* =
 		DirectX::XMLoadFloat3(&target),
 		DirectX::XMLoadFloat3(&up));
 
-	DirectX::XMMATRIX invView = DirectX::XMMatrixInverse(nullptr, std::move(view));
 	Math::Matrix rotMatrix;
-	DirectX::XMStoreFloat4x4(&rotMatrix, std::move(invView));
-	SetRotation(rotMatrix.GetEulerAngles());
+	DirectX::XMStoreFloat4x4(&rotMatrix, DirectX::XMMatrixInverse(nullptr, std::move(view)));
+	SetRotation(rotMatrix.GetQuaternion());
 }
 
 void Transform::LockTo(const Math::Vector3& direction, const Math::Vector3& up /* = Math::Vector3::Right */)
@@ -108,10 +107,9 @@ void Transform::LockTo(const Math::Vector3& direction, const Math::Vector3& up /
 		DirectX::XMLoadFloat3(&direction),
 		DirectX::XMLoadFloat3(&up));
 
-	DirectX::XMMATRIX invView = DirectX::XMMatrixInverse(nullptr, std::move(view));
 	Math::Matrix rotMatrix;
-	DirectX::XMStoreFloat4x4(&rotMatrix, std::move(invView));
-	SetRotation(rotMatrix.GetEulerAngles());
+	DirectX::XMStoreFloat4x4(&rotMatrix, DirectX::XMMatrixInverse(nullptr, std::move(view)));
+	SetRotation(rotMatrix.GetQuaternion());
 }
 
 Math::Matrix Transform::GetLocalMatrix() const

@@ -46,7 +46,7 @@ DefaultLightMap::ConstantBufferLight DefaultLightMap::CreateConstantBufferLight(
 		switch (light->GetLightType())
 		{
 		case LightType::DirectionalLight:
-			buffer.directionalLight.direction = Math::Vector4(light->GetTransform().GetRotation(), 0.f);
+			buffer.directionalLight.direction = Math::Vector4(light->GetTransform().GetRotation().GetEuler(), 0.f);
 			buffer.directionalLight.color	  = light->GetColor();
 			buffer.directionalLight.color.w   = light->GetIntensity();
 			break;
@@ -61,7 +61,7 @@ DefaultLightMap::ConstantBufferLight DefaultLightMap::CreateConstantBufferLight(
 
 		case LightType::SpotLight:
 			buffer.spotLights[spotLightCount].position		 = Math::Vector4(light->GetTransform().GetPosition(), 0.f);
-			buffer.spotLights[spotLightCount].direction		 = Math::Vector4(light->GetTransform().GetRotation(), 0.f);
+			buffer.spotLights[spotLightCount].direction		 = Math::Vector4(light->GetTransform().GetRotation().GetEuler(), 0.f);
 			buffer.spotLights[spotLightCount].color			 = light->GetColor();
 			buffer.spotLights[spotLightCount].intensity		 = light->GetIntensity();
 			buffer.spotLights[spotLightCount].influenceRange = light->GetInfluenceRange();

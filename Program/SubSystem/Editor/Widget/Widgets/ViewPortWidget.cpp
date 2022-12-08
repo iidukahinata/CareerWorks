@@ -169,13 +169,10 @@ void ViewPortWidget::Show3DGuizmo(const ImVec2& cursorPos, float imageWidth, flo
 		auto isMove = ImGuizmo::Manipulate(&view.m[0][0], &projection.m[0][0], operation, ImGuizmo::LOCAL, &matrix.m[0][0], &delta.x);
 		if (ImGuizmo::IsUsing() && isMove)
 		{
-			Math::Vector3 pos, rot, scale;
-			ImGuizmo::DecomposeMatrixToComponents(&matrix.m[0][0], &pos.x, &rot.x, &scale.x);
+			Math::Vector3 pos, angle, scale;
+			ImGuizmo::DecomposeMatrixToComponents(&matrix.m[0][0], &pos.x, &angle.x, &scale.x);
 
-			delta.x = Math::ToRadian(delta.x);
-			delta.y = Math::ToRadian(delta.y);
-			delta.z = Math::ToRadian(delta.z);
-			rot = transform.GetRotation() + delta;
+			auto rot = transform.GetRotation() * Math::Quaternion::FromEuler(delta);
 
 			transform.SetPosition(pos);
 			transform.SetRotation(rot);

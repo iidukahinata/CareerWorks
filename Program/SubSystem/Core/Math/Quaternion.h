@@ -70,10 +70,10 @@ namespace Math
 		Quaternion operator*(const Quaternion& Q) const noexcept
 		{
 			return Quaternion(
-				 x * Q.w + y * Q.z - z * Q.y + w * Q.x,
-				-x * Q.z + y * Q.w + z * Q.x + w * Q.y,
-				 x * Q.y - y * Q.x + z * Q.w + w * Q.z,
-				-x * Q.x - y * Q.y - z * Q.z + w * Q.w);
+			  x * Q.w + y * Q.z - z * Q.y + w * Q.x,
+			 -x * Q.z + y * Q.w + z * Q.x + w * Q.y,
+			  x * Q.y - y * Q.x + z * Q.w + w * Q.z,
+			 -x * Q.x - y * Q.y - z * Q.z + w * Q.w);
 		}
 
 		Quaternion operator*(float value) const noexcept
@@ -165,11 +165,6 @@ namespace Math
 			return *this;
 		}
 
-		Quaternion Inverse() const noexcept
-		{
-			return Quaternion(-x, -y, -z, w);
-		}
-
 		Vector3 GetEuler() const noexcept
 		{
 			const float check = 2.0f * (-y * z + w * x);
@@ -234,7 +229,7 @@ namespace Math
 
 		bool operator!=(const Quaternion& Q) const noexcept
 		{
-			return x != Q.x && y != Q.y && z != Q.z && w != Q.w;
+			return x != Q.x || y != Q.y || z != Q.z || w != Q.w;
 		}
 
 		bool Equals(const Quaternion& Q, float tolerance = MINUTE_VALUE) const noexcept

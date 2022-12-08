@@ -31821,3 +31821,5 @@ FodyWeavers.xsd
 /Data/asset/Script/Bullet.asset
 /Data/Resource/Scene/Test.scene
 /Data/asset/Scene/Test.asset
+/Data/Resource/Script/Enemy.py
+/Data/asset/Script/Enemy.asset

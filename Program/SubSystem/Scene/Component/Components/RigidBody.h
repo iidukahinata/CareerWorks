@@ -76,7 +76,7 @@ public:
 
 	/** transform */
 	void SetPosition(const Math::Vector3& pos) const override;
-	void SetRotation(const Math::Vector3& rot) const override;
+	void SetRotation(const Math::Quaternion& rot) const override;
 
 	/** アクセス */
 	physx::PxRigidActor* GetRigidActor() noexcept;

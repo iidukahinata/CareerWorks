@@ -151,7 +151,7 @@ public:
 	{
 		ASSERT(0);
 	}
-	virtual void SetRotation(const Math::Vector3& rot) const
+	virtual void SetRotation(const Math::Quaternion& rot) const
 	{
 		ASSERT(0);
 	}

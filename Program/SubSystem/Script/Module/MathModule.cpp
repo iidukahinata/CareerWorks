@@ -154,6 +154,9 @@ void SetUpMathModule()
         PY_CLASS_DEF(Vector4, Equals)
         PY_CLASS_DEF(Vector4, ToString);
 
+    Matrix (*createRot1)(const Quaternion&) = &Matrix::CreateRotation;
+    Matrix (*createRot2)(const Vector3&) = &Matrix::CreateRotation;
+
     PY_CLASS(Matrix)
         PY_READ_ONLY(Matrix, Identity)
         .def(boost::python::self + Matrix())
@@ -165,7 +168,8 @@ void SetUpMathModule()
         .def(boost::python::self == Matrix())
         .def(boost::python::self != Matrix())
         PY_CLASS_DEF(Matrix, CreateTranslation)
-        PY_CLASS_DEF(Matrix, CreateRotation)
+        .def("CreateRotFromQuaternion", createRot1)
+        .def("CreateRotFromVector3", createRot1)
         PY_CLASS_DEF(Matrix, CreateScaling)
         PY_CLASS_DEF(Matrix, CreatePerspectiveFovLH)
         PY_CLASS_DEF(Matrix, CreateOrthographicLH)
@@ -200,7 +204,6 @@ void SetUpMathModule()
         .def(boost::python::self != Quaternion())
         PY_CLASS_DEF(Quaternion, Normalize)
         PY_CLASS_DEF(Quaternion, Normalized)
-        PY_CLASS_DEF(Quaternion, Inverse)
         PY_CLASS_DEF(Quaternion, GetEuler)
         PY_CLASS_DEF(Quaternion, FromEuler)
         PY_CLASS_DEF(Quaternion, FromYawPitchRool)

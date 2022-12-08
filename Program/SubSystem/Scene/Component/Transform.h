@@ -28,8 +28,8 @@ public:
 	const Math::Vector3& GetPosition() const noexcept;
 	const Math::Vector3& GetWoldPosition() const;
 
-	void SetRotation(const Math::Vector3& rotation) noexcept;
-	const Math::Vector3& GetRotation() const noexcept;
+	void SetRotation(const Math::Quaternion& rotation) noexcept;
+	const Math::Quaternion& GetRotation() const noexcept;
 
 	void SetScale(const Math::Vector3& scale) noexcept;
 	const Math::Vector3& GetScale() const noexcept;
@@ -66,7 +66,7 @@ private:
 	Vector<Transform*> m_children;
 
 	Math::Vector3 m_localPosition;
-	Math::Vector3 m_localRotation;
+	Math::Quaternion m_localRotation;
 	Math::Vector3 m_localScale;
 
 	Math::Vector3 m_up;

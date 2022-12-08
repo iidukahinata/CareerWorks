@@ -9,6 +9,7 @@
 #include "Matrix.h"
 #include "Vector3.h"
 #include "Vector4.h"
+#include "Quaternion.h"
 
 namespace Math
 {
@@ -23,6 +24,17 @@ namespace Math
 		m[1][0] = InY.x; m[1][1] = InY.y;  m[1][2] = InY.z;  m[1][3] = InY.w;
 		m[2][0] = InZ.x; m[2][1] = InZ.y;  m[2][2] = InZ.z;  m[2][3] = InZ.w;
 		m[3][0] = InW.x; m[3][1] = InW.y;  m[3][2] = InW.z;  m[3][3] = InW.w;
+	}
+
+	Matrix::Matrix(const Vector3& position, const Quaternion& rotation, const Vector3& scale) noexcept
+	{
+		Vector4 v(rotation.x, rotation.y, rotation.z, rotation.w);
+
+		auto world = DirectX::XMMatrixScalingFromVector(DirectX::XMLoadFloat3(&scale)) *
+			DirectX::XMMatrixRotationQuaternion(DirectX::XMLoadFloat4(&v)) *
+			DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat3(&position));
+
+		DirectX::XMStoreFloat4x4(this, world);
 	}
 
 	Matrix::Matrix(const Vector3& position, const Vector3& angles, const Vector3& scale) noexcept
@@ -41,6 +53,15 @@ namespace Math
 		Matrix translation;
 		DirectX::XMStoreFloat4x4(&translation, DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat3(&position)));
 		return translation;
+	}
+
+	Matrix Matrix::CreateRotation(const Quaternion& rotation) noexcept
+	{
+		Vector4 v(rotation.x, rotation.y, rotation.z, rotation.w);
+
+		Matrix result;
+		DirectX::XMStoreFloat4x4(&result, DirectX::XMMatrixRotationQuaternion(DirectX::XMLoadFloat4(&v)));
+		return result;
 	}
 
 	Matrix Matrix::CreateRotation(const Vector3& angles) noexcept
@@ -88,17 +109,22 @@ namespace Math
 		return Vector3(m[3][0], m[3][1], m[3][2]);
 	}
 
+	Quaternion Matrix::GetQuaternion() const noexcept
+	{
+		return Quaternion::FromEuler(GetEulerAngles());
+	}
+
 	Vector3 Matrix::GetEulerAngles() const noexcept
 	{
-		if (m[2][1] == 1.f)
+		if (_32 >= 0.9999f)
 		{
-			return Vector3(-PI / 2.f, 0.f, -atan2f(m[1][0], m[0][0]));
+			return Vector3(-PI / 2.f, 0.f, -atan2f(_13, _11)) * (180.0f / PI);
 		}
-		if (m[2][1] == -1.f)
+		if (_32 <= -0.9999f)
 		{
-			return Vector3((PI / 2.f), 0.f, -atan2f(m[1][0], m[0][0]));
+			return Vector3(PI / 2.f, 0.f, atan2f(_13, _11)) * (180.0f / PI);
 		}
-		return Vector3(-asin(m[2][1]), atan2f(m[2][0], m[2][2]), atan2f(m[0][1], m[1][1]));
+		return Vector3(-asin(_32), -atan2f(-_31, _33), -atan2f(-_12, _22)) * (180.0f / PI);
 	}
 
 	Vector3 Matrix::GetScale() const noexcept

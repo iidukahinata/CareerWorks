@@ -90,16 +90,8 @@ void RigidBody::PreUpdate()
 void RigidBody::Update()
 {
 	auto&& transform = m_actor->getGlobalPose();
-	auto&& pos  = Math::Vector3(transform.p.x, transform.p.y, transform.p.z);
-	auto&& quat = Math::Quaternion(transform.q.x, transform.q.y, transform.q.z, transform.q.w);
-
-	auto&& rot = quat.GetEuler();
-	rot.x = Math::ToRadian(rot.x);
-	rot.y = Math::ToRadian(rot.y);
-	rot.z = Math::ToRadian(rot.z);
-
-	GetTransform().SetPosition(pos);
-	GetTransform().SetRotation(rot);
+	GetTransform().SetPosition(Math::Vector3(transform.p.x, transform.p.y, transform.p.z));
+	GetTransform().SetRotation(Math::Quaternion(transform.q.x, transform.q.y, transform.q.z, transform.q.w));
 }
 
 void RigidBody::SetCollider(ICollider* collider)
@@ -407,14 +399,12 @@ void RigidBody::SetPosition(const Math::Vector3& pos) const
 	}
 }
 
-void RigidBody::SetRotation(const Math::Vector3& rot) const
+void RigidBody::SetRotation(const Math::Quaternion& rot) const
 {
 	if (m_actor)
 	{
 		auto&& transform = m_actor->getGlobalPose();
-		auto&& quat = Math::Quaternion::FromYawPitchRool(rot);
-		transform.q = physx::PxQuat(quat.x, quat.y, quat.z, quat.w);
-
+		transform.q = physx::PxQuat(rot.x, rot.y, rot.z, rot.w);
 		m_actor->setGlobalPose(transform);
 	}
 }

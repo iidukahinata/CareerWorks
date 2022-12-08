@@ -34,7 +34,7 @@ void SkyBox::Render(ICamera* mainCamera) noexcept
 		auto farClip   = mainCamera->GetFar();
 		auto transform = mainCamera->GetTransform();
 
-		transform.SetRotation(Math::Vector3::Zero);
+		transform.SetRotation(Math::Quaternion::Identity);
 		transform.SetScale(Math::Vector3(farClip - 1.0f));
 
 		const auto world	  = transform.GetWorldMatrix().Transpose().ToMatrixXM();

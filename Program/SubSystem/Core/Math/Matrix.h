@@ -32,6 +32,7 @@ namespace Math
 
 		Matrix(const Vector4& InX, const Vector4& InY, const Vector4& InZ, const Vector4& InW) noexcept;
 
+		Matrix(const Vector3& position, const Quaternion& rotation, const Vector3& scale) noexcept;
 		Matrix(const Vector3& position, const Vector3& eulerAngles, const Vector3& scale) noexcept;
 
 		Matrix operator+(const Matrix& Other) const noexcept
@@ -99,6 +100,8 @@ namespace Math
 
 		static Matrix CreateTranslation(const Vector3& position) noexcept;
 		
+		static Matrix CreateRotation(const Quaternion& rotation) noexcept;
+
 		static Matrix CreateRotation(const Vector3& eulerAngles) noexcept;
 		
 		static Matrix CreateScaling(const Vector3& scale) noexcept;
@@ -129,6 +132,8 @@ namespace Math
 		}
 
 		Vector3 GetTranslation() const noexcept;
+
+		Quaternion GetQuaternion() const noexcept;
 
 		Vector3 GetEulerAngles() const noexcept;
 

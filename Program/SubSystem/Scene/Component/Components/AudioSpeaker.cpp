@@ -92,10 +92,6 @@ void AudioSpeaker::OnStop()
 
 void AudioSpeaker::Tick(double deltaTime)
 {
-	// ‰¼’u‚«
-	auto rot = GetTransform().GetRotation();
-	GetTransform().SetRotation(rot + Math::Vector3(0, 0.03, 0));
-
 	Math::Vector3 worldPos = GetTransform().GetWoldPosition();
 	m_velocity = worldPos - m_oldPos;
 
