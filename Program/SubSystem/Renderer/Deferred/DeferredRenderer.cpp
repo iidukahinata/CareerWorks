@@ -193,6 +193,21 @@ bool DeferredRenderer::SetupPrePassObjects() noexcept
 		{
 			return false;
 		}
+
+		Vector<D3D_SHADER_MACRO> defines;
+		defines.reserve(2);
+		defines.push_back(D3D_SHADER_MACRO("USE_INSTANCING", "1"));
+		defines.push_back(D3D_SHADER_MACRO(NULL, NULL));
+
+		D3D12Shader instancePreZShader;
+		instancePreZShader.Compile(preZShaderPath, VertexShader, defines.data());
+
+		desc.VS = &instancePreZShader;
+
+		if (!m_instancePreZPipeline.Create(desc, &m_preZrootSignature))
+		{
+			return false;
+		}
 	}
 
 	return true;
@@ -416,11 +431,18 @@ void DeferredRenderer::ZPrePass()
 		renderObject->PreRender();
 	}
 
-	m_preZPipeline.Set();
-
 	// Draw
 	for (auto& bacth : m_bacthList)
 	{
+		if (bacth.indexNum == 1)
+		{
+			m_preZPipeline.Set();
+		}
+		else
+		{
+			m_instancePreZPipeline.Set();
+		}
+
 		bacth.constantBuffer->VSSet(0);
 
 		// Set Mesh Buffer

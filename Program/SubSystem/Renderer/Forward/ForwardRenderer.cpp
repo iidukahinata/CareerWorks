@@ -14,6 +14,8 @@
 #include "SubSystem/Editor/EditorSystem.h"
 #include "SubSystem/Scene/Component/ICamera.h"
 #include "SubSystem/Scene/Component/IRenderObject.h"
+#include "SubSystem/Resource/Resources/3DModel/Mesh.h"
+#include "SubSystem/Resource/Resources/3DModel/Material.h"
 
 bool ForwardRenderer::Initialize()
 {
@@ -148,13 +150,103 @@ bool ForwardRenderer::SetupPrePassObjects() noexcept
 		{
 			return false;
 		}
+
+		Vector<D3D_SHADER_MACRO> defines;
+		defines.reserve(2);
+		defines.push_back(D3D_SHADER_MACRO("USE_INSTANCING", "1"));
+		defines.push_back(D3D_SHADER_MACRO(NULL, NULL));
+
+		D3D12Shader instancePreZShader;
+		instancePreZShader.Compile(preZShaderPath, VertexShader, defines.data());
+
+		desc.VS = &instancePreZShader;
+
+		if (!m_instancePreZPipeline.Create(desc, &m_preZrootSignature))
+		{
+			return false;
+		}
 	}
 
 	return true;
 }
 
+void ForwardRenderer::CreateRenderList()
+{
+	m_bacthList.clear();
+	m_instancingBuffer.clear();
+
+	Map<Material*, std::pair<DrawBacth, Vector<DirectX::XMMATRIX>>> instancingMatListMap;
+
+	for (auto renderObject : m_renderObjects)
+	{
+		auto&& batch = renderObject->GetBatch();
+		for (auto mesh : batch.meshes)
+		{
+			auto material = mesh->GetMaterial();
+
+			if (!material)
+			{
+				continue;
+			}
+
+			//
+			// request instancing object is create instancing buffer data
+			//
+			if (material->IsInstancing())
+			{
+				auto isRegister = instancingMatListMap.contains(material);
+				auto& bacth = instancingMatListMap[material].first;
+				auto& matList = instancingMatListMap[material].second;
+
+				if (!isRegister)
+				{
+					bacth.material = material;
+					bacth.constantBuffer = batch.constantBuffer;
+					bacth.indexBuffer = mesh->GetIndexBuffer();
+					bacth.indexNum = mesh->GetIndexNum();
+					bacth.vertexBuffers.emplace_back(mesh->GetVertexBuffer());
+				}
+
+				bacth.instancingNum++;
+
+				auto buffer = static_cast<ConstantBufferMatrix*>(batch.constantBuffer->GetCPUData());
+				matList.emplace_back(buffer->worldViewProjection);
+			}
+			else
+			{
+				DrawBacth drawBacth;
+				drawBacth.material = material;
+				drawBacth.constantBuffer = batch.constantBuffer;
+				drawBacth.indexBuffer = mesh->GetIndexBuffer();
+				drawBacth.indexNum = mesh->GetIndexNum();
+				drawBacth.instancingNum = 1;
+				drawBacth.vertexBuffers.emplace_back(mesh->GetVertexBuffer());
+
+				m_bacthList.emplace_back(drawBacth);
+			}
+		}
+	}
+
+	m_instancingBuffer.resize(instancingMatListMap.size());
+
+	// create instancing vertex buffer
+	for (int i = 0; auto & instancingData : instancingMatListMap)
+	{
+		auto& bacth = instancingData.second.first;
+		auto& matVec = instancingData.second.second;
+
+		// register vertex buffer
+		m_instancingBuffer[i].Create(matVec);
+		bacth.vertexBuffers.emplace_back(&m_instancingBuffer[i]);
+		m_bacthList.emplace_back(bacth);
+		++i;
+	}
+}
+
 void ForwardRenderer::PrePass() noexcept
 {
+	CreateRenderList();
+
 	m_lightMap->Update(m_mainCamera);
 	m_transformCBuffer->Update(m_mainCamera);
 
@@ -165,30 +257,63 @@ void ForwardRenderer::PrePass() noexcept
 	D3D12GraphicsDevice::Get().SetRenderTarget();
 #endif // IS_EDITOR
 
-	// Z prepass
+	ZPrePass();
+}
+
+void ForwardRenderer::ZPrePass()
+{
+	for (auto renderObject : m_renderObjects)
 	{
-		m_preZPipeline.Set();
-		
-		for (auto renderObject : m_renderObjects)
+		renderObject->PreRender();
+	}
+
+	// Draw
+	for (auto& bacth : m_bacthList)
+	{
+		if (bacth.indexNum == 1)
 		{
-			if (!renderObject->GetActive())
-				continue;
-		
-			renderObject->PreRender();
+			m_preZPipeline.Set();
 		}
+		else
+		{
+			m_instancePreZPipeline.Set();
+		}
+
+		bacth.constantBuffer->VSSet(0);
+
+		// Set Mesh Buffer
+		auto numBuffer = bacth.vertexBuffers.size();
+		for (int i = 0; i < numBuffer; ++i)
+		{
+			bacth.vertexBuffers[i]->IASet(i);
+		}
+
+		bacth.indexBuffer->IASet();
+
+		D3D12GraphicsDevice::Get().GetCommandContext().DrawIndexedInstanced(bacth.indexNum, bacth.instancingNum, 0, 0, 0);
 	}
 }
 
 void ForwardRenderer::LightingPass() noexcept
 {
 	// Draw
-	//for (auto renderObject : m_renderObjects)
-	//{
-	//	if (!renderObject->GetActive())
-	//		continue;
-	//
-	//	renderObject->Render();
-	//}
+	for (auto& bacth : m_bacthList)
+	{
+		bacth.constantBuffer->VSSet(0);
+
+		bacth.material->Render();
+
+		// Set Mesh Buffer
+		auto numBuffer = bacth.vertexBuffers.size();
+		for (int i = 0; i < numBuffer; ++i)
+		{
+			bacth.vertexBuffers[i]->IASet(i);
+		}
+
+		bacth.indexBuffer->IASet();
+
+		D3D12GraphicsDevice::Get().GetCommandContext().DrawIndexedInstanced(bacth.indexNum, bacth.instancingNum, 0, 0, 0);
+	}
 
 	// Draw SkyBox
 	m_skyBox->Render(m_mainCamera);

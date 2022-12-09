@@ -45,9 +45,12 @@ bool EditorSystem::PostInitialize(void* shaderResourceView) noexcept
 		widget->PostInitialize();
 	}
 
-	LoadEditorSettings();
-
 	return true;
+}
+
+void EditorSystem::LastInitialize() noexcept
+{
+	LoadEditorSettings();
 }
 
 void EditorSystem::Shutdown() noexcept

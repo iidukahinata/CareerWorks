@@ -34,7 +34,8 @@ private:
 
 public:
 
-	bool Initialize();
+	bool Initialize() override;
+	void Shutdown() override;
 
 	void RebuildAllScript() noexcept;
 

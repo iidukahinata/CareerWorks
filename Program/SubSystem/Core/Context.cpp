@@ -24,6 +24,7 @@ void Context::RegisterSubsystem(uint32_t hash, ISubsystem* subsystem) noexcept
 	if (!m_subsystems.contains(hash))
 	{
 		m_subsystems[hash].reset(subsystem);
+		m_subsystems[hash]->Initialize();
 	}
 }
 

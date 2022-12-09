@@ -37,8 +37,14 @@ private:
 
 private:
 
+	/** 実際に描画するオブジェクトのバッチ生成処理 */
+	void CreateRenderList();
+
 	/** フレーム内で使用される Buffer の更新及び、Z prepass などの描画時の最適化処理を行う。*/
 	void PrePass() noexcept;
+
+	/** Zバッファ生成 */
+	void ZPrePass();
 
 	/** PrePass で作成した情報から通常レンダリングを行う。*/
 	void LightingPass() noexcept;
@@ -60,4 +66,37 @@ private:
 
 	// * pipeline objects
 	D3D12GraphicsPipelineState m_preZPipeline;
+	D3D12GraphicsPipelineState m_instancePreZPipeline;
+
+public:
+
+	struct ConstantBufferMatrix
+	{
+		DirectX::XMMATRIX world;
+		DirectX::XMMATRIX worldView;
+		DirectX::XMMATRIX worldViewProjection;
+		DirectX::XMMATRIX view;
+		DirectX::XMMATRIX viewProjection;
+		DirectX::XMMATRIX viewProjectionInverse;
+		DirectX::XMMATRIX projection;
+	};
+
+	struct DrawBacth
+	{
+		Material* material;
+		D3D12ConstantBuffer* constantBuffer;
+		Vector<D3D12VertexBuffer*> vertexBuffers;
+		D3D12IndexBuffer* indexBuffer;
+		uint32_t indexNum;
+		uint32_t instancingNum;
+	};
+
+	struct DrawInstancingBacth : public DrawBacth
+	{
+		D3D12VertexBuffer instancingBuffer;
+		Vector<DirectX::XMMATRIX> matList;
+	};
+
+	Vector<DrawBacth> m_bacthList;
+	Vector<D3D12VertexBuffer> m_instancingBuffer;
 };

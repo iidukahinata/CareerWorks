@@ -33,7 +33,6 @@ public:
 
 private:
 
-	/** キーの重複が無いもとして登録。*/
 	void RegisterSubsystem(uint32_t hash, ISubsystem* subsystem) noexcept;
 	void UnRegisterSubsystem(uint32_t hash) noexcept;
 	ISubsystem* GetSubsystemByHash(uint32_t hash) noexcept;

@@ -35,6 +35,16 @@ bool IRenderer::Initialize()
 	return true;
 }
 
+void IRenderer::Shutdown()
+{
+	// unregister component
+	ComponentFactory::UnRegister<ICamera>();
+	ComponentFactory::UnRegister<ILight>();
+	ComponentFactory::UnRegister<IMeshRender>();
+	ComponentFactory::UnRegister<IModelRender>();
+	ComponentFactory::UnRegister<IPostProcessEffect>();
+}
+
 void IRenderer::AddLight(ILight* light) noexcept
 {
 	m_lightMap->AddLight(light);

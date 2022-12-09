@@ -31,6 +31,7 @@ public:
 	virtual ~IRenderer() = default;
 
 	virtual bool Initialize() override;
+	virtual void Shutdown() override;
 
 public:
 

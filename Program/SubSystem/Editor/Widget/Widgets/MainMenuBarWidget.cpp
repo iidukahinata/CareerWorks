@@ -22,14 +22,14 @@ void MainMenuBarWidget::PostInitialize()
     m_world = GetContext()->GetSubsystem<World>();
     ASSERT(m_world);
 
-    m_physics = GetContext()->GetSubsystem<IPhysics>();
-    ASSERT(m_physics);
-
     m_renderer = GetContext()->GetSubsystem<IRenderer>();
     ASSERT(m_renderer);
 
     m_resourceManager = GetContext()->GetSubsystem<ResourceManager>();
     ASSERT(m_resourceManager);
+
+    m_physics = GetContext()->GetSubsystem<IPhysics>();
+    ASSERT(m_physics);
 }
 
 void MainMenuBarWidget::Draw()
@@ -310,9 +310,9 @@ void MainMenuBarWidget::ShowSubsystemSettings() noexcept
         constexpr auto physicsTypeCombo = "PhysX\0\0";
 
         auto rendererType = Config::GetRendererType();
-        auto inputType = Config::GetInputType();
-        auto audioType = Config::GetAudioType();
-        auto physicsType = Config::GetPhysicsType();
+        auto inputType    = Config::GetInputType();
+        auto audioType    = Config::GetAudioType();
+        auto physicsType  = Config::GetPhysicsType();
 
         ImGui::Text("RendererType"); ImGui::SameLine(offsetPos);
         auto inputRenderer = ImGui::Combo("##RendererType", (int*)(&rendererType), rendererTypeCombo);

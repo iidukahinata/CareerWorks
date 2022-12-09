@@ -17,16 +17,22 @@ enum class RendererType
 enum class InputType
 {
 	Direct,
+
+	None,
 };
 
 enum class AudioType
 {
 	FMOD,
+
+	None,
 };
 
 enum class PhysicsType
 {
 	PhysX,
+
+	None,
 };
 
 /**

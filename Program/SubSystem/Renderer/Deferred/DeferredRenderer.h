@@ -51,6 +51,7 @@ private:
 
 private:
 
+	/** 実際に描画するオブジェクトのバッチ生成処理 */
 	void CreateRenderList();
 
 	/** フレーム内で使用する描画情報の生成 */
@@ -102,6 +103,7 @@ private:
 
 	// * pipeline objects
 	D3D12GraphicsPipelineState m_preZPipeline;
+	D3D12GraphicsPipelineState m_instancePreZPipeline;
 	D3D12GraphicsPipelineState m_deferredPipeline;
 	D3D12GraphicsPipelineState m_luminousPipeline;
 	D3D12GraphicsPipelineState m_postProcessPipeline;
@@ -128,7 +130,6 @@ private:
 
 	// * Update と Present
 	Array<Job, 2> m_jobs;
-
 
 public:
 

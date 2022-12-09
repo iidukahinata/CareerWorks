@@ -86,6 +86,7 @@ void Config::RegisterSubsystemsToContainer() noexcept
 }
 
 #define REGISTER_SUBSYSTEM(KEY, CLASS) g_context->RegisterSubsystem<KEY, CLASS>();
+#define UNREGISTER_SUBSYSTEM(KEY) g_context->UnRegisterSubsystem<KEY>();
 
 void Config::RegisterRendererSystem(RendererType type, bool saveSettings /* = true */) noexcept
 {
@@ -102,6 +103,8 @@ void Config::RegisterRendererSystem(RendererType type, bool saveSettings /* = tr
 
 void Config::RegisterInputSystem(InputType type, bool saveSettings /* = true */) noexcept
 {
+	UNREGISTER_SUBSYSTEM(IInput);
+
 	switch (type)
 	{
 	case InputType::Direct: REGISTER_SUBSYSTEM(IInput, DirectInput); break;
@@ -114,6 +117,8 @@ void Config::RegisterInputSystem(InputType type, bool saveSettings /* = true */)
 
 void Config::RegisterAudioSystem(AudioType type, bool saveSettings /* = true */) noexcept
 {
+	UNREGISTER_SUBSYSTEM(IAudio);
+
 	switch (type)
 	{
 	case AudioType::FMOD: REGISTER_SUBSYSTEM(IAudio, FMODAudio); break;
@@ -126,6 +131,8 @@ void Config::RegisterAudioSystem(AudioType type, bool saveSettings /* = true */)
 
 void Config::RegisterPhysicsSystem(PhysicsType type, bool saveSettings) noexcept
 {
+	UNREGISTER_SUBSYSTEM(IPhysics);
+
 	switch (type)
 	{
 	case PhysicsType::PhysX: REGISTER_SUBSYSTEM(IPhysics, PhysX); break;

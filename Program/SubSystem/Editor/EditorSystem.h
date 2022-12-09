@@ -35,6 +35,8 @@ public:
 	/** API クラスセットアップ完了後に各 Widget セットアップを行う。*/
 	bool PostInitialize(void* shaderResourceView) noexcept;
 
+	void LastInitialize() noexcept;
+
 	/** API、JobSystem クラスより先に消去する必要があるため */
 	void Shutdown() noexcept;
 

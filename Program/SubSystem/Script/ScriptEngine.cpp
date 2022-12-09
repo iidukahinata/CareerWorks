@@ -34,6 +34,12 @@ bool ScriptEngine::Initialize()
 	return true;
 }
 
+void ScriptEngine::Shutdown()
+{
+	// unregister component
+	ComponentFactory::UnRegister<IScript>();
+}
+
 void ScriptEngine::RebuildAllScript() noexcept
 {
 	auto resources = m_resourceManager->GetResourcesByType<ScriptInstance>();

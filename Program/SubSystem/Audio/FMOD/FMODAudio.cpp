@@ -32,13 +32,17 @@ bool FMODAudio::Initialize()
 
 void FMODAudio::Shutdown()
 {
+	m_job.UnRegisterFromJobSystem();
+
 	if (m_system)
 	{
 		m_system->close();
 		m_system->release();
 	}
 
-	m_job.UnRegisterFromJobSystem();
+	// unregister component
+	ComponentFactory::UnRegister<IAudioSpeaker>();
+	ComponentFactory::UnRegister<IAudioListener>();
 }
 
 void FMODAudio::Update() const noexcept

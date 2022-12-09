@@ -149,53 +149,9 @@ bool Engine::StartupThread()
 
 bool Engine::InitializeSubsystems() noexcept
 {
-	if (!m_context->GetSubsystem<Timer>()->Initialize())
-	{
-		LOG_ERROR("error init timer system");
-		return false;
-	}
-
-	if (!m_context->GetSubsystem<IPhysics>()->Initialize())
-	{
-		LOG_ERROR("error init physics system");
-		return false;
-	}
-
-	if (!m_context->GetSubsystem<ResourceManager>()->Initialize())
-	{
-		LOG_ERROR("error init resource manager");
-		return false;
-	}
-
-	if (!m_context->GetSubsystem<World>()->Initialize())
-	{
-		LOG_ERROR("error init world system");
-		return false;
-	}
-
-	if (!m_context->GetSubsystem<ScriptEngine>()->Initialize())
-	{
-		LOG_ERROR("error init script engine");
-		return false;
-	}
-	
-	if (!m_context->GetSubsystem<IInput>()->Initialize())
-	{
-		LOG_ERROR("error init input system");
-		return false;
-	}
-	
-	if (!m_context->GetSubsystem<IAudio>()->Initialize())
-	{
-		LOG_ERROR("error init audio system");
-		return false;
-	}
-	
-	if (!m_context->GetSubsystem<IRenderer>()->Initialize())
-	{
-		LOG_ERROR("error init renderer system");
-		return false;
-	}
+#ifdef IS_EDITOR
+	EditorSystem::Get().LastInitialize();
+#endif // IS_EDITOR
 
 	EventManager::Get().Initialize();
 

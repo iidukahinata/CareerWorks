@@ -63,6 +63,10 @@ void PhysX::Shutdown()
     if (m_cooking)    m_cooking->release();
     if (m_dispatcher) m_dispatcher->release();
     if (m_foundation) m_foundation->release();
+
+    // unregister component
+    ComponentFactory::UnRegister<ICollider>();
+    ComponentFactory::UnRegister<IRigidBody>();
 }
 
 void PhysX::Simulate(double deltaTime) noexcept

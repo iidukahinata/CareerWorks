@@ -207,7 +207,7 @@ void GameObject::AddComponent(IComponent* component) noexcept
 
 	if (m_components.contains(hash))
 	{
-		LOG_ERROR("already has same component of the  hash value");
+		LOG_ERROR("already has same component of the hash value");
 	}
 	else
 	{
