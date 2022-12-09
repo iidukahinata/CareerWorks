@@ -26,7 +26,7 @@ bool D3D12GraphicsDevice::Init(HWND hwnd, UINT screenWidth, UINT screenHeight, b
 		return false;
 	}
 
-	Array<UINT, D3D12_DESCRIPTOR_HEAP_TYPE_NUM_TYPES> descriptorAllocSizes = { 1024, 128, 128, 32 };
+	Array<UINT, D3D12_DESCRIPTOR_HEAP_TYPE_NUM_TYPES> descriptorAllocSizes = { 4096, 256, 256, 32 };
 
 	auto ret = m_viewDescriptprAllocator.Initialize(descriptorAllocSizes[D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV], D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	if (!ret) {

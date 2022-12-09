@@ -7,12 +7,22 @@ class BulletManager(MonoBehaviour.MonoBehaviour) :
 	def Start(self) :
 		self.__bulletList = []
 		self.__numBullet = 0
-		self.__CreateNewList(100)
+		self.__maxNumBullet = 2048
+		self.__CreateNewList(512)
+		self.script.SetTickThreadSafe(True)
+		return
+
+	def Update(self, deltaTime) :
+		if len(self.__bulletList) >= self.__maxNumBullet :
+			self.gameobject.active = False
+		else :
+			self.__CreateNewList(4)
 		return
 	#================================================
 
 	#= BulletList ===================================
 	def Allocate(self) :
+
 		return 	self.__bulletList.pop(0)
 
 	def Deallocate(self, bullet) :

@@ -97,6 +97,8 @@ void ScriptInstance::RegisterScript(IScript* script) noexcept
 void ScriptInstance::UnRegisterScript(IScript* script) noexcept
 {
 	std::erase(m_scripts, script);
+
+	m_classInstanceDataMap.erase(script);
 }
 
 bool ScriptInstance::HasTickFunction() const noexcept
@@ -260,7 +262,9 @@ void ScriptInstance::ErrorHandle() noexcept
 	PyObject* type, * value, * traceback;
 	PyErr_Fetch(&type, &value, &traceback);
 
-	String errorMsg = boost::python::extract<String>(value);
-
-	LOG_ERROR(errorMsg);
+	if (value)
+	{
+		String errorMsg = boost::python::extract<String>(value);
+		LOG_ERROR(errorMsg);
+	}
 }

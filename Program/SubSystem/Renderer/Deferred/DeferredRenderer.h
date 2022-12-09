@@ -129,6 +129,7 @@ private:
 	// * Update ‚Æ Present
 	Array<Job, 2> m_jobs;
 
+
 public:
 
 	struct DrawBacth
