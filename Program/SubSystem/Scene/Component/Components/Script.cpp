@@ -155,11 +155,11 @@ void Script::NotifyHit(HitEventType type, IRigidBody* rigidBody)
 	m_scriptInstance->CallFunction(this, static_cast<ScriptFuncType>(funcType), boost::python::ptr(rigidBody));
 }
 
-void Script::GetUseResourcePaths(Vector<String>& resources)
+void Script::GetUseResourcePaths(Set<String>& resources)
 {
 	if (m_scriptInstance)
 	{
-		resources.emplace_back(m_scriptInstance->GetFilePath());
+		resources.emplace(m_scriptInstance->GetFilePath());
 	}
 }
 

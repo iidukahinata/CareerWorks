@@ -27,7 +27,7 @@ class Scene;
 class World : public ISubsystem
 {
 	WAIT_FOR_DEVELOPMENT("現在シーンの再ロードの申請時の処理はまだない && Play Stop 後のリソースアクセス等は仕様が決まり次第作成")
-	SUB_CLASS(World, ISubsystem)
+		SUB_CLASS(World, ISubsystem)
 public:
 
 	bool Initialize() override;
@@ -108,7 +108,6 @@ private:
 #ifdef IS_EDITOR
 	EventListener m_changeEditorStateListener;
 #endif // IS_EDITOR
-
 
 	// * 使用中シーンオブジェクト
 	Scene* m_currentScene = nullptr;

@@ -194,7 +194,7 @@ void World::SetCurrentScene(Scene* scene) noexcept
 	{
 #ifdef IS_EDITOR
 		m_currentScene->ClearGameObjects();
-
+		
 		if (!IsGameMode())
 		{
 			UnloadScene(m_currentScene->GetAssetName());

@@ -70,12 +70,9 @@ void PostProcessEffect::OnUnRegister()
 
 void PostProcessEffect::OnRemove()
 {
-	if (m_isRegister)
-	{
-		m_renderCommandFance.BegineFrame();
+	UnRegisterFromRenderer();
 
-		UnRegisterFromRenderer();
-	}
+	m_renderCommandFance.BegineFrame();
 
 	IComponent::OnRemove();
 }

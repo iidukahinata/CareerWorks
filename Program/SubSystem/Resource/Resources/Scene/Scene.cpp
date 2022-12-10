@@ -283,7 +283,7 @@ void Scene::UpdateResourceDataFile() noexcept
     refResourcePaths.clear();
     refResourcePaths.shrink_to_fit();
 
-    Vector<String> refResources;
+    Set<String> refResources;
     for (auto& gameObject : m_gameObjects)
     {
         for (auto& component : gameObject->GetAllComponent())

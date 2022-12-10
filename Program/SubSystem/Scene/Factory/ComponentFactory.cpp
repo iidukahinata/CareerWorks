@@ -14,10 +14,9 @@ UniquePtr<IComponent> ComponentFactory::Create(GameObject* gameObject, StringVie
 {
 	UniquePtr<IComponent> component;
 
-	String componentName(name);
-	if (m_componentFactorys.contains(componentName))
+	if (m_componentFactorys.contains(name))
 	{
-		component = m_componentFactorys[componentName]();
+		component = m_componentFactorys[name]();
 	}
 
     if (component)

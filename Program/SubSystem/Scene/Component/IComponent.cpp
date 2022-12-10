@@ -143,7 +143,7 @@ void IComponent::AddTickPrerequisite(TickFunction* prerequisite) noexcept
 	m_tickFunction.AddPrerequisite(prerequisite);
 }
 
-void IComponent::GetUseResourcePaths(Vector<String>& resources)
+void IComponent::GetUseResourcePaths(Set<String>& resources)
 {
 
 }

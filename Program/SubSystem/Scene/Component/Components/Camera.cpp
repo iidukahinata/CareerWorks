@@ -79,12 +79,9 @@ void Camera::OnUnRegister()
 
 void Camera::OnRemove()
 {
-	if (m_isRegister)
-	{
-		UnRegisterFromRenderer();
+	UnRegisterFromRenderer();
 
-		m_renderCommandFance.BegineFrame();
-	}
+	m_renderCommandFance.BegineFrame();
 
 	IComponent::OnRemove();
 }

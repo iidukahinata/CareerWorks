@@ -87,12 +87,9 @@ void MeshRender::OnUnRegister()
 
 void MeshRender::OnRemove()
 {
-	if (m_isRegister)
-	{
-		UnRegisterFromRenderer(this);
+	UnRegisterFromRenderer(this);
 
-		m_renderCommandFance.BegineFrame();
-	}
+	m_renderCommandFance.BegineFrame();
 
 	IComponent::OnRemove();
 }
@@ -131,11 +128,11 @@ Mesh* MeshRender::GetMesh() const noexcept
 	return m_mesh;
 }
 
-void MeshRender::GetUseResourcePaths(Vector<String>& resources)
+void MeshRender::GetUseResourcePaths(Set<String>& resources)
 {
 	if (m_mesh)
 	{
-		resources.emplace_back(m_mesh->GetFilePath());
+		resources.emplace(m_mesh->GetFilePath());
 	}
 }
 

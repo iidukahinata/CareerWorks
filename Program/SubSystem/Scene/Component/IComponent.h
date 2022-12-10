@@ -84,7 +84,7 @@ public:
 
 public:
 
-	virtual void GetUseResourcePaths(Vector<String>& resources);
+	virtual void GetUseResourcePaths(Set<String>& resources);
 
 public:
 

@@ -88,12 +88,9 @@ void ModelRender::OnUnRegister()
 
 void ModelRender::OnRemove()
 {
-	if (m_isRegister)
-	{
-		UnRegisterFromRenderer(this);
+	UnRegisterFromRenderer(this);
 
-		m_renderCommandFance.BegineFrame();
-	}
+	m_renderCommandFance.BegineFrame();
 
 	IComponent::OnRemove();
 }
@@ -132,11 +129,11 @@ Model* ModelRender::GetModel() const noexcept
 	return m_model;
 }
 
-void ModelRender::GetUseResourcePaths(Vector<String>& resources)
+void ModelRender::GetUseResourcePaths(Set<String>& resources)
 {
 	if (m_model)
 	{
-		resources.emplace_back(m_model->GetFilePath());
+		resources.emplace(m_model->GetFilePath());
 	}
 }
 

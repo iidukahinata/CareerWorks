@@ -95,7 +95,7 @@ private:
 
 public:
 
-	void GetUseResourcePaths(Vector<String>& resources) override;
+	void GetUseResourcePaths(Set<String>& resources) override;
 
 private:
 

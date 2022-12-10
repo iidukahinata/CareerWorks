@@ -67,12 +67,9 @@ void Light::OnUnRegister()
 
 void Light::OnRemove()
 {
-	if (m_isRegister)
-	{
-		UnRegisterFromLightMap();
+	UnRegisterFromLightMap();
 
-		m_renderCommandFance.BegineFrame();
-	}
+	m_renderCommandFance.BegineFrame();
 
 	IComponent::OnRemove();
 }
