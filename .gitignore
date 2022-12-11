@@ -31823,3 +31823,6 @@ FodyWeavers.xsd
 /Data/asset/Scene/Test.asset
 /Data/Resource/Script/Enemy.py
 /Data/asset/Script/Enemy.asset
+/Data/asset/Texture/grass_cubemap.asset
+/Data/Original/Texture/grass_cubemap.dds
+/Data/Resource/Texture/grass_cubemap.texture

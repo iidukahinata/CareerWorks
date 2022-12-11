@@ -141,12 +141,7 @@ public:
 		D3D12IndexBuffer* indexBuffer;
 		uint32_t indexNum;
 		uint32_t instancingNum;
-	};
-
-	struct DrawInstancingBacth : public DrawBacth
-	{
-		D3D12VertexBuffer instancingBuffer;
-		Vector<DirectX::XMMATRIX> matList;
+		bool isTranslucent;
 	};
 
 	Vector<DrawBacth> m_bacthList;

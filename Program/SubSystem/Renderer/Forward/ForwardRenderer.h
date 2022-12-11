@@ -91,12 +91,6 @@ public:
 		uint32_t instancingNum;
 	};
 
-	struct DrawInstancingBacth : public DrawBacth
-	{
-		D3D12VertexBuffer instancingBuffer;
-		Vector<DirectX::XMMATRIX> matList;
-	};
-
 	Vector<DrawBacth> m_bacthList;
 	Vector<D3D12VertexBuffer> m_instancingBuffer;
 };

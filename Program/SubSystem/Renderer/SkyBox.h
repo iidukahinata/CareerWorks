@@ -38,9 +38,7 @@ private:
 
 	struct ConstantBufferMatrix
 	{
-		DirectX::XMMATRIX world;
-		DirectX::XMMATRIX view;
-		DirectX::XMMATRIX projection;
+		DirectX::XMMATRIX worldViewProjection;
 	};
 
 	// * çsóÒï€éù

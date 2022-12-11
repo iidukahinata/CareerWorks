@@ -362,19 +362,20 @@ void DeferredRenderer::CreateRenderList()
 			if (material->IsInstancing())
 			{
 				auto isRegister = instancingMatListMap.contains(material);
-				auto& bacth    = instancingMatListMap[material].first;
-				auto& matList  = instancingMatListMap[material].second;
+				auto& drawBacth = instancingMatListMap[material].first;
+				auto& matList   = instancingMatListMap[material].second;
 
 				if (!isRegister)
 				{
-					bacth.material		 = material;
-					bacth.constantBuffer = batch.constantBuffer;
-					bacth.indexBuffer	 = mesh->GetIndexBuffer();
-					bacth.indexNum		 = mesh->GetIndexNum();
-					bacth.vertexBuffers.emplace_back(mesh->GetVertexBuffer());
+					drawBacth.material		 = material;
+					drawBacth.isTranslucent  = material->IsTranslucent();
+					drawBacth.constantBuffer = batch.constantBuffer;
+					drawBacth.indexBuffer	 = mesh->GetIndexBuffer();
+					drawBacth.indexNum		 = mesh->GetIndexNum();
+					drawBacth.vertexBuffers.emplace_back(mesh->GetVertexBuffer());
 				}
 
-				bacth.instancingNum++;
+				drawBacth.instancingNum++;
 
 				auto buffer = static_cast<ConstantBufferMatrix*>(batch.constantBuffer->GetCPUData());
 				matList.emplace_back(buffer->worldViewProjection);
@@ -383,13 +384,14 @@ void DeferredRenderer::CreateRenderList()
 			{
 				DrawBacth drawBacth;
 				drawBacth.material		 = material;
+				drawBacth.isTranslucent = material->IsTranslucent();
 				drawBacth.constantBuffer = batch.constantBuffer;
 				drawBacth.indexBuffer	 = mesh->GetIndexBuffer();
 				drawBacth.indexNum		 = mesh->GetIndexNum();
 				drawBacth.instancingNum  = 1;
 				drawBacth.vertexBuffers.emplace_back(mesh->GetVertexBuffer());
 
-				m_bacthList.emplace_back(drawBacth);
+				m_bacthList.emplace_back(std::move(drawBacth));
 			}
 		}
 	}
@@ -399,7 +401,7 @@ void DeferredRenderer::CreateRenderList()
 	// create instancing vertex buffer
 	for (int i = 0; auto& instancingData : instancingMatListMap)
 	{	
-		auto& bacth = instancingData.second.first;
+		auto& bacth  = instancingData.second.first;
 		auto& matVec = instancingData.second.second;
 
 		// register vertex buffer
@@ -431,7 +433,7 @@ void DeferredRenderer::ZPrePass()
 		renderObject->PreRender();
 	}
 
-	// Draw
+	// Draw Mesh
 	for (auto& bacth : m_bacthList)
 	{
 		if (bacth.indexNum == 1)
@@ -460,9 +462,14 @@ void DeferredRenderer::ZPrePass()
 
 void DeferredRenderer::GBufferPass() noexcept
 {
-	// Draw
+	// Draw Mesh
 	for (auto& bacth : m_bacthList)
 	{
+		if (bacth.isTranslucent)
+		{
+			continue;
+		}
+
 		bacth.constantBuffer->VSSet(0);
 
 		bacth.material->Render();
@@ -508,10 +515,7 @@ void DeferredRenderer::LightingPass() noexcept
 
 	DefferedLightingPass();
 
-	//ForwardLightingPass();
-
-	// Draw SkyBox
-	m_skyBox->Render(m_mainCamera);
+	ForwardLightingPass();
 }
 
 void DeferredRenderer::DefferedLightingPass()
@@ -519,18 +523,18 @@ void DeferredRenderer::DefferedLightingPass()
 	// Pipeline Set
 	m_deferredPipeline.Set();
 	m_sampler.PSSet();
-
+	
 	// Texture Set
 	m_gbuffer->GetRenderTexture(GBufferType::Albedo	 ).PSSet(0);
 	m_gbuffer->GetRenderTexture(GBufferType::Specular).PSSet(1);
 	m_gbuffer->GetRenderTexture(GBufferType::Normal	 ).PSSet(2);
 	m_gbuffer->GetRenderTexture(GBufferType::Depth	 ).PSSet(3);
 	m_gbuffer->GetRenderTexture(GBufferType::Position).PSSet(4);
-
+	
 	// Mesh Set
 	m_vertexBuffer.IASet();
 	m_indexBuffer.IASet();
-
+	
 	// Draw
 	D3D12GraphicsDevice::Get().GetCommandContext().DrawIndexedInstanced(6, 1, 0, 0, 0);
 }
@@ -538,6 +542,37 @@ void DeferredRenderer::DefferedLightingPass()
 void DeferredRenderer::ForwardLightingPass()
 {
 	m_transformCBuffer->Update(m_mainCamera);
+
+	auto renderTexRTV = m_renderTexture.GetRenderTargetView();
+	auto& context = D3D12GraphicsDevice::Get().GetCommandContext();
+	context.SetRenderTargets(1, &renderTexRTV, m_gbuffer->GetRenderTexture(GBufferType::Albedo).GetDepthStencilView());
+
+	// Draw Mesh
+	for (auto& bacth : m_bacthList)
+	{
+		if (!bacth.isTranslucent)
+		{
+			continue;
+		}
+
+		bacth.constantBuffer->VSSet(0);
+
+		bacth.material->Render();
+
+		// Set Mesh Buffer
+		auto numBuffer = bacth.vertexBuffers.size();
+		for (int i = 0; i < numBuffer; ++i)
+		{
+			bacth.vertexBuffers[i]->IASet(i);
+		}
+
+		bacth.indexBuffer->IASet();
+
+		D3D12GraphicsDevice::Get().GetCommandContext().DrawIndexedInstanced(bacth.indexNum, bacth.instancingNum, 0, 0, 0);
+	}
+
+	// Draw SkyBox
+	m_skyBox->Render(m_mainCamera);
 }
 
 void DeferredRenderer::PostPass() noexcept

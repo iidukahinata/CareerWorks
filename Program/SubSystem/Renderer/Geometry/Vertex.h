@@ -7,6 +7,11 @@
 #pragma once
 
 
+struct VertexPos
+{
+	Math::Vector3 position;
+};
+
 struct Vertex2D
 {
 	Math::Vector3 position;

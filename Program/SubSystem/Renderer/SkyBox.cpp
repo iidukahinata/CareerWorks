@@ -15,7 +15,7 @@
 
 void SkyBox::Initialize() noexcept
 {
-	auto triangleList = Cube::Create<Vertex3D>();
+	auto triangleList = Cube::Create<VertexPos>();
 	ASSERT(m_indexBuffer.Create(triangleList.m_indices));
 	ASSERT(m_vertexBuffer.Create(triangleList.m_vertices));
 	ASSERT(m_constantBufferMatrix.Create(sizeof(ConstantBufferMatrix)));
@@ -37,14 +37,12 @@ void SkyBox::Render(ICamera* mainCamera) noexcept
 		transform.SetRotation(Math::Quaternion::Identity);
 		transform.SetScale(Math::Vector3(farClip - 1.0f));
 
-		const auto world	  = transform.GetWorldMatrix().Transpose().ToMatrixXM();
-		const auto view		  = mainCamera->GetViewMatrix().Transpose().ToMatrixXM();
-		const auto projection = mainCamera->GetProjectionMatrix().Transpose().ToMatrixXM();
+		const auto world	  = transform.GetWorldMatrix().ToMatrixXM();
+		const auto view		  = mainCamera->GetViewMatrix().ToMatrixXM();
+		const auto projection = mainCamera->GetProjectionMatrix().ToMatrixXM();
 
 		auto buffer = static_cast<ConstantBufferMatrix*>(m_constantBufferMatrix.GetCPUData());
-		buffer->world	   = world;
-		buffer->view	   = view;
-		buffer->projection = projection;
+		buffer->worldViewProjection = world * view * projection;
 	}
 
 	// Set ConstantBuffer
