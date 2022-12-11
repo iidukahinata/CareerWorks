@@ -49,6 +49,9 @@ private:
 	/** PrePass で作成した情報から通常レンダリングを行う。*/
 	void LightingPass() noexcept;
 
+	/** Bloom : DOF などの Effect 処理 */
+	void PostPass() noexcept;
+
 private:
 
 	// * Update と Present
