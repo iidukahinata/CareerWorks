@@ -65,7 +65,7 @@ void ViewPortWidget::ShowToolBar() noexcept
 
 	if (isPlay)
 	{
-		EditorHelper::Get().SetIsChangePlayMode(true);
+		EditorHelper::Get().SetIsChangeScene(true);
 
 		m_isPlay = !m_isPlay;
 		auto state = m_isPlay ? EditorState::Run : EditorState::Stop;
@@ -82,7 +82,7 @@ void ViewPortWidget::ShowToolBar() noexcept
 	}
 	else
 	{
-		EditorHelper::Get().SetIsChangePlayMode(false);
+		EditorHelper::Get().SetIsChangeScene(false);
 	}
 
 	if (m_isPlay && isStop)

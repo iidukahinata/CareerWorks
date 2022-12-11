@@ -44,5 +44,5 @@ protected:
 	class D3D12DescriptorAllocator& GetSamplerDescriptorAllocator() noexcept;
 	class D3D12DescriptorAllocator& GetRtvDescriptorAllocator() noexcept;
 	class D3D12DescriptorAllocator& GetDsvDescriptorAllocator() noexcept;
-	D3D12Map<D3D12_SAMPLER_DESC, class D3D12Sampler*>& GetSamplerMap() noexcept;
+	D3D12Map<D3D12_SAMPLER_DESC, class D3D12Sampler>& GetSamplerMap() noexcept;
 };

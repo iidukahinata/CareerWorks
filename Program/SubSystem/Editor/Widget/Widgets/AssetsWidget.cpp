@@ -503,6 +503,7 @@ void AssetsWidget::DoubleClickResource(IconType type, StringView name) noexcept
 			// シーン切り替えでリソースが消去されるため
 			DetailsWidget::ClearSelectObject();
 			EditorHelper::Get().FlushCommandList();
+			EditorHelper::Get().SetIsChangeScene(true);
 
 			m_world->ChangeScene(name);
 		}

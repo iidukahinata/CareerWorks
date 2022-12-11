@@ -54,12 +54,12 @@ void EditorHelper::Shutdown() noexcept
 	}
 }
 
-bool EditorHelper::IsChangePlayMode() const noexcept
+bool EditorHelper::IsChangeScene() const noexcept
 {
 	return m_changeMode;
 }
 
-void EditorHelper::SetIsChangePlayMode(bool changeMode) noexcept
+void EditorHelper::SetIsChangeScene(bool changeMode) noexcept
 {
 	m_changeMode = changeMode;
 }

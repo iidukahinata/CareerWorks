@@ -218,9 +218,9 @@ void EditorSystem::RegisterWidgetsToContainer() noexcept
 	m_widgets.emplace_back(std::make_unique<ProfilerWidget>());
 	m_widgets.emplace_back(std::make_unique<ConsoleWidget>());
 	m_widgets.emplace_back(std::make_unique<AssetsWidget>());
-	m_widgets.emplace_back(std::make_unique<ViewPortWidget>());
 	m_widgets.emplace_back(std::make_unique<SceneWidget>());
 	m_widgets.emplace_back(std::make_unique<DetailsWidget>());
+	m_widgets.emplace_back(std::make_unique<ViewPortWidget>());
 }
 
 void EditorSystem::ShowDockingWindow() const noexcept

@@ -9,18 +9,14 @@
 #include "D3D12Sampler.h"
 #include "D3D12GraphicsDevice.h"
 
-D3D12Sampler::~D3D12Sampler()
-{
-	if (m_descriptor) m_descriptor->Release();
-}
-
 void D3D12Sampler::Create(const D3D12_SAMPLER_DESC& desc) noexcept
 {
-	if (auto sampler = GetSamplerMap().Find(desc))
+	auto sampler = GetSamplerMap().Find(desc);
+
+	if (sampler.m_descriptor)
 	{
-		sampler->m_descriptor->AddRef();
-		m_descriptor = sampler->m_descriptor;
-		m_id = sampler->m_id;
+		m_descriptor = sampler.m_descriptor;
+		m_id = sampler.m_id;
 	}
 	else
 	{
@@ -28,7 +24,7 @@ void D3D12Sampler::Create(const D3D12_SAMPLER_DESC& desc) noexcept
 		m_descriptor = GetSamplerDescriptorAllocator().Allocate();
 		GetDevice()->CreateSampler(&desc, m_descriptor->m_cpuHandle);
 
-		m_id = GetSamplerMap().Add(desc, this);
+		m_id = GetSamplerMap().Add(desc, *this);
 	}
 
 	m_samplerDesc = desc;

@@ -46,7 +46,15 @@ void SceneWidget::Draw()
 
 	if (auto currentScene = m_world->GetCurrentScene())
 	{
-		if (ImGui::CollapsingHeader(currentScene->GetAssetName().data(), ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_DefaultOpen) && !EditorHelper::Get().IsChangePlayMode())
+		if (EditorHelper::Get().IsChangeScene())
+		{
+			// モード切り替え時の出力バグ回避のため
+			m_allRootGameObjects.clear();
+
+			CancelEvent<UpdateSceneTreeEvent>(false);
+			NotifyEvent<UpdateSceneTreeEvent>();
+		}
+		else if (ImGui::CollapsingHeader(currentScene->GetAssetName().data(), ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			// show gameObjects
 			for (const auto& rootGameObject : m_allRootGameObjects)
@@ -81,14 +89,6 @@ void SceneWidget::Draw()
 
 				m_selectGameObject = false;
 			}
-		}
-		else if(EditorHelper::Get().IsChangePlayMode())
-		{
-			// モード切り替え時の出力バグ回避のため
-			m_allRootGameObjects.clear();
-
-			CancelEvent<UpdateSceneTreeEvent>(false);
-			NotifyEvent<UpdateSceneTreeEvent>();
 		}
 	}
 

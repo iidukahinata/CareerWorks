@@ -57,7 +57,7 @@ public:
 	D3D12DescriptorAllocator&  GetSamplerDescriptorAllocator()	  noexcept { return m_samplerDescriptprAllocator; }
 	D3D12DescriptorAllocator&  GetRtvDescriptorAllocator()		  noexcept { return m_rtvDescriptprAllocator; }
 	D3D12DescriptorAllocator&  GetDsvDescriptorAllocator()		  noexcept { return m_dsvDescriptprAllocator; }
-	D3D12Map<D3D12_SAMPLER_DESC, D3D12Sampler*>& GetSamplerMap()  noexcept { return m_samplerMap; }
+	D3D12Map<D3D12_SAMPLER_DESC, D3D12Sampler>& GetSamplerMap()  noexcept { return m_samplerMap; }
 
 private:
 
@@ -98,5 +98,5 @@ private:
 	D3D12DescriptorAllocator						m_rtvDescriptprAllocator;
 	D3D12DescriptorAllocator						m_dsvDescriptprAllocator;
 
-	D3D12Map<D3D12_SAMPLER_DESC, D3D12Sampler*>		m_samplerMap;
+	D3D12Map<D3D12_SAMPLER_DESC, D3D12Sampler>		m_samplerMap;
 };

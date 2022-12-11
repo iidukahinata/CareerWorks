@@ -121,6 +121,13 @@ void World::ChangeScene(StringView name) noexcept
 			NotifyEvent<ChangeSceneEvent>(handle->GetResource<Scene>());
 		}
 	}
+
+#ifdef IS_EDITOR
+	if (m_currentScene)
+	{
+		m_currentScene->ClearGameObjects();
+	}
+#endif // IS_EDITER
 }
 
 GameObject* World::CreateGameObject(Scene* scene /* = nullptr */) noexcept
@@ -192,15 +199,13 @@ void World::SetCurrentScene(Scene* scene) noexcept
 {
 	if (m_currentScene)
 	{
+		m_currentScene->RemoveFromWorld();
+
 #ifdef IS_EDITOR
-		m_currentScene->ClearGameObjects();
-		
 		if (!IsGameMode())
 		{
 			UnloadScene(m_currentScene->GetAssetName());
 		}
-#else
-		m_currentScene->RemoveFromWorld();
 #endif // IS_EDITER
 	}
 

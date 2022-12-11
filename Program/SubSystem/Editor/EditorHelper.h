@@ -48,8 +48,8 @@ public:
 
 public:
 
-	bool IsChangePlayMode() const noexcept;
-	void SetIsChangePlayMode(bool changeMode) noexcept;
+	bool IsChangeScene() const noexcept;
+	void SetIsChangeScene(bool changeMode) noexcept;
 
 public:
 

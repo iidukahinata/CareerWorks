@@ -40,7 +40,7 @@ D3D12DescriptorAllocator& D3D12DeviceChild::GetDsvDescriptorAllocator() noexcept
 	return 	D3D12GraphicsDevice::Get().GetDsvDescriptorAllocator();
 }
 
-D3D12Map<D3D12_SAMPLER_DESC, D3D12Sampler*>& D3D12DeviceChild::GetSamplerMap() noexcept
+D3D12Map<D3D12_SAMPLER_DESC, D3D12Sampler>& D3D12DeviceChild::GetSamplerMap() noexcept
 {
 	return 	D3D12GraphicsDevice::Get().GetSamplerMap();
 }

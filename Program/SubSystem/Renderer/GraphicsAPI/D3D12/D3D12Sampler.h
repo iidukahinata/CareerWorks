@@ -15,8 +15,6 @@ class D3D12Sampler : public D3D12DeviceChild
 	COMPLETED_DEVELOPMENT()
 public:
 
-	~D3D12Sampler();
-
 	void Create(const D3D12_SAMPLER_DESC& desc) noexcept;
 	void Create(
 		D3D12_FILTER filter = D3D12_FILTER_ANISOTROPIC,
