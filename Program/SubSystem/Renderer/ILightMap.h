@@ -38,6 +38,7 @@ public:
 	void RemoveLight(ILight* light) noexcept;
 
 	void SetAmbient(const Math::Vector4& color) noexcept;
+	const Math::Vector4& GetAmbient() const noexcept;
 
 protected:
 

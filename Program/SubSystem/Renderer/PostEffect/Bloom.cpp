@@ -45,7 +45,7 @@ void Bloom::Initialize()
 	m_blurs[2].Initialize(m_postProcessEffect);
 	m_blurs[3].Initialize(m_postProcessEffect);
 
-	const auto width = Window::Get().GetWindowWidth();
+	const auto width  = Window::Get().GetWindowWidth();
 	const auto height = Window::Get().GetWindowHeight();
 
 	if (IsInRenderingThread())
@@ -222,16 +222,12 @@ bool Bloom::CreateRenderingObjects(int width, int height) noexcept
 	{
 		if (m_lumaConstantBuffer.Create(sizeof(ConstantBufferLuma)))
 		{
-			auto buffer = static_cast<ConstantBufferLuma*>(m_lumaConstantBuffer.GetCPUData());
-			buffer->intensity = m_intensity;
-			buffer->threshold = m_threshold;
-			buffer->clamp = m_clamp;
+			UpdateConstantBufferLuma();
 		}
 
 		if (m_bloomConstantBuffer.Create(sizeof(ConstantBufferBloom)))
 		{
-			auto buffer = static_cast<ConstantBufferBloom*>(m_bloomConstantBuffer.GetCPUData());
-			buffer->color = m_color;
+			UpdateConstantBufferBloom();
 		}
 
 		if (m_matrixConstantBuffer.Create(sizeof(ConstantBufferMatrix)))

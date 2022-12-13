@@ -267,6 +267,7 @@
     <ClCompile Include="Program\SubSystem\Renderer\PostEffect\Bloom.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\PostEffect\Blur.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\PostEffect\DepthOfField.cpp" />
+    <ClCompile Include="Program\SubSystem\Renderer\PostEffect\FXAA.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\PostEffect\IPostEffect.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\IRenderer.cpp" />
     <ClCompile Include="Program\SubSystem\Renderer\SkyBox.cpp" />
@@ -529,6 +530,7 @@
     <ClInclude Include="Program\SubSystem\Renderer\PostEffect\Bloom.h" />
     <ClInclude Include="Program\SubSystem\Renderer\PostEffect\Blur.h" />
     <ClInclude Include="Program\SubSystem\Renderer\PostEffect\DepthOfField.h" />
+    <ClInclude Include="Program\SubSystem\Renderer\PostEffect\FXAA.h" />
     <ClInclude Include="Program\SubSystem\Renderer\PostEffect\IPostEffect.h" />
     <ClInclude Include="Program\SubSystem\Renderer\IRenderer.h" />
     <ClInclude Include="Program\SubSystem\Renderer\SkyBox.h" />

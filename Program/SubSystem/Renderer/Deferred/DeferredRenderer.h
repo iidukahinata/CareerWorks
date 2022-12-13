@@ -78,16 +78,12 @@ private:
 	/** Bloom : DOF などの Effect 処理 */
 	void PostPass() noexcept;
 
-	/** 輝度テクスチャの生成 */
-	void LuminousPass() noexcept;
-
 private:
 
 	UniquePtr<GBuffer> m_gbuffer;
 
 	// * renderTarget objects
 	D3D12RenderTexture m_lightingRenderTexture;
-	D3D12RenderTexture m_luminousRenderTexture;
 
 #if IS_EDITOR
 
@@ -105,7 +101,6 @@ private:
 	D3D12GraphicsPipelineState m_preZPipeline;
 	D3D12GraphicsPipelineState m_instancePreZPipeline;
 	D3D12GraphicsPipelineState m_deferredPipeline;
-	D3D12GraphicsPipelineState m_luminousPipeline;
 	D3D12GraphicsPipelineState m_postProcessPipeline;
 
 	struct ConstantBufferMatrix

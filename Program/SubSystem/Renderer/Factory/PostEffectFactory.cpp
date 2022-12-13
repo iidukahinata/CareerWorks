@@ -8,6 +8,7 @@
 
 #include "PostEffectFactory.h"
 #include "SubSystem/Renderer/PostEffect/Blur.h"
+#include "SubSystem/Renderer/PostEffect/FXAA.h"
 #include "SubSystem/Renderer/PostEffect/Bloom.h"
 #include "SubSystem/Renderer/PostEffect/DepthOfField.h"
 
@@ -20,6 +21,7 @@ UniquePtr<IPostEffect> PostEffectFactory::Create(PostProcessEffect* postProcessE
 
     switch (type.Hash)
     {
+    CASE_CREATE_POSTEFFECT(FXAA        , postEffect);
     CASE_CREATE_POSTEFFECT(Bloom       , postEffect);
     CASE_CREATE_POSTEFFECT(DepthOfField, postEffect);
     default: break;

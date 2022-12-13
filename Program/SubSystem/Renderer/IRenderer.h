@@ -56,6 +56,7 @@ public:
 
 	/** アクセス */
 	SkyBox*			  GetSkyBox()			const noexcept { return m_skyBox.get(); }
+	ILightMap*		  GetLightMap()			const noexcept { return m_lightMap.get();}
 	TransformCBuffer* GetTransformCBuffer() const noexcept { return m_transformCBuffer.get(); }
 
 protected:

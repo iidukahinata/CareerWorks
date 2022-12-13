@@ -304,7 +304,7 @@ void MainMenuBarWidget::ShowSubsystemSettings() noexcept
 
     if (ImGui::CollapsingHeader("Subsystem", ImGuiTreeNodeFlags_DefaultOpen))
     {
-        constexpr auto rendererTypeCombo = "Forward\0Deferred\0\0";
+        constexpr auto rendererTypeCombo = "Forward (D3D12)\0Deferred (D3D12)\0\0";
         constexpr auto inputTypeCombo = "Dirext\0\0";
         constexpr auto audioTypeCombo = "FMOD\0\0";
         constexpr auto physicsTypeCombo = "PhysX\0\0";
@@ -363,11 +363,25 @@ void MainMenuBarWidget::ShowPhysicsSettings() noexcept
 
 void MainMenuBarWidget::ShowRendererSettings() noexcept
 {
+    constexpr auto offsetPos = 130;
+
     if (ImGui::CollapsingHeader("Renderer", ImGuiTreeNodeFlags_DefaultOpen))
     {
         auto skybox = m_renderer->GetSkyBox();
+        ASSERT(skybox);
+
         auto material = skybox->GetMaterial();
         ShowMaterial("sky box", material, [skybox](auto data) { skybox->SetMaterial(data); });
+
+        auto lightMap = m_renderer->GetLightMap();
+        ASSERT(lightMap);
+
+        auto ambient = lightMap->GetAmbient();
+        ImGui::Text("ambient"); ImGui::SameLine(offsetPos);
+        if (ImGui::ColorEdit3("##ambient", &ambient.x))
+        {
+            lightMap->SetAmbient(ambient);
+        }
     }
 
     ImGui::Separator();

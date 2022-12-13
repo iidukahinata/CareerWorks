@@ -93,7 +93,7 @@ void MaterialDetails::ShowMaterialInterface() noexcept
 		auto inputRasterizer = ImGui::Combo("##Rasterizer", (int*)(&rasterizer), rasterizerCombo);
 
 		ImGui::Text("Albedo"); ImGui::SameLine(offsetPos);
-		auto inputAlbedo = ImGui::DragFloat3("##Albedo", &albedo.x, 0.1f, 0.f);
+		auto inputAlbedo = ImGui::ColorEdit3("##Albedo", &albedo.x);
 
 		ImGui::Text("Metallic"); ImGui::SameLine(offsetPos);
 		auto inputMetallic = ImGui::SliderFloat("##Metallic", &metallic, 0.f, 1.f);
@@ -102,7 +102,7 @@ void MaterialDetails::ShowMaterialInterface() noexcept
 		auto inputSmooth = ImGui::SliderFloat("##Smooth", &smooth, 0.f, 1.f);
 
 		ImGui::Text("Emissive"); ImGui::SameLine(offsetPos);
-		auto inputEmissive = ImGui::DragFloat3("##Emissive", &emissive.x, 0.1f, 0.f);
+		auto inputEmissive = ImGui::ColorEdit3("##Emissive", &emissive.x);
 
 		if (ImGui::TreeNodeEx("Texture Prametor", ImGuiTreeNodeFlags_DefaultOpen))
 		{

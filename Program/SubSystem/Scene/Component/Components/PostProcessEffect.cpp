@@ -6,6 +6,7 @@
 */
 
 #include "PostProcessEffect.h"
+#include "SubSystem/Window/Window.h"
 #include "SubSystem/Renderer/IRenderer.h"
 #include "SubSystem/Renderer/PostEffect/IPostEffect.h"
 #include "SubSystem/Renderer/Factory/PostEffectFactory.h"
@@ -29,6 +30,25 @@ void PostProcessEffect::Serialized(FileStream* file) const
 
 void PostProcessEffect::Deserialized(FileStream* file)
 {
+	const auto width  = Window::Get().GetWindowWidth();
+	const auto height = Window::Get().GetWindowHeight();
+
+	auto proj = Math::Matrix::CreateOrthographicLH(width, height, 0.1f, 100.0f);
+	auto view = Math::Matrix(Math::Vector3(0, 0, 1), Math::Vector3::Zero, Math::Vector3::One);
+
+	if (IsInRenderingThread())
+	{
+		GetRenderer()->GetTransformCBuffer()->Update(view.ToMatrixXM(), proj.ToMatrixXM());
+	}
+	else
+	{
+		RegisterRenderCommand([this, view, proj] {
+
+			GetRenderer()->GetTransformCBuffer()->Update(view.ToMatrixXM(), proj.ToMatrixXM());
+
+		});
+	}
+
 	size_t numPostEffect = 0;
 	file->Read(&numPostEffect);
 
@@ -77,6 +97,25 @@ void PostProcessEffect::OnRemove()
 	IComponent::OnRemove();
 }
 
+void PostProcessEffect::SetActive(bool active)
+{
+	if (GetActive() == active)
+	{
+		return;
+	}
+
+	IComponent::SetActive(active);
+
+	if (active)
+	{
+		RegisterToRenderer();
+	}
+	else
+	{
+		UnRegisterFromRenderer();
+	}
+}
+
 bool PostProcessEffect::Erasable()
 {
 	return m_renderCommandFance.IsSingle();
@@ -107,7 +146,7 @@ void PostProcessEffect::AddPostEffect(IPostEffect* postEffect) noexcept
 
 		m_postEffects.emplace(hash, postEffect);
 	}
-	else 
+	else
 	{
 		LOG_ERROR("既に同じHash値のエフェクトが存在しています。");
 	}
@@ -163,17 +202,18 @@ IRenderer* PostProcessEffect::GetRenderer() const noexcept
 
 void PostProcessEffect::Render()
 {
+	IPostEffect* lastPostEffect = nullptr;
 	for (const auto& postEffectInfo : m_postEffects)
 	{
 		const auto& postEffect = postEffectInfo.second;
 
 		postEffect->Render();
+		lastPostEffect = postEffect.get();
 	}
 
 	if (!m_postEffects.empty())
 	{
-		auto back = --m_postEffects.end();
-		back->second->GetTexture().PSSet(0);
+		lastPostEffect->GetTexture().PSSet(0);
 	}
 }
 

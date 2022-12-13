@@ -318,3 +318,8 @@ void ForwardRenderer::LightingPass() noexcept
 	// Draw SkyBox
 	m_skyBox->Render(m_mainCamera);
 }
+
+void ForwardRenderer::PostPass() noexcept
+{
+
+}

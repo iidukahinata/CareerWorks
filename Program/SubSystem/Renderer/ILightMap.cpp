@@ -32,3 +32,8 @@ void ILightMap::SetAmbient(const Math::Vector4& ambientLight) noexcept
 {
 	m_ambientLight = ambientLight;
 }
+
+const Math::Vector4& ILightMap::GetAmbient() const noexcept
+{
+	return m_ambientLight;
+}

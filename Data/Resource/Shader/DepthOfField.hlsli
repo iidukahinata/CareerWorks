@@ -29,11 +29,11 @@ float4 PS_LuminousPass(PS_IN input)
 {
 	float4 finalColor = g_lightingTex.Sample(g_sampler, input.tex);
 
-	float luma = dot(finalColor.xyz, float3(0.2125f, 0.7154f, 0.0721f));
-	
 #if UseLumaCRV
-	float val = clamp(luma - threshold, 0.0f, _clamp) * intensity;
+	float luma = dot(finalColor.xyz, float3(0.2125f, 0.7154f, 0.0721f));	
+	float val  = clamp(luma - threshold, 0.0f, _clamp) * intensity;
 #else
+	float luma = dot(finalColor.xyz, float3(0.2125f, 0.7154f, 0.0721f));
 	float val = clamp(luma - 1.f, 0.0f, 1.0f);
 #endif
 	

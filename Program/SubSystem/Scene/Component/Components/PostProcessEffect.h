@@ -27,6 +27,7 @@ public:
 	void OnUnRegister() override;
 	void OnRemove() override;
 
+	void SetActive(bool active) override;
 	bool Erasable() override;
 
 public:

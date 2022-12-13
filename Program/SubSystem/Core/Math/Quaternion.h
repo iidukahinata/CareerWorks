@@ -40,7 +40,7 @@ namespace Math
 		Quaternion(float x, float y, float z, float w) noexcept : x(x), y(y), z(z), w(w)
 		{}
 
-		Quaternion(float angle, const Vector3& axis)
+		Quaternion(float angle, const Vector3& axis) noexcept
 		{
 			const float half = angle * 0.5f;
 			const float s = sin(half);

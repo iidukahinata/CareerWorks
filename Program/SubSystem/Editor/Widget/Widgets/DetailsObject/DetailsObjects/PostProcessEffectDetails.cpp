@@ -10,6 +10,7 @@
 #include "SubSystem/Scene/Component/IPostProcessEffect.h"
 
 #include "SubSystem/Renderer/PostEffect/Blur.h"
+#include "SubSystem/Renderer/PostEffect/FXAA.h"
 #include "SubSystem/Renderer/PostEffect/Bloom.h"
 #include "SubSystem/Renderer/PostEffect/DepthOfField.h"
 
@@ -19,7 +20,9 @@ PostProcessEffectDetails::PostProcessEffectDetails(DetailsWidget* detailsWidget,
 	ASSERT(m_postProcessEffect);
 
 	// Add PostEffect éûÇÃåüçıÇ…égóp
+	RegisterPostEffect<FXAA>();
 	RegisterPostEffect<Bloom>();
+	//RegisterPostEffect<ToneMapping>();
 	//RegisterPostEffect<DepthOfField>();
 }
 

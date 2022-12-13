@@ -31826,3 +31826,12 @@ FodyWeavers.xsd
 /Data/asset/Texture/grass_cubemap.asset
 /Data/Original/Texture/grass_cubemap.dds
 /Data/Resource/Texture/grass_cubemap.texture
+/Data/asset/Script/Test.asset
+/Data/Original/Texture/gray_gradation.png
+/Data/Resource/Script/Test.py
+/Data/Original/Shader/ToneMapping.hlsli
+/Data/Original/Texture/gray_gradation.png
+/Data/Resource/Script/Test.py
+/Data/Resource/Shader/ToneMapping.hlsli
+/Data/Original/Shader/ToneMapping.hlsli
+/Data/Original/Shader/ToneMapping.hlsli

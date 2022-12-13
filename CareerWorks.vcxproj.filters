@@ -772,6 +772,9 @@
     <ClCompile Include="Program\SubSystem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\ShaderDetails.cpp">
       <Filter>Subsytem\Editor\Widget\Widgets\DetailsObject\DetailsObjects\Resource</Filter>
     </ClCompile>
+    <ClCompile Include="Program\SubSystem\Renderer\PostEffect\FXAA.cpp">
+      <Filter>Subsytem\Renderer\PostEffect\PostEffects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Program\ThirdParty\FMOD\include\fmod_dsp.h">
@@ -1430,6 +1433,9 @@
     </ClInclude>
     <ClInclude Include="Program\SubSystem\Scene\Component\IRenderObject.h">
       <Filter>Subsytem\Scene\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Program\SubSystem\Renderer\PostEffect\FXAA.h">
+      <Filter>Subsytem\Renderer\PostEffect\PostEffects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

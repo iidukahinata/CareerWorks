@@ -274,33 +274,6 @@ bool DeferredRenderer::SetupLightingObjects(UINT width, UINT height) noexcept
 
 bool DeferredRenderer::SetupPostProcessObjects(UINT width, UINT height) noexcept
 {
-	// Create Luminous Pipeline
-	{
-		auto luminousShaderPath = FileSystem::FindFilePath(SHADER_DIRECTORY, "PostProcess.hlsl");
-
-		Vector<D3D_SHADER_MACRO> defines;
-		defines.emplace_back("Luma", "1");
-		defines.emplace_back(D3D_SHADER_MACRO(NULL, NULL));
-
-		Array<D3D12Shader, 2> luminousShaders;
-		luminousShaders[VertexShader].Compile(luminousShaderPath, VertexShader, defines.data());
-		luminousShaders[PixelShader].Compile(luminousShaderPath, PixelShader, defines.data());
-
-		GraphicsPipelineStateDesc desc = {};
-		desc.VS = &luminousShaders[VertexShader];
-		desc.PS = &luminousShaders[PixelShader];
-		desc.BlendMode = BLEND_MODE_ALPHA;
-		desc.RasterizerState = NO_CULL;
-		desc.PrimitiveType = PRIMITIVE_TYPE_TRIANGLELIST;
-		desc.NumRenderTargets = 1;
-		desc.RTVForamt[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
-
-		if (!m_luminousPipeline.Create(desc, &m_rootSignature))
-		{
-			return false;
-		}
-	}
-
 	// Create PostProcess Pipeline
 	{
 		auto postProcessShaderPath = FileSystem::FindFilePath(SHADER_DIRECTORY, "Texture2D.hlsl");
@@ -322,11 +295,6 @@ bool DeferredRenderer::SetupPostProcessObjects(UINT width, UINT height) noexcept
 		{
 			return false;
 		}
-	}
-
-	if (!m_luminousRenderTexture.Create(width, height, DXGI_FORMAT_R32G32B32A32_FLOAT))
-	{
-		return false;
 	}
 
 	if (!m_lightingRenderTexture.Create(width, height, DXGI_FORMAT_R32G32B32A32_FLOAT))
@@ -541,11 +509,21 @@ void DeferredRenderer::DefferedLightingPass()
 
 void DeferredRenderer::ForwardLightingPass()
 {
-	m_transformCBuffer->Update(m_mainCamera);
+	D3D12RenderTargetView* renderTargetView;
 
-	auto renderTexRTV = m_renderTexture.GetRenderTargetView();
+	if (HasPostProcessSetting())
+	{
+		renderTargetView = m_lightingRenderTexture.GetRenderTargetView();
+	}
+	else
+	{
+		renderTargetView = m_renderTexture.GetRenderTargetView();
+	}
+
 	auto& context = D3D12GraphicsDevice::Get().GetCommandContext();
-	context.SetRenderTargets(1, &renderTexRTV, m_gbuffer->GetRenderTexture(GBufferType::Albedo).GetDepthStencilView());
+	context.SetRenderTargets(1, &renderTargetView, m_gbuffer->GetRenderTexture(GBufferType::Albedo).GetDepthStencilView());
+
+	m_transformCBuffer->Update(m_mainCamera);
 
 	// Draw Mesh
 	for (auto& bacth : m_bacthList)
@@ -573,6 +551,9 @@ void DeferredRenderer::ForwardLightingPass()
 
 	// Draw SkyBox
 	m_skyBox->Render(m_mainCamera);
+
+	m_transformCBuffer->Update(m_camera2DView.ToMatrixXM(), m_camera2DProj.ToMatrixXM());
+	m_constantBuffer.VSSet(0);
 }
 
 void DeferredRenderer::PostPass() noexcept
@@ -582,12 +563,8 @@ void DeferredRenderer::PostPass() noexcept
 		return;
 	}
 
-	LuminousPass();
-
 	// PostEffectPass
 	{
-		m_luminousRenderTexture.WaitUntilFinishDrawing();
-
 		// Texture Set
 		m_gbuffer->GetRenderTexture(GBufferType::Albedo	 ).PSSet(0);
 		m_gbuffer->GetRenderTexture(GBufferType::Specular).PSSet(1);
@@ -595,8 +572,6 @@ void DeferredRenderer::PostPass() noexcept
 		m_gbuffer->GetRenderTexture(GBufferType::Depth	 ).PSSet(3);
 		m_gbuffer->GetRenderTexture(GBufferType::Position).PSSet(4);
 		m_lightingRenderTexture.PSSet(5);
-		m_luminousRenderTexture.PSSet(6);
-		m_lightingRenderTexture.PSSet(7);
 
 		m_postProcessEffect->Render();
 	}
@@ -614,29 +589,6 @@ void DeferredRenderer::PostPass() noexcept
 
 	// Matrix Set
 	m_constantBuffer.VSSet(0);
-
-	// Mesh Set
-	m_vertexBuffer.IASet();
-	m_indexBuffer.IASet();
-
-	// Draw
-	D3D12GraphicsDevice::Get().GetCommandContext().DrawIndexedInstanced(6, 1, 0, 0, 0);
-}
-
-void DeferredRenderer::LuminousPass() noexcept
-{
-	m_lightingRenderTexture.WaitUntilFinishDrawing();
-
-	// RenderTarget Set
-	m_luminousRenderTexture.SetRenderTarget();
-	m_luminousRenderTexture.Clear(Math::Vector4(0.f, 0.f, 0.f, 1.f));
-
-	// Pipeline Set
-	m_luminousPipeline.Set();
-	m_sampler.PSSet();
-
-	// Texture Set
-	m_lightingRenderTexture.PSSet(5);
 
 	// Mesh Set
 	m_vertexBuffer.IASet();
