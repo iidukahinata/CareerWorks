@@ -28,6 +28,9 @@ private:
 	/** シーン or ゲーム画面の表示を行う。*/
 	void ShowViewPort() noexcept;
 
+	/** Scene View 操作 */
+	void InputHandle() noexcept;
+
 	/** Editor Mode 時のみギズモ表示 */
 	void Show3DGuizmo(const ImVec2& cursorPos, float imageWidth, float imageHeight) noexcept;
 

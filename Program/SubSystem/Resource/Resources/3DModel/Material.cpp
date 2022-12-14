@@ -414,6 +414,18 @@ void Material::ParametricAnalysis(bool isClear /* = true */) noexcept
 		auto&& srvPrams = psShader->GetSRVBindDesc();
 		for (const auto& pram : srvPrams)
 		{
+			bool isContinue = false;
+			for (auto& texInfo : m_textureInfos)
+			{
+				if (isContinue)
+					break;
+
+				isContinue = texInfo.second.m_bindPoint == pram.BindPoint;
+			}
+
+			if (isContinue) 
+				continue;
+
 			auto& info = m_textureInfos[pram.Name];
 			info.m_bindPoint = pram.BindPoint;
 		}

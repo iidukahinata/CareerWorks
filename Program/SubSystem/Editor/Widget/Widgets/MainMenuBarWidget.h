@@ -17,7 +17,7 @@ class Material;
 
 class MainMenuBarWidget : public Widget
 {
-	WAIT_FOR_DEVELOPMENT("View && Assets Ç»Ç«ñ¢çÏê¨")
+	COMPLETED_DEVELOPMENT()
 public:
 
 	void PostInitialize() override;

@@ -11,7 +11,7 @@
 
 class Bloom : public IPostEffect
 {
-	IN_DEVELOPMENT()
+	COMPLETED_DEVELOPMENT()
 	SUB_CLASS(Bloom, IPostEffect)
 public:
 

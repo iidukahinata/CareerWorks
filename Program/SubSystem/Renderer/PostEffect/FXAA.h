@@ -17,7 +17,7 @@
 
 class FXAA : public IPostEffect
 {
-	IN_DEVELOPMENT()
+	COMPLETED_DEVELOPMENT()
 	SUB_CLASS(FXAA, IPostEffect)
 public:
 

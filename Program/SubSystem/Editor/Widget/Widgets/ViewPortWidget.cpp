@@ -31,6 +31,7 @@ void ViewPortWidget::Draw()
 
 	ShowToolBar();
 	ShowViewPort();
+	InputHandle();
 
 	ImGui::End();
 }
@@ -118,6 +119,62 @@ void ViewPortWidget::ShowViewPort() noexcept
 	{
 		Show3DGuizmo(ImGui::GetCursorScreenPos(), width, height);
 	}
+}
+
+void ViewPortWidget::InputHandle() noexcept
+{
+	if (m_isPlay)
+	{
+		return;
+	}
+
+	if (ImGui::IsPopupOpen("", ImGuiPopupFlags_AnyPopupId))
+	{
+		return;
+	}
+
+	auto camera = m_renderer->GetMainCamera();
+	if (!camera)
+	{
+		return;
+	}
+
+	auto& transform = camera->GetTransform();
+	auto& forward = transform.GetForward();
+	auto& right = transform.GetRight();
+	auto& up = transform.GetUp();
+
+	if (ImGui::IsKeyDown(ImGuiKey_W))
+	{
+		transform.SetPosition(transform.GetPosition() + forward * 0.5f);
+	}
+	if (ImGui::IsKeyDown(ImGuiKey_A))
+	{
+		transform.SetPosition(transform.GetPosition() - right * 0.5f);
+	}
+	if (ImGui::IsKeyDown(ImGuiKey_S))
+	{
+		transform.SetPosition(transform.GetPosition() - forward * 0.5f);
+	}
+	if (ImGui::IsKeyDown(ImGuiKey_D))
+	{
+		transform.SetPosition(transform.GetPosition() + right * 0.5f);
+	}
+	if (ImGui::IsKeyDown(ImGuiKey_Q))
+	{
+		transform.SetPosition(transform.GetPosition() - up * 0.5f);
+	}
+	if (ImGui::IsKeyDown(ImGuiKey_E))
+	{
+		transform.SetPosition(transform.GetPosition() + up * 0.5f);
+	}
+
+	auto delta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Right);
+	auto eular = transform.GetRotation().GetEuler();
+	eular.x += delta.y / 10.f; eular.y += delta.x / 10.f;
+	eular.x = std::clamp(eular.x, -80.0f, 85.0f);
+	transform.SetRotation(Math::Quaternion::FromEuler(eular));
+	ImGui::ResetMouseDragDelta(ImGuiMouseButton_Right);
 }
 
 void ViewPortWidget::Show3DGuizmo(const ImVec2& cursorPos, float imageWidth, float imageHeight) noexcept

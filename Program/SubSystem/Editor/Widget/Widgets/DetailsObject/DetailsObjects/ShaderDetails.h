@@ -13,7 +13,7 @@ class Script;
 
 class ShaderDetails : public DetailsObject
 {
-	WAIT_FOR_DEVELOPMENT()
+	COMPLETED_DEVELOPMENT()
 public:
 
 	ShaderDetails(DetailsWidget* detailsWidget, ResourceData* resourceData);

@@ -25,11 +25,13 @@ void SceneWidget::PostInitialize()
 	ASSERT(m_resourceManager);
 
 	m_eventListener.SetFunction([this](std::any data) {
+
 		m_allRootGameObjects.clear();
 		if(auto currentScene = m_world->GetCurrentScene())
 		{
 			currentScene->GetAllRootGameObjects(m_allRootGameObjects);
 		}
+
 	});
 
 	m_eventListener.RegisterToEventManager<UpdateSceneTreeEvent>();

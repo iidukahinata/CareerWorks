@@ -44,11 +44,6 @@ void MainMenuBarWidget::Draw()
 
 void MainMenuBarWidget::Serialized(FileStream* file) const
 {
-    if (!m_renderer)
-    {
-        return;
-    }
-
     const auto skybox = m_renderer->GetSkyBox();
     if (auto material = skybox->GetMaterial())
     {
@@ -58,6 +53,9 @@ void MainMenuBarWidget::Serialized(FileStream* file) const
     {
         file->Write(String(""));
     }
+
+    file->Write(m_renderer->GetLightMap()->GetAmbient());
+    file->Write(m_physics->GetGravity());
 }
 
 void MainMenuBarWidget::Deserialized(FileStream* file)
@@ -72,6 +70,15 @@ void MainMenuBarWidget::Deserialized(FileStream* file)
             m_renderer->GetSkyBox()->SetMaterial(LoadResource<Material>(resourceData));
         }
     }
+
+    Math::Vector4 ambient;
+    file->Read(&ambient);
+
+    Math::Vector3 gravity;
+    file->Read(&gravity);
+
+    m_renderer->GetLightMap()->SetAmbient(ambient);
+    m_physics->SetGravity(gravity);
 }
 
 void MainMenuBarWidget::ShowMainMenuBar() noexcept

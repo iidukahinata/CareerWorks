@@ -15,7 +15,7 @@ using PostEffectType = ClassTypeData;
 
 class IPostEffect
 {
-	IN_DEVELOPMENT()
+	COMPLETED_DEVELOPMENT()
 	SUPER_CLASS(IPostEffect)
 
 	friend class PostEffectFactory;

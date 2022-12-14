@@ -17,7 +17,7 @@
 
 class Blur : public IPostEffect
 {
-	IN_DEVELOPMENT()
+	COMPLETED_DEVELOPMENT()
 	SUB_CLASS(Blur, IPostEffect)
 public:
 

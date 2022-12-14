@@ -349,11 +349,11 @@ Vector<D3D12_SHADER_BUFFER_DESC> D3D12Shader::GetCBVBufferDesc() noexcept
 	m_reflection->GetDesc(&shaderDesc);
 
 	Vector<D3D12_SHADER_BUFFER_DESC> cbvBufferDescs;
-	for (int i = 0; i <= shaderDesc.ConstantBuffers; ++i)
+	for (int i = 0; i < shaderDesc.ConstantBuffers; ++i)
 	{
 		auto cb = m_reflection->GetConstantBufferByIndex(i);
 
-		D3D12_SHADER_BUFFER_DESC desc;
+		D3D12_SHADER_BUFFER_DESC desc = {};
 		cb->GetDesc(&desc);
 
 		cbvBufferDescs.emplace_back(desc);
