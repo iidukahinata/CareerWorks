@@ -11,6 +11,7 @@
 
 class World;
 class IRenderer;
+class ScriptEngine;
 
 class ViewPortWidget : public Widget
 {
@@ -37,11 +38,15 @@ private:
 	/** 各 State Button が使用されているかの判別がしやすくする処理 */
 	bool ShowStateButton(bool state, std::function<bool()> func) noexcept;
 
+	void CancelEvents() noexcept;
+
 private:
 
 	World* m_world = nullptr;
 
 	IRenderer* m_renderer = nullptr;
+
+	ScriptEngine* m_scriptEngine = nullptr;
 
 	// * ゲーム実行中かを保持
 	bool m_isPlay = false;

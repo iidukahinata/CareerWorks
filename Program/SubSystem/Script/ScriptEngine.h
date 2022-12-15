@@ -37,11 +37,12 @@ public:
 	bool Initialize() override;
 	void Shutdown() override;
 
+	void RegisterEventLisneterList() noexcept;
+	void UnRegisterEventLisneterList() noexcept;
+
 	void RebuildAllScript() noexcept;
 
 private:
-
-	void SetupEventLisneterList();
 
 	template<typename Event, typename Func, typename Type>
 	void SetupHitEventLisneter(PhysicsEventType type, Func notifyHit, Type hitType);

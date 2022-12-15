@@ -72,6 +72,11 @@ void RigidBody::SetActive(bool active)
 
 	IComponent::SetActive(active);
 
+	if (!IsBeginPlay())
+	{
+		return;
+	}
+
 	if (active)
 	{
 		RegisterToPhysics();
@@ -120,7 +125,7 @@ void RigidBody::SetCollider(ICollider* collider)
 	{
 		if (auto shape = m_collider->GetShape())
 		{
-			m_actor->attachShape(*shape);
+			ASSERT(m_actor->attachShape(*shape));
 		}
 	}
 }
@@ -159,6 +164,7 @@ void RigidBody::SetBodyType(BodyType type)
 	SetKinematic(m_isKinematic);
 	SetPositionLock(m_positionLock);
 	SetRotationLock(m_rotationLock);
+	m_actor->userData = this;
 
 	if (IsBeginPlay())
 	{

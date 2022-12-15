@@ -93,6 +93,7 @@ void Collider::SetActive(bool active)
 	}
 
 	IComponent::SetActive(active);
+
 	if (active)
 	{
 		AttachToRegidBody();

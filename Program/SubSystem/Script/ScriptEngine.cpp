@@ -26,7 +26,7 @@ bool ScriptEngine::Initialize()
 	InitModule();
 	Py_Initialize();
 
-	SetupEventLisneterList();
+	RegisterEventLisneterList();
 
 	// register component
 	ComponentFactory::Register<IScript, Script>();
@@ -40,18 +40,7 @@ void ScriptEngine::Shutdown()
 	ComponentFactory::UnRegister<IScript>();
 }
 
-void ScriptEngine::RebuildAllScript() noexcept
-{
-	auto resources = m_resourceManager->GetResourcesByType<ScriptInstance>();
-	for (const auto& resource : resources)
-	{
-		auto scriptInstance = dynamic_cast<ScriptInstance*>(resource);
-
-		scriptInstance->Reload();
-	}
-}
-
-void ScriptEngine::SetupEventLisneterList()
+void ScriptEngine::RegisterEventLisneterList() noexcept
 {
 	auto notifyHit = [](HitEventType type, IRigidBody* target, IRigidBody* hitObject) {
 
@@ -71,4 +60,23 @@ void ScriptEngine::SetupEventLisneterList()
 	SetupHitEventLisneter<TriggerEnterEvent>(OnTriggerEnter, notifyHit, TriggerEnter);
 	SetupHitEventLisneter<TriggerStayEvent>(OnTriggerStay, notifyHit, TriggerStay);
 	SetupHitEventLisneter<TriggerExitEvent>(OnTriggerExit, notifyHit, TriggerExit);
+}
+
+void ScriptEngine::UnRegisterEventLisneterList() noexcept
+{
+	for (auto& eventLisneter : m_eventListenerList)
+	{
+		eventLisneter.UnRegisterFromEventManager();
+	}
+}
+
+void ScriptEngine::RebuildAllScript() noexcept
+{
+	auto resources = m_resourceManager->GetResourcesByType<ScriptInstance>();
+	for (const auto& resource : resources)
+	{
+		auto scriptInstance = dynamic_cast<ScriptInstance*>(resource);
+
+		scriptInstance->Reload();
+	}
 }

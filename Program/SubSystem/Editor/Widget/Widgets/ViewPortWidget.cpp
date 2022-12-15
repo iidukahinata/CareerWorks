@@ -10,6 +10,7 @@
 #include "DetailsWidget.h"
 #include "SubSystem/Scene/World.h"
 #include "SubSystem/Renderer/IRenderer.h"
+#include "SubSystem/Script/ScriptEngine.h"
 #include "SubSystem/Scene/Component/Components/Camera.h"
 #include "ThirdParty/ImGuizmo/ImGuizmo.h"
 
@@ -20,6 +21,9 @@ void ViewPortWidget::PostInitialize()
 
 	m_renderer = GetContext()->GetSubsystem<IRenderer>();
 	ASSERT(m_renderer);
+
+	m_scriptEngine = GetContext()->GetSubsystem<ScriptEngine>();
+	ASSERT(m_scriptEngine);
 }
 
 void ViewPortWidget::Draw()
@@ -72,14 +76,18 @@ void ViewPortWidget::ShowToolBar() noexcept
 		auto state = m_isPlay ? EditorState::Run : EditorState::Stop;
 		NotifyEvent<ChangeEditorStateEvent>(state);
 
+		CancelEvents();
+
 		if (!m_isPlay)
 		{
+			m_scriptEngine->UnRegisterEventLisneterList();
 			DetailsWidget::ClearSelectObject();
 			m_isPouse = false;
 		}
-
-		CancelEvent<KeyPressedEvent>(true);
-		CancelEvent<KeyReleasedEvent>(true);
+		else 
+		{
+			m_scriptEngine->RegisterEventLisneterList();
+		}
 	}
 	else
 	{
@@ -129,6 +137,11 @@ void ViewPortWidget::InputHandle() noexcept
 	}
 
 	if (ImGui::IsPopupOpen("", ImGuiPopupFlags_AnyPopupId))
+	{
+		return;
+	}
+
+	if (!ImGui::IsMouseDown(1))
 	{
 		return;
 	}
@@ -254,4 +267,20 @@ bool ViewPortWidget::ShowStateButton(bool state, std::function<bool()> func) noe
 	}
 
 	return result;
+}
+
+void ViewPortWidget::CancelEvents() noexcept
+{
+	CancelEvent<KeyPressedEvent>(true);
+	CancelEvent<KeyReleasedEvent>(true);
+
+	if (!m_isPlay)
+	{
+		CancelEvent<CollisionEnterEvent>(true);
+		CancelEvent<CollisionStayEvent>(true);
+		CancelEvent<CollisionExitEvent>(true);
+		CancelEvent<TriggerEnterEvent>(true);
+		CancelEvent<TriggerStayEvent>(true);
+		CancelEvent<TriggerExitEvent>(true);
+	}
 }
